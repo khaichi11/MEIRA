@@ -1,0 +1,49 @@
+name: meira
+description: "MEIRA - Multimodal Edge Intelligence for Recipe Assistance. Asisten dapur yang berjalan lokal."
+publish_to: 'none'
+version: 0.2.0+2
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.6.0
+  image_picker: ^1.2.4
+  record: ^6.2.1
+  audioplayers: ^6.7.1
+  shared_preferences: ^2.5.6
+  path_provider: ^2.1.6
+  sherpa_onnx: ^1.13.8
+  sqflite: ^2.4.2+1
+  sqflite_common_ffi: ^2.4.0+3
+  archive: ^4.3.0
+  file_picker: ^13.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/icon.png
+    - assets/resep.md
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Poppins-ExtraBold.ttf
+          weight: 800
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter.ttf
