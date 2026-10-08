@@ -60,6 +60,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   String get bootLabel => steps.firstWhere((s) => !s.done, orElse: () => steps.last).title;
   double get bootProgress => steps.where((s) => s.done).length / steps.length;
   bool eyesFineTuned = false;
+  String eyesChoice = 'otomatis'; // otomatis | cepat | akurat
 
   // ------------------------------------------------------------- pengaturan
   bool speakAnswers = false;
@@ -116,6 +117,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       ttsEngine = p.getString('tts_engine') ?? 'sistem';
       voiceName = p.getString('voice_name');
       readPackages = p.getBool('read_packages') ?? true;
+      eyesChoice = p.getString('eyes_model') ?? 'otomatis';
 
       models = await Models.open();
       if (models.missingRequired().isNotEmpty) {
@@ -165,10 +167,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> _startModels() async {
     final brainModel = models.path(brainPack.files[0].name), brainProj = models.path(brainPack.files[1].name);
-    eyesFineTuned = models.installed(eyesPack);
+    final eyes = activeEyesPack();
+    eyesFineTuned = eyes != null;
     _brainServer = LlamaServer(name: 'otak', model: brainModel, mmproj: brainProj, port: 8392);
-    if (eyesFineTuned) {
-      _eyesServer = LlamaServer(name: 'mata', model: models.path(eyesPack.files[0].name), mmproj: models.path(eyesPack.files[1].name), port: 8391);
+    if (eyes != null) {
+      _eyesServer = LlamaServer(name: 'mata', model: models.path(eyes.files[0].name), mmproj: models.path(eyes.files[1].name), port: 8391);
       await _eyesServer!.start(maxImageTokens: _imageTokens);
       _done(1);
       await _brainServer!.start(maxImageTokens: 128);
@@ -179,6 +182,15 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       _done(1);
     }
     _done(2);
+  }
+
+  /// Model mata yang dipakai. Otomatis: versi 2B bila terpasang dan RAM ponsel cukup, selain itu versi 0,8B.
+  ModelPack? activeEyesPack() {
+    final fast = models.installed(eyesPack), accurate = models.installed(eyesAccuratePack);
+    if (eyesChoice == 'akurat' && accurate) return eyesAccuratePack;
+    if (eyesChoice == 'cepat' && fast) return eyesPack;
+    if (accurate && (Device.totalRamGb() >= 7.5 || !fast)) return eyesAccuratePack;
+    return fast ? eyesPack : null;
   }
 
   int get _imageTokens => ((imageSide / 32) * (imageSide / 32)).round();
@@ -558,6 +570,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         thorough = value as bool;
         meira?.thorough = thorough;
         await p.setBool(key, thorough);
+      case 'eyes_model':
+        eyesChoice = value as String;
+        await p.setString(key, eyesChoice);
+        await _stopModels();
+        unawaited(_restart());
       case 'read_packages':
         readPackages = value as bool;
         meira?.readPackages = readPackages;

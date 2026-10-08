@@ -87,8 +87,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       Section(
         header: 'Penglihatan',
-        footer: 'Deteksi teliti membaca foto dua kali (asli dan dicerminkan) sehingga lebih sedikit bahan terlewat, dengan waktu sekitar dua kali lipat.',
+        footer: 'Mata akurat (2B) lebih jarang melewatkan bahan pada foto ramai, tetapi hampir tiga kali lebih lama. Mode otomatis memakainya bila RAM ponsel 8 GB atau lebih. '
+            'Deteksi teliti membaca foto dua kali (asli dan dicerminkan) sehingga lebih sedikit bahan terlewat, dengan waktu sekitar dua kali lipat.',
         children: [
+          Row2(
+            title: 'Model mata',
+            trailing: DropdownButton<String>(
+              // pilihan yang modelnya sudah dihapus kembali ke otomatis agar menu tetap valid
+              value: {'cepat': s.models.installed(eyesPack), 'akurat': s.models.installed(eyesAccuratePack)}[s.eyesChoice] ?? true ? s.eyesChoice : 'otomatis',
+              underline: const SizedBox.shrink(),
+              items: [
+                const DropdownMenuItem(value: 'otomatis', child: Text('Otomatis')),
+                if (s.models.installed(eyesPack)) const DropdownMenuItem(value: 'cepat', child: Text('Cepat (0,8B)')),
+                if (s.models.installed(eyesAccuratePack)) const DropdownMenuItem(value: 'akurat', child: Text('Akurat (2B)')),
+              ],
+              onChanged: (v) => s.setPref('eyes_model', v ?? 'otomatis'),
+            ),
+          ),
           Row2(title: 'Deteksi teliti', trailing: Switch(value: s.thorough, onChanged: (v) => s.setPref('thorough', v))),
           Row2(title: 'Baca tulisan kemasan', subtitle: 'Mi instan, minyak goreng, kecap, santan, dan sejenisnya', trailing: Switch(value: s.readPackages, onChanged: (v) => s.setPref('read_packages', v))),
         ],

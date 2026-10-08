@@ -43,6 +43,12 @@ const eyesPack = ModelPack('mata', 'Mata', 'Qwen3.5-0.8B-Base hasil fine-tune ME
   ModelFile('meira-eyes-0.8b-mmproj-F16.gguf', '$_hf/khaichi11/MEIRA-eyes/resolve/main/meira-eyes-0.8b-mmproj-F16.gguf', 204),
 ], required: false);
 
+/// Versi 2B: lebih teliti pada foto ramai, tetapi hampir tiga kali lebih lama (lihat docs/evaluasi.md di MEIRA-Before).
+const eyesAccuratePack = ModelPack('mata-akurat', 'Mata akurat', 'Qwen3.5-2B-Base hasil fine-tune MEIRA, lebih teliti tetapi lebih lambat', [
+  ModelFile('meira-eyes-2b-Q4_K_M.gguf', '$_hf/khaichi11/MEIRA-eyes/resolve/main/meira-eyes-2b-Q4_K_M.gguf', 1216),
+  ModelFile('meira-eyes-2b-mmproj-F16.gguf', '$_hf/khaichi11/MEIRA-eyes/resolve/main/meira-eyes-2b-mmproj-F16.gguf', 638),
+], required: false);
+
 /// Whisper small dipilih karena lolos gerbang WER (0,17 vs 0,21 untuk base) pada perintah dapur.
 const earsPack = ModelPack('telinga', 'Telinga', 'Whisper small (int8), mengubah suara menjadi teks', [
   ModelFile('whisper-small-encoder.int8.onnx', '$_hf/csukuangfj/sherpa-onnx-whisper-small/resolve/main/small-encoder.int8.onnx', 112),
@@ -58,7 +64,11 @@ const voicePack = ModelPack('suara', 'Suara Piper', 'Opsional. Lisensi data lati
       archive: true),
 ], required: false);
 
-const allPacks = [brainPack, eyesPack, earsPack, voicePack];
+const allPacks = [brainPack, eyesPack, eyesAccuratePack, earsPack, voicePack];
+
+/// Yang diunduh saat penyiapan: satu model mata yang sesuai RAM ponsel. Suara Piper dan model mata lainnya
+/// dapat dipasang dari Pengaturan.
+List<ModelPack> setupPacks(double ramGb) => [brainPack, ramGb >= 7.5 ? eyesAccuratePack : eyesPack, earsPack];
 
 class Models {
   Models._(this.dir);
@@ -73,7 +83,7 @@ class Models {
   List<ModelPack> missingRequired() => [for (final p in allPacks) if (p.required && !installed(p)) p];
 
   Future<String> urlFor(ModelPack p, ModelFile f) async {
-    if (p.id != 'mata') return f.url;
+    if (!p.id.startsWith('mata')) return f.url;
     final base = (await SharedPreferences.getInstance()).getString('eyes_base_url');
     return base == null || base.isEmpty ? f.url : '${base.replaceAll(RegExp(r'/+$'), '')}/${f.name}';
   }

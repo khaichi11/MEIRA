@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
+import '../runtime/device.dart';
 import '../runtime/models.dart';
 import '../theme.dart';
 import 'widgets.dart';
@@ -25,7 +26,7 @@ class _SetupScreenState extends State<SetupScreen> {
       _error = null;
     });
     try {
-      for (final p in allPacks) {
+      for (final p in setupPacks(Device.totalRamGb())) {
         if (s.models.installed(p)) continue;
         try {
           await s.models.download(p, (done, total) => setState(() => _progress[p.id] = (done / total).clamp(0, 1)));
@@ -53,7 +54,8 @@ class _SetupScreenState extends State<SetupScreen> {
   @override
   Widget build(BuildContext context) {
     final s = Scope.of(context);
-    final total = allPacks.where((p) => !s.models.installed(p)).fold<int>(0, (a, p) => a + p.approxMb);
+    final packs = setupPacks(Device.totalRamGb());
+    final total = packs.where((p) => !s.models.installed(p)).fold<int>(0, (a, p) => a + p.approxMb);
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -68,7 +70,7 @@ class _SetupScreenState extends State<SetupScreen> {
                   textAlign: TextAlign.center, style: T.subhead),
               const SizedBox(height: 28),
               Section(children: [
-                for (final p in allPacks)
+                for (final p in packs)
                   Row2(
                     title: p.title,
                     subtitle: p.subtitle,
@@ -87,7 +89,7 @@ class _SetupScreenState extends State<SetupScreen> {
               const SizedBox(height: 8),
               TextButton(onPressed: _running ? null : () => _import(s), child: const Text('Pasang dari file di perangkat')),
               const SizedBox(height: 6),
-              Text('Model "Mata" hasil fine-tune MEIRA bisa dipasang menyusul. Selama belum ada, MEIRA memakai model Otak untuk melihat.',
+              Text('Model mata dipilih sesuai RAM ponsel dan dapat diganti di Pengaturan. Selama belum terpasang, MEIRA memakai model Otak untuk melihat, dengan hasil yang jauh kurang teliti.',
                   textAlign: TextAlign.center, style: T.footnote),
             ]),
           ),
