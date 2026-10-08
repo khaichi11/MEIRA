@@ -329,12 +329,32 @@ class _ChatScreenState extends State<ChatScreen> {
           ]
         : const <(String, String)>[];
     if (items.isEmpty) return const SizedBox.shrink();
+    final recipe = s.currentMatch?.recipe;
     return SizedBox(
       height: 44,
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
         children: [
+          // resep yang sedang disarankan selalu bisa dibuka dari sini, tanpa menggulir kembali ke kartu di atas
+          if (recipe != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                child: ActionChip(
+                  key: ValueKey(recipe.name),
+                  avatar: const Icon(Icons.menu_book_rounded, size: 18, color: Colors.white),
+                  label: Text(recipe.name),
+                  onPressed: () => showRecipeDetail(context, s, recipe),
+                  labelStyle: inter(14, weight: FontWeight.w600, color: Colors.white),
+                  backgroundColor: C.accent,
+                  side: BorderSide.none,
+                  shape: const StadiumBorder(),
+                  elevation: 0,
+                ),
+              ),
+            ),
           for (final (label, say) in items)
             Padding(
               padding: const EdgeInsets.only(right: 8),
