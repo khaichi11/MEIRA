@@ -1,7 +1,8 @@
-/// Suara on-device: Whisper (sherpa-onnx) untuk mendengar, Piper (sherpa-onnx) untuk berbicara.
+/// Suara on-device: Whisper (sherpa-onnx) untuk mendengar, mesin TTS bawaan ponsel untuk berbicara.
 ///
-/// Model berjalan di isolate tersendiri supaya UI tetap lancar, dimuat saat pertama dipakai,
-/// dan dilepas dari RAM setelah [idleTimeout] tanpa aktivitas.
+/// Whisper berjalan di isolate tersendiri supaya UI tetap lancar, dimuat saat pertama dipakai,
+/// dan dilepas dari RAM setelah [idleTimeout] tanpa aktivitas. Suara bawaan ponsel tidak ikut dibagikan
+/// bersama aplikasi, sehingga tidak ada lisensi suara pihak ketiga yang perlu dipenuhi.
 library;
 
 import 'dart:async';
@@ -10,38 +11,30 @@ import 'dart:isolate';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:sherpa_onnx/sherpa_onnx.dart' as so;
 
 import 'models.dart';
 
 class SpeechPaths {
-  SpeechPaths({required this.encoder, required this.decoder, required this.tokens, required this.ttsDir});
-  final String encoder, decoder, tokens, ttsDir;
+  SpeechPaths({required this.encoder, required this.decoder, required this.tokens});
+  final String encoder, decoder, tokens;
 
   static SpeechPaths of(Models m) => SpeechPaths(
         encoder: m.path('whisper-small-encoder.int8.onnx'),
         decoder: m.path('whisper-small-decoder.int8.onnx'),
         tokens: m.path('whisper-small-tokens.txt'),
-        ttsDir: m.path('vits-piper-id_ID-news_tts-medium-int8'),
       );
 
   bool get hasAsr => File(encoder).existsSync() && File(decoder).existsSync();
-  bool get hasTts => Directory(ttsDir).existsSync();
 }
 
 class Speech {
-  Speech(this.paths, {this.idleTimeout = const Duration(minutes: 2), this.threads = 2, this.engine = 'sistem'});
+  Speech(this.paths, {this.idleTimeout = const Duration(minutes: 2), this.threads = 2});
 
-  /// "sistem": mesin TTS bawaan perangkat (Android), "piper": suara Piper via sherpa-onnx.
-  String engine;
   final FlutterTts _systemTts = FlutterTts();
   bool _systemReady = false;
-
-  bool get _useSystem => engine == 'sistem';
   String? voiceName; // pilihan pengguna; kosong = dipilih otomatis
 
   /// Suara bahasa Indonesia yang terpasang di mesin TTS sistem, terbaik lebih dulu
@@ -82,7 +75,7 @@ class Speech {
     voiceName = name;
     _systemReady = false;
   }
-  bool get canSpeak => _useSystem || paths.hasTts;
+  bool get canSpeak => true;
 
   final SpeechPaths paths;
   final Duration idleTimeout;
@@ -94,7 +87,6 @@ class Speech {
   final _pending = <int, Completer<dynamic>>{};
 
   final AudioRecorder _rec = AudioRecorder();
-  final AudioPlayer _player = AudioPlayer();
   final _pcm = BytesBuilder(copy: false);
   StreamSubscription<Uint8List>? _micSub;
 
@@ -109,7 +101,7 @@ class Speech {
     if (_worker != null) return _worker!;
     final ready = ReceivePort();
     final replies = ReceivePort();
-    _isolate = await Isolate.spawn(_workerMain, [ready.sendPort, replies.sendPort, paths.encoder, paths.decoder, paths.tokens, paths.ttsDir, threads]);
+    _isolate = await Isolate.spawn(_workerMain, [ready.sendPort, replies.sendPort, paths.encoder, paths.decoder, paths.tokens, threads]);
     _worker = await ready.first as SendPort;
     replies.listen((msg) {
       final (id, result) = msg as (int, dynamic);
@@ -129,7 +121,7 @@ class Speech {
     return r as T;
   }
 
-  /// Lepaskan Whisper dan Piper dari memori.
+  /// Lepaskan Whisper dari memori.
   void unload() {
     _idle?.cancel();
     _isolate?.kill(priority: Isolate.immediate);
@@ -191,33 +183,17 @@ class Speech {
   Future<void> speak(String text, {double speed = 1.0}) async {
     final clean = speakable(text);
     if (clean.isEmpty) return;
-    if (_useSystem) {
-      if (!_systemReady) await _prepareSystemVoice();
-      await _systemTts.setSpeechRate(.48 * speed); // sedikit di bawah normal agar jelas saat memasak
-      await _systemTts.speak(clean);
-      return;
-    }
-    final path = await _call<String>('tts', (clean, speed, '${(await getTemporaryDirectory()).path}/meira_tts_${DateTime.now().millisecondsSinceEpoch}.wav'));
-    final done = Completer<void>();
-    final sub = _player.onPlayerStateChanged.listen((s) {
-      if ((s == PlayerState.completed || s == PlayerState.stopped) && !done.isCompleted) done.complete();
-    });
-    await _player.play(DeviceFileSource(path));
-    await done.future;
-    await sub.cancel();
-    File(path).delete().ignore();
+    if (!_systemReady) await _prepareSystemVoice();
+    await _systemTts.setSpeechRate(.48 * speed); // sedikit di bawah normal agar jelas saat memasak
+    await _systemTts.speak(clean);
   }
 
-  Future<void> stopSpeaking() async {
-    if (_useSystem) await _systemTts.stop();
-    await _player.stop();
-  }
+  Future<void> stopSpeaking() => _systemTts.stop();
 
   Future<void> dispose() async {
     unload();
     await _micSub?.cancel();
     await _rec.dispose();
-    await _player.dispose();
     await level.close();
   }
 }
@@ -247,11 +223,10 @@ String speakable(String text) {
 // ---------------------------------------------------------------- isolate kerja
 void _workerMain(List<dynamic> args) {
   final ready = args[0] as SendPort, replies = args[1] as SendPort;
-  final encoder = args[2] as String, decoder = args[3] as String, tokens = args[4] as String, ttsDir = args[5] as String;
-  final threads = args[6] as int;
+  final encoder = args[2] as String, decoder = args[3] as String, tokens = args[4] as String;
+  final threads = args[5] as int;
   so.initBindings();
   so.OfflineRecognizer? asr;
-  so.OfflineTts? tts;
   final inbox = ReceivePort();
   ready.send(inbox.sendPort);
   inbox.listen((msg) {
@@ -272,23 +247,6 @@ void _workerMain(List<dynamic> args) {
         final text = asr!.getResult(stream).text;
         stream.free();
         replies.send((id, text));
-      } else if (op == 'tts') {
-        final (text, speed, out) = arg as (String, double, String);
-        if (tts == null) {
-          final dir = Directory(ttsDir);
-          final model = dir.listSync().whereType<File>().firstWhere((f) => f.path.endsWith('.onnx')).path;
-          tts = so.OfflineTts(so.OfflineTtsConfig(
-            model: so.OfflineTtsModelConfig(
-              vits: so.OfflineTtsVitsModelConfig(model: model, tokens: '$ttsDir/tokens.txt', dataDir: '$ttsDir/espeak-ng-data'),
-              numThreads: threads,
-              debug: false,
-            ),
-            maxNumSenetences: 2,
-          ));
-        }
-        final audio = tts!.generate(text: text, speed: speed);
-        so.writeWave(filename: out, samples: audio.samples, sampleRate: audio.sampleRate);
-        replies.send((id, out));
       }
     } catch (e) {
       replies.send((id, 'ERROR:$e'));
