@@ -95,7 +95,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       Section(
         header: 'Kinerja',
-        footer: 'Foto lebih kecil berarti deteksi lebih cepat. 512 piksel sudah cukup untuk bahan di meja.',
+        footer: 'Model mata dilatih dengan foto 768 piksel. Ukuran lebih kecil mempercepat deteksi, tetapi bahan kecil lebih mudah terlewat.',
         children: [
           Row2(
             title: 'Ukuran foto untuk model',
@@ -103,7 +103,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               value: s.imageSide,
               underline: const SizedBox.shrink(),
               items: const [DropdownMenuItem(value: 384, child: Text('384 px')), DropdownMenuItem(value: 512, child: Text('512 px')), DropdownMenuItem(value: 768, child: Text('768 px'))],
-              onChanged: (v) => s.setPref('image_side', v ?? 512),
+              onChanged: (v) => s.setPref('image_side', v ?? 768),
             ),
           ),
           Row2(title: 'Lepas model saat di latar belakang', subtitle: 'Menghemat RAM bila MEIRA ditinggal lebih dari 3 menit', trailing: Switch(value: s.releaseInBackground, onChanged: (v) => s.setPref('release_bg', v))),

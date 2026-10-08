@@ -66,7 +66,7 @@ class ErrorEvent extends MeiraEvent {
 class Session {
   Session(this.id, {int memoryBudget = 1100}) : memory = ConversationMemory(budgetTokens: memoryBudget);
   final String id;
-  String? imageDataUrl; // foto ≤512 px untuk model
+  String? imageDataUrl; // foto yang sudah diperkecil untuk model (bawaan 768 px)
   String? imageDataUrlFlipped; // versi cermin untuk mode deteksi teliti
   String mode = 'bahan';
   String? dish;
@@ -175,7 +175,7 @@ class Meira {
     final partial = <Detection>[];
     var line = '';
     final prompt = eyesFineTuned ? promptGround : promptGroundZeroshot;
-    await for (final tok in eyes!.stream(LlmClient.visionMessages(s.imageDataUrl!, prompt), maxTokens: 700, sampling: visionSampling)) {
+    await for (final tok in eyes!.stream(LlmClient.visionMessages(s.imageDataUrl!, prompt), maxTokens: 700, sampling: eyesFineTuned ? groundingSampling : visionSampling)) {
       buf.write(tok);
       line += tok;
       while (line.contains('\n')) {
@@ -192,7 +192,7 @@ class Meira {
     if (thorough && s.imageDataUrlFlipped != null) {
       // mode teliti: pandangan kedua dari foto cermin menangkap bahan yang terlewat
       yield PartialEvent(List.of(s.detections));
-      final second = await eyes!.chat(LlmClient.visionMessages(s.imageDataUrlFlipped!, prompt), maxTokens: 700, sampling: visionSampling);
+      final second = await eyes!.chat(LlmClient.visionMessages(s.imageDataUrlFlipped!, prompt), maxTokens: 700, sampling: eyesFineTuned ? groundingSampling : visionSampling);
       s.detections = mergeViews(s.detections, flipBack(parseDetections(second)));
     }
     yield DetectionsEvent(s.detections, sw.elapsedMilliseconds / 1000);
@@ -233,7 +233,7 @@ class Meira {
   Future<(bool?, List<Detection>)> _verify(Session s, String key) async {
     final name = displayName(key);
     final prompt = (eyesFineTuned ? promptVerify : promptVerifyZeroshot).replaceAll('{name}', name);
-    final raw = await eyes!.chat(LlmClient.visionMessages(s.imageDataUrl!, prompt), maxTokens: 200, sampling: visionSampling);
+    final raw = await eyes!.chat(LlmClient.visionMessages(s.imageDataUrl!, prompt), maxTokens: 200, sampling: eyesFineTuned ? groundingSampling : visionSampling);
     final (present, boxes) = parseVerify(raw);
     final added = <Detection>[];
     for (final b in boxes) {

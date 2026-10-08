@@ -13,6 +13,8 @@ import 'device.dart';
 const visionSampling = {'temperature': .7, 'top_p': .8, 'top_k': 20, 'presence_penalty': 1.5, 'seed': 7};
 const textSampling = {'temperature': .7, 'top_p': .8, 'top_k': 20, 'presence_penalty': 1.0};
 const greedy = {'temperature': 0.0, 'top_k': 1};
+/// Model mata hasil fine-tune: greedy, sama dengan GROUNDING di meira/prompts.py.
+const groundingSampling = {'temperature': 0.0, 'top_k': 1, 'seed': 7};
 
 class LlamaServer {
   LlamaServer({required this.name, required this.model, this.mmproj, this.lora, required this.port, this.binary, this.gpuLayers = 0});

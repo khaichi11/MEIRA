@@ -65,7 +65,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   bool speakAnswers = false;
   bool handsFree = false;
   bool releaseInBackground = true;
-  int imageSide = 512;
+  int imageSide = 768;
   String photoMode = 'otomatis';
   String answerStyle = 'ringkas';
   bool thorough = false;
@@ -109,7 +109,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       speakAnswers = p.getBool('speak') ?? false;
       handsFree = false;
       releaseInBackground = p.getBool('release_bg') ?? true;
-      imageSide = p.getInt('image_side') ?? 512;
+      imageSide = p.getInt('image_side') ?? 768;
       photoMode = p.getString('photo_mode') ?? 'otomatis';
       answerStyle = p.getString('answer_style') ?? 'ringkas';
       thorough = p.getBool('thorough') ?? false;
