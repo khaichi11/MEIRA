@@ -60,37 +60,64 @@ class _SetupScreenState extends State<SetupScreen> {
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 520),
-            child: ListView(padding: const EdgeInsets.fromLTRB(20, 32, 20, 24), children: [
-              const Center(child: LogoMark(size: 72)),
-              const SizedBox(height: 20),
-              Text('Siapkan MEIRA', textAlign: TextAlign.center, style: T.largeTitle),
-              const SizedBox(height: 8),
-              Text('Model AI disimpan di perangkat ini. Unduh sekali, setelah itu MEIRA bekerja tanpa internet.',
-                  textAlign: TextAlign.center, style: T.subhead),
-              const SizedBox(height: 28),
-              Section(children: [
-                for (final p in packs)
-                  Row2(
-                    title: p.title,
-                    subtitle: p.subtitle,
-                    trailing: s.models.installed(p)
-                        ? const Icon(Icons.check_circle, color: C.herb, size: 22)
-                        : _progress[p.id] != null
-                            ? SizedBox(width: 46, child: Text('${(_progress[p.id]! * 100).round()}%', textAlign: TextAlign.right, style: T.footnote))
-                            : Text('${p.approxMb} MB${p.required ? '' : '\nopsional'}', textAlign: TextAlign.right, style: T.caption),
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(20, 32, 20, 24),
+              children: [
+                Center(
+                  child: FadeIn(
+                    child: Container(
+                      width: 76,
+                      height: 76,
+                      decoration: const BoxDecoration(color: C.accentTint, shape: BoxShape.circle),
+                      child: const Icon(Icons.download_rounded, color: C.accent, size: 34),
+                    ),
                   ),
-              ]),
-              if (_error != null) Padding(padding: const EdgeInsets.only(bottom: 16), child: Text(_error!, style: inter(14, color: C.clay))),
-              FilledButton(
-                onPressed: _running ? null : () => _downloadAll(s),
-                child: Text(_running ? 'Mengunduh…' : 'Unduh ${(total / 1024).toStringAsFixed(1)} GB'),
-              ),
-              const SizedBox(height: 8),
-              TextButton(onPressed: _running ? null : () => _import(s), child: const Text('Pasang dari file di perangkat')),
-              const SizedBox(height: 6),
-              Text('Detektor bahan dan pembaca tulisan kemasan sudah ada di dalam aplikasi, sehingga yang diunduh hanya model bahasa dan model suara.',
-                  textAlign: TextAlign.center, style: T.footnote),
-            ]),
+                ),
+                const SizedBox(height: 20),
+                Text('Siapkan MEIRA', textAlign: TextAlign.center, style: T.largeTitle),
+                const SizedBox(height: 8),
+                Text(
+                  'Model AI disimpan di perangkat ini. Unduh sekali, setelah itu MEIRA bekerja tanpa internet.',
+                  textAlign: TextAlign.center,
+                  style: T.subhead,
+                ),
+                const SizedBox(height: 28),
+                Section(
+                  children: [
+                    for (final p in packs)
+                      Row2(
+                        title: p.title,
+                        subtitle: p.subtitle,
+                        trailing: s.models.installed(p)
+                            ? const Icon(Icons.check_circle, color: C.herb, size: 22)
+                            : _progress[p.id] != null
+                            ? SizedBox(
+                                width: 46,
+                                child: Text('${(_progress[p.id]! * 100).round()}%', textAlign: TextAlign.right, style: T.footnote),
+                              )
+                            : Text('${p.approxMb} MB${p.required ? '' : '\nopsional'}', textAlign: TextAlign.right, style: T.caption),
+                      ),
+                  ],
+                ),
+                if (_error != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Text(_error!, style: inter(14, color: C.clay)),
+                  ),
+                FilledButton(
+                  onPressed: _running ? null : () => _downloadAll(s),
+                  child: Text(_running ? 'Mengunduh…' : 'Unduh ${(total / 1024).toStringAsFixed(1)} GB'),
+                ),
+                const SizedBox(height: 8),
+                TextButton(onPressed: _running ? null : () => _import(s), child: const Text('Pasang dari file di perangkat')),
+                const SizedBox(height: 6),
+                Text(
+                  'Detektor bahan dan pembaca tulisan kemasan sudah ada di dalam aplikasi, sehingga yang diunduh hanya model bahasa dan model suara.',
+                  textAlign: TextAlign.center,
+                  style: T.footnote,
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -30,12 +30,14 @@ enum VoiceState { idle, listening, transcribing, speaking }
 enum Role { user, meira, status, error }
 
 class Message {
-  Message(this.role, this.text, {this.photo, this.source, this.streaming = false});
+  Message(this.role, this.text, {this.photo, this.source, this.streaming = false, this.animate = false});
   final Role role;
   String text;
   final Uint8List? photo;
   String? source;
   bool streaming;
+  final bool animate; // jawaban baru dimunculkan bertahap seperti diketik; jawaban dari riwayat langsung utuh
+  int shown = 0; // jumlah huruf yang sudah tampil saat animasi mengetik
 }
 
 class BootStep {
@@ -55,8 +57,14 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Meira? meira;
 
   Phase phase = Phase.booting;
+  bool bootStarted = false; // boot dimulai oleh layar pembuka setelah animasi masuknya selesai
   String bootError = '';
-  final steps = [BootStep('Membuka buku resep'), BootStep('Menyiapkan model penglihatan'), BootStep('Menyiapkan model bahasa'), BootStep('Pemanasan')];
+  final steps = [
+    BootStep('Membuka buku resep'),
+    BootStep('Menyiapkan model penglihatan'),
+    BootStep('Menyiapkan model bahasa'),
+    BootStep('Pemanasan'),
+  ];
   String get bootLabel => steps.firstWhere((s) => !s.done, orElse: () => steps.last).title;
   double get bootProgress => steps.where((s) => s.done).length / steps.length;
   Vision? vision; // detektor bahan dan OCR kemasan, terpisah dari model bahasa
@@ -98,6 +106,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   // =============================================================== boot
   Future<void> boot() async {
+    bootStarted = true;
     final started = DateTime.now();
     phase = Phase.booting;
     bootError = '';
@@ -147,7 +156,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       )..userName = userName;
       await _warmup();
       _done(3);
-      final wait = 5000 - DateTime.now().difference(started).inMilliseconds;
+      final wait = 3500 - DateTime.now().difference(started).inMilliseconds;
       if (wait > 0) await Future.delayed(Duration(milliseconds: wait));
       phase = Phase.ready;
       if (!_observing) {
@@ -193,7 +202,12 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   static const visionAssets = [
-    'meira-det.onnx', 'meira-det.labels.txt', 'meira-det.json', 'ppocrv5-det.onnx', 'ppocrv5-latin-rec.onnx', 'ppocrv5-latin-keys.txt',
+    'meira-det.onnx',
+    'meira-det.labels.txt',
+    'meira-det.json',
+    'ppocrv5-det.onnx',
+    'ppocrv5-latin-rec.onnx',
+    'ppocrv5-latin-keys.txt',
   ];
 
   /// Foto untuk detektor (640 x 640, sama dengan saat pelatihan) dan untuk OCR (sisi terpanjang 960 piksel).
@@ -262,7 +276,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     final f = await probe.getNextFrame();
     final w = f.image.width, h = f.image.height;
     final scale = imageSide / math.max(w, h);
-    final codec = await ui.instantiateImageCodec(bytes, targetWidth: scale < 1 ? (w * scale).round() : w, targetHeight: scale < 1 ? (h * scale).round() : h);
+    final codec = await ui.instantiateImageCodec(
+      bytes,
+      targetWidth: scale < 1 ? (w * scale).round() : w,
+      targetHeight: scale < 1 ? (h * scale).round() : h,
+    );
     var small = (await codec.getNextFrame()).image;
     if (flip) {
       final rec = ui.PictureRecorder();
@@ -350,10 +368,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
               messages.remove(status);
               status = null;
             }
-            answer ??= (Message(Role.meira, '', streaming: true)..let(messages.add));
+            answer ??= (Message(Role.meira, '', streaming: true, animate: true)..let(messages.add));
             answer.text += text;
           case DoneEvent(:final text, :final source):
-            answer ??= (Message(Role.meira, '')..let(messages.add));
+            answer ??= (Message(Role.meira, '', animate: true)..let(messages.add));
             answer
               ..text = text
               ..streaming = false
@@ -402,7 +420,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       jpeg: photo!,
       width: photoSize!.width.round(),
       height: photoSize!.height.round(),
-      objects: [for (final d in s.detections) if (d.key != null && !d.packaged) {'key': d.key, 'label': d.label, 'box': d.box, 'group': d.group}],
+      objects: [
+        for (final d in s.detections)
+          if (d.key != null && !d.packaged) {'key': d.key, 'label': d.label, 'box': d.box, 'group': d.group},
+      ],
       absent: const [],
       author: '',
       license: 'CC BY 4.0',
@@ -635,14 +656,36 @@ class CustomDataset {
     return d;
   }
 
-  static Future<String> save({required Uint8List jpeg, required int width, required int height, required List<Map<String, dynamic>> objects, required List<String> absent, required String author, required String license}) async {
+  static Future<String> save({
+    required Uint8List jpeg,
+    required int width,
+    required int height,
+    required List<Map<String, dynamic>> objects,
+    required List<String> absent,
+    required String author,
+    required String license,
+  }) async {
     final d = await dir();
     final id = 'custom_${DateTime.now().millisecondsSinceEpoch}';
     await File('${d.path}/images/$id.jpg').writeAsBytes(jpeg);
     final rec = {
-      'id': id, 'file': 'images/$id.jpg', 'width': width, 'height': height, 'split': 'train', 'source': 'meira-studio',
-      'objects': objects, 'verified_present': {for (final o in objects) if (o['key'] != null) o['key']}.toList(),
-      'verified_absent': absent, 'license': license, 'author': author, 'author_url': '', 'source_url': '', 'title': '',
+      'id': id,
+      'file': 'images/$id.jpg',
+      'width': width,
+      'height': height,
+      'split': 'train',
+      'source': 'meira-studio',
+      'objects': objects,
+      'verified_present': {
+        for (final o in objects)
+          if (o['key'] != null) o['key'],
+      }.toList(),
+      'verified_absent': absent,
+      'license': license,
+      'author': author,
+      'author_url': '',
+      'source_url': '',
+      'title': '',
     };
     await File('${d.path}/annotations.jsonl').writeAsString('${jsonEncode(rec)}\n', mode: FileMode.append);
     return id;
@@ -651,14 +694,20 @@ class CustomDataset {
   static Future<List<Map<String, dynamic>>> items() async {
     final f = File('${(await dir()).path}/annotations.jsonl');
     if (!f.existsSync()) return [];
-    return [for (final l in await f.readAsLines()) if (l.trim().isNotEmpty) jsonDecode(l) as Map<String, dynamic>].reversed.toList();
+    return [
+      for (final l in await f.readAsLines())
+        if (l.trim().isNotEmpty) jsonDecode(l) as Map<String, dynamic>,
+    ].reversed.toList();
   }
 
   static Future<void> delete(String id) async {
     final d = await dir();
     final f = File('${d.path}/annotations.jsonl');
     if (f.existsSync()) {
-      final keep = [for (final l in await f.readAsLines()) if (l.trim().isNotEmpty && (jsonDecode(l) as Map)['id'] != id) l];
+      final keep = [
+        for (final l in await f.readAsLines())
+          if (l.trim().isNotEmpty && (jsonDecode(l) as Map)['id'] != id) l,
+      ];
       await f.writeAsString(keep.isEmpty ? '' : '${keep.join('\n')}\n');
     }
     final img = File('${d.path}/images/$id.jpg');

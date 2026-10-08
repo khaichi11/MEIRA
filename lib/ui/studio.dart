@@ -47,7 +47,9 @@ class StudioScreenState extends State<StudioScreen> {
   /// Dibuka dari Dapur: foto beserta penanda model, untuk dikoreksi.
   Future<void> open(AppState s) async {
     if (s.photo == null) return;
-    final boxes = [for (final d in s.detections) EditBox(d.label, [...d.box], group: d.group)];
+    final boxes = [
+      for (final d in s.detections) EditBox(d.label, [...d.box], group: d.group),
+    ];
     await _edit(s.photo!, boxes);
   }
 
@@ -58,7 +60,14 @@ class StudioScreenState extends State<StudioScreen> {
   }
 
   Future<void> _edit(Uint8List bytes, List<EditBox> boxes) async {
-    final saved = await Navigator.of(context).push<bool>(MaterialPageRoute(builder: (_) => Scope(state: Scope.of(context), child: _Editor(bytes: bytes, initial: boxes))));
+    final saved = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(
+        builder: (_) => Scope(
+          state: Scope.of(context),
+          child: _Editor(bytes: bytes, initial: boxes),
+        ),
+      ),
+    );
     if (saved == true) reload();
   }
 
@@ -74,62 +83,92 @@ class StudioScreenState extends State<StudioScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(padding: const EdgeInsets.only(bottom: 120), children: [
-      LargeTitle('Dataset', trailing: IconButton(tooltip: 'Foto baru', onPressed: _new, icon: const Icon(Icons.add_circle_rounded, color: C.accent, size: 28))),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
-        child: Text('Ajari MEIRA mengenali bahan di dapur Anda. Tandai setiap bahan, satu buah satu kotak. Contoh yang tersimpan akan dipakai pada pelatihan berikutnya.', style: T.subhead),
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Section(children: [
-          Row2(title: 'Foto baru', leading: const Icon(Icons.photo_camera_rounded, color: C.accent), onTap: _new, trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary)),
-          Row2(
-            title: 'Ekspor untuk training',
-            subtitle: '${_items.length} contoh',
-            leading: const Icon(Icons.ios_share_rounded, color: C.accent),
-            onTap: _items.isEmpty ? null : _export,
-            trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary),
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 120),
+      children: [
+        LargeTitle(
+          'Dataset',
+          trailing: IconButton(
+            tooltip: 'Foto baru',
+            onPressed: _new,
+            icon: const Icon(Icons.add_circle_rounded, color: C.accent, size: 28),
           ),
-        ]),
-      ),
-      if (_items.isNotEmpty && _dir != null)
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
+          child: Text(
+            'Ajari MEIRA mengenali bahan di dapur Anda. Tandai setiap bahan, satu buah satu kotak. Contoh yang tersimpan akan dipakai pada pelatihan berikutnya.',
+            style: T.subhead,
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: GridView.count(
-            crossAxisCount: MediaQuery.sizeOf(context).width > 700 ? 5 : 3,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
+          child: Section(
             children: [
-              for (final it in _items)
-                GestureDetector(
-                  onLongPress: () async {
-                    await CustomDataset.delete(it['id']);
-                    reload();
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Stack(fit: StackFit.expand, children: [
-                      Image.file(File('$_dir/${it['file']}'), fit: BoxFit.cover),
-                      Positioned(
-                        left: 6,
-                        bottom: 6,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                          decoration: BoxDecoration(color: Colors.white.withValues(alpha: .9), borderRadius: BorderRadius.circular(10)),
-                          child: Text('${(it['objects'] as List).length} label', style: inter(11, weight: FontWeight.w600, color: C.accent)),
-                        ),
-                      ),
-                    ]),
-                  ),
-                ),
+              Row2(
+                title: 'Foto baru',
+                leading: const Icon(Icons.photo_camera_rounded, color: C.accent),
+                onTap: _new,
+                trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary),
+              ),
+              Row2(
+                title: 'Ekspor untuk training',
+                subtitle: '${_items.length} contoh',
+                leading: const Icon(Icons.ios_share_rounded, color: C.accent),
+                onTap: _items.isEmpty ? null : _export,
+                trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary),
+              ),
             ],
           ),
         ),
-      if (_items.isNotEmpty) Padding(padding: const EdgeInsets.fromLTRB(20, 10, 20, 0), child: Text('Tekan lama untuk menghapus.', style: T.caption)),
-    ]);
+        if (_items.isNotEmpty && _dir != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: GridView.count(
+              crossAxisCount: MediaQuery.sizeOf(context).width > 700 ? 5 : 3,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              children: [
+                for (final it in _items)
+                  GestureDetector(
+                    onLongPress: () async {
+                      await CustomDataset.delete(it['id']);
+                      reload();
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          Image.file(File('$_dir/${it['file']}'), fit: BoxFit.cover),
+                          Positioned(
+                            left: 6,
+                            bottom: 6,
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                              decoration: BoxDecoration(color: Colors.white.withValues(alpha: .9), borderRadius: BorderRadius.circular(10)),
+                              child: Text(
+                                '${(it['objects'] as List).length} label',
+                                style: inter(11, weight: FontWeight.w600, color: C.accent),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        if (_items.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+            child: Text('Tekan lama untuk menghapus.', style: T.caption),
+          ),
+      ],
+    );
   }
 }
 
@@ -157,7 +196,10 @@ class _EditorState extends State<_Editor> {
   @override
   void initState() {
     super.initState();
-    ui.instantiateImageCodec(widget.bytes).then((c) => c.getNextFrame()).then((f) => setState(() => _size = Size(f.image.width.toDouble(), f.image.height.toDouble())));
+    ui
+        .instantiateImageCodec(widget.bytes)
+        .then((c) => c.getNextFrame())
+        .then((f) => setState(() => _size = Size(f.image.width.toDouble(), f.image.height.toDouble())));
     SharedPreferences.getInstance().then((p) => _author = p.getString('studio_author') ?? '');
   }
 
@@ -175,7 +217,11 @@ class _EditorState extends State<_Editor> {
     setState(() => _busy = true);
     try {
       final res = await vision.detect(await AppState.visionInput(widget.bytes));
-      setState(() => _boxes.addAll([for (final d in res.detections) EditBox(d.label, [...d.box], group: d.group)]));
+      setState(
+        () => _boxes.addAll([
+          for (final d in res.detections) EditBox(d.label, [...d.box], group: d.group),
+        ]),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -194,7 +240,12 @@ class _EditorState extends State<_Editor> {
       height: _size!.height.round(),
       objects: [
         for (final b in labeled)
-          {'key': resolve(b.label), 'label': resolve(b.label) != null ? displayName(resolve(b.label)!) : b.label.trim().toLowerCase(), 'box': [for (final v in b.box) double.parse(v.toStringAsFixed(4))], 'group': b.group},
+          {
+            'key': resolve(b.label),
+            'label': resolve(b.label) != null ? displayName(resolve(b.label)!) : b.label.trim().toLowerCase(),
+            'box': [for (final v in b.box) double.parse(v.toStringAsFixed(4))],
+            'group': b.group,
+          },
       ],
       absent: absent,
       author: _author,
@@ -266,110 +317,169 @@ class _EditorState extends State<_Editor> {
         leading: TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
         leadingWidth: 84,
         title: const Text('Tandai bahan'),
-        actions: [TextButton(onPressed: _size == null ? null : _save, child: Text('Simpan', style: inter(16, weight: FontWeight.w600, color: C.accent)))],
+        actions: [
+          TextButton(
+            onPressed: _size == null ? null : _save,
+            child: Text(
+              'Simpan',
+              style: inter(16, weight: FontWeight.w600, color: C.accent),
+            ),
+          ),
+        ],
       ),
       body: _size == null
           ? const Center(child: CircularProgressIndicator())
-          : ListView(padding: const EdgeInsets.fromLTRB(16, 4, 16, 32), children: [
-              AspectRatio(
-                aspectRatio: _size!.width / _size!.height,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: LayoutBuilder(builder: (context, c) {
-                    final area = Size(c.maxWidth, c.maxHeight);
-                    return GestureDetector(
-                      onPanStart: (d) => _panStart(d.localPosition, area),
-                      onPanUpdate: (d) => _panUpdate(d.localPosition, area),
-                      onPanEnd: (_) => _panEnd(),
-                      onTapDown: (d) {
-                        final x = d.localPosition.dx / area.width, y = d.localPosition.dy / area.height;
-                        setState(() => _sel = _boxes.lastIndexWhere((b) => x >= b.box[0] && x <= b.box[2] && y >= b.box[1] && y <= b.box[3]));
-                      },
-                      child: Stack(children: [
-                        Positioned.fill(child: Image.memory(widget.bytes, fit: BoxFit.fill)),
-                        for (final (i, b) in _boxes.indexed)
-                          Positioned(
-                            left: b.box[0] * area.width,
-                            top: b.box[1] * area.height,
-                            width: (b.box[2] - b.box[0]) * area.width,
-                            height: (b.box[3] - b.box[1]) * area.height,
-                            child: IgnorePointer(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: i == _sel ? Colors.white.withValues(alpha: .15) : null,
-                                  borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(color: i == _sel ? C.accent : Colors.white, width: i == _sel ? 2.5 : 1.5),
+          : ListView(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 32),
+              children: [
+                AspectRatio(
+                  aspectRatio: _size!.width / _size!.height,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: LayoutBuilder(
+                      builder: (context, c) {
+                        final area = Size(c.maxWidth, c.maxHeight);
+                        return GestureDetector(
+                          onPanStart: (d) => _panStart(d.localPosition, area),
+                          onPanUpdate: (d) => _panUpdate(d.localPosition, area),
+                          onPanEnd: (_) => _panEnd(),
+                          onTapDown: (d) {
+                            final x = d.localPosition.dx / area.width, y = d.localPosition.dy / area.height;
+                            setState(() => _sel = _boxes.lastIndexWhere((b) => x >= b.box[0] && x <= b.box[2] && y >= b.box[1] && y <= b.box[3]));
+                          },
+                          child: Stack(
+                            children: [
+                              Positioned.fill(child: Image.memory(widget.bytes, fit: BoxFit.fill)),
+                              for (final (i, b) in _boxes.indexed)
+                                Positioned(
+                                  left: b.box[0] * area.width,
+                                  top: b.box[1] * area.height,
+                                  width: (b.box[2] - b.box[0]) * area.width,
+                                  height: (b.box[3] - b.box[1]) * area.height,
+                                  child: IgnorePointer(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: i == _sel ? Colors.white.withValues(alpha: .15) : null,
+                                        borderRadius: BorderRadius.circular(6),
+                                        border: Border.all(color: i == _sel ? C.accent : Colors.white, width: i == _sel ? 2.5 : 1.5),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Marker(i + 1, size: 24, active: i == _sel),
+                                    ),
+                                  ),
                                 ),
-                                alignment: Alignment.center,
-                                child: Marker(i + 1, size: 24, active: i == _sel),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Seret untuk membuat kotak. Ketuk untuk memilih, seret sudut kanan bawah untuk mengubah ukuran.',
+                        style: T.footnote,
+                      ),
+                    ),
+                    TextButton(onPressed: _busy ? null : _autoLabel, child: Text(_busy ? 'Melabeli…' : 'Label otomatis')),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Section(
+                  header: 'Label',
+                  children: [
+                    for (final (i, b) in _boxes.indexed)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(12, 6, 4, 6),
+                        child: Row(
+                          children: [
+                            NumberBadge(i + 1, size: 24),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Autocomplete<String>(
+                                key: ValueKey('$i-${b.hashCode}'),
+                                initialValue: TextEditingValue(text: b.label),
+                                optionsBuilder: (v) {
+                                  final q = v.text.toLowerCase();
+                                  if (q.isEmpty) return const Iterable<String>.empty();
+                                  return ingredients.values
+                                      .where((e) => !e.pantry && (e.nameId.contains(q) || e.nameEn.contains(q)))
+                                      .map((e) => e.nameId)
+                                      .take(6);
+                                },
+                                onSelected: (v) => setState(() => b.label = v),
+                                fieldViewBuilder: (context, ctl, focus, _) => TextField(
+                                  autocorrect: false,
+                                  enableSuggestions: false,
+                                  controller: ctl,
+                                  focusNode: focus,
+                                  onTap: () => setState(() => _sel = i),
+                                  onChanged: (v) => b.label = v,
+                                  decoration: const InputDecoration(
+                                    hintText: 'Nama bahan',
+                                    filled: false,
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.zero,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                      ]),
-                    );
-                  }),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Row(children: [
-                Expanded(child: Text('Seret untuk membuat kotak. Ketuk untuk memilih, seret sudut kanan bawah untuk mengubah ukuran.', style: T.footnote)),
-                TextButton(onPressed: _busy ? null : _autoLabel, child: Text(_busy ? 'Melabeli…' : 'Label otomatis')),
-              ]),
-              const SizedBox(height: 10),
-              Section(header: 'Label', children: [
-                for (final (i, b) in _boxes.indexed)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(12, 6, 4, 6),
-                    child: Row(children: [
-                      NumberBadge(i + 1, size: 24),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Autocomplete<String>(
-                          key: ValueKey('$i-${b.hashCode}'),
-                          initialValue: TextEditingValue(text: b.label),
-                          optionsBuilder: (v) {
-                            final q = v.text.toLowerCase();
-                            if (q.isEmpty) return const Iterable<String>.empty();
-                            return ingredients.values.where((e) => !e.pantry && (e.nameId.contains(q) || e.nameEn.contains(q))).map((e) => e.nameId).take(6);
-                          },
-                          onSelected: (v) => setState(() => b.label = v),
-                          fieldViewBuilder: (context, ctl, focus, _) => TextField(
-                            controller: ctl,
-                            focusNode: focus,
-                            onTap: () => setState(() => _sel = i),
-                            onChanged: (v) => b.label = v,
-                            decoration: const InputDecoration(hintText: 'Nama bahan', filled: false, border: InputBorder.none, contentPadding: EdgeInsets.zero),
-                          ),
+                            FilterChip(
+                              label: const Text('tumpuk'),
+                              selected: b.group,
+                              onSelected: (v) => setState(() => b.group = v),
+                              visualDensity: VisualDensity.compact,
+                              side: BorderSide.none,
+                              selectedColor: C.accentTint,
+                              backgroundColor: C.grouped,
+                              showCheckmark: false,
+                              labelStyle: inter(12.5, color: b.group ? C.accent : C.secondary),
+                            ),
+                            IconButton(
+                              onPressed: () => setState(() => _boxes.removeAt(i)),
+                              icon: const Icon(Icons.remove_circle_rounded, color: C.clay, size: 22),
+                            ),
+                          ],
                         ),
                       ),
-                      FilterChip(
-                        label: const Text('tumpuk'),
-                        selected: b.group,
-                        onSelected: (v) => setState(() => b.group = v),
-                        visualDensity: VisualDensity.compact,
-                        side: BorderSide.none,
-                        selectedColor: C.accentTint,
-                        backgroundColor: C.grouped,
-                        showCheckmark: false,
-                        labelStyle: inter(12.5, color: b.group ? C.accent : C.secondary),
+                    if (_boxes.isEmpty)
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text('Belum ada kotak.', style: T.subhead),
                       ),
-                      IconButton(onPressed: () => setState(() => _boxes.removeAt(i)), icon: const Icon(Icons.remove_circle_rounded, color: C.clay, size: 22)),
-                    ]),
-                  ),
-                if (_boxes.isEmpty) Padding(padding: const EdgeInsets.all(16), child: Text('Belum ada kotak.', style: T.subhead)),
-              ]),
-              Section(header: 'Bahan yang pasti tidak ada', footer: 'Membantu MEIRA belajar menjawab "tidak ada". Pisahkan dengan koma.', children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: TextField(controller: _absent, decoration: const InputDecoration(hintText: 'mis. apel, telur', filled: false, border: InputBorder.none)),
+                  ],
                 ),
-              ]),
-              Section(header: 'Lisensi foto', children: [
-                for (final l in const ['CC BY 4.0', 'CC0 1.0'])
-                  Row2(title: l, onTap: () => setState(() => _license = l), trailing: _license == l ? const Icon(Icons.check_rounded, color: C.accent) : null),
-              ]),
-            ]),
+                Section(
+                  header: 'Bahan yang pasti tidak ada',
+                  footer: 'Membantu MEIRA belajar menjawab "tidak ada". Pisahkan dengan koma.',
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: TextField(
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        controller: _absent,
+                        decoration: const InputDecoration(hintText: 'mis. apel, telur', filled: false, border: InputBorder.none),
+                      ),
+                    ),
+                  ],
+                ),
+                Section(
+                  header: 'Lisensi foto',
+                  children: [
+                    for (final l in const ['CC BY 4.0', 'CC0 1.0'])
+                      Row2(
+                        title: l,
+                        onTap: () => setState(() => _license = l),
+                        trailing: _license == l ? const Icon(Icons.check_rounded, color: C.accent) : null,
+                      ),
+                  ],
+                ),
+              ],
+            ),
     );
   }
 }
-

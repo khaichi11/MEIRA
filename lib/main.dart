@@ -5,16 +5,14 @@ import 'app_state.dart';
 import 'theme.dart';
 import 'ui/home.dart';
 import 'ui/setup.dart';
-import 'ui/splash.dart';
-import 'ui/welcome.dart';
+import 'ui/intro.dart';
 import 'ui/widgets.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark));
   final state = AppState();
-  runApp(MeiraApp(state: state));
-  state.boot();
+  runApp(MeiraApp(state: state)); // boot dimulai oleh IntroScreen
 }
 
 class MeiraApp extends StatefulWidget {
@@ -26,6 +24,8 @@ class MeiraApp extends StatefulWidget {
 }
 
 class _MeiraAppState extends State<MeiraApp> {
+  bool _introDone = false; // animasi pembuka sudah selesai berpindah ke Dapur
+
   @override
   Widget build(BuildContext context) {
     return Scope(
@@ -34,16 +34,18 @@ class _MeiraAppState extends State<MeiraApp> {
         title: 'MEIRA',
         debugShowCheckedModeBanner: false,
         theme: buildTheme(),
-        home: Builder(builder: (context) {
-          final s = Scope.of(context);
-          final page = switch (s.phase) {
-            Phase.needsModels => const SetupScreen(key: ValueKey('setup')),
-            // langsung ke Dapur: tanpa halaman perkenalan, pertanyaan pertama langsung terlihat
-            Phase.ready => s.userName == null ? const WelcomeScreen(key: ValueKey('nama')) : const HomeShell(key: ValueKey('home')),
-            _ => const SplashScreen(key: ValueKey('splash')),
-          };
-          return AnimatedSwitcher(duration: const Duration(milliseconds: 500), child: page);
-        }),
+        home: Builder(
+          builder: (context) {
+            final s = Scope.of(context);
+            final page = switch (s.phase) {
+              Phase.needsModels => const SetupScreen(key: ValueKey('setup')),
+              // pembuka, nama panggilan, lalu Dapur; pertanyaan pertama langsung terlihat tanpa halaman perkenalan
+              Phase.ready when s.userName != null && _introDone => const HomeShell(key: ValueKey('home')),
+              _ => IntroScreen(key: const ValueKey('intro'), onDone: () => setState(() => _introDone = true)),
+            };
+            return AnimatedSwitcher(duration: const Duration(milliseconds: 400), switchInCurve: Curves.easeOut, child: page);
+          },
+        ),
       ),
     );
   }

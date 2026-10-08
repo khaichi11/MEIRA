@@ -17,7 +17,9 @@ class HomeShell extends StatefulWidget {
   State<HomeShell> createState() => _HomeShellState();
 }
 
-class _HomeShellState extends State<HomeShell> {
+class _HomeShellState extends State<HomeShell> with SingleTickerProviderStateMixin {
+  // tab baru memudar masuk dari sedikit di bawah
+  late final _fade = AnimationController(vsync: this, duration: const Duration(milliseconds: 260), value: 1);
   int _tab = 0;
   final _history = GlobalKey<HistoryScreenState>();
   final _studio = GlobalKey<StudioScreenState>();
@@ -37,11 +39,17 @@ class _HomeShellState extends State<HomeShell> {
       builder: (ctx) => SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 22, 20, 12),
-          child: Row(children: [
-            Expanded(child: _SourceTile(icon: Icons.photo_camera_rounded, label: 'Kamera', onTap: () => Navigator.pop(ctx, ImageSource.camera))),
-            const SizedBox(width: 12),
-            Expanded(child: _SourceTile(icon: Icons.image_rounded, label: 'Galeri', onTap: () => Navigator.pop(ctx, ImageSource.gallery))),
-          ]),
+          child: Row(
+            children: [
+              Expanded(
+                child: _SourceTile(icon: Icons.photo_camera_rounded, label: 'Kamera', onTap: () => Navigator.pop(ctx, ImageSource.camera)),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _SourceTile(icon: Icons.image_rounded, label: 'Galeri', onTap: () => Navigator.pop(ctx, ImageSource.gallery)),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -55,7 +63,14 @@ class _HomeShellState extends State<HomeShell> {
     _studio.currentState?.open(st);
   }
 
+  @override
+  void dispose() {
+    _fade.dispose();
+    super.dispose();
+  }
+
   void _go(int i) {
+    if (i != _tab) _fade.forward(from: 0);
     setState(() => _tab = i);
     if (i == 1) _history.currentState?.reload();
     if (i == 2) _studio.currentState?.reload();
@@ -77,24 +92,43 @@ class _HomeShellState extends State<HomeShell> {
       const SettingsScreen(),
     ];
     final wide = MediaQuery.sizeOf(context).width >= 900;
-    final body = SafeArea(bottom: false, child: IndexedStack(index: _tab, children: pages));
+    final t = CurvedAnimation(parent: _fade, curve: Curves.easeOutCubic);
+    final body = SafeArea(
+      bottom: false,
+      child: FadeTransition(
+        opacity: t,
+        child: SlideTransition(
+          position: Tween(begin: const Offset(0, .012), end: Offset.zero).animate(t),
+          child: IndexedStack(index: _tab, children: pages),
+        ),
+      ),
+    );
     if (wide) {
       return Scaffold(
-        body: Row(children: [
-          NavigationRail(
-            selectedIndex: _tab,
-            onDestinationSelected: _go,
-            backgroundColor: C.bg,
-            indicatorColor: C.accentTint,
-            labelType: NavigationRailLabelType.all,
-            leading: const Padding(padding: EdgeInsets.fromLTRB(0, 18, 0, 22), child: LogoMark(size: 40)),
-            selectedLabelTextStyle: inter(12, weight: FontWeight.w600, color: C.accent),
-            unselectedLabelTextStyle: inter(12, color: C.secondary),
-            destinations: [for (final t in _tabs) NavigationRailDestination(icon: Icon(t.$1, color: C.secondary), selectedIcon: Icon(t.$2, color: C.accent), label: Text(t.$3))],
-          ),
-          const VerticalDivider(width: .6),
-          Expanded(child: body),
-        ]),
+        body: Row(
+          children: [
+            NavigationRail(
+              selectedIndex: _tab,
+              onDestinationSelected: _go,
+              backgroundColor: C.bg,
+              indicatorColor: C.accentTint,
+              labelType: NavigationRailLabelType.all,
+              leading: const SizedBox(height: 24),
+              selectedLabelTextStyle: inter(12, weight: FontWeight.w600, color: C.accent),
+              unselectedLabelTextStyle: inter(12, color: C.secondary),
+              destinations: [
+                for (final t in _tabs)
+                  NavigationRailDestination(
+                    icon: Icon(t.$1, color: C.secondary),
+                    selectedIcon: Icon(t.$2, color: C.accent),
+                    label: Text(t.$3),
+                  ),
+              ],
+            ),
+            const VerticalDivider(width: .6),
+            Expanded(child: body),
+          ],
+        ),
       );
     }
     return Scaffold(
@@ -111,11 +145,13 @@ class _HomeShellState extends State<HomeShell> {
               borderRadius: BorderRadius.circular(32),
               boxShadow: const [BoxShadow(color: Color(0x261F2A44), blurRadius: 24, offset: Offset(0, 8))],
             ),
-            child: Row(children: [
-              for (var i = 0; i < 2; i++) _NavItem(tab: _tabs[i], selected: _tab == i, onTap: () => _go(i)),
-              _CameraButton(onTap: s.busy ? null : () => _camera(s)),
-              for (var i = 2; i < 4; i++) _NavItem(tab: _tabs[i], selected: _tab == i, onTap: () => _go(i)),
-            ]),
+            child: Row(
+              children: [
+                for (var i = 0; i < 2; i++) _NavItem(tab: _tabs[i], selected: _tab == i, onTap: () => _go(i)),
+                _CameraButton(onTap: s.busy ? null : () => _camera(s)),
+                for (var i = 2; i < 4; i++) _NavItem(tab: _tabs[i], selected: _tab == i, onTap: () => _go(i)),
+              ],
+            ),
           ),
         ),
       ),
@@ -131,26 +167,39 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Expanded(
-        child: Semantics(
-          button: true,
-          selected: selected,
-          label: tab.$3,
-          child: InkResponse(
-            onTap: onTap,
-            radius: 30,
-            child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(selected ? tab.$2 : tab.$1, color: selected ? C.accent : C.tertiary, size: 24),
-              const SizedBox(height: 4),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 180),
-                width: selected ? 5 : 0,
-                height: 5,
-                decoration: const BoxDecoration(color: C.accent, shape: BoxShape.circle),
+    child: Semantics(
+      button: true,
+      selected: selected,
+      label: tab.$3,
+      child: InkResponse(
+        onTap: onTap,
+        radius: 30,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedScale(
+              scale: selected ? 1.12 : 1,
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutBack,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                transitionBuilder: (child, a) => FadeTransition(opacity: a, child: child),
+                child: Icon(selected ? tab.$2 : tab.$1, key: ValueKey(selected), color: selected ? C.accent : C.tertiary, size: 24),
               ),
-            ]),
-          ),
+            ),
+            const SizedBox(height: 4),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              width: selected ? 5 : 0,
+              height: 5,
+              decoration: const BoxDecoration(color: C.accent, shape: BoxShape.circle),
+            ),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class _CameraButton extends StatelessWidget {
@@ -159,28 +208,31 @@ class _CameraButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6),
-        child: Semantics(
-          button: true,
-          label: 'Foto bahan',
-          child: Opacity(
-            opacity: onTap == null ? .5 : 1,
-            child: DecoratedBox(
-              decoration: const BoxDecoration(color: C.accent, shape: BoxShape.circle,
-                  boxShadow: [BoxShadow(color: Color(0x441FA58E), blurRadius: 14, offset: Offset(0, 6))]),
-              child: Material(
-                color: Colors.transparent,
-                shape: const CircleBorder(),
-                child: InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: onTap,
-                  child: const SizedBox(width: 54, height: 54, child: Icon(Icons.photo_camera_rounded, color: Colors.white, size: 26)),
-                ),
-              ),
+    padding: const EdgeInsets.symmetric(horizontal: 6),
+    child: Semantics(
+      button: true,
+      label: 'Foto bahan',
+      child: Opacity(
+        opacity: onTap == null ? .5 : 1,
+        child: DecoratedBox(
+          decoration: const BoxDecoration(
+            color: C.accent,
+            shape: BoxShape.circle,
+            boxShadow: [BoxShadow(color: Color(0x441FA58E), blurRadius: 14, offset: Offset(0, 6))],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            shape: const CircleBorder(),
+            child: InkWell(
+              customBorder: const CircleBorder(),
+              onTap: onTap,
+              child: const SizedBox(width: 54, height: 54, child: Icon(Icons.photo_camera_rounded, color: Colors.white, size: 26)),
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class _SourceTile extends StatelessWidget {
@@ -191,24 +243,26 @@ class _SourceTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: C.surface,
-        borderRadius: BorderRadius.circular(20),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(20),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 22),
-            child: Column(children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: const BoxDecoration(color: C.accentTint, shape: BoxShape.circle),
-                child: Icon(icon, color: C.accent),
-              ),
-              const SizedBox(height: 10),
-              Text(label, style: T.headline),
-            ]),
-          ),
+    color: C.surface,
+    borderRadius: BorderRadius.circular(20),
+    child: InkWell(
+      borderRadius: BorderRadius.circular(20),
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 22),
+        child: Column(
+          children: [
+            Container(
+              width: 48,
+              height: 48,
+              decoration: const BoxDecoration(color: C.accentTint, shape: BoxShape.circle),
+              child: Icon(icon, color: C.accent),
+            ),
+            const SizedBox(height: 10),
+            Text(label, style: T.headline),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 }

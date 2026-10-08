@@ -1,6 +1,6 @@
 // Diambil dari paket onnxruntime 1.4.1 (https://github.com/gtbluesky/onnxruntime_flutter), lisensi MIT,
 // Copyright (c) 2023 gtbluesky. Dihasilkan ffigen dari onnxruntime_c_api.h (ONNX Runtime, MIT, Microsoft).
-// Hanya binding; pustaka libonnxruntime.so yang dipakai adalah milik paket sherpa_onnx.
+// Hanya binding; pustaka libonnxruntime.so yang dipakai adalah ONNX Runtime 1.30.0 resmi (lihat tool/build_native.sh).
 
 // ignore_for_file: always_specify_types
 // ignore_for_file: camel_case_types

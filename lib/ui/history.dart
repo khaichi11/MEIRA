@@ -52,51 +52,77 @@ class HistoryScreenState extends State<HistoryScreen> {
     for (final e in items) {
       groups.putIfAbsent(_group(e.updated), () => []).add(e);
     }
-    return ListView(padding: const EdgeInsets.only(bottom: 120), children: [
-      const LargeTitle('Riwayat'),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 4, 16, 18),
-        child: TextField(onChanged: (v) => setState(() => _query = v), decoration: const InputDecoration(hintText: 'Cari', prefixIcon: Icon(Icons.search_rounded, color: C.tertiary))),
-      ),
-      if (items.isEmpty)
+    return ListView(
+      padding: const EdgeInsets.only(bottom: 120),
+      children: [
+        const LargeTitle('Riwayat'),
         Padding(
-          padding: const EdgeInsets.only(top: 80),
-          child: Column(children: [
-            const Icon(Icons.history_rounded, size: 40, color: C.tertiary),
-            const SizedBox(height: 10),
-            Text(_query.isEmpty ? 'Belum ada percakapan' : 'Tidak ditemukan', style: T.subhead),
-          ]),
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 18),
+          child: TextField(
+            autocorrect: false,
+            enableSuggestions: false,
+            onChanged: (v) => setState(() => _query = v),
+            decoration: const InputDecoration(
+              hintText: 'Cari',
+              prefixIcon: Icon(Icons.search_rounded, color: C.tertiary),
+            ),
+          ),
         ),
-      for (final g in groups.entries)
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Section(header: g.key, children: [
-            for (final e in g.value)
-              Dismissible(
-                key: ValueKey(e.id),
-                direction: DismissDirection.endToStart,
-                background: Container(color: C.clay, alignment: Alignment.centerRight, padding: const EdgeInsets.only(right: 20), child: const Icon(Icons.delete_rounded, color: Colors.white)),
-                onDismissed: (_) async {
-                  await s.history.delete(e.id);
-                  setState(() => _items.removeWhere((x) => x.id == e.id));
-                },
-                child: Row2(
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: SizedBox(
-                      width: 44,
-                      height: 44,
-                      child: e.hasPhoto ? Image.file(s.history.thumbFile(e.id), fit: BoxFit.cover) : const ColoredBox(color: C.accentTint, child: Icon(Icons.chat_bubble_outline_rounded, size: 20, color: C.accent)),
+        if (items.isEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 80),
+            child: Column(
+              children: [
+                const Icon(Icons.history_rounded, size: 40, color: C.tertiary),
+                const SizedBox(height: 10),
+                Text(_query.isEmpty ? 'Belum ada percakapan' : 'Tidak ditemukan', style: T.subhead),
+              ],
+            ),
+          ),
+        for (final g in groups.entries)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Section(
+              header: g.key,
+              children: [
+                for (final e in g.value)
+                  Dismissible(
+                    key: ValueKey(e.id),
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      color: C.clay,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 20),
+                      child: const Icon(Icons.delete_rounded, color: Colors.white),
+                    ),
+                    onDismissed: (_) async {
+                      await s.history.delete(e.id);
+                      setState(() => _items.removeWhere((x) => x.id == e.id));
+                    },
+                    child: Row2(
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: SizedBox(
+                          width: 44,
+                          height: 44,
+                          child: e.hasPhoto
+                              ? Image.file(s.history.thumbFile(e.id), fit: BoxFit.cover)
+                              : const ColoredBox(
+                                  color: C.accentTint,
+                                  child: Icon(Icons.chat_bubble_outline_rounded, size: 20, color: C.accent),
+                                ),
+                        ),
+                      ),
+                      title: e.title.isEmpty ? 'Percakapan' : e.title,
+                      subtitle: e.last.isEmpty ? null : (e.last.length > 70 ? '${e.last.substring(0, 70)}…' : e.last),
+                      trailing: Text(_time(e.updated), style: T.caption),
+                      onTap: () => widget.onOpen(e.id),
                     ),
                   ),
-                  title: e.title.isEmpty ? 'Percakapan' : e.title,
-                  subtitle: e.last.isEmpty ? null : (e.last.length > 70 ? '${e.last.substring(0, 70)}…' : e.last),
-                  trailing: Text(_time(e.updated), style: T.caption),
-                  onTap: () => widget.onOpen(e.id),
-                ),
-              ),
-          ]),
-        ),
-    ]);
+              ],
+            ),
+          ),
+      ],
+    );
   }
 }

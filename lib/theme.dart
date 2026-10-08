@@ -26,14 +26,14 @@ class C {
 }
 
 TextStyle inter(double size, {FontWeight weight = FontWeight.w400, Color color = C.label, double? height, double? spacing}) => TextStyle(
-      fontFamily: 'Inter',
-      fontSize: size,
-      fontWeight: weight,
-      fontVariations: [FontVariation('wght', weight.value.toDouble())],
-      color: color,
-      height: height,
-      letterSpacing: spacing,
-    );
+  fontFamily: 'Inter',
+  fontSize: size,
+  fontWeight: weight,
+  fontVariations: [FontVariation('wght', weight.value.toDouble())],
+  color: color,
+  height: height,
+  letterSpacing: spacing,
+);
 
 TextStyle poppins(double size, {FontWeight weight = FontWeight.w600, Color color = C.label, double? height, double? spacing}) =>
     TextStyle(fontFamily: 'Poppins', fontSize: size, fontWeight: weight, color: color, height: height, letterSpacing: spacing);
@@ -56,6 +56,10 @@ ThemeData buildTheme() {
   final base = ThemeData(useMaterial3: true, colorScheme: scheme, fontFamily: 'Inter', splashFactory: NoSplash.splashFactory);
   return base.copyWith(
     scaffoldBackgroundColor: C.bg,
+    // perpindahan halaman: halaman baru masuk dari kanan sambil memudar, halaman lama bergeser sedikit
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {TargetPlatform.android: FadeForwardsPageTransitionsBuilder(), TargetPlatform.linux: FadeForwardsPageTransitionsBuilder()},
+    ),
     dividerColor: C.separator,
     dividerTheme: const DividerThemeData(color: C.separator, thickness: .6, space: .6),
     highlightColor: C.accentTint.withValues(alpha: .5),
@@ -79,7 +83,10 @@ ThemeData buildTheme() {
       ),
     ),
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(foregroundColor: C.accentDeep, textStyle: inter(16, weight: FontWeight.w500)),
+      style: TextButton.styleFrom(
+        foregroundColor: C.accentDeep,
+        textStyle: inter(16, weight: FontWeight.w500),
+      ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -114,7 +121,7 @@ ThemeData buildTheme() {
 
 /// Kartu putih dengan sudut lembut dan bayangan tipis.
 BoxDecoration card({double radius = 22}) => BoxDecoration(
-      color: C.surface,
-      borderRadius: BorderRadius.circular(radius),
-      boxShadow: const [BoxShadow(color: Color(0x141F2A44), blurRadius: 18, offset: Offset(0, 6))],
-    );
+  color: C.surface,
+  borderRadius: BorderRadius.circular(radius),
+  boxShadow: const [BoxShadow(color: Color(0x141F2A44), blurRadius: 18, offset: Offset(0, 6))],
+);
