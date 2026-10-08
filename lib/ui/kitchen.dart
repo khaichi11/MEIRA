@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,8 +34,6 @@ class _KitchenScreenState extends State<KitchenScreen> {
     _scroll.dispose();
     super.dispose();
   }
-
-  bool get _mobile => Platform.isAndroid || Platform.isIOS;
 
   Future<void> _pick(AppState s, ImageSource source) async {
     try {
@@ -150,6 +146,24 @@ class _KitchenScreenState extends State<KitchenScreen> {
                 if (s.photo != null && !s.busy) await s.sendPhoto(s.photo!);
               case 'correct':
                 widget.onCorrect(s);
+              case 'save':
+                final ok = await showDialog<bool>(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    backgroundColor: C.bg,
+                    title: Text('Simpan ke dataset?', style: T.headline),
+                    content: Text('Pastikan setiap bahan sudah bernomor dan tidak ada nomor yang salah. Foto ini akan dipakai untuk melatih MEIRA berikutnya.',
+                        style: T.callout),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
+                      TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Simpan')),
+                    ],
+                  ),
+                );
+                if (ok == true) {
+                  final id = await s.saveToDataset();
+                  if (mounted && id != null) toast(context, 'Tersimpan di Dataset');
+                }
             }
           },
           itemBuilder: (_) => [
@@ -159,7 +173,8 @@ class _KitchenScreenState extends State<KitchenScreen> {
             CheckedPopupMenuItem(value: 'bahan', checked: s.photoMode == 'bahan', child: const Text('Ini bahan mentah')),
             CheckedPopupMenuItem(value: 'hidangan', checked: s.photoMode == 'hidangan', child: const Text('Ini makanan jadi')),
             const PopupMenuDivider(),
-            const PopupMenuItem(value: 'correct', child: Text('Perbaiki penanda')),
+            const PopupMenuItem(value: 'correct', child: Text('Edit kotak di Dataset')),
+            const PopupMenuItem(value: 'save', child: Text('Semua benar, simpan ke dataset')),
           ],
         ),
       );
@@ -170,15 +185,15 @@ class _KitchenScreenState extends State<KitchenScreen> {
         child: Column(children: [
           const LogoMark(size: 56),
           const SizedBox(height: 18),
-          Text('Apa yang ada di dapurmu?', textAlign: TextAlign.center, style: T.title),
+          Text('Apa yang ada di dapur Anda?', textAlign: TextAlign.center, style: T.title),
           const SizedBox(height: 8),
           Text('Foto bahan atau makanan jadi. MEIRA menandai yang terlihat, lalu mencarikan resep yang cocok.', textAlign: TextAlign.center, style: T.subhead),
           const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
-            child: FilledButton(onPressed: () => _pick(s, _mobile ? ImageSource.camera : ImageSource.gallery), child: Text(_mobile ? 'Ambil foto' : 'Pilih foto')),
+            child: FilledButton(onPressed: () => _pick(s, ImageSource.camera), child: const Text('Ambil foto')),
           ),
-          if (_mobile) TextButton(onPressed: () => _pick(s, ImageSource.gallery), child: const Text('Pilih dari galeri')),
+          TextButton(onPressed: () => _pick(s, ImageSource.gallery), child: const Text('Pilih dari galeri')),
         ]),
       );
 
@@ -199,12 +214,14 @@ class _KitchenScreenState extends State<KitchenScreen> {
               ),
             Role.meira => Padding(
                 padding: const EdgeInsets.only(top: 14, right: 24),
-                child: AnswerText(m.text + (m.streaming ? ' ▍' : ''), onNumber: (n) => s.highlight(n == null ? [] : [n])),
+                child: m.streaming && m.text.isEmpty
+                    ? const TypingDots()
+                    : AnswerText(m.text, onNumber: (n) => s.highlight(n == null ? [] : [n])),
               ),
             Role.status => Padding(
                 padding: const EdgeInsets.only(top: 14),
                 child: Row(children: [
-                  const SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 1.8)),
+                  const TypingDots(),
                   const SizedBox(width: 10),
                   Text(m.text, style: T.subhead),
                 ]),
@@ -251,7 +268,7 @@ class _KitchenScreenState extends State<KitchenScreen> {
       child: Padding(
         padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
         child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          _round(Icons.photo_camera_rounded, s.busy ? null : () => _pick(s, _mobile ? ImageSource.camera : ImageSource.gallery), C.grouped, C.sageDeep),
+          _round(Icons.photo_camera_rounded, s.busy ? null : () => _pick(s, ImageSource.camera), C.grouped, C.sageDeep),
           const SizedBox(width: 8),
           Expanded(
             child: Container(
@@ -268,7 +285,7 @@ class _KitchenScreenState extends State<KitchenScreen> {
                       textInputAction: TextInputAction.send,
                       onSubmitted: (_) => _send(s),
                       decoration: InputDecoration(
-                        hintText: live ? 'Mendengarkan…' : transcribing ? 'Menulis ucapanmu…' : 'Tanya MEIRA',
+                        hintText: live ? 'Mendengarkan…' : transcribing ? 'Menuliskan ucapan Anda…' : 'Tanya MEIRA',
                         filled: false,
                         contentPadding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
                       ),

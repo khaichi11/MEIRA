@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
@@ -161,3 +163,39 @@ class LargeTitle extends StatelessWidget {
 }
 
 void toast(BuildContext context, String msg) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+
+
+/// Tiga titik yang bernapas bergantian: MEIRA sedang berpikir.
+class TypingDots extends StatefulWidget {
+  const TypingDots({super.key});
+
+  @override
+  State<TypingDots> createState() => _TypingDotsState();
+}
+
+class _TypingDotsState extends State<TypingDots> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1100))..repeat();
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: _c,
+        builder: (_, _) => Row(mainAxisSize: MainAxisSize.min, children: [
+          for (var i = 0; i < 3; i++)
+            Container(
+              width: 7,
+              height: 7,
+              margin: const EdgeInsets.only(right: 4),
+              decoration: BoxDecoration(
+                color: C.sage.withValues(alpha: .3 + .7 * (0.5 + 0.5 * math.sin((_c.value * 2 * math.pi) - i * 0.9))),
+                shape: BoxShape.circle,
+              ),
+            ),
+        ]),
+      );
+}

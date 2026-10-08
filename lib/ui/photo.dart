@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../app_state.dart';
 import '../core/grounding.dart';
 import '../theme.dart';
+import 'marker_sheet.dart';
 import 'widgets.dart';
 
 /// Foto dengan penanda angka di tengah setiap bahan. Selama model menulis, titik kecil muncul
@@ -56,7 +57,7 @@ class _PhotoViewState extends State<PhotoView> with SingleTickerProviderStateMix
                 left: d.cx * w - m / 2,
                 top: d.cy * h - m / 2,
                 child: GestureDetector(
-                  onTap: () => s.highlight(s.highlighted.contains(d.number) ? [] : [d.number]),
+                  onTap: () => showMarkerSheet(context, s, d),
                   child: MouseRegion(
                     onEnter: (_) => s.highlight([d.number]),
                     onExit: (_) => s.highlight([]),

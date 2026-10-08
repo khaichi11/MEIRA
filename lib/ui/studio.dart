@@ -56,7 +56,7 @@ class StudioScreenState extends State<StudioScreen> {
   }
 
   Future<void> _new() async {
-    final x = await ImagePicker().pickImage(source: Platform.isAndroid ? ImageSource.camera : ImageSource.gallery, maxWidth: 1280, imageQuality: 90);
+    final x = await ImagePicker().pickImage(source: ImageSource.camera, maxWidth: 1280, imageQuality: 90);
     if (x == null) return;
     await _edit(await x.readAsBytes(), []);
   }
@@ -68,7 +68,7 @@ class StudioScreenState extends State<StudioScreen> {
 
   Future<void> _export() async {
     final d = await CustomDataset.dir();
-    final base = Device.isAndroid ? (await Device.modelsDir()).parent.path : d.parent.path;
+    final base = (await Device.modelsDir()).parent.path;
     final out = '$base/meira-custom-${DateTime.now().millisecondsSinceEpoch}.zip';
     final enc = ZipFileEncoder()..create(out);
     await enc.addDirectory(d, includeDirName: true);
@@ -82,7 +82,7 @@ class StudioScreenState extends State<StudioScreen> {
       LargeTitle('Dataset', trailing: IconButton(tooltip: 'Foto baru', onPressed: _new, icon: const Icon(Icons.add_circle_rounded, color: C.sageDeep, size: 28))),
       Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
-        child: Text('Ajari MEIRA bahan di dapurmu sendiri. Tandai setiap bahan, satu buah satu kotak. Contoh yang tersimpan ikut training berikutnya.', style: T.subhead),
+        child: Text('Ajari MEIRA mengenali bahan di dapur Anda. Tandai setiap bahan, satu buah satu kotak. Contoh yang tersimpan akan dipakai pada pelatihan berikutnya.', style: T.subhead),
       ),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -373,7 +373,7 @@ class _EditorState extends State<_Editor> {
                 ),
               ]),
               Section(header: 'Lisensi foto', children: [
-                for (final l in const ['CC BY 4.0', 'CC0 1.0', 'CC BY-SA 4.0'])
+                for (final l in const ['CC BY 4.0', 'CC0 1.0'])
                   Row2(title: l, onTap: () => setState(() => _license = l), trailing: _license == l ? const Icon(Icons.check_rounded, color: C.sageDeep) : null),
               ]),
             ]),

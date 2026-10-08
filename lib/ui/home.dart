@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 
 import '../theme.dart';
@@ -27,16 +25,6 @@ class _HomeShellState extends State<HomeShell> {
     (Icons.crop_free_outlined, Icons.crop_free, 'Dataset'),
     (Icons.tune_outlined, Icons.tune, 'Pengaturan'),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    // MEIRA_DEMO_PHOTO=<file>: kirim satu foto otomatis setelah siap (demo dan uji tampilan di desktop)
-    final demo = Platform.environment['MEIRA_DEMO_PHOTO'];
-    if (demo != null && File(demo).existsSync()) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async => Scope.of(context).sendPhoto(await File(demo).readAsBytes()));
-    }
-  }
 
   void _go(int i) {
     setState(() => _tab = i);

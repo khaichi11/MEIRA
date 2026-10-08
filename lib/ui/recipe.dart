@@ -1,48 +1,105 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../app_state.dart';
+import '../core/generated.dart';
 import '../core/recipes.dart';
 import '../core/vocab.dart';
 import '../theme.dart';
+import 'cooking.dart';
 import 'widgets.dart';
 
 /// Ringkasan resep terpilih. Ketuk untuk membuka detail.
-class RecipeCard extends StatelessWidget {
+/// Kartu resep yang bisa digeser: rekomendasi utama lalu alternatifnya. Ketuk untuk membuka detail.
+class RecipeCard extends StatefulWidget {
   const RecipeCard({super.key, required this.state});
   final AppState state;
 
   @override
+  State<RecipeCard> createState() => _RecipeCardState();
+}
+
+class _RecipeCardState extends State<RecipeCard> {
+  final _pages = PageController(viewportFraction: .92);
+
+  @override
+  void dispose() {
+    _pages.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final m = state.currentMatch;
-    if (m == null) return const SizedBox.shrink();
-    final r = m.recipe;
-    final nums = state.session!.numbers();
-    final needed = r.items.where((i) => !i.optional && !pantry.contains(i.key)).toList();
-    final seen = needed.where((i) => nums.containsKey(i.key) || m.have.contains(i.key)).length;
-    final dish = state.sceneMode == 'hidangan';
-    return Material(
-      color: C.surface,
-      borderRadius: BorderRadius.circular(18),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: () => showRecipe(context, state),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
-          child: Row(children: [
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(dish ? 'Resep yang mirip' : 'Rekomendasi', style: T.caption),
-                const SizedBox(height: 3),
-                Text(r.name, style: T.headline),
-                const SizedBox(height: 3),
-                Text('${r.minutes} menit  ·  ${dish ? '${needed.length} bahan utama' : '$seen dari ${needed.length} bahan tersedia'}', style: T.footnote),
-              ]),
-            ),
-            const Icon(Icons.chevron_right_rounded, color: C.tertiary),
-          ]),
+    final s = widget.state;
+    final cands = s.candidates;
+    if (cands.isEmpty || s.session == null) return const SizedBox.shrink();
+    final nums = s.session!.numbers();
+    final dish = s.sceneMode == 'hidangan';
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      SizedBox(
+        height: 96,
+        child: PageView.builder(
+          controller: _pages,
+          padEnds: false,
+          itemCount: cands.length,
+          onPageChanged: (i) {
+            HapticFeedback.selectionClick();
+            s.selectRecipe(cands[i].recipe.id);
+          },
+          itemBuilder: (_, i) {
+            final m = cands[i];
+            final r = m.recipe;
+            final needed = r.items.where((it) => !it.optional && !pantry.contains(it.key)).toList();
+            final seen = needed.where((it) => nums.containsKey(it.key) || m.have.contains(it.key)).length;
+            return Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Material(
+                color: C.surface,
+                borderRadius: BorderRadius.circular(18),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(18),
+                  onTap: () {
+                    s.selectRecipe(r.id);
+                    showRecipe(context, s);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
+                    child: Row(children: [
+                      Expanded(
+                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
+                          Text(i == 0 ? (dish ? 'Resep yang mirip' : 'Rekomendasi') : 'Alternatif $i', style: T.caption),
+                          const SizedBox(height: 3),
+                          Text(r.name, style: T.headline, maxLines: 1, overflow: TextOverflow.ellipsis),
+                          const SizedBox(height: 3),
+                          Text('${r.minutes} menit  ·  ${dish ? '${needed.length} bahan utama' : '$seen dari ${needed.length} bahan tersedia'}', style: T.footnote),
+                        ]),
+                      ),
+                      const Icon(Icons.chevron_right_rounded, color: C.tertiary),
+                    ]),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
-    );
+      if (cands.length > 1)
+        Padding(
+          padding: const EdgeInsets.only(top: 8, left: 4),
+          child: Row(children: [
+            for (var i = 0; i < cands.length; i++)
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: cands[i].recipe.id == s.session!.current ? 16 : 6,
+                height: 6,
+                margin: const EdgeInsets.only(right: 4),
+                decoration: BoxDecoration(color: cands[i].recipe.id == s.session!.current ? C.sage : C.separator, borderRadius: BorderRadius.circular(3)),
+              ),
+            const SizedBox(width: 6),
+            Text('Geser untuk alternatif', style: T.caption),
+          ]),
+        ),
+    ]);
   }
 }
 
@@ -96,6 +153,10 @@ class _RecipeSheet extends StatelessWidget {
           _Fact('${r.servings}', 'porsi'),
           _Fact(r.difficulty, 'tingkat'),
         ]),
+        if (r.tools.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Text('Alat: ${r.tools.join(', ')}', style: T.subhead),
+        ],
         const SizedBox(height: 26),
         Text('Bahan', style: T.title),
         const SizedBox(height: 10),
@@ -128,9 +189,20 @@ class _RecipeSheet extends StatelessWidget {
           ),
         const SizedBox(height: 22),
         FilledButton.icon(
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => Scope(state: s, child: CookingScreen(recipe: r))));
+          },
+          icon: const Icon(Icons.play_arrow_rounded, size: 22),
+          label: const Text('Mulai memasak'),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
           onPressed: () => s.speak('${r.name}. ${[for (var i = 0; i < r.steps.length; i++) '${i + 1}. ${r.steps[i]}'].join('\n')}'),
           icon: const Icon(Icons.volume_up_rounded, size: 20),
-          label: const Text('Bacakan langkah'),
+          label: const Text('Bacakan semua langkah'),
+          style: OutlinedButton.styleFrom(minimumSize: const Size(0, 50), foregroundColor: C.sageDeep, side: const BorderSide(color: C.separator),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
         ),
         const SizedBox(height: 8),
         TextButton(
@@ -180,14 +252,16 @@ class _ItemRow extends StatelessWidget {
     final (icon, color, note) = numbers.isNotEmpty
         ? (Icons.check_circle_rounded, C.sage, '')
         : owned
-            ? (Icons.check_circle_outline_rounded, C.sage, 'kamu punya')
+            ? (Icons.check_circle_outline_rounded, C.sage, 'Anda miliki')
             : base
                 ? (Icons.circle, C.separator, 'bumbu dasar')
                 : it.optional
                     ? (Icons.radio_button_unchecked, C.separator, 'opsional')
                     : dish
                         ? (Icons.radio_button_unchecked, C.tertiary, 'perkiraan')
-                        : (Icons.radio_button_unchecked, C.clay, 'perlu disiapkan');
+                        : detectableKeys.contains(it.key)
+                            ? (Icons.radio_button_unchecked, C.clay, 'perlu disiapkan')
+                            : (Icons.help_outline_rounded, C.tertiary, 'pastikan tersedia');
     return InkWell(
       onTap: numbers.isEmpty ? null : () => s.highlight(numbers),
       child: Padding(
