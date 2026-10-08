@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../runtime/device.dart';
 
@@ -33,18 +32,12 @@ class History {
   static const maxSessions = 200;
   static const maxPhotoBytes = 300 * 1024 * 1024;
 
-  static Future<History> open({Directory? at}) async {
+  /// [factory] dan [at] hanya diisi saat uji di laptop (sqflite FFI dan folder sementara).
+  static Future<History> open({Directory? at, DatabaseFactory? factory}) async {
     final dir = at ?? await Device.dataDir();
     final photos = Directory('${dir.path}/photos');
     await photos.create(recursive: true);
-    final DatabaseFactory factory;
-    if (Platform.isAndroid || Platform.isIOS) {
-      factory = databaseFactory;
-    } else {
-      sqfliteFfiInit();
-      factory = databaseFactoryFfi;
-    }
-    final db = await factory.openDatabase('${dir.path}/history.db',
+    final db = await (factory ?? databaseFactory).openDatabase('${dir.path}/history.db',
         options: OpenDatabaseOptions(
           version: 1,
           onConfigure: (db) => db.execute('PRAGMA foreign_keys = ON'),

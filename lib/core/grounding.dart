@@ -9,7 +9,7 @@ import 'vocab.dart';
 const coordScale = 1000.0;
 
 class Detection {
-  Detection({required this.key, required this.label, required this.rawLabel, required this.box, this.number = 0, this.group = false});
+  Detection({required this.key, required this.label, required this.rawLabel, required this.box, this.number = 0, this.group = false, this.packaged = false});
 
   final String? key;
   final String label;
@@ -17,12 +17,13 @@ class Detection {
   final List<double> box; // x1, y1, x2, y2 ternormalisasi 0..1
   int number;
   final bool group;
+  final bool packaged; // dikenali dari tulisan kemasan, bukan dari bentuk bahan
 
   double get cx => (box[0] + box[2]) / 2;
   double get cy => (box[1] + box[3]) / 2;
   double get area => (box[2] - box[0]) * (box[3] - box[1]);
 
-  Map<String, dynamic> toJson() => {'key': key, 'label': label, 'raw_label': rawLabel, 'box': box, 'number': number, 'group': group};
+  Map<String, dynamic> toJson() => {'key': key, 'label': label, 'raw_label': rawLabel, 'box': box, 'number': number, 'group': group, 'packaged': packaged};
 
   factory Detection.fromJson(Map<String, dynamic> j) => Detection(
         key: j['key'] as String?,
@@ -31,6 +32,7 @@ class Detection {
         box: (j['box'] as List).map((e) => (e as num).toDouble()).toList(),
         number: (j['number'] ?? 0) as int,
         group: j['group'] == true,
+        packaged: j['packaged'] == true,
       );
 }
 
@@ -180,6 +182,36 @@ List<Detection> number(List<Detection> dets) {
     ordered[i].number = i + 1;
   }
   return ordered;
+}
+
+/// Kotak dari foto yang dicerminkan dikembalikan ke koordinat foto asli.
+List<Detection> flipBack(List<Detection> dets) => [
+      for (final d in dets)
+        Detection(key: d.key, label: d.label, rawLabel: d.rawLabel, box: [1 - d.box[2], d.box[1], 1 - d.box[0], d.box[3]], group: d.group),
+    ];
+
+/// Gabungan deteksi foto asli dan cermin: pasangan yang cocok dirata-rata, sisanya dipertahankan.
+List<Detection> mergeViews(List<Detection> a, List<Detection> b, {double thr = .45}) {
+  final used = <int>{};
+  final out = <Detection>[];
+  for (var d in a) {
+    var j = -1;
+    for (var k = 0; k < b.length; k++) {
+      if (!used.contains(k) && b[k].key == d.key && iou(d.box, b[k].box) > thr) {
+        j = k;
+        break;
+      }
+    }
+    if (j >= 0) {
+      used.add(j);
+      d = Detection(key: d.key, label: d.label, rawLabel: d.rawLabel, box: [for (var i = 0; i < 4; i++) (d.box[i] + b[j].box[i]) / 2], group: d.group);
+    }
+    out.add(d);
+  }
+  for (var k = 0; k < b.length; k++) {
+    if (!used.contains(k)) out.add(b[k]);
+  }
+  return number(dedupe(out));
 }
 
 List<IngredientGroup> grouped(List<Detection> dets) {

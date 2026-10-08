@@ -26,6 +26,7 @@ class Recipe {
   final List<RecipeItem> items = [];
   final List<String> steps = [];
   String tip = '';
+  List<String> tools = [];
   final Map<String, String> swaps = {};
 
   Set<String> get mainKeys => {for (final i in items) if (i.main) i.key};
@@ -52,6 +53,8 @@ List<Recipe> parseRecipes(String markdown) {
       cur.desc = s.substring(5).trim();
     } else if (s.startsWith('tip:')) {
       cur.tip = s.substring(4).trim();
+    } else if (s.startsWith('alat:')) {
+      cur.tools = s.substring(5).split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
     } else if (s.startsWith('ganti:')) {
       for (final pair in s.substring(6).split(';')) {
         final i = pair.indexOf('=');
@@ -166,18 +169,33 @@ class Intent {
 
 bool _has(String t, String pattern) => RegExp(pattern).hasMatch(t);
 
+const _neg = r'(?:jangan|nggak|gak|tidak|ga|kurang|tanpa|bukan)';
+const _numberWords = {'satu': 1, 'dua': 2, 'tiga': 3};
+
 /// Pemahaman permintaan berbasis aturan: cepat, tanpa model, dan tepat untuk pola umum.
+/// Identik dengan meira/recipes.py rule_intent (diuji dengan data uji yang sama).
+const _know = r'\b(berapa (lama|menit|jam|hari|banyak|derajat|mililiter|ml|gram|sendok)|kenapa|mengapa|apa (beda|bedanya|perbedaan)|'
+    r'perbedaan|bolehkah|apa boleh|boleh (sama|dimakan|disimpan|dimasak|dicampur|dipakai|digunakan|dibiarkan|dibekukan)|'
+    r'kapan|ciri|tanda|masih (boleh|bisa|aman|bagus|layak|segar)|disimpan|menyimpan|penyimpanan|diapakan|'
+    r'cara me(?!mbuat|masak)\w+|lebih baik .{1,40} atau)\b';
+const _goal = r'\b(supaya|agar|biar) (\w+ ){0,4}(tidak|tetap|awet|renyah|empuk|lembut|mudah|bagus|segar|harum|matang)\b';
+
 Intent ruleIntent(String text) {
   final t = ' ${text.toLowerCase()} ';
   var action = 'rekomendasi';
-  if (_has(t, r'\b(lain|ganti|yang beda|alternatif|selain itu|nggak suka|gak suka|bosen|bosan)\b')) action = 'ganti';
-  if (_has(t, r'\b(pilih|yang nomor|nomor \d|yang (pertama|kedua|ketiga)|ambil yang)\b')) action = 'pilih';
-  if (_has(t, r'\b(makanan apa|masakan apa|ini apa|bahannya apa|bahan apa saja|bahan apa aja|pakai bahan apa|pake bahan apa|terbuat dari|dibuat dari|isinya apa)\b')) {
+  if (_has(t, r'\b(terima kasih|makasih|trims|thanks|halo|hai|oke|sip|mantap)\b')) action = 'obrolan';
+  if (_has(t, _know)) action = 'obrolan'; // pertanyaan pengetahuan dapur, dijawab dari catatan dapur
+  if (_has(t, r'\b(lain|ganti|yang beda|alternatif|selain itu|nggak suka|gak suka|bosen|bosan|skip)\b')) action = 'ganti';
+  if (_has(t, r'\b(pilih|yang nomor|nomor (\d|satu|dua|tiga)|yang (pertama|kedua|ketiga)|ambil yang)\b')) action = 'pilih';
+  if (_has(t, r'\b(makanan apa|masakan apa|ini apa|nama masakannya|bahannya apa|bahan apa saja|bahan apa aja|pakai bahan apa|pake bahan apa|terbuat dari|dibuat dari|isinya apa|yang dipakai di)\b')) {
     action = 'hidangan';
   }
-  if (_has(t, r'\b(caranya|langkah|gimana bikin|bagaimana membuat|cara buat|cara membuat|resepnya)\b')) action = 'detail';
-  if (_has(t, r'\b(pengganti|diganti apa|ganti apa|substitusi|kalau nggak ada|kalau gak ada|kalau tidak ada)\b')) action = 'substitusi';
-  if (_has(t, r'\b(apakah ada|ada (\w+ )?(nggak|gak|tidak) di foto|cek|periksa|beneran ada|benar ada)\b')) action = 'cek';
+  if (_has(t, r'\b(caranya|langkah|cara (membuat|buat|bikin|masak)(nya)?|(gimana|bagaimana) (cara )?(bikin|buat|membuat|masak)(nya)?|bikinnya|masaknya|resepnya|cara memasak(nya)?)\b')) {
+    action = 'detail';
+  }
+  if ((action == 'detail' || action == 'rekomendasi') && _has(t, _goal)) action = 'obrolan'; // "santan supaya tidak pecah gimana caranya"
+  if (_has(t, '\\b(pengganti|diganti apa|ganti apa|substitusi|kalau $_neg (ada|punya))\\b')) action = 'substitusi';
+  if (_has(t, r'\b(apakah ada|ada (\w+ )?(nggak|gak|tidak|atau tidak)|cek|periksa|bene?ran (itu )?ada|benar ada)\b')) action = 'cek';
   final it = Intent(action);
 
   final m = RegExp(r'(\d+)\s*(menit|mnt)').firstMatch(t);
@@ -195,40 +213,46 @@ Intent ruleIntent(String text) {
     'sarapan': r'sarapan|pagi',
     'camilan': r'camilan|cemilan|ngemil|snack',
     'minuman': r'minum|jus|smoothie|es ',
-    'berkuah': r'kuah|sup|sop|hangat',
+    'berkuah': r'kuah|hangat',
     'manis': r'manis|dessert|pencuci mulut',
     'segar': r'segar|seger',
     'sehat': r'sehat|diet|ringan',
     'vegetarian': r'vegetarian|tanpa daging|vegan',
     'anak': r'anak|bocah|si kecil',
-    'tanpa-kompor': r'tanpa kompor|nggak pakai kompor|gak pakai kompor|tanpa masak|tidak masak|gak masak|nggak masak',
+    'tanpa-kompor': r'tanpa kompor|(nggak|gak|tidak) (pakai|pake|ada) kompor|tanpa masak|(tidak|gak|nggak) masak',
     'hemat': r'hemat|murah|irit',
   };
   tagWords.forEach((tag, pat) {
     if (_has(t, pat)) it.tags.add(tag);
   });
-  if (_has(t, r'pedas') && !_has(t, r'\b(jangan|nggak|gak|tidak|ga|kurang|tanpa) (terlalu |yang )?pedas')) it.tags.add('pedas');
+  final pedasNegated = _has(t, '\\b$_neg (suka |terlalu |yang )?pedas');
+  if (t.contains('pedas') && !pedasNegated) it.tags.add('pedas');
 
   for (final mm in RegExp(r'(?:jangan|tanpa|nggak mau|gak mau|tidak mau|nggak suka|gak suka|tidak suka|alergi)\s+([a-z ,]{3,40}?)(?=[.!?]| dong| ya| deh| aja| saja| $)').allMatches(t)) {
     it.exclude.addAll(mentions(mm.group(1)!));
   }
-  if (_has(t, r'\b(jangan|nggak|gak|tidak|ga|kurang|tanpa) (terlalu |yang )?pedas')) it.exclude.add('chili');
-  for (final mm in RegExp(r'(?:punya|ada|pakai|pake|stok)\s+([a-z ,]{3,50}?)(?=[.!?]| dong| ya| juga| di rumah| di kulkas| $)').allMatches(t)) {
-    final before = t.substring(mm.start < 8 ? 0 : mm.start - 8, mm.start);
-    if (mm.group(0)!.contains('di foto') || RegExp(r'(nggak|gak|tidak|ga|belum) $').hasMatch(before)) continue;
-    it.include.addAll(mentions(mm.group(1)!));
+  if (pedasNegated) it.exclude.add('chili');
+  if (action != 'cek') {
+    for (final mm in RegExp(r'(?:punya|ada|pakai|pake|stok)\s+([a-z ,]{3,50}?)(?=[.!?]| dong| ya| juga| di rumah| di kulkas| $)').allMatches(t)) {
+      final before = t.substring(mm.start < 12 ? 0 : mm.start - 12, mm.start);
+      if (mm.group(0)!.contains('di foto') || RegExp(r'\b(nggak|gak|tidak|ga|belum|jangan)( \w+)? $').hasMatch(before)) continue;
+      it.include.addAll(mentions(mm.group(1)!));
+    }
   }
+  it.include.removeAll(it.exclude);
   final named = mentions(text);
   it.ingredient = named.isNotEmpty ? displayName(named.first) : null;
-  final c = RegExp(r'(?:nomor|yang ke|pilihan)\s*(\d)').firstMatch(t);
-  if (c != null) {
-    it.choice = int.parse(c.group(1)!);
-  } else if (_has(t, r'\b(pertama|kesatu)\b')) {
-    it.choice = 1;
-  } else if (_has(t, r'\bkedua\b')) {
-    it.choice = 2;
-  } else if (_has(t, r'\bketiga\b')) {
-    it.choice = 3;
+  if (action == 'pilih') {
+    final c = RegExp(r'(?:nomor|yang ke|pilihan)\s*(\d|satu|dua|tiga)').firstMatch(t);
+    if (c != null) {
+      it.choice = int.tryParse(c.group(1)!) ?? _numberWords[c.group(1)!];
+    } else if (_has(t, r'\b(pertama|kesatu)\b')) {
+      it.choice = 1;
+    } else if (_has(t, r'\bkedua\b')) {
+      it.choice = 2;
+    } else if (_has(t, r'\bketiga\b')) {
+      it.choice = 3;
+    }
   }
   return it;
 }
