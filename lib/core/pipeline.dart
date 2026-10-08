@@ -14,6 +14,8 @@ import '../llm/knowledge.dart';
 import '../llm/memory.dart';
 import '../llm/retriever.dart';
 import '../runtime/llama.dart';
+import '../vision/ocr.dart';
+import '../vision/vision.dart';
 import 'generated.dart';
 import 'grounding.dart';
 import 'history.dart';
@@ -72,6 +74,8 @@ class Session {
   String? dish;
   List<String> dishGuess = [];
   List<Detection> detections = [];
+  VisionInput? visionInput; // foto siap pakai untuk detektor dan OCR (tidak disimpan ke riwayat)
+  VisionResult? visionResult;
   Prefs prefs = Prefs();
   List<String> shown = [];
   List<Match> candidates = [];
@@ -147,11 +151,13 @@ class Meira {
     this.readPackages = true,
     this.thorough = false,
     this.rewriteNotes = false,
+    this.vision,
   });
 
   final List<Recipe> recipes;
   final History history;
-  LlmClient? eyes;
+  LlmClient? eyes; // cadangan bila detektor tidak tersedia: penglihatan bawaan model bahasa
+  Vision? vision; // detektor bahan dan OCR kemasan yang terpisah dari model bahasa
   LlmClient? brain;
   bool eyesFineTuned; // format ringkas hasil fine-tune; selain itu prompt JSON bawaan Qwen
   bool brainHasVision;
@@ -165,12 +171,21 @@ class Meira {
   /// Model merangkai ulang catatan dapur. Mati secara bawaan: pada evaluasi, model kecil masih menambah atau membalik
   /// fakta (lihat runs/brains/REPORT.md), sehingga catatan yang ditulis tangan langsung dipakai.
   bool rewriteNotes;
+  String? userName; // nama panggilan pengguna, dipakai menyapa di jawaban pertama sebuah percakapan
   String lastDraft = ''; // jawaban mentah model sebelum diperiksa (untuk evaluasi perbandingan model)
   String lastNotes = ''; // catatan yang menjadi sumber jawaban terakhir
 
   // --------------------------------------------------------------- mata
   Stream<MeiraEvent> _detect(Session s) async* {
     final sw = Stopwatch()..start();
+    if (vision != null && s.visionInput != null) {
+      final res = await vision!.detect(s.visionInput!, thorough: thorough);
+      s
+        ..visionResult = res
+        ..detections = res.detections;
+      yield DetectionsEvent(s.detections, sw.elapsedMilliseconds / 1000);
+      return;
+    }
     final buf = StringBuffer();
     final partial = <Detection>[];
     var line = '';
@@ -200,6 +215,7 @@ class Meira {
 
   /// Produk kemasan dikenali dari tulisan labelnya oleh model otak (visi), lalu diberi nomor seperti bahan lain.
   Future<List<Detection>> _packages(Session s) async {
+    if (vision != null && s.visionInput != null) return packagesFromText(await vision!.read(s.visionInput!), s.detections);
     if (brain == null || !brainHasVision) return [];
     final res = await brain!
         .json(LlmClient.visionMessages(s.imageDataUrl!, promptPackages), packagesSchema, maxTokens: 260)
@@ -213,6 +229,26 @@ class Meira {
       final box = normalizeBox([for (final v in raw) (v as num).toDouble()]);
       if (box == null || s.detections.any((d) => d.key == key && iou(d.box, box) > .4)) continue;
       out.add(Detection(key: key, label: displayName(key), rawLabel: '${p['tulisan']}', box: box, packaged: true));
+    }
+    return out;
+  }
+
+  /// Bahan kemasan dari tulisan labelnya (OCR): baris yang menyebut bahan atau merek dikenal menjadi satu penanda
+  /// per kemasan. Baris berdekatan yang menyebut bahan sama digabung.
+  static List<Detection> packagesFromText(List<TextLine> lines, List<Detection> existing) {
+    final out = <Detection>[];
+    for (final l in lines) {
+      for (final key in mentions(l.text)) {
+        final near = out.where((d) => d.key == key && (d.cx - (l.box[0] + l.box[2]) / 2).abs() < .3 && (d.cy - (l.box[1] + l.box[3]) / 2).abs() < .3);
+        if (near.isNotEmpty) {
+          final d = near.first;
+          final box = [math.min(d.box[0], l.box[0]), math.min(d.box[1], l.box[1]), math.max(d.box[2], l.box[2]), math.max(d.box[3], l.box[3])];
+          out[out.indexOf(d)] = Detection(key: key, label: d.label, rawLabel: '${d.rawLabel} ${l.text}', box: box, packaged: true);
+          continue;
+        }
+        if (existing.any((d) => d.key == key && iou(d.box, l.box) > .3)) continue;
+        out.add(Detection(key: key, label: displayName(key), rawLabel: l.text, box: l.box, packaged: true));
+      }
     }
     return out;
   }
@@ -232,6 +268,13 @@ class Meira {
 
   Future<(bool?, List<Detection>)> _verify(Session s, String key) async {
     final name = displayName(key);
+    final vr = s.visionResult;
+    if (vr != null) {
+      // detektor sudah menyimpan semua kandidat; ambang verifikasi lebih rendah karena bahannya sudah disebut
+      final added = vr.extra(key, s.detections);
+      if (added.isNotEmpty) s.detections = number([...s.detections, ...added]);
+      return (vr.present(key) || added.isNotEmpty, added);
+    }
     final prompt = (eyesFineTuned ? promptVerify : promptVerifyZeroshot).replaceAll('{name}', name);
     final raw = await eyes!.chat(LlmClient.visionMessages(s.imageDataUrl!, prompt), maxTokens: 200, sampling: eyesFineTuned ? groundingSampling : visionSampling);
     final (present, boxes) = parseVerify(raw);
@@ -318,8 +361,45 @@ class Meira {
     if (s.current != null && !s.shown.contains(s.current)) s.shown.add(s.current!);
   }
 
+  static final _rawGroups = RegExp(r'^(buah|buah-buahan|sayur|sayuran|sayur-mayur|bahan|bahan makanan|bahan mentah|aneka buah)\b');
+
+  /// Foto tambahan dalam percakapan yang sama (misalnya isi kulkas lalu isi rak): bahan yang terlihat ditambahkan
+  /// ke daftar bahan, lalu resep dicari ulang. Penanda tetap di foto utama.
+  Stream<MeiraEvent> addPhoto(Session s, VisionInput input) async* {
+    await history.addMessage(s.id, 'user', '(foto tambahan)', {'photo': true});
+    if (vision == null) {
+      yield ErrorEvent('Model penglihatan belum siap');
+      return;
+    }
+    yield StatusEvent('Melihat foto tambahan');
+    final res = await vision!.detect(input, thorough: thorough);
+    final keys = {for (final d in res.detections) ?d.key};
+    if (readPackages) keys.addAll({for (final d in packagesFromText(await vision!.read(input), const [])) ?d.key});
+    final fresh = keys.difference(s.have());
+    s.prefs.include.addAll(keys);
+    String names(Iterable<String> ks) {
+      final n = ks.map(displayName).toList();
+      return n.length < 2 ? n.join() : '${n.sublist(0, n.length - 1).join(', ')} dan ${n.last}';
+    }
+
+    String msg;
+    if (keys.isEmpty) {
+      msg = 'Saya belum melihat bahan yang jelas di foto tambahan ini. Silakan foto lebih dekat, atau sebutkan bahannya.';
+    } else if (fresh.isEmpty) {
+      msg = 'Bahan di foto tambahan sudah tercatat: ${names(keys)}.';
+    } else {
+      _rerank(s, skipShown: false);
+      yield RecipesEvent();
+      msg = 'Saya tambahkan ${names(fresh)} dari foto ini. ${template(s, 'rekomendasi', const {})}';
+    }
+    yield TokenEvent(msg);
+    await _remember(s, '(foto tambahan)', msg, 'templat');
+    yield DoneEvent(msg, 'templat');
+    await _persist(s);
+  }
+
   // ------------------------------------------------------------ giliran
-  Stream<MeiraEvent> turn(Session s, {String text = '', String? imageDataUrl, String mode = 'otomatis'}) async* {
+  Stream<MeiraEvent> turn(Session s, {String text = '', String? imageDataUrl, VisionInput? visionInput, String mode = 'otomatis'}) async* {
     text = text.trim();
     if (text.isNotEmpty || imageDataUrl != null) {
       await history.addMessage(s.id, 'user', text.isEmpty ? '(foto)' : text, {'photo': imageDataUrl != null});
@@ -327,6 +407,8 @@ class Meira {
     if (imageDataUrl != null) {
       s
         ..imageDataUrl = imageDataUrl
+        ..visionInput = visionInput
+        ..visionResult = null
         ..detections = []
         ..shown = []
         ..candidates = []
@@ -335,7 +417,7 @@ class Meira {
         ..dishGuess = [];
       yield StatusEvent('Melihat foto');
       Future<Map<String, dynamic>?>? sceneFuture = mode != 'bahan' && parallelVision ? _scene(s) : null;
-      if (eyes == null) {
+      if (eyes == null && vision == null) {
         yield ErrorEvent('Model penglihatan belum siap');
       } else {
         try {
@@ -346,6 +428,12 @@ class Meira {
       }
       final sc = await (sceneFuture ?? (mode != 'bahan' ? _scene(s) : Future<Map<String, dynamic>?>.value(null)));
       s.mode = mode == 'otomatis' ? (sc?['jenis'] == 'hidangan' ? 'hidangan' : 'bahan') : mode;
+      // nama hidangan yang hanya berupa golongan bahan ("buah", "sayur") berarti foto bahan mentah, bukan masakan
+      final dishName = '${sc?['hidangan'] ?? ''}'.trim().toLowerCase();
+      if (mode == 'otomatis' && s.mode == 'hidangan' && (dishName.isEmpty || _rawGroups.hasMatch(dishName)) &&
+          s.detections.where((d) => d.key != null).length >= 2) {
+        s.mode = 'bahan';
+      }
       if (s.mode == 'hidangan' && sc != null) {
         final dish = (sc['hidangan'] as String?)?.trim();
         s.dish = dish == null || dish.isEmpty ? null : dish;
@@ -442,7 +530,7 @@ class Meira {
       answer = 'Belum ada foto. Silakan kirim foto bahan Anda terlebih dahulu, lalu saya periksa satu per satu.';
     } else if (names.isEmpty) {
       answer = 'Bahan apa yang ingin diperiksa? Silakan sebutkan namanya, misalnya: apakah ada wortel?';
-    } else if (eyes == null) {
+    } else if (eyes == null && s.visionResult == null) {
       answer = 'Model penglihatan belum siap. Mohon coba lagi sebentar.';
     } else {
       final lines = <String>[];
@@ -479,7 +567,7 @@ class Meira {
     // Fakta selalu dari buku resep (nama resep, bahan bernomor, langkah, pengganti yang tercatat).
     final grounded = cur != null && (task == 'rekomendasi' || task == 'detail' || task == 'hidangan' || swapKnown);
     if (grounded) {
-      var core = template(s, task, extra);
+      var core = greet(s, template(s, task, extra));
       var source = 'templat';
       if (answerStyle == 'natural' && brain != null && text.isNotEmpty) {
         // gaya natural: LLM hanya menambah satu kalimat personal, faktanya tetap dari buku resep
@@ -586,6 +674,17 @@ class Meira {
     final main = r.items.where((i) => i.main).map((i) => i.name).join(', ');
     final steps = [for (var i = 0; i < r.steps.length && i < 4; i++) '${i + 1}. ${r.steps[i]}'].join(' ');
     return '- ${r.name} (${r.minutes} menit; bahan utama: $main). $steps${r.tip.isEmpty ? '' : ' Tip: ${r.tip}'}';
+  }
+
+  static const _plainStarts = {'Saya', 'Tampaknya', 'Berikut', 'Benar', 'Belum', 'Bahan', 'Untuk', 'Mohon', 'Baik', 'Ada', 'Dari'};
+
+  /// Jawaban pertama dalam percakapan dibuka dengan nama pengguna: "Khai, saya menyarankan ...".
+  String greet(Session s, String answer) {
+    final name = userName?.trim() ?? '';
+    if (name.isEmpty || s.memory.turns.isNotEmpty || answer.isEmpty) return answer;
+    final first = answer.split(' ').first;
+    final rest = _plainStarts.contains(first) ? answer[0].toLowerCase() + answer.substring(1) : answer;
+    return '$name, $rest';
   }
 
   Future<void> _remember(Session s, String user, String answer, String source) async {

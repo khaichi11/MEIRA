@@ -53,7 +53,7 @@ const ingredientRows = <IngredientRow>[
   IngredientRow("shrimp", "udang", "shrimp", "protein", ["udang segar", "prawn", "prawns"], false),
   IngredientRow("crab", "kepiting", "crab", "protein", ["rajungan", "crabs"], false),
   IngredientRow("rice", "nasi", "rice", "karbo", ["nasi putih", "beras", "nasi dingin"], false),
-  IngredientRow("noodle", "mi", "noodle", "karbo", ["mie", "mie instan", "mi instan", "mi telur", "noodles", "ramen", "mi instan", "indomie", "mie sedaap", "sarimi", "supermi", "pop mie"], false),
+  IngredientRow("noodle", "mi", "noodle", "karbo", ["mie", "mie instan", "mi instan", "mi telur", "noodles", "ramen", "indomie", "mie sedaap", "sarimi", "supermi", "pop mie", "mi goreng", "mie goreng", "mi kuah", "mie kuah"], false),
   IngredientRow("tempeh", "tempe", "tempeh", "protein", ["tempe kedelai"], false),
   IngredientRow("tofu", "tahu", "tofu", "protein", ["tahu putih", "tahu kuning", "tahu sutra"], false),
   IngredientRow("chicken", "daging ayam", "chicken meat", "protein", ["ayam", "ayam potong", "dada ayam", "paha ayam", "chicken"], false),
@@ -88,6 +88,7 @@ const ingredientRows = <IngredientRow>[
   IngredientRow("coconut_milk", "santan", "coconut milk", "susu", ["santan kental", "santan kara", "kara", "sasa santan", "santan kemasan"], false),
   IngredientRow("sweet_soy_sauce", "kecap manis", "sweet soy sauce", "bumbu", ["kecap", "kecap bango", "kecap abc", "kecap sedaap"], false),
   IngredientRow("oyster_sauce", "saus tiram", "oyster sauce", "bumbu", [], false),
+  IngredientRow("chili_sauce", "saus sambal", "chili sauce", "bumbu", ["saos sambal", "sambal botol", "saus cabai"], false),
   IngredientRow("butter", "mentega", "butter", "susu", ["margarin", "butter", "blue band"], false),
   IngredientRow("yogurt", "yoghurt", "yogurt", "susu", ["yogurt", "yoghurt plain"], false),
   IngredientRow("honey", "madu", "honey", "bumbu", [], false),
@@ -110,7 +111,7 @@ const ingredientRows = <IngredientRow>[
 ];
 
 const unitTable = <String, (String, String)>{"grape": ("tandan", "beberapa tandan"), "banana": ("buah", "sisir"), "egg": ("butir", "setumpuk"), "garlic": ("siung", "bonggol"), "shallot": ("siung", "setumpuk"), "spring_onion": ("batang", "ikat"), "celery": ("batang", "ikat"), "lemongrass": ("batang", "ikat"), "water_spinach": ("ikat", "beberapa ikat"), "spinach": ("ikat", "beberapa ikat"), "mustard_greens": ("ikat", "beberapa ikat"), "long_bean": ("ikat", "beberapa ikat"), "green_bean": ("ikat", "beberapa ikat"), "lettuce": ("ikat", "beberapa ikat"), "asparagus": ("batang", "ikat"), "broccoli": ("bonggol", "setumpuk"), "cabbage": ("buah", "setumpuk"), "corn": ("tongkol", "setumpuk"), "shrimp": ("ekor", "setumpuk"), "crab": ("ekor", "setumpuk"), "fish": ("ekor", "setumpuk"), "tofu": ("potong", "setumpuk"), "tempeh": ("papan", "setumpuk"), "chili": ("buah", "segenggam"), "strawberry": ("buah", "segenggam"), "mushroom": ("buah", "segenggam")};
-const massKeys = <String>{"bean_sprout", "beef", "bread", "butter", "cheese", "chicken", "chocolate", "coconut_milk", "cooking_oil", "flour", "honey", "ice", "meatball", "milk", "mung_bean", "noodle", "oats", "oyster_sauce", "palm_sugar", "pasta", "peanut", "pepper", "rice", "salt", "sugar", "sweet_soy_sauce", "water", "yogurt"};
+const massKeys = <String>{"bean_sprout", "beef", "bread", "butter", "cheese", "chicken", "chili_sauce", "chocolate", "coconut_milk", "cooking_oil", "flour", "honey", "ice", "meatball", "milk", "mung_bean", "noodle", "oats", "oyster_sauce", "palm_sugar", "pasta", "peanut", "pepper", "rice", "salt", "sugar", "sweet_soy_sauce", "water", "yogurt"};
 
 const promptGround = "Tandai setiap bahan makanan di foto, satu baris untuk setiap buah atau bahan: nama x1 y1 x2 y2 (skala 0-1000). Beri * setelah nama untuk tumpukan yang tidak bisa dipisah. Urutkan dari kiri ke kanan.";
 const promptVerify = "Apakah ada {name} di foto ini? Jawab \"tidak ada\", atau \"ada\" lalu satu baris x1 y1 x2 y2 (skala 0-1000) untuk setiap {name} yang terlihat.";
@@ -127,4 +128,4 @@ const promptPackages = "Baca tulisan pada kemasan makanan atau bumbu yang terlih
 const packagesSchema = "{\"type\": \"object\", \"properties\": {\"kemasan\": {\"type\": \"array\", \"maxItems\": 8, \"items\": {\"type\": \"object\", \"properties\": {\"tulisan\": {\"type\": \"string\"}, \"jenis\": {\"type\": \"string\"}, \"bbox_2d\": {\"type\": \"array\", \"items\": {\"type\": \"integer\"}, \"minItems\": 4, \"maxItems\": 4}}, \"required\": [\"tulisan\", \"jenis\", \"bbox_2d\"]}}}, \"required\": [\"kemasan\"]}";
 
 /// Bahan yang bisa dikenali kamera dengan andal (hasil evaluasi). Bahan lain tidak dicap "kurang" bila tak terlihat.
-const detectableKeys = <String>{"apple", "artichoke", "asparagus", "avocado", "banana", "beef", "bell_pepper", "bread", "broccoli", "butter", "cabbage", "cantaloupe", "carrot", "cauliflower", "celery", "cheese", "chili", "coconut", "corn", "crab", "cucumber", "egg", "eggplant", "fig", "garlic", "ginger", "grape", "grapefruit", "green_bean", "honey", "lemon", "lettuce", "lime", "mango", "meatball", "milk", "mushroom", "onion", "orange", "papaya", "pasta", "peach", "pear", "pineapple", "pomegranate", "potato", "pumpkin", "radish", "sausage", "shrimp", "spring_onion", "squash", "strawberry", "sweet_potato", "tofu", "tomato", "watermelon", "winter_melon", "yogurt", "zucchini"};
+const detectableKeys = <String>{"apple", "artichoke", "banana", "bread", "broccoli", "cabbage", "cantaloupe", "carrot", "cheese", "coconut", "crab", "egg", "fig", "grape", "lemon", "milk", "mushroom", "orange", "pasta", "peach", "pear", "pineapple", "pomegranate", "pumpkin", "radish", "squash", "strawberry", "watermelon"};

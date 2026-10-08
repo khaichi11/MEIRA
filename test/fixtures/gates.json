@@ -15,6 +15,11 @@
     "value": 0.8,
     "desc": "recall penanda (bahan yang tertandai)"
   },
+  "eyes_marker_f1_ingredient_photo": {
+    "op": ">=",
+    "value": 0.8,
+    "desc": "F1 penanda pada foto bahan (kotak bahan menutupi minimal 10% foto)"
+  },
   "eyes_f1": {
     "op": ">=",
     "value": 0.6,
@@ -68,17 +73,17 @@
   "eyes_ppl": {
     "op": "<=",
     "value": 2.5,
-    "desc": "perplexity jawaban emas di model fine-tune"
+    "desc": "perplexity jawaban emas di model fine-tune (model mata VLM, jalur riset)"
   },
   "eyes_ppl_gain": {
     "op": ">=",
     "value": 2.0,
-    "desc": "perplexity base dibagi perplexity fine-tune"
+    "desc": "perplexity base dibagi perplexity fine-tune (model mata VLM, jalur riset)"
   },
-  "eyes_latency_p95_gpu": {
+  "eyes_latency_p95_cpu": {
     "op": "<=",
-    "value": 1.5,
-    "desc": "latensi deteksi p95 (detik, GPU desktop)"
+    "value": 1.0,
+    "desc": "latensi penandaan p95 (detik, CPU laptop 4 thread, mendekati ponsel)"
   },
   "asr_wer": {
     "op": "<=",
@@ -194,5 +199,15 @@
     "op": ">=",
     "value": 0.9,
     "desc": "pertanyaan pengetahuan dapur dikenali sebagai pertanyaan, bukan permintaan resep"
+  },
+  "ocr_cer": {
+    "op": "<=",
+    "value": 0.1,
+    "desc": "CER OCR pada label kemasan sintetis"
+  },
+  "ocr_ingredient_recall": {
+    "op": ">=",
+    "value": 0.9,
+    "desc": "bahan kemasan yang dikenali dari tulisan label (sintetis)"
   }
 }

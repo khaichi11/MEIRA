@@ -78,7 +78,7 @@ void main() {
       final pos = ranked.indexWhere(expect_.contains);
       if (pos >= 0) rr += 1 / (pos + 1);
     }
-    expect(n, greaterThan(20));
+    expect(n, greaterThanOrEqualTo(10)); // hanya kueri yang resep harapannya aktif di aplikasi
     expect(hits / n, greaterThanOrEqualTo(_gate('retrieval_recall_at_3')));
     expect(rr / n, greaterThanOrEqualTo(_gate('retrieval_mrr')));
   });

@@ -21,6 +21,7 @@ import 'runtime/device.dart';
 import 'runtime/llama.dart';
 import 'runtime/models.dart';
 import 'runtime/speech.dart';
+import 'vision/vision.dart';
 
 enum Phase { booting, needsModels, ready, failed }
 
@@ -49,7 +50,6 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   late History history;
   List<Recipe> recipes = [];
   KnowledgeBase? knowledge;
-  LlamaServer? _eyesServer;
   LlamaServer? _brainServer;
   Speech? speech;
   Meira? meira;
@@ -59,19 +59,19 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   final steps = [BootStep('Membuka buku resep'), BootStep('Menyiapkan model penglihatan'), BootStep('Menyiapkan model bahasa'), BootStep('Pemanasan')];
   String get bootLabel => steps.firstWhere((s) => !s.done, orElse: () => steps.last).title;
   double get bootProgress => steps.where((s) => s.done).length / steps.length;
-  bool eyesFineTuned = false;
-  String eyesChoice = 'otomatis'; // otomatis | cepat | akurat
+  Vision? vision; // detektor bahan dan OCR kemasan, terpisah dari model bahasa
+  VisionInput? _visionInput;
 
   // ------------------------------------------------------------- pengaturan
   bool speakAnswers = false;
   bool handsFree = false;
   bool releaseInBackground = true;
-  int imageSide = 768;
+  int imageSide = 512; // foto untuk model bahasa (makanan jadi); detektor selalu memakai 640 x 640
   String photoMode = 'otomatis';
   String answerStyle = 'ringkas';
   bool thorough = false;
-  String ttsEngine = 'sistem';
   String? voiceName;
+  String? userName; // nama panggilan, disimpan di perangkat
   bool readPackages = true;
 
   // ------------------------------------------------------------- sesi
@@ -110,14 +110,13 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       speakAnswers = p.getBool('speak') ?? false;
       handsFree = false;
       releaseInBackground = p.getBool('release_bg') ?? true;
-      imageSide = p.getInt('image_side') ?? 768;
+      imageSide = p.getInt('image_side') ?? 512;
       photoMode = p.getString('photo_mode') ?? 'otomatis';
       answerStyle = p.getString('answer_style') ?? 'ringkas';
       thorough = p.getBool('thorough') ?? false;
-      ttsEngine = p.getString('tts_engine') ?? 'sistem';
       voiceName = p.getString('voice_name');
+      userName = p.getString('user_name');
       readPackages = p.getBool('read_packages') ?? true;
-      eyesChoice = p.getString('eyes_model') ?? 'otomatis';
 
       models = await Models.open();
       if (models.missingRequired().isNotEmpty) {
@@ -129,21 +128,23 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       knowledge = KnowledgeBase.parse(await rootBundle.loadString('assets/pengetahuan.md'));
       history = await History.open();
       _done(0);
+      vision ??= IsolateVision(await _visionPaths(), threads: math.min(4, Device.inferenceThreads));
+      _done(1);
       await _startModels();
-      speech = Speech(SpeechPaths.of(models), threads: math.min(4, Device.inferenceThreads), engine: ttsEngine)..voiceName = voiceName;
+      speech = Speech(SpeechPaths.of(models), threads: math.min(4, Device.inferenceThreads))..voiceName = voiceName;
       meira = Meira(
         recipes: recipes,
         history: history,
-        eyes: _eyesServer?.client,
+        eyes: null,
+        vision: vision,
         brain: _brainServer?.client,
-        eyesFineTuned: eyesFineTuned,
         useLlmIntent: false, // aturan 0,99 (set terpisah 1,0) jauh di atas model 0,31 sampai 0,61; lihat docs/evaluasi.md
         answerStyle: answerStyle,
         parallelVision: false,
         thorough: thorough,
         readPackages: readPackages,
         knowledge: knowledge,
-      );
+      )..userName = userName;
       await _warmup();
       _done(3);
       final wait = 5000 - DateTime.now().difference(started).inMilliseconds;
@@ -165,32 +166,50 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
+  /// Model bahasa hanya untuk percakapan dan mengenali makanan jadi; penandaan bahan dikerjakan detektor.
   Future<void> _startModels() async {
     final brainModel = models.path(brainPack.files[0].name), brainProj = models.path(brainPack.files[1].name);
-    final eyes = activeEyesPack();
-    eyesFineTuned = eyes != null;
     _brainServer = LlamaServer(name: 'otak', model: brainModel, mmproj: brainProj, port: 8392);
-    if (eyes != null) {
-      _eyesServer = LlamaServer(name: 'mata', model: models.path(eyes.files[0].name), mmproj: models.path(eyes.files[1].name), port: 8391);
-      await _eyesServer!.start(maxImageTokens: _imageTokens);
-      _done(1);
-      await _brainServer!.start(maxImageTokens: 128);
-    } else {
-      // tanpa model fine-tune, satu model instruct melayani mata dan otak (hemat RAM)
-      await _brainServer!.start(maxImageTokens: _imageTokens);
-      _eyesServer = _brainServer;
-      _done(1);
-    }
+    await _brainServer!.start(maxImageTokens: _imageTokens);
     _done(2);
   }
 
-  /// Model mata yang dipakai. Otomatis: versi 2B bila terpasang dan RAM ponsel cukup, selain itu versi 0,8B.
-  ModelPack? activeEyesPack() {
-    final fast = models.installed(eyesPack), accurate = models.installed(eyesAccuratePack);
-    if (eyesChoice == 'akurat' && accurate) return eyesAccuratePack;
-    if (eyesChoice == 'cepat' && fast) return eyesPack;
-    if (accurate && (Device.totalRamGb() >= 7.5 || !fast)) return eyesAccuratePack;
-    return fast ? eyesPack : null;
+  /// Model penglihatan dibawa di dalam APK (±30 MB); disalin sekali ke folder model karena ONNX Runtime membaca berkas.
+  Future<VisionPaths> _visionPaths() async {
+    final dir = Directory('${models.dir.path}/penglihatan')..createSync(recursive: true);
+    for (final name in visionAssets) {
+      final f = File('${dir.path}/$name');
+      final data = await rootBundle.load('assets/models/$name');
+      if (!f.existsSync() || f.lengthSync() != data.lengthInBytes) {
+        await f.writeAsBytes(data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes), flush: true);
+      }
+    }
+    return VisionPaths(
+      detector: '${dir.path}/meira-det.onnx',
+      ocrDet: '${dir.path}/ppocrv5-det.onnx',
+      ocrRec: '${dir.path}/ppocrv5-latin-rec.onnx',
+      ocrKeys: '${dir.path}/ppocrv5-latin-keys.txt',
+    );
+  }
+
+  static const visionAssets = [
+    'meira-det.onnx', 'meira-det.labels.txt', 'meira-det.json', 'ppocrv5-det.onnx', 'ppocrv5-latin-rec.onnx', 'ppocrv5-latin-keys.txt',
+  ];
+
+  /// Foto untuk detektor (640 x 640, sama dengan saat pelatihan) dan untuk OCR (sisi terpanjang 960 piksel).
+  static Future<VisionInput> visionInput(Uint8List bytes) async {
+    Future<(Uint8List, int, int)> rgba(int? w, int? h) async {
+      final codec = await ui.instantiateImageCodec(bytes, targetWidth: w, targetHeight: h);
+      final img = (await codec.getNextFrame()).image;
+      final data = await img.toByteData(format: ui.ImageByteFormat.rawRgba);
+      return (data!.buffer.asUint8List(), img.width, img.height);
+    }
+
+    final probe = (await (await ui.instantiateImageCodec(bytes)).getNextFrame()).image;
+    final scale = math.min(1.0, 960 / math.max(probe.width, probe.height));
+    final (square, _, _) = await rgba(640, 640);
+    final (full, w, h) = await rgba((probe.width * scale).round(), (probe.height * scale).round());
+    return VisionInput(square: square, squareSize: 640, full: full, width: w, height: h);
   }
 
   int get _imageTokens => ((imageSide / 32) * (imageSide / 32)).round();
@@ -209,7 +228,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> _stopModels() async {
-    final servers = {_eyesServer, _brainServer}.whereType<LlamaServer>();
+    final servers = {_brainServer}.whereType<LlamaServer>();
     for (final s in servers) {
       await s.stop();
     }
@@ -274,7 +293,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     session = _newSession();
     notifyListeners();
     final dataUrl = await _modelImage(bytes);
-    if (thorough) session!.imageDataUrlFlipped = await _modelImage(bytes, flip: true);
+    _visionInput = await visionInput(bytes);
     unawaited(_thumb(bytes).then((t) => history.savePhoto(session!.id, bytes, t)));
     await send(text: text, imageDataUrl: dataUrl, photoBytes: bytes);
   }
@@ -287,9 +306,16 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   Session _newSession() => Session(_newId(), memoryBudget: _memoryBudget);
 
   // =============================================================== percakapan
-  Future<void> send({String text = '', String? imageDataUrl, Uint8List? photoBytes, bool spoken = false}) async {
+  /// Foto tambahan dalam percakapan yang sama: bahannya ikut dihitung, foto utama dan penandanya tetap.
+  Future<void> addPhoto(Uint8List bytes) async {
+    if (session == null || photo == null) return sendPhoto(bytes);
+    final input = await visionInput(bytes);
+    await send(photoBytes: bytes, turn: () => meira!.addPhoto(session!, input));
+  }
+
+  Future<void> send({String text = '', String? imageDataUrl, Uint8List? photoBytes, bool spoken = false, Stream<MeiraEvent> Function()? turn}) async {
     if (busy || meira == null) return;
-    if (text.trim().isEmpty && imageDataUrl == null) return;
+    if (text.trim().isEmpty && imageDataUrl == null && turn == null) return;
     session ??= _newSession();
     busy = true;
     scanning = imageDataUrl != null;
@@ -299,7 +325,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     Message? status;
     notifyListeners();
     try {
-      await for (final ev in meira!.turn(session!, text: text, imageDataUrl: imageDataUrl, mode: photoMode)) {
+      final vin = imageDataUrl != null ? _visionInput : null;
+      _visionInput = null;
+      final events = turn?.call() ?? meira!.turn(session!, text: text, imageDataUrl: imageDataUrl, visionInput: vin, mode: photoMode);
+      await for (final ev in events) {
         switch (ev) {
           case StatusEvent(:final text):
             status ??= (Message(Role.status, '')..let(messages.add));
@@ -558,23 +587,18 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       case 'photo_mode':
         photoMode = value as String;
         await p.setString(key, photoMode);
+      case 'user_name':
+        userName = (value as String).trim();
+        meira?.userName = userName;
+        await p.setString(key, userName!);
       case 'voice_name':
         voiceName = value as String;
         await speech?.setVoice(voiceName);
         await p.setString(key, voiceName!);
-      case 'tts_engine':
-        ttsEngine = value as String;
-        speech?.engine = ttsEngine;
-        await p.setString(key, ttsEngine);
       case 'thorough':
         thorough = value as bool;
         meira?.thorough = thorough;
         await p.setBool(key, thorough);
-      case 'eyes_model':
-        eyesChoice = value as String;
-        await p.setString(key, eyesChoice);
-        await _stopModels();
-        unawaited(_restart());
       case 'read_packages':
         readPackages = value as bool;
         meira?.readPackages = readPackages;
