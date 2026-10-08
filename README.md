@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/img/logo.png" alt="MEIRA logo" width="110"></p>
+
 # MEIRA
 
 Multimodal Edge Intelligence for Recipe Assistance: an offline kitchen assistant for Android. Take a photo of

@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/img/logo.png" alt="MEIRA logo" width="110"></p>
+
 # MEIRA
 
 Multimodal Edge Intelligence for Recipe Assistance: asisten dapur luring untuk Android. Potret bahan di dapur

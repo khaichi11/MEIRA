@@ -6,7 +6,10 @@ dan tidak meniru merek mana pun, sehingga bebas dipakai bersama kode ini (Apache
 
 from __future__ import annotations
 
-from PIL import Image, ImageDraw
+import argparse
+from pathlib import Path
+
+from PIL import Image, ImageDraw, ImageFilter
 
 BODY = (44, 54, 74)  # biru batu tua, bukan hitam
 RIM = (92, 104, 128)  # garis tepi tipis agar badan terlihat bervolume
@@ -82,11 +85,32 @@ def overlay(w: int, h: int) -> Image.Image:
     return big.resize(g["size"], Image.LANCZOS)
 
 
-def phone(screen: Image.Image) -> Image.Image:
-    """Tangkapan layar di dalam bingkai ponsel, hasilnya RGBA dengan latar transparan."""
+def add_bars(im: Image.Image) -> Image.Image:
+    """Tambahkan ruang bilah status di atas dan ruang tipis di bawah untuk tangkapan layar tanpa bilah status.
+
+    Warna ruang tambahan diambil dari baris teratas dan terbawah tangkapan layar, sehingga isi aplikasi tidak
+    terpotong lengkung sudut bingkai dan lubang kamera tidak menutupi judul halaman.
+    """
+    w, h = im.size
+    top, bottom = round(h * 0.035), round(h * 0.02)
+    out = Image.new("RGB", (w, h + top + bottom))
+    out.paste(im.crop((0, 0, w, 1)).resize((w, top)), (0, 0))
+    out.paste(im, (0, top))
+    out.paste(im.crop((0, h - 1, w, h)).resize((w, bottom)), (0, top + h))
+    return out
+
+
+def phone(screen: Image.Image, status_bar: bool | None = True) -> Image.Image:
+    """Tangkapan layar di dalam bingkai ponsel, hasilnya RGBA dengan latar transparan.
+
+    status_bar=True untuk tangkapan layar utuh dari ponsel atau emulator (ikon bilah status digeser ke tengah);
+    False untuk tangkapan layar isi aplikasi saja (ruang bilah status ditambahkan); None bila layar sudah siap pakai.
+    """
+    if status_bar is not None:
+        screen = clear_corners(screen.convert("RGB")) if status_bar else add_bars(screen.convert("RGB"))
     g = layout(*screen.size)
     out = Image.new("RGBA", g["size"], (0, 0, 0, 0))
-    out.paste(clear_corners(screen.convert("RGB")), g["screen"][:2])
+    out.paste(screen, g["screen"][:2])
     frame = overlay(*screen.size)
     out.alpha_composite(frame)
     # sudut layar di luar lengkung ikut transparan supaya latar halaman terlihat rapi
@@ -99,3 +123,37 @@ def phone(screen: Image.Image) -> Image.Image:
     alpha = Image.composite(out.getchannel("A").point(lambda v: 255), frame.getchannel("A"), mask)
     out.putalpha(alpha)
     return out
+
+
+def with_shadow(im: Image.Image, blur: int = 10, alpha: int = 50) -> Image.Image:
+    """Bayangan lembut di bawah ponsel; latar tetap transparan."""
+    pad = blur * 3
+    out = Image.new("RGBA", (im.width + 2 * pad, im.height + 2 * pad), (0, 0, 0, 0))
+    shade = Image.new("RGBA", im.size, (30, 42, 68, 0))
+    shade.putalpha(im.getchannel("A").point(lambda v: v * alpha // 255))
+    out.alpha_composite(shade.filter(ImageFilter.GaussianBlur(blur)), (pad, pad + blur))
+    out.alpha_composite(im, (pad, pad))
+    return out
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description="Bingkai ponsel generik untuk tangkapan layar")
+    ap.add_argument("out", type=Path, help="folder hasil; nama berkas sama dengan aslinya, berformat PNG")
+    ap.add_argument("screens", type=Path, nargs="+")
+    ap.add_argument("--width", type=int, default=360, help="lebar layar di dalam bingkai, dalam piksel")
+    ap.add_argument("--no-status-bar", action="store_true", help="tangkapan layar tanpa bilah status")
+    ap.add_argument("--shadow", action="store_true", help="tambahkan bayangan lembut")
+    args = ap.parse_args()
+    args.out.mkdir(parents=True, exist_ok=True)
+    for f in args.screens:
+        im = Image.open(f).convert("RGB")
+        im = im.resize((args.width, round(im.height * args.width / im.width)), Image.LANCZOS)
+        framed = phone(im, status_bar=not args.no_status_bar)
+        if args.shadow:
+            framed = with_shadow(framed)
+        framed.save(args.out / f"{f.stem}.png", optimize=True)
+        print(args.out / f"{f.stem}.png", framed.size)
+
+
+if __name__ == "__main__":
+    main()
