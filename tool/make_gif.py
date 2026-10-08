@@ -48,7 +48,7 @@ def first_green(path: Path, limit: float = 8.0) -> float:
     return 0.0
 
 
-def main(folder: str, out: str, width: int = 300, fps: int = 12) -> None:
+def main(folder: str, out: str, width: int = 300, fps: int = 10) -> None:
     root = Path(folder)
     marks = [line.split(maxsplit=1) for line in (root / "marks.txt").read_text().splitlines() if line.strip()]
     times = [(int(ms) / 1000 + OFFSET, name.strip()) for ms, name in marks]
@@ -92,10 +92,16 @@ def main(folder: str, out: str, width: int = 300, fps: int = 12) -> None:
 
     half = w // 2
     graph = ";".join([
-        "[0:v]format=rgb24,split[raw][edge]",
-        # kolom gelap di tepi kanan rekaman ditutup kolom sebelahnya
-        f"[edge]crop=1:{h}:{w - 2}:0[e]",
-        f"[raw][e]overlay={w - 1}:0:format=rgb,split=4[b0][l][r][c]",
+        # dua piksel terluar rekaman sering berisi garis warna sisa; diganti baris atau kolom di dalamnya
+        "[0:v]format=rgb24,split=5[raw][t][bt][lf][rt]",
+        f"[t]crop={w}:1:0:2,scale={w}:2[t2]",
+        f"[bt]crop={w}:1:0:{h - 3},scale={w}:2[b2]",
+        f"[lf]crop=1:{h}:2:0,scale=2:{h}[l2]",
+        f"[rt]crop=1:{h}:{w - 3}:0,scale=2:{h}[r2]",
+        "[raw][t2]overlay=0:0:format=rgb[x1]",
+        f"[x1][b2]overlay=0:{h - 2}:format=rgb[x2]",
+        "[x2][l2]overlay=0:0:format=rgb[x3]",
+        f"[x3][r2]overlay={w - 2}:0:format=rgb,split=4[b0][l][r][c]",
         # jam dan ikon bilah status digeser ke tengah agar tidak terpotong sudut bingkai
         f"[l]crop={half}:{bar}:0:0[lh]",
         f"[r]crop={w - half}:{bar}:{half}:0[rh]",
