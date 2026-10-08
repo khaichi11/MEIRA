@@ -140,7 +140,7 @@ class Meira {
     required this.brain,
     this.eyesFineTuned = false,
     this.brainHasVision = true,
-    this.useLlmIntent = true,
+    this.useLlmIntent = false,
     this.answerStyle = 'ringkas',
     this.parallelVision = true,
     this.knowledge,
@@ -249,6 +249,8 @@ class Meira {
   // --------------------------------------------------------------- niat
   Future<Intent> _intent(String text) async {
     final rule = ruleIntent(text);
+    // pertanyaan dapur yang cocok kuat dengan catatan tidak perlu ditafsirkan model
+    if (rule.action == 'rekomendasi' && knowledge != null && kitchenQuestion(text, knowledge!)) return rule..action = 'obrolan';
     final plain = rule.action == 'rekomendasi' && rule.maxMinutes == null && rule.tags.isEmpty && rule.exclude.isEmpty && rule.include.isEmpty;
     if (!useLlmIntent || brain == null || !plain || text.split(' ').length < 4) return rule;
     final llm = await brain!.json([
@@ -372,7 +374,6 @@ class Meira {
     }
     final it = text.isNotEmpty ? await _intent(text) : Intent(imageDataUrl != null && s.mode == 'hidangan' ? 'hidangan' : 'rekomendasi');
     if (imageDataUrl != null && s.mode == 'hidangan' && it.action == 'rekomendasi') it.action = 'hidangan';
-    if (it.action == 'rekomendasi' && knowledge != null && kitchenQuestion(text, knowledge!)) it.action = 'obrolan';
     _applyPrefs(s, it);
     var task = it.action;
     final extra = <String, String>{};

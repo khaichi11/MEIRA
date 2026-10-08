@@ -135,7 +135,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         eyes: _eyesServer?.client,
         brain: _brainServer?.client,
         eyesFineTuned: eyesFineTuned,
-        useLlmIntent: false, // aturan sudah cukup akurat dan jauh lebih cepat di CPU HP
+        useLlmIntent: false, // aturan 0,99 (set terpisah 1,0) jauh di atas model 0,31 sampai 0,61; lihat docs/evaluasi.md
         answerStyle: answerStyle,
         parallelVision: false,
         thorough: thorough,

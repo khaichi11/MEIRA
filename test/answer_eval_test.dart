@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meira/core/generated.dart';
 import 'package:meira/core/grounding.dart';
 import 'package:meira/core/history.dart';
 import 'package:meira/core/pipeline.dart';
@@ -97,6 +98,19 @@ void main() {
         }));
         print('${q['id']} [$source]: ${answer.length > 90 ? answer.substring(0, 90) : answer}');
       }
+      // pemahaman permintaan oleh model (cadangan aturan): akurasi jenis permintaan dalam JSON terstruktur
+      final intentSink = File('$outDir/llm_intents.jsonl').openWrite();
+      for (final f in ['intents.jsonl', 'intents_holdout.jsonl']) {
+        for (final line in File('$home/data/eval/$f').readAsLinesSync().where((l) => l.trim().isNotEmpty)) {
+          final r = jsonDecode(line) as Map<String, dynamic>;
+          final out = await server.client.json([
+            {'role': 'system', 'content': promptIntentSystem},
+            {'role': 'user', 'content': r['text']},
+          ], intentSchema).timeout(const Duration(seconds: 30), onTimeout: () => null);
+          intentSink.writeln(jsonEncode({'text': r['text'], 'gold': r['action'], 'pred': out?['action']}));
+        }
+      }
+      await intentSink.close();
     } finally {
       await sink.close();
       await kbSink.close();
