@@ -15,6 +15,8 @@ import 'core/grounding.dart';
 import 'core/history.dart';
 import 'core/pipeline.dart';
 import 'core/recipes.dart';
+import 'core/vocab.dart';
+import 'llm/knowledge.dart';
 import 'runtime/device.dart';
 import 'runtime/llama.dart';
 import 'runtime/models.dart';
@@ -46,6 +48,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   late Models models;
   late History history;
   List<Recipe> recipes = [];
+  KnowledgeBase? knowledge;
   LlamaServer? _eyesServer;
   LlamaServer? _brainServer;
   Speech? speech;
@@ -65,6 +68,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   int imageSide = 512;
   String photoMode = 'otomatis';
   String answerStyle = 'ringkas';
+  bool thorough = false;
+  String ttsEngine = 'sistem';
+  String? voiceName;
+  bool readPackages = true;
 
   // ------------------------------------------------------------- sesi
   Session? session;
@@ -105,6 +112,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       imageSide = p.getInt('image_side') ?? 512;
       photoMode = p.getString('photo_mode') ?? 'otomatis';
       answerStyle = p.getString('answer_style') ?? 'ringkas';
+      thorough = p.getBool('thorough') ?? false;
+      ttsEngine = p.getString('tts_engine') ?? 'sistem';
+      voiceName = p.getString('voice_name');
+      readPackages = p.getBool('read_packages') ?? true;
 
       models = await Models.open();
       if (models.missingRequired().isNotEmpty) {
@@ -113,19 +124,23 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         return;
       }
       recipes = parseRecipes(await rootBundle.loadString('assets/resep.md'));
+      knowledge = KnowledgeBase.parse(await rootBundle.loadString('assets/pengetahuan.md'));
       history = await History.open();
       _done(0);
       await _startModels();
-      speech = Speech(SpeechPaths.of(models), threads: math.min(4, Device.inferenceThreads));
+      speech = Speech(SpeechPaths.of(models), threads: math.min(4, Device.inferenceThreads), engine: ttsEngine)..voiceName = voiceName;
       meira = Meira(
         recipes: recipes,
         history: history,
         eyes: _eyesServer?.client,
         brain: _brainServer?.client,
         eyesFineTuned: eyesFineTuned,
-        useLlmIntent: !Device.isAndroid,
+        useLlmIntent: false, // aturan sudah cukup akurat dan jauh lebih cepat di CPU HP
         answerStyle: answerStyle,
-        parallelVision: !Device.isAndroid,
+        parallelVision: false,
+        thorough: thorough,
+        readPackages: readPackages,
+        knowledge: knowledge,
       );
       await _warmup();
       _done(3);
@@ -190,7 +205,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (!releaseInBackground || !Device.isAndroid) return;
+    if (!releaseInBackground) return;
     if (state == AppLifecycleState.paused) {
       // lepas model dari RAM bila aplikasi ditinggal lebih dari 3 menit
       _backgroundTimer = Timer(const Duration(minutes: 3), () async {
@@ -210,13 +225,22 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   // =============================================================== foto
-  Future<String> _modelImage(Uint8List bytes) async {
+  /// Foto untuk model: diperkecil ke [imageSide] piksel; bila [flip], dicerminkan untuk mode deteksi teliti.
+  Future<String> _modelImage(Uint8List bytes, {bool flip = false}) async {
     final probe = await ui.instantiateImageCodec(bytes);
     final f = await probe.getNextFrame();
     final w = f.image.width, h = f.image.height;
     final scale = imageSide / math.max(w, h);
     final codec = await ui.instantiateImageCodec(bytes, targetWidth: scale < 1 ? (w * scale).round() : w, targetHeight: scale < 1 ? (h * scale).round() : h);
-    final small = (await codec.getNextFrame()).image;
+    var small = (await codec.getNextFrame()).image;
+    if (flip) {
+      final rec = ui.PictureRecorder();
+      ui.Canvas(rec)
+        ..translate(small.width.toDouble(), 0)
+        ..scale(-1, 1)
+        ..drawImage(small, ui.Offset.zero, ui.Paint());
+      small = await rec.endRecording().toImage(small.width, small.height);
+    }
     final png = await small.toByteData(format: ui.ImageByteFormat.png);
     return 'data:image/png;base64,${base64Encode(png!.buffer.asUint8List())}';
   }
@@ -235,20 +259,26 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     partial = [];
     sceneMode = null;
     dish = null;
-    session = Session(_newId());
+    session = _newSession();
     notifyListeners();
     final dataUrl = await _modelImage(bytes);
+    if (thorough) session!.imageDataUrlFlipped = await _modelImage(bytes, flip: true);
     unawaited(_thumb(bytes).then((t) => history.savePhoto(session!.id, bytes, t)));
     await send(text: text, imageDataUrl: dataUrl, photoBytes: bytes);
   }
 
   String _newId() => DateTime.now().microsecondsSinceEpoch.toRadixString(36);
 
+  // riwayat untuk LLM lebih ringkas di HP supaya prompt cepat diproses CPU
+  int get _memoryBudget => 700;
+
+  Session _newSession() => Session(_newId(), memoryBudget: _memoryBudget);
+
   // =============================================================== percakapan
   Future<void> send({String text = '', String? imageDataUrl, Uint8List? photoBytes, bool spoken = false}) async {
     if (busy || meira == null) return;
     if (text.trim().isEmpty && imageDataUrl == null) return;
-    session ??= Session(_newId());
+    session ??= _newSession();
     busy = true;
     scanning = imageDataUrl != null;
     await stopSpeaking();
@@ -304,6 +334,40 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
+  /// Koreksi pengguna: ganti bahan pada penanda [number], atau hapus bila [key] null.
+  Future<void> correctMarker(int number, String? key) async {
+    final s = session;
+    if (s == null) return;
+    final i = s.detections.indexWhere((d) => d.number == number);
+    if (i < 0) return;
+    final old = s.detections[i];
+    if (key == null) {
+      s.detections.removeAt(i);
+    } else {
+      s.detections[i] = Detection(key: key, label: displayName(key), rawLabel: displayName(key), box: old.box, group: old.group);
+    }
+    await meira?.refresh(s);
+    detections = List.of(s.detections);
+    highlighted = {};
+    notifyListeners();
+  }
+
+  /// Simpan foto ini beserta penandanya sebagai contoh latih. Dipanggil setelah pengguna memastikan
+  /// setiap bahan sudah bertanda dan tidak ada penanda yang salah.
+  Future<String?> saveToDataset() async {
+    final s = session;
+    if (s == null || photo == null || photoSize == null) return null;
+    return CustomDataset.save(
+      jpeg: photo!,
+      width: photoSize!.width.round(),
+      height: photoSize!.height.round(),
+      objects: [for (final d in s.detections) if (d.key != null && !d.packaged) {'key': d.key, 'label': d.label, 'box': d.box, 'group': d.group}],
+      absent: const [],
+      author: '',
+      license: 'CC BY 4.0',
+    );
+  }
+
   void selectRecipe(String id) {
     session?.current = id;
     notifyListeners();
@@ -330,7 +394,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     final row = await history.load(id);
     if (row == null) return;
     final (state, msgs) = row;
-    final s = Session.restore(id, state, recipes);
+    final s = Session.restore(id, state, recipes, memoryBudget: _memoryBudget);
     final f = history.photoFile(id);
     if (f.existsSync()) {
       final bytes = await f.readAsBytes();
@@ -357,7 +421,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   // =============================================================== suara
   Future<void> speak(String text) async {
     final sp = speech;
-    if (sp == null || !sp.paths.hasTts) return;
+    if (sp == null || !sp.canSpeak) return;
     try {
       voice = VoiceState.speaking;
       notifyListeners();
@@ -482,6 +546,22 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       case 'photo_mode':
         photoMode = value as String;
         await p.setString(key, photoMode);
+      case 'voice_name':
+        voiceName = value as String;
+        await speech?.setVoice(voiceName);
+        await p.setString(key, voiceName!);
+      case 'tts_engine':
+        ttsEngine = value as String;
+        speech?.engine = ttsEngine;
+        await p.setString(key, ttsEngine);
+      case 'thorough':
+        thorough = value as bool;
+        meira?.thorough = thorough;
+        await p.setBool(key, thorough);
+      case 'read_packages':
+        readPackages = value as bool;
+        meira?.readPackages = readPackages;
+        await p.setBool(key, readPackages);
       case 'answer_style':
         answerStyle = value as String;
         meira?.answerStyle = answerStyle;

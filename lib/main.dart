@@ -1,11 +1,10 @@
-import 'dart:ui' show AppExitResponse;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'app_state.dart';
 import 'theme.dart';
 import 'ui/home.dart';
+import 'ui/onboarding.dart';
 import 'ui/setup.dart';
 import 'ui/splash.dart';
 import 'ui/widgets.dart';
@@ -27,22 +26,12 @@ class MeiraApp extends StatefulWidget {
 }
 
 class _MeiraAppState extends State<MeiraApp> {
-  late final AppLifecycleListener _exit;
+  bool _onboarded = true;
 
   @override
   void initState() {
     super.initState();
-    // aplikasi desktop mematikan llama-server yang dinyalakannya sendiri saat ditutup
-    _exit = AppLifecycleListener(onExitRequested: () async {
-      await widget.state.shutdown();
-      return AppExitResponse.exit;
-    });
-  }
-
-  @override
-  void dispose() {
-    _exit.dispose();
-    super.dispose();
+    Onboarding.needed().then((need) => mounted ? setState(() => _onboarded = !need) : null);
   }
 
   @override
@@ -57,7 +46,7 @@ class _MeiraAppState extends State<MeiraApp> {
           final s = Scope.of(context);
           final page = switch (s.phase) {
             Phase.needsModels => const SetupScreen(key: ValueKey('setup')),
-            Phase.ready => const HomeShell(key: ValueKey('home')),
+            Phase.ready => _onboarded ? const HomeShell(key: ValueKey('home')) : Onboarding(key: const ValueKey('intro'), onDone: () => setState(() => _onboarded = true)),
             _ => const SplashScreen(key: ValueKey('splash')),
           };
           return AnimatedSwitcher(duration: const Duration(milliseconds: 500), child: page);

@@ -15,13 +15,15 @@ const textSampling = {'temperature': .7, 'top_p': .8, 'top_k': 20, 'presence_pen
 const greedy = {'temperature': 0.0, 'top_k': 1};
 
 class LlamaServer {
-  LlamaServer({required this.name, required this.model, this.mmproj, this.lora, required this.port});
+  LlamaServer({required this.name, required this.model, this.mmproj, this.lora, required this.port, this.binary, this.gpuLayers = 0});
 
   final String name;
   final String model;
   final String? mmproj;
   final String? lora;
   final int port;
+  final String? binary; // diisi saat uji di laptop; di HP diambil dari folder library native
+  final int gpuLayers; // HP: 0 (CPU)
   Process? _proc;
   final List<String> log = [];
 
@@ -30,15 +32,14 @@ class LlamaServer {
 
   Future<void> start({int maxImageTokens = 256, int ctx = 4096}) async {
     if (_proc != null) return;
-    final bin = await Device.llamaServerPath();
+    final bin = binary ?? await Device.llamaServerPath();
     final args = [
       '-m', model,
       '--host', '127.0.0.1',
       '--port', '$port',
       '-c', '$ctx',
       '-t', '${Device.inferenceThreads}',
-      // HP: CPU saja. Desktop: biarkan llama.cpp membagi lapisan ke GPU sesuai memori yang tersisa.
-      if (Device.isAndroid) ...['-ngl', '0'],
+      '-ngl', '$gpuLayers',
       '--jinja', '--no-webui', '-a', 'meira', '--parallel', '1',
       if (mmproj != null) ...['--mmproj', mmproj!, '--image-max-tokens', '$maxImageTokens'],
       if (lora != null) ...['--lora', lora!],
@@ -94,6 +95,8 @@ class LlmClient {
         'max_tokens': maxTokens,
         'stream': stream,
         'chat_template_kwargs': {'enable_thinking': false},
+        // pakai ulang KV cache untuk awalan prompt yang sama (prompt sistem + riwayat): jawaban berikutnya lebih cepat
+        'cache_prompt': true,
         ...sampling,
         ...?extra,
       };
@@ -115,7 +118,9 @@ class LlmClient {
   }
 
   /// Aliran token. Dipakai juga untuk deteksi: penanda tampil per baris selagi model menulis.
-  Stream<String> stream(List<Map<String, dynamic>> messages, {int maxTokens = 512, Map<String, dynamic> sampling = textSampling}) async* {
+  /// [onFinish] menerima alasan berhenti ("stop" atau "length") untuk keperluan lanjut otomatis.
+  Stream<String> stream(List<Map<String, dynamic>> messages,
+      {int maxTokens = 512, Map<String, dynamic> sampling = textSampling, void Function(String reason)? onFinish}) async* {
     final req = http.Request('POST', Uri.parse('$baseUrl/v1/chat/completions'))
       ..headers['Content-Type'] = 'application/json'
       ..body = jsonEncode(_payload(messages, maxTokens, sampling, stream: true));
@@ -126,9 +131,22 @@ class LlmClient {
       final data = line.substring(5).trim();
       if (data == '[DONE]') break;
       try {
-        final delta = jsonDecode(data)['choices'][0]['delta']['content'];
+        final choice = jsonDecode(data)['choices'][0];
+        final delta = choice['delta']['content'];
         if (delta is String && delta.isNotEmpty) yield delta;
+        final reason = choice['finish_reason'];
+        if (reason is String) onFinish?.call(reason);
       } catch (_) {}
+    }
+  }
+
+  /// Jumlah token sebuah teks menurut tokenizer model (untuk anggaran konteks).
+  Future<int> countTokens(String text) async {
+    try {
+      final r = await _http.post(Uri.parse('$baseUrl/tokenize'), headers: {'Content-Type': 'application/json'}, body: jsonEncode({'content': text}));
+      return (jsonDecode(r.body)['tokens'] as List).length;
+    } catch (_) {
+      return (text.length / 3.2).ceil(); // perkiraan kasar untuk bahasa Indonesia
     }
   }
 

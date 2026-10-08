@@ -43,17 +43,20 @@ const eyesPack = ModelPack('mata', 'Mata', 'Qwen3.5-0.8B-Base hasil fine-tune ME
   ModelFile('meira-eyes-0.8b-mmproj-F16.gguf', '$_hf/khaichi11/MEIRA-eyes/resolve/main/meira-eyes-0.8b-mmproj-F16.gguf', 204),
 ], required: false);
 
-const earsPack = ModelPack('telinga', 'Telinga', 'Whisper base (int8), mengubah suara menjadi teks', [
-  ModelFile('whisper-base-encoder.int8.onnx', '$_hf/csukuangfj/sherpa-onnx-whisper-base/resolve/main/base-encoder.int8.onnx', 29),
-  ModelFile('whisper-base-decoder.int8.onnx', '$_hf/csukuangfj/sherpa-onnx-whisper-base/resolve/main/base-decoder.int8.onnx', 131),
-  ModelFile('whisper-base-tokens.txt', '$_hf/csukuangfj/sherpa-onnx-whisper-base/resolve/main/base-tokens.txt', 1),
+/// Whisper small dipilih karena lolos gerbang WER (0,17 vs 0,21 untuk base) pada perintah dapur.
+const earsPack = ModelPack('telinga', 'Telinga', 'Whisper small (int8), mengubah suara menjadi teks', [
+  ModelFile('whisper-small-encoder.int8.onnx', '$_hf/csukuangfj/sherpa-onnx-whisper-small/resolve/main/small-encoder.int8.onnx', 112),
+  ModelFile('whisper-small-decoder.int8.onnx', '$_hf/csukuangfj/sherpa-onnx-whisper-small/resolve/main/small-decoder.int8.onnx', 262),
+  ModelFile('whisper-small-tokens.txt', '$_hf/csukuangfj/sherpa-onnx-whisper-small/resolve/main/small-tokens.txt', 1),
 ]);
 
-const voicePack = ModelPack('suara', 'Suara', 'Piper bahasa Indonesia (int8), membacakan jawaban', [
+/// Opsional: suara bawaan memakai mesin TTS sistem. Bobot Piper dirilis di repo rhasspy/piper-voices (MIT),
+/// tetapi lisensi data latih suaranya tidak dicantumkan jelas oleh pembuatnya.
+const voicePack = ModelPack('suara', 'Suara Piper', 'Opsional. Lisensi data latih suara ini tidak dicantumkan jelas oleh pembuatnya', [
   ModelFile('vits-piper-id_ID-news_tts-medium-int8',
       'https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/vits-piper-id_ID-news_tts-medium-int8.tar.bz2', 21,
       archive: true),
-]);
+], required: false);
 
 const allPacks = [brainPack, eyesPack, earsPack, voicePack];
 

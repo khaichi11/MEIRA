@@ -11,6 +11,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:sherpa_onnx/sherpa_onnx.dart' as so;
@@ -22,9 +23,9 @@ class SpeechPaths {
   final String encoder, decoder, tokens, ttsDir;
 
   static SpeechPaths of(Models m) => SpeechPaths(
-        encoder: m.path('whisper-base-encoder.int8.onnx'),
-        decoder: m.path('whisper-base-decoder.int8.onnx'),
-        tokens: m.path('whisper-base-tokens.txt'),
+        encoder: m.path('whisper-small-encoder.int8.onnx'),
+        decoder: m.path('whisper-small-decoder.int8.onnx'),
+        tokens: m.path('whisper-small-tokens.txt'),
         ttsDir: m.path('vits-piper-id_ID-news_tts-medium-int8'),
       );
 
@@ -33,7 +34,55 @@ class SpeechPaths {
 }
 
 class Speech {
-  Speech(this.paths, {this.idleTimeout = const Duration(minutes: 2), this.threads = 2});
+  Speech(this.paths, {this.idleTimeout = const Duration(minutes: 2), this.threads = 2, this.engine = 'sistem'});
+
+  /// "sistem": mesin TTS bawaan perangkat (Android), "piper": suara Piper via sherpa-onnx.
+  String engine;
+  final FlutterTts _systemTts = FlutterTts();
+  bool _systemReady = false;
+
+  bool get _useSystem => engine == 'sistem';
+  String? voiceName; // pilihan pengguna; kosong = dipilih otomatis
+
+  /// Suara bahasa Indonesia yang terpasang di mesin TTS sistem, terbaik lebih dulu
+  /// (bisa offline, kualitas tertinggi, suara neural).
+  Future<List<Map<String, String>>> indonesianVoices() async {
+    final raw = (await _systemTts.getVoices as List?) ?? const [];
+    const quality = {'very high': 4, 'high': 3, 'normal': 2, 'low': 1, 'very low': 0};
+    int score(Map v) {
+      final offline = !{'1', 'true'}.contains('${v['network_required']}'.toLowerCase());
+      final name = '${v['name']}'.toLowerCase();
+      return (offline ? 10 : 0) + (quality['${v['quality']}'.toLowerCase()] ?? 2) + (name.contains('local') ? 1 : 0);
+    }
+    final ids = [
+      for (final v in raw)
+        if (v is Map && RegExp(r'^(id|in)([-_]|$)', caseSensitive: false).hasMatch('${v['locale']}')) v,
+    ]..sort((a, b) => score(b).compareTo(score(a)));
+    return [
+      for (final v in ids)
+        {
+          'name': '${v['name']}',
+          'locale': '${v['locale']}',
+          'offline': '${!{'1', 'true'}.contains('${v['network_required']}'.toLowerCase())}',
+        },
+    ];
+  }
+
+  Future<void> _prepareSystemVoice() async {
+    await _systemTts.setLanguage('id-ID');
+    await _systemTts.awaitSpeakCompletion(true);
+    await _systemTts.setPitch(1.0);
+    final voices = await indonesianVoices();
+    final chosen = voices.where((v) => v['name'] == voiceName).firstOrNull ?? voices.firstOrNull;
+    if (chosen != null) await _systemTts.setVoice({'name': chosen['name']!, 'locale': chosen['locale']!});
+    _systemReady = true;
+  }
+
+  Future<void> setVoice(String? name) async {
+    voiceName = name;
+    _systemReady = false;
+  }
+  bool get canSpeak => _useSystem || paths.hasTts;
 
   final SpeechPaths paths;
   final Duration idleTimeout;
@@ -142,6 +191,12 @@ class Speech {
   Future<void> speak(String text, {double speed = 1.0}) async {
     final clean = speakable(text);
     if (clean.isEmpty) return;
+    if (_useSystem) {
+      if (!_systemReady) await _prepareSystemVoice();
+      await _systemTts.setSpeechRate(.48 * speed); // sedikit di bawah normal agar jelas saat memasak
+      await _systemTts.speak(clean);
+      return;
+    }
     final path = await _call<String>('tts', (clean, speed, '${(await getTemporaryDirectory()).path}/meira_tts_${DateTime.now().millisecondsSinceEpoch}.wav'));
     final done = Completer<void>();
     final sub = _player.onPlayerStateChanged.listen((s) {
@@ -153,7 +208,10 @@ class Speech {
     File(path).delete().ignore();
   }
 
-  Future<void> stopSpeaking() => _player.stop();
+  Future<void> stopSpeaking() async {
+    if (_useSystem) await _systemTts.stop();
+    await _player.stop();
+  }
 
   Future<void> dispose() async {
     unload();
@@ -171,7 +229,12 @@ String speakable(String text) {
   t = t.replaceAllMapped(RegExp(r'\(#(\d+)(?:\s*,\s*#\d+)*\)'), (m) => 'nomor ${m.group(1)}');
   t = t.replaceAllMapped(RegExp(r'#(\d+)'), (m) => 'nomor ${m.group(1)}');
   t = t.replaceAllMapped(RegExp(r'^\s*(\d+)\.\s+', multiLine: true), (m) => 'Langkah ${m.group(1)}. ');
-  const units = {r'\bsdm\b': 'sendok makan', r'\bsdt\b': 'sendok teh', r'\bml\b': 'mililiter', r'\bkg\b': 'kilogram'};
+  const fractions = {'1/2': 'setengah', '1/4': 'seperempat', '3/4': 'tiga perempat', '1/3': 'sepertiga'};
+  fractions.forEach((f, w) => t = t.replaceAll(RegExp('(?<![\\d/])${RegExp.escape(f)}(?![\\d/])'), w));
+  const units = {
+    r'\bsdm\b': 'sendok makan', r'\bsdt\b': 'sendok teh', r'\bml\b': 'mililiter', r'\bkg\b': 'kilogram',
+    r'\bdtk\b': 'detik', r'\bmnt\b': 'menit', r'\bmis\.': 'misalnya', r'\bdll\b\.?': 'dan lain-lain', r'°\s*C\b': ' derajat Celsius',
+  };
   units.forEach((p, r) => t = t.replaceAll(RegExp(p), r));
   t = t.replaceAllMapped(RegExp(r'(\d)\s*g\b'), (m) => '${m.group(1)} gram');
   t = t.replaceAllMapped(RegExp(r'(\d+)/(\d+)'), (m) => '${m.group(1)} per ${m.group(2)}');
