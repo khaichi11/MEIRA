@@ -1,4 +1,4 @@
-/// Informasi perangkat: lokasi biner native, folder model, RAM, dan jumlah thread.
+/// Informasi perangkat Android: lokasi biner native, folder model dan data, RAM, dan jumlah thread.
 library;
 
 import 'dart:io';
@@ -10,51 +10,20 @@ import 'package:path_provider/path_provider.dart';
 class Device {
   static const _channel = MethodChannel('meira/native');
   static String? _nativeDir;
-  static String? _home;
 
-  static bool get isAndroid => Platform.isAndroid;
+  /// Inti besar saja yang dipakai (HP umumnya 4 inti besar + 4 inti hemat daya).
+  static int get inferenceThreads => math.min(4, math.max(2, Platform.numberOfProcessors ~/ 2));
 
-  /// Inti besar saja yang dipakai (HP biasanya 4 inti besar + 4 inti hemat daya).
-  static int get inferenceThreads => isAndroid ? math.min(4, math.max(2, Platform.numberOfProcessors ~/ 2)) : math.max(2, Platform.numberOfProcessors ~/ 2);
-
+  /// llama-server dikemas sebagai libllama_server.so agar diekstrak ke folder library native yang boleh dieksekusi.
   static Future<String> llamaServerPath() async {
-    if (isAndroid) {
-      _nativeDir ??= await _channel.invokeMethod<String>('nativeLibraryDir');
-      return '$_nativeDir/libllama_server.so';
-    }
-    final home = await meiraHome();
-    final found = Directory('$home/external/llama.cpp')
-        .listSync(recursive: true)
-        .whereType<File>()
-        .firstWhere((f) => f.path.endsWith('/llama-server'), orElse: () => throw StateError('llama-server tidak ditemukan di $home/external/llama.cpp'));
-    return found.path;
+    _nativeDir ??= await _channel.invokeMethod<String>('nativeLibraryDir');
+    return '$_nativeDir/libllama_server.so';
   }
 
-  /// Folder proyek MEIRA di desktop (berisi external/llama.cpp).
-  static Future<String> meiraHome() async {
-    if (_home != null) return _home!;
-    final env = Platform.environment['MEIRA_HOME'];
-    final candidates = [?env, Directory.current.path, Directory.current.parent.path, '${Platform.environment['HOME']}/MEIRA'];
-    var dir = File(Platform.resolvedExecutable).parent;
-    for (var i = 0; i < 8; i++) {
-      candidates.add(dir.path);
-      dir = dir.parent;
-    }
-    for (final c in candidates) {
-      if (Directory('$c/external/llama.cpp').existsSync()) return _home = c;
-    }
-    return _home = '${Platform.environment['HOME']}/MEIRA';
-  }
-
-  /// Folder model di perangkat. Android: penyimpanan aplikasi (bisa diisi lewat USB di Android/data/...).
+  /// Folder model: penyimpanan aplikasi yang bisa diisi lewat USB (Android/data/id.meira.meira/files/models).
   static Future<Directory> modelsDir() async {
-    Directory base;
-    if (isAndroid) {
-      base = (await getExternalStorageDirectory()) ?? await getApplicationSupportDirectory();
-    } else {
-      base = Directory('${await meiraHome()}/models');
-    }
-    final d = Directory('${base.path}/${isAndroid ? 'models' : 'app'}');
+    final base = (await getExternalStorageDirectory()) ?? await getApplicationSupportDirectory();
+    final d = Directory('${base.path}/models');
     await d.create(recursive: true);
     return d;
   }
@@ -65,7 +34,7 @@ class Device {
     return d;
   }
 
-  /// RAM total dalam GB (dari /proc/meminfo; berlaku di Android dan Linux).
+  /// RAM total dalam GB, dibaca dari /proc/meminfo.
   static double totalRamGb() {
     try {
       final line = File('/proc/meminfo').readAsLinesSync().firstWhere((l) => l.startsWith('MemTotal'));
