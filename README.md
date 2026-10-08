@@ -1,6 +1,6 @@
 # MEIRA
 
-**Multimodal Edge Intelligence for Recipe Assistance.** An offline kitchen assistant for Android. Take a photo of
+Multimodal Edge Intelligence for Recipe Assistance: an offline kitchen assistant for Android. Take a photo of
 your ingredients, and MEIRA puts a number on each one, reads package labels, and suggests recipes from a recipe book
 stored on the phone. Ask follow-up questions by typing or speaking.
 
@@ -12,16 +12,15 @@ stored on the phone. Ask follow-up questions by typing or speaking.
 
 ## Features
 
-- **Numbered markers** on every ingredient in the photo, one marker per item. Tap a wrong number to fix it.
-- **Package labels** such as instant noodles, cooking oil, and sweet soy sauce are read with OCR.
-- **More ingredients** from a second photo or by typing, for example "there is egg too".
-- **Recipe book** on the home screen with filters for quick, breakfast, no-stove, drinks, and soups.
-- **Conversation** by text or voice, with a cooking mode that has step timers.
-- **Grounded answers.** Recipes and steps come from the recipe book; kitchen questions are answered from
-  hand-written notes.
-- **Polite guardrails** for harmful or off-topic requests.
-- **Local history** with automatic size limits, and a nickname used to greet you.
-- **No internet needed** after the models are downloaded. No data leaves the phone.
+- Every ingredient in the photo gets its own numbered marker. Tap a wrong number to fix it.
+- Package text, such as instant noodles, cooking oil, or sweet soy sauce, is read with OCR.
+- Ingredients can be added from a second photo or by typing, for example "ada telur juga" (there is egg too).
+- The home screen holds the recipe book, with filters for quick meals, breakfast, no-stove dishes, drinks, and soups.
+- Questions can be typed or spoken. Cooking mode shows one step at a time, with a timer where the recipe needs one.
+- Recipes and steps come from the recipe book, and kitchen questions are answered from hand-written notes.
+- Harmful or off-topic requests get a short, polite refusal.
+- History stays on the phone with size limits, and MEIRA greets you by your nickname.
+- Once the models are downloaded, nothing needs the internet and no data leaves the phone.
 
 ## Models
 

@@ -52,8 +52,22 @@ MEIRA_ORT_LIB=<libonnxruntime.so for your laptop> MEIRA_HOME=~/MEIRA flutter tes
 MEIRA_LIVE=1 MEIRA_HOME=~/MEIRA flutter test test/answer_eval_test.dart
 ```
 
-`quality_test.dart` applies the same quality gates as `scripts/eval_suite.py`. The vision test needs an ONNX Runtime
-library for your laptop, for example from the Python `onnxruntime` package. No test plays any sound.
+| File | What it checks | Runs in CI |
+|---|---|---|
+| `core_test.dart` | vocabulary lookup, marker numbering and counting units, recipe ranking and request rules, removal of wrong marker references | yes |
+| `quality_test.dart` | the quality gates shared with `scripts/eval_suite.py`: request understanding, recipe retrieval, guardrails, kitchen-note routing, and the check that rejects invented facts | yes |
+| `vision_test.dart` | package OCR gives the same lines as the Python version and turns them into markers; the detector finds the labelled ingredient in a test photo | OCR yes; the detector needs MEIRA-Before data |
+| `answer_eval_test.dart` | answers from the real language model, scored for grounding | no, needs `MEIRA_LIVE=1` and the model |
+| `pipeline_live_test.dart` | a full turn with the real models | no, needs `MEIRA_LIVE=1` and the models |
+
+The vision test needs an ONNX Runtime library for your laptop, for example from the Python `onnxruntime` package.
+No test plays any sound.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push to `main` and on every pull request. It checks formatting with
+`dart format -l 150`, runs `flutter analyze`, installs ONNX Runtime from pip for the OCR test, runs `flutter test`,
+and checks that the scripts in `tool/` still parse.
 
 ## Emulator
 

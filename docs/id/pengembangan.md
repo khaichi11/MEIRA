@@ -54,8 +54,22 @@ MEIRA_ORT_LIB=<libonnxruntime.so di laptop> MEIRA_HOME=~/MEIRA flutter test test
 MEIRA_LIVE=1 MEIRA_HOME=~/MEIRA flutter test test/answer_eval_test.dart
 ```
 
-`quality_test.dart` memakai gerbang mutu yang sama dengan `scripts/eval_suite.py`. Uji penglihatan memerlukan
-pustaka ONNX Runtime untuk laptop, misalnya dari paket Python `onnxruntime`. Tidak ada uji yang memutar suara.
+| Berkas | Yang diperiksa | Jalan di CI |
+|---|---|---|
+| `core_test.dart` | pencarian kosakata, penomoran penanda dan satuan hitung, peringkat resep dan aturan permintaan, pembuangan rujukan nomor yang salah | ya |
+| `quality_test.dart` | gerbang mutu yang sama dengan `scripts/eval_suite.py`: pemahaman permintaan, pencarian resep, pengaman, pengarahan ke catatan dapur, dan pemeriksaan yang menolak fakta karangan | ya |
+| `vision_test.dart` | OCR kemasan menghasilkan baris yang sama dengan versi Python dan mengubahnya menjadi penanda; detektor menemukan bahan berlabel pada foto uji | OCR ya; detektor memerlukan data MEIRA-Before |
+| `answer_eval_test.dart` | jawaban dari model bahasa sungguhan, dinilai keberpijakannya | tidak, perlu `MEIRA_LIVE=1` dan modelnya |
+| `pipeline_live_test.dart` | satu giliran lengkap dengan model sungguhan | tidak, perlu `MEIRA_LIVE=1` dan modelnya |
+
+Uji penglihatan memerlukan pustaka ONNX Runtime untuk laptop, misalnya dari paket Python `onnxruntime`. Tidak ada uji
+yang memutar suara.
+
+## Integrasi berkelanjutan
+
+`.github/workflows/ci.yml` berjalan pada setiap push ke `main` dan setiap pull request. Alur ini memeriksa format
+dengan `dart format -l 150`, menjalankan `flutter analyze`, memasang ONNX Runtime dari pip untuk uji OCR, menjalankan
+`flutter test`, dan memastikan skrip di `tool/` masih bisa dibaca.
 
 ## Emulator
 

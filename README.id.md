@@ -1,6 +1,6 @@
 # MEIRA
 
-**Multimodal Edge Intelligence for Recipe Assistance.** Asisten dapur luring untuk Android. Potret bahan di dapur
+Multimodal Edge Intelligence for Recipe Assistance: asisten dapur luring untuk Android. Potret bahan di dapur
 Anda, lalu MEIRA memberi nomor pada setiap bahan, membaca tulisan kemasan, dan menyarankan resep dari buku resep di
 ponsel. Pertanyaan lanjutan bisa diketik atau diucapkan.
 
@@ -12,17 +12,16 @@ ponsel. Pertanyaan lanjutan bisa diketik atau diucapkan.
 
 ## Fitur
 
-- **Penanda bernomor** pada setiap bahan di foto, satu penanda untuk satu buah. Nomor yang keliru bisa diketuk
-  untuk dibetulkan.
-- **Tulisan kemasan** seperti mi instan, minyak goreng, dan kecap manis dibaca dengan OCR.
-- **Tambah bahan** dari foto kedua atau lewat ketikan, misalnya "ada telur juga".
-- **Buku resep** di beranda dengan saringan cepat, sarapan, tanpa kompor, minuman, dan berkuah.
-- **Percakapan** lewat teks atau suara, dengan mode memasak dan pengatur waktu per langkah.
-- **Jawaban berpijak pada sumber.** Resep dan langkah diambil dari buku resep; pertanyaan dapur dijawab dari
-  catatan tulisan tangan.
-- **Pengaman yang sopan** untuk permintaan berbahaya atau di luar topik.
-- **Riwayat lokal** dengan batas ukuran otomatis, serta nama panggilan untuk menyapa Anda.
-- **Tanpa internet** setelah model diunduh. Tidak ada data yang keluar dari ponsel.
+- Setiap bahan di foto mendapat penanda bernomor sendiri. Nomor yang keliru bisa diketuk untuk dibetulkan.
+- Tulisan kemasan seperti mi instan, minyak goreng, dan kecap manis dibaca dengan OCR.
+- Bahan bisa ditambah dari foto kedua atau lewat ketikan, misalnya "ada telur juga".
+- Beranda memuat buku resep dengan saringan cepat, sarapan, tanpa kompor, minuman, dan berkuah.
+- Pertanyaan bisa diketik atau diucapkan. Mode memasak menampilkan langkah satu per satu, lengkap dengan pengatur
+  waktu bila resepnya memerlukan.
+- Resep dan langkah diambil dari buku resep, sedangkan pertanyaan dapur dijawab dari catatan tulisan tangan.
+- Permintaan berbahaya atau di luar topik ditolak dengan singkat dan sopan.
+- Riwayat tersimpan di ponsel dengan batas ukuran, dan MEIRA menyapa Anda dengan nama panggilan.
+- Setelah model diunduh, aplikasi tidak memerlukan internet dan tidak ada data yang keluar dari ponsel.
 
 ## Model
 
