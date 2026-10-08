@@ -1,0 +1,56 @@
+# Runs on every push to main and every pull request.
+# - format: Dart code follows `dart format -l 150` (generated and vendored files excluded)
+# - analyze: `flutter analyze` finds type errors and lint issues
+# - test: unit tests, the quality gates shared with MEIRA-Before, and the package OCR on ONNX Runtime
+# - tools: the Python and shell scripts in tool/ still parse
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  flutter:
+    name: Format, analyze, and test
+    runs-on: ubuntu-latest
+    env:
+      # the quality gates write their scores here instead of next to the repository
+      MEIRA_HOME: ${{ github.workspace }}/.meira-home
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install packages
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed -l 150 $(git ls-files 'lib/*.dart' 'test/*.dart' | grep -v -e generated.dart -e third_party)
+
+      - name: Static analysis
+        run: flutter analyze
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ONNX Runtime for the vision tests
+        run: |
+          python -m pip install --quiet onnxruntime
+          lib=$(python -c "import onnxruntime, pathlib; print(next((pathlib.Path(onnxruntime.__file__).parent / 'capi').glob('libonnxruntime.so*')))")
+          echo "MEIRA_ORT_LIB=$lib" >> "$GITHUB_ENV"
+
+      - name: Unit tests and quality gates
+        run: flutter test
+
+      - name: Check tool scripts
+        run: |
+          python -m py_compile tool/*.py
+          for f in tool/*.sh; do bash -n "$f"; done

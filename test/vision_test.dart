@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
-// Uji penglihatan ONNX (OCR kemasan, detektor bahan) di laptop. Perlu pustaka ONNX Runtime host:
+// Uji penglihatan ONNX (OCR kemasan, detektor bahan) di laptop. Perlu pustaka ONNX Runtime host; MEIRA_HOME
+// menunjuk repo MEIRA-Before dan hanya diperlukan uji detektor (foto uji tidak ikut repo ini):
 //   MEIRA_ORT_LIB=../.venv-train/lib/python3.12/site-packages/onnxruntime/capi/libonnxruntime.so.1.30.0 \
 //   MEIRA_HOME=~/MEIRA flutter test test/vision_test.dart
 import 'dart:convert';
@@ -24,21 +25,19 @@ void main() {
   final skip = lib.isEmpty ? 'perlu MEIRA_ORT_LIB' : null;
 
   test('OCR membaca tulisan kemasan sama dengan versi Python', () {
-    final ocr = PackageOcr.load(
-      '$home/external/ocr/PP-OCRv5_mobile_det.onnx',
-      '$home/external/ocr/latin_PP-OCRv5_mobile_rec.onnx',
-      '$home/external/ocr/ppocrv5_latin_keys.txt',
-    );
+    final ocr = PackageOcr.load('assets/models/ppocrv5-det.onnx', 'assets/models/ppocrv5-latin-rec.onnx', 'assets/models/ppocrv5-latin-keys.txt');
     final watch = Stopwatch()..start();
     final lines = ocr.read(_fixture('ocr_kemasan.rgba.gz')).map((l) => l.text).toList();
     expect(lines, ['Indomie', 'Mi Goreng Spesial', 'Kecap Manis 135 ml']);
     expect(watch.elapsedMilliseconds, lessThan(3000));
   }, skip: skip);
 
+  // foto uji ada di repo MEIRA-Before (tidak ikut repo ini), jadi uji ini hanya jalan bila repo itu tersedia
+  final photos = File('$home/data/meira-sft/test.jsonl');
   test('detektor menandai bahan pada foto uji', () async {
     final det = IngredientDetector.load('assets/models/meira-det.onnx');
     // foto uji pertama yang hanya berisi satu jenis bahan
-    final row = File('$home/data/meira-sft/test.jsonl')
+    final row = photos
         .readAsLinesSync()
         .map((l) => jsonDecode(l) as Map<String, dynamic>)
         .firstWhere((r) => r['task'] == 'ground' && (r['objects'] as List).map((o) => o['key']).toSet().length == 1);
@@ -47,7 +46,7 @@ void main() {
     final dets = IngredientDetector.toDetections(det.raw(input.square), det.groundThreshold);
     print('${watch.elapsedMilliseconds} ms: ${dets.map((d) => d.key).toList()} (label ${(row['objects'] as List).first['key']})');
     expect(dets.map((d) => d.key), contains((row['objects'] as List).first['key']));
-  }, skip: skip);
+  }, skip: skip ?? (photos.existsSync() ? null : 'perlu data MEIRA-Before di MEIRA_HOME'));
 
   test('tulisan kemasan menjadi penanda bahan', () {
     final lines = [

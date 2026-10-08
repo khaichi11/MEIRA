@@ -46,3 +46,4 @@ app.*.map.json
 
 # library native hasil tool/build_native.sh
 android/app/src/main/jniLibs/
+.meira-home/
