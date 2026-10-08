@@ -26,8 +26,12 @@ class IngredientDetector {
     final base = path.replaceAll(RegExp(r'\.onnx$'), '');
     final labels = File('$base.labels.txt').readAsLinesSync().where((l) => l.trim().isNotEmpty).toList();
     final meta = File('$base.json').existsSync() ? jsonDecode(File('$base.json').readAsStringSync()) as Map<String, dynamic> : const {};
-    return IngredientDetector(OrtModel.load(path, threads: threads), labels,
-        groundThreshold: (meta['ground'] as num?)?.toDouble() ?? .4, verifyThreshold: (meta['verify'] as num?)?.toDouble() ?? .3);
+    return IngredientDetector(
+      OrtModel.load(path, threads: threads),
+      labels,
+      groundThreshold: (meta['ground'] as num?)?.toDouble() ?? .4,
+      verifyThreshold: (meta['verify'] as num?)?.toDouble() ?? .3,
+    );
   }
 
   final OrtModel model;

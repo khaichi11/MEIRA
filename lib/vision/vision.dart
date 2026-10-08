@@ -40,10 +40,10 @@ class VisionResult {
   bool present(String key) => raw.any((r) => r.label.replaceAll('*', '') == key && r.score >= verifyThreshold);
 
   /// Kotak bahan [key] yang lolos ambang verifikasi tetapi belum ditandai (untuk melengkapi penanda saat ditanya).
-  List<Detection> extra(String key, List<Detection> existing) => IngredientDetector.toDetections(
-        [for (final r in raw) if (r.label.replaceAll('*', '') == key) r],
-        verifyThreshold,
-      ).where((d) => !existing.any((e) => e.key == key && iou(e.box, d.box) > .5)).toList();
+  List<Detection> extra(String key, List<Detection> existing) => IngredientDetector.toDetections([
+    for (final r in raw)
+      if (r.label.replaceAll('*', '') == key) r,
+  ], verifyThreshold).where((d) => !existing.any((e) => e.key == key && iou(e.box, d.box) > .5)).toList();
 }
 
 abstract class Vision {
@@ -85,7 +85,14 @@ class IsolateVision implements Vision {
 
   @override
   Future<VisionResult> detect(VisionInput input, {bool thorough = false}) async {
-    final res = await _call(['deteksi', TransferableTypedData.fromList([input.square]), input.squareSize, thorough]) as List;
+    final res =
+        await _call([
+              'deteksi',
+              TransferableTypedData.fromList([input.square]),
+              input.squareSize,
+              thorough,
+            ])
+            as List;
     final raw = [for (final r in res[0] as List) RawBox(r[0] as String, r[1] as double, (r[2] as List).cast<double>())];
     final ground = res[1] as double, verify = res[2] as double;
     return VisionResult(raw, IngredientDetector.toDetections(raw, ground), ground, verify);
@@ -93,7 +100,14 @@ class IsolateVision implements Vision {
 
   @override
   Future<List<TextLine>> read(VisionInput input) async {
-    final res = await _call(['ocr', TransferableTypedData.fromList([input.full]), input.width, input.height]) as List;
+    final res =
+        await _call([
+              'ocr',
+              TransferableTypedData.fromList([input.full]),
+              input.width,
+              input.height,
+            ])
+            as List;
     return [for (final l in res) TextLine(l[0] as String, l[1] as double, (l[2] as List).cast<double>())];
   }
 
@@ -118,14 +132,18 @@ class IsolateVision implements Vision {
             var raw = d.raw(rgba);
             if (m[4] == true) raw = [...raw, ..._flipped(d, rgba, m[3] as int)]..sort((a, b) => b.score.compareTo(a.score));
             reply.send([
-              [for (final r in raw) [r.label, r.score, r.box]],
+              [
+                for (final r in raw) [r.label, r.score, r.box],
+              ],
               d.groundThreshold,
               d.verifyThreshold,
             ]);
           case 'ocr':
             ocr ??= PackageOcr.load(args[2] as String, args[3] as String, args[4] as String, threads: args[5] as int);
             final img = Rgba((m[2] as TransferableTypedData).materialize().asUint8List(), m[3] as int, m[4] as int);
-            reply.send([for (final l in ocr!.read(img)) [l.text, l.confidence, l.box]]);
+            reply.send([
+              for (final l in ocr!.read(img)) [l.text, l.confidence, l.box],
+            ]);
         }
       } catch (e) {
         reply.send(['galat', '$e']);
@@ -143,6 +161,8 @@ class IsolateVision implements Vision {
         m.setRange(b, b + 4, rgba, a);
       }
     }
-    return [for (final r in d.raw(m)) RawBox(r.label, r.score, [1 - r.box[2], r.box[1], 1 - r.box[0], r.box[3]])];
+    return [
+      for (final r in d.raw(m)) RawBox(r.label, r.score, [1 - r.box[2], r.box[1], 1 - r.box[0], r.box[3]]),
+    ];
   }
 }

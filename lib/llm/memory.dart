@@ -39,8 +39,7 @@ class ConversationMemory {
     final older = turns.length - kept.length;
     if (older > 0) _summarize(turns.sublist(0, older));
     return [
-      if (summary.isNotEmpty)
-        {'role': 'system', 'content': 'Ringkasan percakapan sebelumnya:\n${summary.map((l) => '- $l').join('\n')}'},
+      if (summary.isNotEmpty) {'role': 'system', 'content': 'Ringkasan percakapan sebelumnya:\n${summary.map((l) => '- $l').join('\n')}'},
       for (final t in kept) ...[
         {'role': 'user', 'content': t.user},
         {'role': 'assistant', 'content': t.assistant},

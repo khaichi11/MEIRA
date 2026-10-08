@@ -19,9 +19,13 @@ class RecipeRetriever {
     for (final r in recipes) {
       // nama dan bahan utama diberi bobot lebih dengan diulang
       final text = [
-        r.name, r.name, r.desc, r.tags.join(' '),
+        r.name,
+        r.name,
+        r.desc,
+        r.tags.join(' '),
         for (final i in r.items) ...[i.name, if (i.main) i.name],
-        r.steps.join(' '), r.tip,
+        r.steps.join(' '),
+        r.tip,
       ].join(' ');
       final toks = _tokens(text);
       _docs.add(toks);
@@ -40,15 +44,53 @@ class RecipeRetriever {
   late final double _avgLen;
 
   static const _stop = {
-    'yang', 'dan', 'atau', 'di', 'ke', 'dari', 'untuk', 'dengan', 'ini', 'itu', 'aku', 'saya', 'mau', 'ingin', 'bisa',
-    'apa', 'gimana', 'bagaimana', 'cara', 'resep', 'bikin', 'buat', 'masak', 'dong', 'ya', 'sih', 'nya', 'ada', 'tidak',
-    'nggak', 'gak', 'sampai', 'lalu', 'agar', 'supaya', 'sudah', 'akan', 'juga', 'lebih', 'sebentar', 'menit',
+    'yang',
+    'dan',
+    'atau',
+    'di',
+    'ke',
+    'dari',
+    'untuk',
+    'dengan',
+    'ini',
+    'itu',
+    'aku',
+    'saya',
+    'mau',
+    'ingin',
+    'bisa',
+    'apa',
+    'gimana',
+    'bagaimana',
+    'cara',
+    'resep',
+    'bikin',
+    'buat',
+    'masak',
+    'dong',
+    'ya',
+    'sih',
+    'nya',
+    'ada',
+    'tidak',
+    'nggak',
+    'gak',
+    'sampai',
+    'lalu',
+    'agar',
+    'supaya',
+    'sudah',
+    'akan',
+    'juga',
+    'lebih',
+    'sebentar',
+    'menit',
   };
 
   static List<String> _tokens(String text) => [
-        for (final w in norm(text).split(' '))
-          if (w.length > 2 && !_stop.contains(w)) w,
-      ];
+    for (final w in norm(text).split(' '))
+      if (w.length > 2 && !_stop.contains(w)) w,
+  ];
 
   List<RecipeHit> search(String query, {int k = 3, double minScore = 1.0}) {
     final q = _tokens(query).toSet();

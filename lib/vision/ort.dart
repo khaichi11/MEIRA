@@ -68,9 +68,11 @@ class OrtModel {
     final out = calloc<ffi.Pointer<OrtSession>>();
     final p = path.toNativeUtf8().cast<ffi.Char>();
     try {
-      _check(api.CreateSession.asFunction<
-          _Status Function(ffi.Pointer<OrtEnv>, ffi.Pointer<ffi.Char>, ffi.Pointer<OrtSessionOptions>,
-              ffi.Pointer<ffi.Pointer<OrtSession>>)>()(_env!, p, opts.value, out));
+      _check(
+        api.CreateSession.asFunction<
+          _Status Function(ffi.Pointer<OrtEnv>, ffi.Pointer<ffi.Char>, ffi.Pointer<OrtSessionOptions>, ffi.Pointer<ffi.Pointer<OrtSession>>)
+        >()(_env!, p, opts.value, out),
+      );
       final session = out.value;
       return OrtModel._(session, _ioNames(session, input: true), _ioNames(session, input: false));
     } finally {
@@ -90,8 +92,8 @@ class OrtModel {
       _check(api.GetAllocatorWithDefaultOptions.asFunction<_Status Function(ffi.Pointer<ffi.Pointer<OrtAllocator>>)>()(alloc));
       final countFn = (input ? api.SessionGetInputCount : api.SessionGetOutputCount)
           .asFunction<_Status Function(ffi.Pointer<OrtSession>, ffi.Pointer<ffi.Size>)>();
-      final nameFn = (input ? api.SessionGetInputName : api.SessionGetOutputName).asFunction<
-          _Status Function(ffi.Pointer<OrtSession>, int, ffi.Pointer<OrtAllocator>, ffi.Pointer<ffi.Pointer<ffi.Char>>)>();
+      final nameFn = (input ? api.SessionGetInputName : api.SessionGetOutputName)
+          .asFunction<_Status Function(ffi.Pointer<OrtSession>, int, ffi.Pointer<OrtAllocator>, ffi.Pointer<ffi.Pointer<ffi.Char>>)>();
       final free = api.AllocatorFree.asFunction<_Status Function(ffi.Pointer<OrtAllocator>, ffi.Pointer<ffi.Void>)>();
       _check(countFn(s, count));
       final names = <String>[];
@@ -127,26 +129,56 @@ class OrtModel {
         shape[i] = input.shape[i];
       }
       _check(api.CreateCpuMemoryInfo.asFunction<_Status Function(int, int, ffi.Pointer<ffi.Pointer<OrtMemoryInfo>>)>()(1, 0, info));
-      _check(api.CreateTensorWithDataAsOrtValue.asFunction<
-          _Status Function(ffi.Pointer<OrtMemoryInfo>, ffi.Pointer<ffi.Void>, int, ffi.Pointer<ffi.Int64>, int, int,
-              ffi.Pointer<ffi.Pointer<OrtValue>>)>()(info.value, data.cast(), input.data.length * 4, shape, input.shape.length, 1, value));
+      _check(
+        api.CreateTensorWithDataAsOrtValue.asFunction<
+          _Status Function(
+            ffi.Pointer<OrtMemoryInfo>,
+            ffi.Pointer<ffi.Void>,
+            int,
+            ffi.Pointer<ffi.Int64>,
+            int,
+            int,
+            ffi.Pointer<ffi.Pointer<OrtValue>>,
+          )
+        >()(info.value, data.cast(), input.data.length * 4, shape, input.shape.length, 1, value),
+      );
       inNames[0] = _names.first.toNativeUtf8().cast();
       for (var i = 0; i < _outputs.length; i++) {
         outNames[i] = _outputs[i].toNativeUtf8().cast();
       }
-      _check(api.Run.asFunction<
-          _Status Function(ffi.Pointer<OrtSession>, ffi.Pointer<OrtRunOptions>, ffi.Pointer<ffi.Pointer<ffi.Char>>,
-              ffi.Pointer<ffi.Pointer<OrtValue>>, int, ffi.Pointer<ffi.Pointer<ffi.Char>>, int,
-              ffi.Pointer<ffi.Pointer<OrtValue>>)>()(_session, ffi.nullptr, inNames, value, 1, outNames, _outputs.length, outs));
+      _check(
+        api.Run.asFunction<
+          _Status Function(
+            ffi.Pointer<OrtSession>,
+            ffi.Pointer<OrtRunOptions>,
+            ffi.Pointer<ffi.Pointer<ffi.Char>>,
+            ffi.Pointer<ffi.Pointer<OrtValue>>,
+            int,
+            ffi.Pointer<ffi.Pointer<ffi.Char>>,
+            int,
+            ffi.Pointer<ffi.Pointer<OrtValue>>,
+          )
+        >()(_session, ffi.nullptr, inNames, value, 1, outNames, _outputs.length, outs),
+      );
       final result = <Tensor>[];
       for (var i = 0; i < _outputs.length; i++) {
-        _check(api.GetTensorTypeAndShape.asFunction<
-            _Status Function(ffi.Pointer<OrtValue>, ffi.Pointer<ffi.Pointer<OrtTensorTypeAndShapeInfo>>)>()(outs[i], shapeInfo));
-        _check(api.GetDimensionsCount.asFunction<_Status Function(ffi.Pointer<OrtTensorTypeAndShapeInfo>, ffi.Pointer<ffi.Size>)>()(
-            shapeInfo.value, dims));
+        _check(
+          api.GetTensorTypeAndShape.asFunction<_Status Function(ffi.Pointer<OrtValue>, ffi.Pointer<ffi.Pointer<OrtTensorTypeAndShapeInfo>>)>()(
+            outs[i],
+            shapeInfo,
+          ),
+        );
+        _check(
+          api.GetDimensionsCount.asFunction<_Status Function(ffi.Pointer<OrtTensorTypeAndShapeInfo>, ffi.Pointer<ffi.Size>)>()(shapeInfo.value, dims),
+        );
         final d = calloc<ffi.Int64>(dims.value);
-        _check(api.GetDimensions.asFunction<_Status Function(ffi.Pointer<OrtTensorTypeAndShapeInfo>, ffi.Pointer<ffi.Int64>, int)>()(
-            shapeInfo.value, d, dims.value));
+        _check(
+          api.GetDimensions.asFunction<_Status Function(ffi.Pointer<OrtTensorTypeAndShapeInfo>, ffi.Pointer<ffi.Int64>, int)>()(
+            shapeInfo.value,
+            d,
+            dims.value,
+          ),
+        );
         final outShape = [for (var k = 0; k < dims.value; k++) d[k]];
         calloc.free(d);
         api.ReleaseTensorTypeAndShapeInfo.asFunction<void Function(ffi.Pointer<OrtTensorTypeAndShapeInfo>)>()(shapeInfo.value);
@@ -163,9 +195,18 @@ class OrtModel {
       for (var i = 0; i < _outputs.length; i++) {
         if (outNames[i] != ffi.nullptr) calloc.free(outNames[i]);
       }
-      for (final p in [data.cast<ffi.Void>(), shape.cast<ffi.Void>(), value.cast<ffi.Void>(), inNames.cast<ffi.Void>(),
-        outNames.cast<ffi.Void>(), outs.cast<ffi.Void>(), shapeInfo.cast<ffi.Void>(), dims.cast<ffi.Void>(), raw.cast<ffi.Void>(),
-        info.cast<ffi.Void>()]) {
+      for (final p in [
+        data.cast<ffi.Void>(),
+        shape.cast<ffi.Void>(),
+        value.cast<ffi.Void>(),
+        inNames.cast<ffi.Void>(),
+        outNames.cast<ffi.Void>(),
+        outs.cast<ffi.Void>(),
+        shapeInfo.cast<ffi.Void>(),
+        dims.cast<ffi.Void>(),
+        raw.cast<ffi.Void>(),
+        info.cast<ffi.Void>(),
+      ]) {
         calloc.free(p);
       }
     }

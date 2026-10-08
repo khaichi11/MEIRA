@@ -9,7 +9,15 @@ import 'vocab.dart';
 const coordScale = 1000.0;
 
 class Detection {
-  Detection({required this.key, required this.label, required this.rawLabel, required this.box, this.number = 0, this.group = false, this.packaged = false});
+  Detection({
+    required this.key,
+    required this.label,
+    required this.rawLabel,
+    required this.box,
+    this.number = 0,
+    this.group = false,
+    this.packaged = false,
+  });
 
   final String? key;
   final String label;
@@ -23,17 +31,25 @@ class Detection {
   double get cy => (box[1] + box[3]) / 2;
   double get area => (box[2] - box[0]) * (box[3] - box[1]);
 
-  Map<String, dynamic> toJson() => {'key': key, 'label': label, 'raw_label': rawLabel, 'box': box, 'number': number, 'group': group, 'packaged': packaged};
+  Map<String, dynamic> toJson() => {
+    'key': key,
+    'label': label,
+    'raw_label': rawLabel,
+    'box': box,
+    'number': number,
+    'group': group,
+    'packaged': packaged,
+  };
 
   factory Detection.fromJson(Map<String, dynamic> j) => Detection(
-        key: j['key'] as String?,
-        label: j['label'] as String,
-        rawLabel: (j['raw_label'] ?? j['label']) as String,
-        box: (j['box'] as List).map((e) => (e as num).toDouble()).toList(),
-        number: (j['number'] ?? 0) as int,
-        group: j['group'] == true,
-        packaged: j['packaged'] == true,
-      );
+    key: j['key'] as String?,
+    label: j['label'] as String,
+    rawLabel: (j['raw_label'] ?? j['label']) as String,
+    box: (j['box'] as List).map((e) => (e as num).toDouble()).toList(),
+    number: (j['number'] ?? 0) as int,
+    group: j['group'] == true,
+    packaged: j['packaged'] == true,
+  );
 }
 
 class IngredientGroup {
@@ -48,10 +64,7 @@ class IngredientGroup {
   String get count {
     if (massKeys.contains(key)) return '';
     final (unit, groupUnit) = unitTable[key] ?? ('buah', 'setumpuk');
-    return [
-      if (single > 0) '$single $unit',
-      if (group > 0) group == 1 ? groupUnit : '$group × $groupUnit',
-    ].join(' + ');
+    return [if (single > 0) '$single $unit', if (group > 0) group == 1 ? groupUnit : '$group × $groupUnit'].join(' + ');
   }
 }
 
@@ -88,7 +101,9 @@ Detection? _make(String label, List<double> raw, bool group) {
 Detection? parseLine(String line) {
   final m = _line.firstMatch(line);
   if (m == null) return null;
-  return _make(m.group(1)!.replaceAll(RegExp(r'^[:\-\s]+|[:\-\s]+$'), ''), [for (var i = 3; i <= 6; i++) double.parse(m.group(i)!)], m.group(2) != null);
+  return _make(m.group(1)!.replaceAll(RegExp(r'^[:\-\s]+|[:\-\s]+$'), ''), [
+    for (var i = 3; i <= 6; i++) double.parse(m.group(i)!),
+  ], m.group(2) != null);
 }
 
 List<Detection> parseDetections(String text) {
@@ -129,7 +144,10 @@ List<Detection> parseDetections(String text) {
     final present = data['ada'] ?? data['present'];
     var raw = (data['bbox_2d'] as List?) ?? [];
     if (raw.isNotEmpty && raw.first is num) raw = [raw];
-    final boxes = [for (final r in raw) if (r is List && r.length == 4) ?normalizeBox(r.map((e) => (e as num).toDouble()).toList())];
+    final boxes = [
+      for (final r in raw)
+        if (r is List && r.length == 4) ?normalizeBox(r.map((e) => (e as num).toDouble()).toList()),
+    ];
     return (present is bool ? present : boxes.isNotEmpty, boxes);
   }
   if (RegExp(r'\b(tidak ada|tidak terlihat)\b').hasMatch(head)) return (false, []);
@@ -174,7 +192,8 @@ List<Detection> dedupe(List<Detection> dets, {double thr = .7}) {
 
 /// Nomor urut kiri ke kanan (titik tengah), seri dipecah atas ke bawah.
 List<Detection> number(List<Detection> dets) {
-  final ordered = [...dets]..sort((a, b) {
+  final ordered = [...dets]
+    ..sort((a, b) {
       final c = ((a.cx * 100).round()).compareTo((b.cx * 100).round());
       return c != 0 ? c : a.cy.compareTo(b.cy);
     });
@@ -186,9 +205,9 @@ List<Detection> number(List<Detection> dets) {
 
 /// Kotak dari foto yang dicerminkan dikembalikan ke koordinat foto asli.
 List<Detection> flipBack(List<Detection> dets) => [
-      for (final d in dets)
-        Detection(key: d.key, label: d.label, rawLabel: d.rawLabel, box: [1 - d.box[2], d.box[1], 1 - d.box[0], d.box[3]], group: d.group),
-    ];
+  for (final d in dets)
+    Detection(key: d.key, label: d.label, rawLabel: d.rawLabel, box: [1 - d.box[2], d.box[1], 1 - d.box[0], d.box[3]], group: d.group),
+];
 
 /// Gabungan deteksi foto asli dan cermin: pasangan yang cocok dirata-rata, sisanya dipertahankan.
 List<Detection> mergeViews(List<Detection> a, List<Detection> b, {double thr = .45}) {
@@ -204,7 +223,13 @@ List<Detection> mergeViews(List<Detection> a, List<Detection> b, {double thr = .
     }
     if (j >= 0) {
       used.add(j);
-      d = Detection(key: d.key, label: d.label, rawLabel: d.rawLabel, box: [for (var i = 0; i < 4; i++) (d.box[i] + b[j].box[i]) / 2], group: d.group);
+      d = Detection(
+        key: d.key,
+        label: d.label,
+        rawLabel: d.rawLabel,
+        box: [for (var i = 0; i < 4; i++) (d.box[i] + b[j].box[i]) / 2],
+        group: d.group,
+      );
     }
     out.add(d);
   }

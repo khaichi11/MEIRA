@@ -58,7 +58,10 @@ class Models {
 
   bool installed(ModelPack p) => p.files.every((f) => f.archive ? Directory(path(f.name)).existsSync() : File(path(f.name)).existsSync());
 
-  List<ModelPack> missingRequired() => [for (final p in allPacks) if (p.required && !installed(p)) p];
+  List<ModelPack> missingRequired() => [
+    for (final p in allPacks)
+      if (p.required && !installed(p)) p,
+  ];
 
   /// Unduh satu paket. [onProgress] menerima (byte selesai, perkiraan total byte).
   Future<void> download(ModelPack p, void Function(int done, int total) onProgress) async {
@@ -117,7 +120,10 @@ class Models {
 
   /// Salin file model yang dipilih pengguna (mis. hasil export dari laptop) ke folder model.
   Future<List<String>> import(List<String> paths) async {
-    final known = {for (final p in allPacks) for (final f in p.files) f.name};
+    final known = {
+      for (final p in allPacks)
+        for (final f in p.files) f.name,
+    };
     final copied = <String>[];
     for (final src in paths) {
       final name = src.split(Platform.pathSeparator).last;

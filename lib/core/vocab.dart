@@ -17,7 +17,10 @@ final Map<String, Ingredient> ingredients = {
   for (final r in ingredientRows) r.key: Ingredient(r.key, r.nameId, r.nameEn, r.category, r.synonyms, r.pantry),
 };
 
-final Set<String> pantry = {for (final i in ingredients.values) if (i.pantry) i.key};
+final Set<String> pantry = {
+  for (final i in ingredients.values)
+    if (i.pantry) i.key,
+};
 
 String norm(String text) {
   const from = 'àáâäãåèéêëìíîïòóôöõùúûüñç';
@@ -44,10 +47,12 @@ final Map<String, String> _aliases = () {
 final List<String> _aliasByLength = _aliases.keys.toList()..sort((a, b) => b.length.compareTo(a.length));
 
 final _noise = RegExp(
-    r'\b(sebuah|beberapa|buah|potong|potongan|irisan|segar|matang|mentah|setengah|sliced|slice|fresh|ripe|whole|half|piece|pieces|of|a|an|the|bunch|group|sekelompok|tumpukan|sisir|butir|ikat|kecil|besar)\b');
+  r'\b(sebuah|beberapa|buah|potong|potongan|irisan|segar|matang|mentah|setengah|sliced|slice|fresh|ripe|whole|half|piece|pieces|of|a|an|the|bunch|group|sekelompok|tumpukan|sisir|butir|ikat|kecil|besar)\b',
+);
 
 final _nonFood = RegExp(
-    r'\b(kotak|box|tanda|label|harga|price|kertas|paper|piring|plate|mangkuk|bowl|meja|table|tangan|hand|plastik|plastic|keranjang|basket|pisau|knife|talenan|board|sendok|spoon|garpu|fork|wadah|container|kantong|bag|kain|cloth|botol|bottle|toples|jar|panci|pan|wajan|tray|nampan|rak|shelf|orang|person|tulisan|text|logo|stiker|sticker)\b');
+  r'\b(kotak|box|tanda|label|harga|price|kertas|paper|piring|plate|mangkuk|bowl|meja|table|tangan|hand|plastik|plastic|keranjang|basket|pisau|knife|talenan|board|sendok|spoon|garpu|fork|wadah|container|kantong|bag|kain|cloth|botol|bottle|toples|jar|panci|pan|wajan|tray|nampan|rak|shelf|orang|person|tulisan|text|logo|stiker|sticker)\b',
+);
 
 /// Label bebas -> kunci bahan, atau null bila tidak dikenal.
 String? resolve(String label) {

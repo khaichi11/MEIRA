@@ -145,8 +145,8 @@ class PackageOcr {
   }
 
   List<TextLine> read(Rgba img, {double minConfidence = .6}) => [
-        for (final b in boxes(img))
-          if (readLine(img, b) case (final text, final conf) when text.isNotEmpty && conf >= minConfidence)
-            TextLine(text, conf, [b[0] / img.width, b[1] / img.height, b[2] / img.width, b[3] / img.height]),
-      ];
+    for (final b in boxes(img))
+      if (readLine(img, b) case (final text, final conf) when text.isNotEmpty && conf >= minConfidence)
+        TextLine(text, conf, [b[0] / img.width, b[1] / img.height, b[2] / img.width, b[3] / img.height]),
+  ];
 }

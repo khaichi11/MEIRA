@@ -13,11 +13,7 @@ class AnswerChain {
 
   /// Mengalirkan potongan teks. Bila model berhenti karena batas token, rantai meminta lanjutan
   /// tepat dari kata terakhir sehingga jawaban tidak terpotong di tengah kalimat.
-  Stream<String> run({
-    required String system,
-    required List<Map<String, String>> memory,
-    required String prompt,
-  }) async* {
+  Stream<String> run({required String system, required List<Map<String, String>> memory, required String prompt}) async* {
     final base = <Map<String, dynamic>>[
       {'role': 'system', 'content': system},
       ...memory,

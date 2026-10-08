@@ -24,8 +24,11 @@ void main() {
   final skip = lib.isEmpty ? 'perlu MEIRA_ORT_LIB' : null;
 
   test('OCR membaca tulisan kemasan sama dengan versi Python', () {
-    final ocr = PackageOcr.load('$home/external/ocr/PP-OCRv5_mobile_det.onnx', '$home/external/ocr/latin_PP-OCRv5_mobile_rec.onnx',
-        '$home/external/ocr/ppocrv5_latin_keys.txt');
+    final ocr = PackageOcr.load(
+      '$home/external/ocr/PP-OCRv5_mobile_det.onnx',
+      '$home/external/ocr/latin_PP-OCRv5_mobile_rec.onnx',
+      '$home/external/ocr/ppocrv5_latin_keys.txt',
+    );
     final watch = Stopwatch()..start();
     final lines = ocr.read(_fixture('ocr_kemasan.rgba.gz')).map((l) => l.text).toList();
     expect(lines, ['Indomie', 'Mi Goreng Spesial', 'Kecap Manis 135 ml']);
@@ -35,7 +38,9 @@ void main() {
   test('detektor menandai bahan pada foto uji', () async {
     final det = IngredientDetector.load('assets/models/meira-det.onnx');
     // foto uji pertama yang hanya berisi satu jenis bahan
-    final row = File('$home/data/meira-sft/test.jsonl').readAsLinesSync().map((l) => jsonDecode(l) as Map<String, dynamic>)
+    final row = File('$home/data/meira-sft/test.jsonl')
+        .readAsLinesSync()
+        .map((l) => jsonDecode(l) as Map<String, dynamic>)
         .firstWhere((r) => r['task'] == 'ground' && (r['objects'] as List).map((o) => o['key']).toSet().length == 1);
     final input = await AppState.visionInput(File(row['image'] as String).readAsBytesSync());
     final watch = Stopwatch()..start();

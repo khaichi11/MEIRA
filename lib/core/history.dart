@@ -37,17 +37,21 @@ class History {
     final dir = at ?? await Device.dataDir();
     final photos = Directory('${dir.path}/photos');
     await photos.create(recursive: true);
-    final db = await (factory ?? databaseFactory).openDatabase('${dir.path}/history.db',
-        options: OpenDatabaseOptions(
-          version: 1,
-          onConfigure: (db) => db.execute('PRAGMA foreign_keys = ON'),
-          onCreate: (db, _) async {
-            await db.execute('CREATE TABLE sessions (id TEXT PRIMARY KEY, created INTEGER, updated INTEGER, title TEXT, state TEXT)');
-            await db.execute('CREATE TABLE messages (id INTEGER PRIMARY KEY AUTOINCREMENT, session_id TEXT REFERENCES sessions(id) ON DELETE CASCADE, '
-                'ts INTEGER, role TEXT, text TEXT, meta TEXT)');
-            await db.execute('CREATE INDEX idx_msg ON messages(session_id, id)');
-          },
-        ));
+    final db = await (factory ?? databaseFactory).openDatabase(
+      '${dir.path}/history.db',
+      options: OpenDatabaseOptions(
+        version: 1,
+        onConfigure: (db) => db.execute('PRAGMA foreign_keys = ON'),
+        onCreate: (db, _) async {
+          await db.execute('CREATE TABLE sessions (id TEXT PRIMARY KEY, created INTEGER, updated INTEGER, title TEXT, state TEXT)');
+          await db.execute(
+            'CREATE TABLE messages (id INTEGER PRIMARY KEY AUTOINCREMENT, session_id TEXT REFERENCES sessions(id) ON DELETE CASCADE, '
+            'ts INTEGER, role TEXT, text TEXT, meta TEXT)',
+          );
+          await db.execute('CREATE INDEX idx_msg ON messages(session_id, id)');
+        },
+      ),
+    );
     return History._(db, photos);
   }
 
@@ -62,28 +66,42 @@ class History {
   Future<void> saveSession(String sid, String title, Map<String, dynamic> state) async {
     final now = DateTime.now().millisecondsSinceEpoch;
     await _db.rawInsert(
-        'INSERT INTO sessions(id, created, updated, title, state) VALUES (?, ?, ?, ?, ?) '
-        'ON CONFLICT(id) DO UPDATE SET updated=excluded.updated, title=excluded.title, state=excluded.state',
-        [sid, now, now, title, jsonEncode(state)]);
+      'INSERT INTO sessions(id, created, updated, title, state) VALUES (?, ?, ?, ?, ?) '
+      'ON CONFLICT(id) DO UPDATE SET updated=excluded.updated, title=excluded.title, state=excluded.state',
+      [sid, now, now, title, jsonEncode(state)],
+    );
     await _prune();
   }
 
   Future<void> addMessage(String sid, String role, String text, [Map<String, dynamic> meta = const {}]) async {
     final now = DateTime.now().millisecondsSinceEpoch;
     await _db.rawInsert('INSERT OR IGNORE INTO sessions(id, created, updated, title, state) VALUES (?, ?, ?, ?, ?)', [sid, now, now, '', '{}']);
-    await _db.insert('messages', {'session_id': sid, 'ts': now, 'role': role, 'text': text.length > 4000 ? text.substring(0, 4000) : text, 'meta': jsonEncode(meta)});
+    await _db.insert('messages', {
+      'session_id': sid,
+      'ts': now,
+      'role': role,
+      'text': text.length > 4000 ? text.substring(0, 4000) : text,
+      'meta': jsonEncode(meta),
+    });
   }
 
   Future<List<HistoryEntry>> list({int limit = 200}) async {
     final rows = await _db.rawQuery(
-        'SELECT s.id, s.title, s.updated, (SELECT COUNT(*) FROM messages m WHERE m.session_id = s.id) AS n, '
-        "(SELECT text FROM messages m WHERE m.session_id = s.id AND m.role = 'assistant' ORDER BY m.id DESC LIMIT 1) AS last "
-        'FROM sessions s ORDER BY s.updated DESC LIMIT ?',
-        [limit]);
+      'SELECT s.id, s.title, s.updated, (SELECT COUNT(*) FROM messages m WHERE m.session_id = s.id) AS n, '
+      "(SELECT text FROM messages m WHERE m.session_id = s.id AND m.role = 'assistant' ORDER BY m.id DESC LIMIT 1) AS last "
+      'FROM sessions s ORDER BY s.updated DESC LIMIT ?',
+      [limit],
+    );
     return [
       for (final r in rows)
-        HistoryEntry(r['id'] as String, (r['title'] as String?) ?? '', DateTime.fromMillisecondsSinceEpoch(r['updated'] as int), r['n'] as int,
-            (r['last'] as String?) ?? '', thumbFile(r['id'] as String).existsSync()),
+        HistoryEntry(
+          r['id'] as String,
+          (r['title'] as String?) ?? '',
+          DateTime.fromMillisecondsSinceEpoch(r['updated'] as int),
+          r['n'] as int,
+          (r['last'] as String?) ?? '',
+          thumbFile(r['id'] as String).existsSync(),
+        ),
     ];
   }
 

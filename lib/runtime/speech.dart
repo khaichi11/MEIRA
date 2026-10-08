@@ -22,10 +22,10 @@ class SpeechPaths {
   final String encoder, decoder, tokens;
 
   static SpeechPaths of(Models m) => SpeechPaths(
-        encoder: m.path('whisper-small-encoder.int8.onnx'),
-        decoder: m.path('whisper-small-decoder.int8.onnx'),
-        tokens: m.path('whisper-small-tokens.txt'),
-      );
+    encoder: m.path('whisper-small-encoder.int8.onnx'),
+    decoder: m.path('whisper-small-decoder.int8.onnx'),
+    tokens: m.path('whisper-small-tokens.txt'),
+  );
 
   bool get hasAsr => File(encoder).existsSync() && File(decoder).existsSync();
 }
@@ -47,6 +47,7 @@ class Speech {
       final name = '${v['name']}'.toLowerCase();
       return (offline ? 10 : 0) + (quality['${v['quality']}'.toLowerCase()] ?? 2) + (name.contains('local') ? 1 : 0);
     }
+
     final ids = [
       for (final v in raw)
         if (v is Map && RegExp(r'^(id|in)([-_]|$)', caseSensitive: false).hasMatch('${v['locale']}')) v,
@@ -75,6 +76,7 @@ class Speech {
     voiceName = name;
     _systemReady = false;
   }
+
   bool get canSpeak => true;
 
   final SpeechPaths paths;
@@ -208,8 +210,15 @@ String speakable(String text) {
   const fractions = {'1/2': 'setengah', '1/4': 'seperempat', '3/4': 'tiga perempat', '1/3': 'sepertiga'};
   fractions.forEach((f, w) => t = t.replaceAll(RegExp('(?<![\\d/])${RegExp.escape(f)}(?![\\d/])'), w));
   const units = {
-    r'\bsdm\b': 'sendok makan', r'\bsdt\b': 'sendok teh', r'\bml\b': 'mililiter', r'\bkg\b': 'kilogram',
-    r'\bdtk\b': 'detik', r'\bmnt\b': 'menit', r'\bmis\.': 'misalnya', r'\bdll\b\.?': 'dan lain-lain', r'°\s*C\b': ' derajat Celsius',
+    r'\bsdm\b': 'sendok makan',
+    r'\bsdt\b': 'sendok teh',
+    r'\bml\b': 'mililiter',
+    r'\bkg\b': 'kilogram',
+    r'\bdtk\b': 'detik',
+    r'\bmnt\b': 'menit',
+    r'\bmis\.': 'misalnya',
+    r'\bdll\b\.?': 'dan lain-lain',
+    r'°\s*C\b': ' derajat Celsius',
   };
   units.forEach((p, r) => t = t.replaceAll(RegExp(p), r));
   t = t.replaceAllMapped(RegExp(r'(\d)\s*g\b'), (m) => '${m.group(1)} gram');
@@ -233,14 +242,16 @@ void _workerMain(List<dynamic> args) {
     final (id, op, arg) = msg as (int, String, Object?);
     try {
       if (op == 'asr') {
-        asr ??= so.OfflineRecognizer(so.OfflineRecognizerConfig(
-          model: so.OfflineModelConfig(
-            whisper: so.OfflineWhisperModelConfig(encoder: encoder, decoder: decoder, language: 'id', task: 'transcribe'),
-            tokens: tokens,
-            numThreads: threads,
-            debug: false,
+        asr ??= so.OfflineRecognizer(
+          so.OfflineRecognizerConfig(
+            model: so.OfflineModelConfig(
+              whisper: so.OfflineWhisperModelConfig(encoder: encoder, decoder: decoder, language: 'id', task: 'transcribe'),
+              tokens: tokens,
+              numThreads: threads,
+              debug: false,
+            ),
           ),
-        ));
+        );
         final stream = asr!.createStream();
         stream.acceptWaveform(samples: arg as Float32List, sampleRate: 16000);
         asr!.decode(stream);

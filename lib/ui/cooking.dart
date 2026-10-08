@@ -70,73 +70,84 @@ class _CookingScreenState extends State<CookingScreen> {
         leading: IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(context)),
       ),
       body: SafeArea(
-        child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Row(children: [
-              for (var i = 0; i < r.steps.length; i++)
-                Expanded(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    height: 4,
-                    margin: const EdgeInsets.symmetric(horizontal: 2),
-                    decoration: BoxDecoration(color: i <= _step ? C.herb : C.separator, borderRadius: BorderRadius.circular(2)),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  for (var i = 0; i < r.steps.length; i++)
+                    Expanded(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        height: 4,
+                        margin: const EdgeInsets.symmetric(horizontal: 2),
+                        decoration: BoxDecoration(color: i <= _step ? C.herb : C.separator, borderRadius: BorderRadius.circular(2)),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: PageView.builder(
+                controller: _pages,
+                itemCount: r.steps.length,
+                onPageChanged: (i) {
+                  setState(() => _step = i);
+                  if (s.speakAnswers) s.speak('Langkah ${i + 1}. ${r.steps[i]}');
+                },
+                itemBuilder: (_, i) => Padding(
+                  padding: const EdgeInsets.fromLTRB(28, 32, 28, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Langkah ${i + 1} dari ${r.steps.length}', style: T.subhead),
+                      const SizedBox(height: 14),
+                      Text(r.steps[i], style: poppins(26, weight: FontWeight.w500, height: 1.35)),
+                    ],
                   ),
                 ),
-            ]),
-          ),
-          Expanded(
-            child: PageView.builder(
-              controller: _pages,
-              itemCount: r.steps.length,
-              onPageChanged: (i) {
-                setState(() => _step = i);
-                if (s.speakAnswers) s.speak('Langkah ${i + 1}. ${r.steps[i]}');
-              },
-              itemBuilder: (_, i) => Padding(
-                padding: const EdgeInsets.fromLTRB(28, 32, 28, 16),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Langkah ${i + 1} dari ${r.steps.length}', style: T.subhead),
-                  const SizedBox(height: 14),
-                  Text(r.steps[i], style: poppins(26, weight: FontWeight.w500, height: 1.35)),
-                ]),
               ),
             ),
-          ),
-          if (minutes != null)
+            if (minutes != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: _left > 0
+                    ? Text(
+                        '${(_left ~/ 60).toString().padLeft(2, '0')}:${(_left % 60).toString().padLeft(2, '0')}',
+                        style: poppins(40, weight: FontWeight.w600, color: C.accent),
+                      )
+                    : FilledButton.tonalIcon(
+                        onPressed: () => _startTimer(minutes),
+                        icon: const Icon(Icons.timer_outlined),
+                        label: Text('Timer $minutes menit'),
+                        style: FilledButton.styleFrom(backgroundColor: C.accentTint, foregroundColor: C.accent),
+                      ),
+              ),
+            if (_step == r.steps.length - 1 && r.tip.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(28, 0, 28, 12),
+                child: Text('Tip: ${r.tip}', style: T.callout, textAlign: TextAlign.center),
+              ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 14),
-              child: _left > 0
-                  ? Text('${(_left ~/ 60).toString().padLeft(2, '0')}:${(_left % 60).toString().padLeft(2, '0')}',
-                      style: poppins(40, weight: FontWeight.w600, color: C.accent))
-                  : FilledButton.tonalIcon(
-                      onPressed: () => _startTimer(minutes),
-                      icon: const Icon(Icons.timer_outlined),
-                      label: Text('Timer $minutes menit'),
-                      style: FilledButton.styleFrom(backgroundColor: C.accentTint, foregroundColor: C.accent),
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
+              child: Row(
+                children: [
+                  IconButton.filledTonal(onPressed: _step > 0 ? () => _go(_step - 1) : null, icon: const Icon(Icons.arrow_back_rounded)),
+                  const SizedBox(width: 10),
+                  IconButton.filledTonal(onPressed: () => s.speak('Langkah ${_step + 1}. $step'), icon: const Icon(Icons.volume_up_rounded)),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: _step < r.steps.length - 1 ? () => _go(_step + 1) : () => Navigator.pop(context),
+                      child: Text(_step < r.steps.length - 1 ? 'Langkah berikutnya' : 'Selesai'),
                     ),
-            ),
-          if (_step == r.steps.length - 1 && r.tip.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(28, 0, 28, 12),
-              child: Text('Tip: ${r.tip}', style: T.callout, textAlign: TextAlign.center),
-            ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 4, 20, 16),
-            child: Row(children: [
-              IconButton.filledTonal(onPressed: _step > 0 ? () => _go(_step - 1) : null, icon: const Icon(Icons.arrow_back_rounded)),
-              const SizedBox(width: 10),
-              IconButton.filledTonal(onPressed: () => s.speak('Langkah ${_step + 1}. $step'), icon: const Icon(Icons.volume_up_rounded)),
-              const SizedBox(width: 10),
-              Expanded(
-                child: FilledButton(
-                  onPressed: _step < r.steps.length - 1 ? () => _go(_step + 1) : () => Navigator.pop(context),
-                  child: Text(_step < r.steps.length - 1 ? 'Langkah berikutnya' : 'Selesai'),
-                ),
+                  ),
+                ],
               ),
-            ]),
-          ),
-        ]),
+            ),
+          ],
+        ),
       ),
     );
   }

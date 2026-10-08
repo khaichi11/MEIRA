@@ -34,11 +34,14 @@ class _ProduceBowlState extends State<ProduceBowl> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
-        child: SizedBox.square(
-          dimension: widget.size,
-          child: AnimatedBuilder(animation: _c, builder: (_, _) => CustomPaint(painter: _BowlPainter(_c.value))),
-        ),
-      );
+    child: SizedBox.square(
+      dimension: widget.size,
+      child: AnimatedBuilder(
+        animation: _c,
+        builder: (_, _) => CustomPaint(painter: _BowlPainter(_c.value)),
+      ),
+    ),
+  );
 }
 
 class _BowlPainter extends CustomPainter {
@@ -115,8 +118,12 @@ void _leafShape(Canvas canvas, Offset at, double len, double angle, Color color)
     ..quadraticBezierTo(len * .5, -len * .45, 0, -len)
     ..quadraticBezierTo(-len * .5, -len * .45, 0, 0);
   canvas.drawPath(p, Paint()..color = color);
-  canvas.drawLine(Offset.zero, Offset(0, -len * .85), Paint()
-    ..color = Colors.white.withValues(alpha: .35)
-    ..strokeWidth = 1.4);
+  canvas.drawLine(
+    Offset.zero,
+    Offset(0, -len * .85),
+    Paint()
+      ..color = Colors.white.withValues(alpha: .35)
+      ..strokeWidth = 1.4,
+  );
   canvas.restore();
 }

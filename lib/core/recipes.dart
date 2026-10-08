@@ -29,8 +29,14 @@ class Recipe {
   List<String> tools = [];
   final Map<String, String> swaps = {};
 
-  Set<String> get mainKeys => {for (final i in items) if (i.main) i.key};
-  Set<String> get neededKeys => {for (final i in items) if (!i.optional && !pantry.contains(i.key)) i.key};
+  Set<String> get mainKeys => {
+    for (final i in items)
+      if (i.main) i.key,
+  };
+  Set<String> get neededKeys => {
+    for (final i in items)
+      if (!i.optional && !pantry.contains(i.key)) i.key,
+  };
 }
 
 List<Recipe> parseRecipes(String markdown) {
@@ -117,15 +123,28 @@ List<Match> rank(List<Recipe> recipes, Set<String> have, Prefs prefs, {Set<Strin
     final needed = r.neededKeys;
     final covAll = needed.intersection(have).length / (needed.isEmpty ? 1 : needed.length);
     final tagHit = prefs.tags.isEmpty ? 0.0 : prefs.tags.intersection(r.tags.toSet()).length / prefs.tags.length;
-    final bonus = .03 * {for (final i in r.items) if (i.optional) i.key}.intersection(have).length;
+    final bonus =
+        .03 *
+        {
+          for (final i in r.items)
+            if (i.optional) i.key,
+        }.intersection(have).length;
     final penalty = .15 * {for (final i in r.items) i.key}.intersection(prefs.exclude).length;
     final score = .55 * covMain + .3 * covAll + .15 * tagHit + bonus - penalty;
-    out.add(Match(
-      r,
-      score,
-      [for (final i in r.items) if (have.contains(i.key)) i.key],
-      [for (final i in r.items) if (!i.optional && !have.contains(i.key) && !pantry.contains(i.key)) i.key],
-    ));
+    out.add(
+      Match(
+        r,
+        score,
+        [
+          for (final i in r.items)
+            if (have.contains(i.key)) i.key,
+        ],
+        [
+          for (final i in r.items)
+            if (!i.optional && !have.contains(i.key) && !pantry.contains(i.key)) i.key,
+        ],
+      ),
+    );
   }
   out.sort((a, b) {
     final c = b.score.compareTo(a.score);
@@ -174,7 +193,8 @@ const _numberWords = {'satu': 1, 'dua': 2, 'tiga': 3};
 
 /// Pemahaman permintaan berbasis aturan: cepat, tanpa model, dan tepat untuk pola umum.
 /// Identik dengan meira/recipes.py rule_intent (diuji dengan data uji yang sama).
-const _know = r'\b(berapa (lama|menit|jam|hari|banyak|derajat|mililiter|ml|gram|sendok)|kenapa|mengapa|apa (beda|bedanya|perbedaan)|'
+const _know =
+    r'\b(berapa (lama|menit|jam|hari|banyak|derajat|mililiter|ml|gram|sendok)|kenapa|mengapa|apa (beda|bedanya|perbedaan)|'
     r'perbedaan|bolehkah|apa boleh|boleh (sama|dimakan|disimpan|dimasak|dicampur|dipakai|digunakan|dibiarkan|dibekukan)|'
     r'kapan|ciri|tanda|masih (boleh|bisa|aman|bagus|layak|segar)|disimpan|menyimpan|penyimpanan|diapakan|'
     r'cara me(?!mbuat|masak)\w+|lebih baik .{1,40} atau)\b';
@@ -187,10 +207,16 @@ Intent ruleIntent(String text) {
   if (_has(t, _know)) action = 'obrolan'; // pertanyaan pengetahuan dapur, dijawab dari catatan dapur
   if (_has(t, r'\b(lain|ganti|yang beda|alternatif|selain itu|nggak suka|gak suka|bosen|bosan|skip)\b')) action = 'ganti';
   if (_has(t, r'\b(pilih|yang nomor|nomor (\d|satu|dua|tiga)|yang (pertama|kedua|ketiga)|ambil yang)\b')) action = 'pilih';
-  if (_has(t, r'\b(makanan apa|masakan apa|ini apa|nama masakannya|bahannya apa|bahan apa saja|bahan apa aja|pakai bahan apa|pake bahan apa|terbuat dari|dibuat dari|isinya apa|yang dipakai di)\b')) {
+  if (_has(
+    t,
+    r'\b(makanan apa|masakan apa|ini apa|nama masakannya|bahannya apa|bahan apa saja|bahan apa aja|pakai bahan apa|pake bahan apa|terbuat dari|dibuat dari|isinya apa|yang dipakai di)\b',
+  )) {
     action = 'hidangan';
   }
-  if (_has(t, r'\b(caranya|langkah|cara (membuat|buat|bikin|masak)(nya)?|(gimana|bagaimana) (cara )?(bikin|buat|membuat|masak)(nya)?|bikinnya|masaknya|resepnya|cara memasak(nya)?)\b')) {
+  if (_has(
+    t,
+    r'\b(caranya|langkah|cara (membuat|buat|bikin|masak)(nya)?|(gimana|bagaimana) (cara )?(bikin|buat|membuat|masak)(nya)?|bikinnya|masaknya|resepnya|cara memasak(nya)?)\b',
+  )) {
     action = 'detail';
   }
   if ((action == 'detail' || action == 'rekomendasi') && _has(t, _goal)) action = 'obrolan'; // "santan supaya tidak pecah gimana caranya"
@@ -228,7 +254,9 @@ Intent ruleIntent(String text) {
   final pedasNegated = _has(t, '\\b$_neg (suka |terlalu |yang )?pedas');
   if (t.contains('pedas') && !pedasNegated) it.tags.add('pedas');
 
-  for (final mm in RegExp(r'(?:jangan|tanpa|nggak mau|gak mau|tidak mau|nggak suka|gak suka|tidak suka|alergi)\s+([a-z ,]{3,40}?)(?=[.!?]| dong| ya| deh| aja| saja| $)').allMatches(t)) {
+  for (final mm in RegExp(
+    r'(?:jangan|tanpa|nggak mau|gak mau|tidak mau|nggak suka|gak suka|tidak suka|alergi)\s+([a-z ,]{3,40}?)(?=[.!?]| dong| ya| deh| aja| saja| $)',
+  ).allMatches(t)) {
     it.exclude.addAll(mentions(mm.group(1)!));
   }
   if (pedasNegated) it.exclude.add('chili');

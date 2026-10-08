@@ -13,6 +13,7 @@ import 'device.dart';
 const visionSampling = {'temperature': .7, 'top_p': .8, 'top_k': 20, 'presence_penalty': 1.5, 'seed': 7};
 const textSampling = {'temperature': .7, 'top_p': .8, 'top_k': 20, 'presence_penalty': 1.0};
 const greedy = {'temperature': 0.0, 'top_k': 1};
+
 /// Model mata hasil fine-tune: greedy, sama dengan GROUNDING di meira/prompts.py.
 const groundingSampling = {'temperature': 0.0, 'top_k': 1, 'seed': 7};
 
@@ -36,13 +37,24 @@ class LlamaServer {
     if (_proc != null) return;
     final bin = binary ?? await Device.llamaServerPath();
     final args = [
-      '-m', model,
-      '--host', '127.0.0.1',
-      '--port', '$port',
-      '-c', '$ctx',
-      '-t', '${Device.inferenceThreads}',
-      '-ngl', '$gpuLayers',
-      '--jinja', '--no-webui', '-a', 'meira', '--parallel', '1',
+      '-m',
+      model,
+      '--host',
+      '127.0.0.1',
+      '--port',
+      '$port',
+      '-c',
+      '$ctx',
+      '-t',
+      '${Device.inferenceThreads}',
+      '-ngl',
+      '$gpuLayers',
+      '--jinja',
+      '--no-webui',
+      '-a',
+      'meira',
+      '--parallel',
+      '1',
       if (mmproj != null) ...['--mmproj', mmproj!, '--image-max-tokens', '$maxImageTokens'],
       if (lora != null) ...['--lora', lora!],
     ];
@@ -71,10 +83,13 @@ class LlamaServer {
 
   Future<void> stop() async {
     _proc?.kill();
-    await _proc?.exitCode.timeout(const Duration(seconds: 3), onTimeout: () {
-      _proc?.kill(ProcessSignal.sigkill);
-      return -1;
-    });
+    await _proc?.exitCode.timeout(
+      const Duration(seconds: 3),
+      onTimeout: () {
+        _proc?.kill(ProcessSignal.sigkill);
+        return -1;
+      },
+    );
     _proc = null;
   }
 }
@@ -91,17 +106,23 @@ class LlmClient {
   final String baseUrl;
   final http.Client _http = http.Client();
 
-  Map<String, dynamic> _payload(List<Map<String, dynamic>> messages, int maxTokens, Map<String, dynamic> sampling, {bool stream = false, Map<String, dynamic>? extra}) => {
-        'model': 'meira',
-        'messages': messages,
-        'max_tokens': maxTokens,
-        'stream': stream,
-        'chat_template_kwargs': {'enable_thinking': false},
-        // pakai ulang KV cache untuk awalan prompt yang sama (prompt sistem + riwayat): jawaban berikutnya lebih cepat
-        'cache_prompt': true,
-        ...sampling,
-        ...?extra,
-      };
+  Map<String, dynamic> _payload(
+    List<Map<String, dynamic>> messages,
+    int maxTokens,
+    Map<String, dynamic> sampling, {
+    bool stream = false,
+    Map<String, dynamic>? extra,
+  }) => {
+    'model': 'meira',
+    'messages': messages,
+    'max_tokens': maxTokens,
+    'stream': stream,
+    'chat_template_kwargs': {'enable_thinking': false},
+    // pakai ulang KV cache untuk awalan prompt yang sama (prompt sistem + riwayat): jawaban berikutnya lebih cepat
+    'cache_prompt': true,
+    ...sampling,
+    ...?extra,
+  };
 
   Future<bool> healthy() async {
     try {
@@ -112,17 +133,29 @@ class LlmClient {
     }
   }
 
-  Future<String> chat(List<Map<String, dynamic>> messages, {int maxTokens = 512, Map<String, dynamic> sampling = textSampling, Map<String, dynamic>? extra}) async {
-    final r = await _http.post(Uri.parse('$baseUrl/v1/chat/completions'),
-        headers: {'Content-Type': 'application/json'}, body: jsonEncode(_payload(messages, maxTokens, sampling, extra: extra)));
+  Future<String> chat(
+    List<Map<String, dynamic>> messages, {
+    int maxTokens = 512,
+    Map<String, dynamic> sampling = textSampling,
+    Map<String, dynamic>? extra,
+  }) async {
+    final r = await _http.post(
+      Uri.parse('$baseUrl/v1/chat/completions'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(_payload(messages, maxTokens, sampling, extra: extra)),
+    );
     if (r.statusCode != 200) throw HttpException('LLM ${r.statusCode}: ${r.body}');
     return (jsonDecode(utf8.decode(r.bodyBytes))['choices'][0]['message']['content'] as String?) ?? '';
   }
 
   /// Aliran token. Dipakai juga untuk deteksi: penanda tampil per baris selagi model menulis.
   /// [onFinish] menerima alasan berhenti ("stop" atau "length") untuk keperluan lanjut otomatis.
-  Stream<String> stream(List<Map<String, dynamic>> messages,
-      {int maxTokens = 512, Map<String, dynamic> sampling = textSampling, void Function(String reason)? onFinish}) async* {
+  Stream<String> stream(
+    List<Map<String, dynamic>> messages, {
+    int maxTokens = 512,
+    Map<String, dynamic> sampling = textSampling,
+    void Function(String reason)? onFinish,
+  }) async* {
     final req = http.Request('POST', Uri.parse('$baseUrl/v1/chat/completions'))
       ..headers['Content-Type'] = 'application/json'
       ..body = jsonEncode(_payload(messages, maxTokens, sampling, stream: true));
@@ -153,20 +186,31 @@ class LlmClient {
   }
 
   static List<Map<String, dynamic>> visionMessages(String imageDataUrl, String prompt) => [
+    {
+      'role': 'user',
+      'content': [
         {
-          'role': 'user',
-          'content': [
-            {'type': 'image_url', 'image_url': {'url': imageDataUrl}},
-            {'type': 'text', 'text': prompt},
-          ],
+          'type': 'image_url',
+          'image_url': {'url': imageDataUrl},
         },
-      ];
+        {'type': 'text', 'text': prompt},
+      ],
+    },
+  ];
 
   Future<Map<String, dynamic>?> json(List<Map<String, dynamic>> messages, String schemaJson, {int maxTokens = 200}) async {
     try {
-      final text = await chat(messages, maxTokens: maxTokens, sampling: greedy, extra: {
-        'response_format': {'type': 'json_schema', 'json_schema': {'name': 'out', 'schema': jsonDecode(schemaJson)}},
-      });
+      final text = await chat(
+        messages,
+        maxTokens: maxTokens,
+        sampling: greedy,
+        extra: {
+          'response_format': {
+            'type': 'json_schema',
+            'json_schema': {'name': 'out', 'schema': jsonDecode(schemaJson)},
+          },
+        },
+      );
       return jsonDecode(text) as Map<String, dynamic>;
     } catch (_) {
       return null;

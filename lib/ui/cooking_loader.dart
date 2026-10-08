@@ -25,13 +25,16 @@ class _CookingLoaderState extends State<CookingLoader> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) => Semantics(
-        label: 'Sedang menyiapkan',
-        child: SizedBox(
-          width: widget.size,
-          height: widget.size,
-          child: AnimatedBuilder(animation: _c, builder: (_, _) => CustomPaint(painter: _PanPainter(_c.value))),
-        ),
-      );
+    label: 'Sedang menyiapkan',
+    child: SizedBox(
+      width: widget.size,
+      height: widget.size,
+      child: AnimatedBuilder(
+        animation: _c,
+        builder: (_, _) => CustomPaint(painter: _PanPainter(_c.value)),
+      ),
+    ),
+  );
 }
 
 class _PanPainter extends CustomPainter {
@@ -61,7 +64,10 @@ class _PanPainter extends CustomPainter {
     canvas.save();
     canvas.translate(cx + rw * .46, cy - rh * .05);
     canvas.rotate(-.18 + toss * .03);
-    canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromLTWH(0, -h * .022, w * .30, h * .044), Radius.circular(h * .022)), Paint()..color = C.label.withValues(alpha: .75));
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(Rect.fromLTWH(0, -h * .022, w * .30, h * .044), Radius.circular(h * .022)),
+      Paint()..color = C.label.withValues(alpha: .75),
+    );
     canvas.restore();
 
     // badan wajan (bagian bawah) lalu bagian dalam
@@ -116,7 +122,10 @@ class _PanPainter extends CustomPainter {
             paint,
           );
         case 2:
-          canvas.drawRRect(RRect.fromRectAndRadius(Rect.fromCenter(center: Offset.zero, width: r * 1.5, height: r * 1.5), Radius.circular(r * .35)), paint);
+          canvas.drawRRect(
+            RRect.fromRectAndRadius(Rect.fromCenter(center: Offset.zero, width: r * 1.5, height: r * 1.5), Radius.circular(r * .35)),
+            paint,
+          );
         default:
           canvas.drawCircle(Offset.zero, r, paint);
           canvas.drawCircle(Offset(-r * .3, -r * .3), r * .26, Paint()..color = Colors.white.withValues(alpha: .35));
@@ -125,14 +134,26 @@ class _PanPainter extends CustomPainter {
     }
 
     // bibir depan wajan digambar terakhir agar bahan tampak berada di dalam
-    canvas.drawArc(rim, 0, math.pi, false, Paint()
-      ..color = C.label.withValues(alpha: .9)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = w * .022);
-    canvas.drawArc(rim.deflate(w * .011), .15, math.pi - .3, false, Paint()
-      ..color = C.accent.withValues(alpha: .55)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = w * .008);
+    canvas.drawArc(
+      rim,
+      0,
+      math.pi,
+      false,
+      Paint()
+        ..color = C.label.withValues(alpha: .9)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * .022,
+    );
+    canvas.drawArc(
+      rim.deflate(w * .011),
+      .15,
+      math.pi - .3,
+      false,
+      Paint()
+        ..color = C.accent.withValues(alpha: .55)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * .008,
+    );
   }
 
   @override
