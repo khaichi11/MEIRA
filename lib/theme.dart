@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 
-/// Palet MEIRA: sage yang tenang di atas putih hangat, dengan sedikit pastel sebagai aksen.
+/// Palet MEIRA: putih kebiruan yang sejuk, hijau tosca sebagai warna utama, ungu dan biru sebagai aksen.
+/// Tanpa oranye dan tanpa hitam; teks memakai biru tua agar tetap mudah dibaca.
 class C {
-  static const bg = Color(0xFFF7F6F2); // latar utama, putih hangat
+  static const bg = Color(0xFFF5F8FB); // latar utama
   static const surface = Color(0xFFFFFFFF);
-  static const grouped = Color(0xFFF0EFEA); // latar daftar berkelompok, kolom input
-  static const label = Color(0xFF1D1F1C);
-  static const secondary = Color(0xFF6E736C);
-  static const tertiary = Color(0xFFA6AAA2);
-  static const separator = Color(0xFFE5E3DC);
+  static const grouped = Color(0xFFEEF3F8); // kolom input dan latar berkelompok
+  static const label = Color(0xFF1F2A44); // biru tua untuk teks
+  static const secondary = Color(0xFF66748C);
+  static const tertiary = Color(0xFFA7B1C2);
+  static const separator = Color(0xFFE3E9F1);
 
-  static const sage = Color(0xFF7C9A7E);
-  static const sageDeep = Color(0xFF4F6B53);
-  static const sageTint = Color(0xFFE8EEE6);
+  static const accent = Color(0xFF1FA58E); // hijau tosca: tombol utama, penanda
+  static const accentDeep = Color(0xFF13806D); // teks beraksen di atas latar terang
+  static const accentTint = Color(0xFFE2F5F1);
+  static const violet = Color(0xFF7C6CF2); // aksen kedua: pesan pengguna, sorotan
+  static const violetTint = Color(0xFFEEEBFF);
+  static const blue = Color(0xFF3D8BFD);
+  static const herb = Color(0xFF3BAA6E); // hijau daun: bahan tersedia, langkah selesai
+  static const herbTint = Color(0xFFE6F5EC);
+  static const ink = Color(0xFF1F2A44); // dipertahankan untuk kompatibilitas; sama dengan warna teks
 
-  // pastel, dipakai hemat
-  static const butter = Color(0xFFF3E7B8);
-  static const blush = Color(0xFFF2DED6);
-  static const clay = Color(0xFFB8664F); // peringatan lembut
+  static const butter = Color(0xFFFFF1C2);
+  static const clay = Color(0xFFD64560); // peringatan, merah muda tua
 }
 
 TextStyle inter(double size, {FontWeight weight = FontWeight.w400, Color color = C.label, double? height, double? spacing}) => TextStyle(
@@ -47,13 +52,13 @@ class T {
 }
 
 ThemeData buildTheme() {
-  final scheme = ColorScheme.fromSeed(seedColor: C.sage, primary: C.sageDeep, surface: C.surface, onSurface: C.label, error: C.clay);
+  final scheme = ColorScheme.fromSeed(seedColor: C.accent, primary: C.accent, surface: C.surface, onSurface: C.label, error: C.clay);
   final base = ThemeData(useMaterial3: true, colorScheme: scheme, fontFamily: 'Inter', splashFactory: NoSplash.splashFactory);
   return base.copyWith(
     scaffoldBackgroundColor: C.bg,
     dividerColor: C.separator,
     dividerTheme: const DividerThemeData(color: C.separator, thickness: .6, space: .6),
-    highlightColor: C.sageTint.withValues(alpha: .5),
+    highlightColor: C.accentTint.withValues(alpha: .5),
     appBarTheme: AppBarTheme(
       backgroundColor: C.bg,
       surfaceTintColor: Colors.transparent,
@@ -65,16 +70,16 @@ ThemeData buildTheme() {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: C.sageDeep,
+        backgroundColor: C.accent,
         foregroundColor: Colors.white,
-        minimumSize: const Size(0, 50),
+        minimumSize: const Size(0, 54),
         textStyle: inter(16, weight: FontWeight.w600),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        shape: const StadiumBorder(),
         elevation: 0,
       ),
     ),
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(foregroundColor: C.sageDeep, textStyle: inter(16, weight: FontWeight.w500)),
+      style: TextButton.styleFrom(foregroundColor: C.accentDeep, textStyle: inter(16, weight: FontWeight.w500)),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -87,7 +92,7 @@ ThemeData buildTheme() {
     ),
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.all(Colors.white),
-      trackColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? C.sage : C.separator),
+      trackColor: WidgetStateProperty.resolveWith((s) => s.contains(WidgetState.selected) ? C.accent : C.separator),
       trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
     ),
     snackBarTheme: SnackBarThemeData(
@@ -103,13 +108,13 @@ ThemeData buildTheme() {
       dragHandleColor: C.separator,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
     ),
-    progressIndicatorTheme: const ProgressIndicatorThemeData(color: C.sage, linearTrackColor: C.separator),
+    progressIndicatorTheme: const ProgressIndicatorThemeData(color: C.accent, linearTrackColor: C.separator),
   );
 }
 
-/// Kartu putih dengan sudut lembut dan bayangan nyaris tak terlihat.
-BoxDecoration card({double radius = 18}) => BoxDecoration(
+/// Kartu putih dengan sudut lembut dan bayangan tipis.
+BoxDecoration card({double radius = 22}) => BoxDecoration(
       color: C.surface,
       borderRadius: BorderRadius.circular(radius),
-      boxShadow: const [BoxShadow(color: Color(0x0A000000), blurRadius: 12, offset: Offset(0, 2))],
+      boxShadow: const [BoxShadow(color: Color(0x141F2A44), blurRadius: 18, offset: Offset(0, 6))],
     );

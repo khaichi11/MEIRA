@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'app_state.dart';
 import 'theme.dart';
 import 'ui/home.dart';
-import 'ui/onboarding.dart';
 import 'ui/setup.dart';
 import 'ui/splash.dart';
+import 'ui/welcome.dart';
 import 'ui/widgets.dart';
 
 Future<void> main() async {
@@ -26,14 +26,6 @@ class MeiraApp extends StatefulWidget {
 }
 
 class _MeiraAppState extends State<MeiraApp> {
-  bool _onboarded = true;
-
-  @override
-  void initState() {
-    super.initState();
-    Onboarding.needed().then((need) => mounted ? setState(() => _onboarded = !need) : null);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scope(
@@ -46,7 +38,8 @@ class _MeiraAppState extends State<MeiraApp> {
           final s = Scope.of(context);
           final page = switch (s.phase) {
             Phase.needsModels => const SetupScreen(key: ValueKey('setup')),
-            Phase.ready => _onboarded ? const HomeShell(key: ValueKey('home')) : Onboarding(key: const ValueKey('intro'), onDone: () => setState(() => _onboarded = true)),
+            // langsung ke Dapur: tanpa halaman perkenalan, pertanyaan pertama langsung terlihat
+            Phase.ready => s.userName == null ? const WelcomeScreen(key: ValueKey('nama')) : const HomeShell(key: ValueKey('home')),
             _ => const SplashScreen(key: ValueKey('splash')),
           };
           return AnimatedSwitcher(duration: const Duration(milliseconds: 500), child: page);

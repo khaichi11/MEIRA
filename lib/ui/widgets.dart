@@ -25,11 +25,11 @@ class Marker extends StatelessWidget {
         height: size,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: active ? C.sageDeep : Colors.white,
+          color: active ? C.accent : Colors.white,
           shape: BoxShape.circle,
           boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 6, offset: Offset(0, 1))],
         ),
-        child: Text('$number', style: inter(size * .46, weight: FontWeight.w700, color: active ? Colors.white : C.sageDeep, height: 1)),
+        child: Text('$number', style: inter(size * .46, weight: FontWeight.w700, color: active ? Colors.white : C.accent, height: 1)),
       );
 }
 
@@ -44,8 +44,8 @@ class NumberBadge extends StatelessWidget {
         height: size,
         constraints: BoxConstraints(minWidth: size),
         padding: const EdgeInsets.symmetric(horizontal: 5),
-        decoration: BoxDecoration(color: C.sageTint, borderRadius: BorderRadius.circular(size / 2)),
-        child: Center(widthFactor: 1, child: Text('$number', style: inter(size * .55, weight: FontWeight.w700, color: C.sageDeep, height: 1))),
+        decoration: BoxDecoration(color: C.accentTint, borderRadius: BorderRadius.circular(size / 2)),
+        child: Center(widthFactor: 1, child: Text('$number', style: inter(size * .55, weight: FontWeight.w700, color: C.accent, height: 1))),
       );
 }
 
@@ -192,7 +192,7 @@ class _TypingDotsState extends State<TypingDots> with SingleTickerProviderStateM
               height: 7,
               margin: const EdgeInsets.only(right: 4),
               decoration: BoxDecoration(
-                color: C.sage.withValues(alpha: .3 + .7 * (0.5 + 0.5 * math.sin((_c.value * 2 * math.pi) - i * 0.9))),
+                color: C.herb.withValues(alpha: .3 + .7 * (0.5 + 0.5 * math.sin((_c.value * 2 * math.pi) - i * 0.9))),
                 shape: BoxShape.circle,
               ),
             ),

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../app_state.dart';
 import '../theme.dart';
+import 'cooking_loader.dart';
 import 'widgets.dart';
 
-/// Layar pembuka: logo bernapas pelan, satu baris status, dan garis progres tipis.
+/// Layar pembuka: animasi memasak, satu baris status, dan garis progres tipis.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -12,15 +13,7 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
-  late final AnimationController _breath = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200))..repeat(reverse: true);
-
-  @override
-  void dispose() {
-    _breath.dispose();
-    super.dispose();
-  }
-
+class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     final s = Scope.of(context);
@@ -32,16 +25,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-              AnimatedBuilder(
-                animation: _breath,
-                builder: (_, child) => Transform.scale(scale: 1 + Curves.easeInOut.transform(_breath.value) * .04, child: child),
-                child: const LogoMark(size: 96),
-              ),
-              const SizedBox(height: 28),
+              if (failed) const LogoMark(size: 88) else const CookingLoader(size: 180),
+              const SizedBox(height: 22),
               Text('MEIRA', style: poppins(30, weight: FontWeight.w600, spacing: 2)),
               const SizedBox(height: 6),
               Text('Multimodal Edge Intelligence for Recipe Assistance', textAlign: TextAlign.center, style: T.subhead),
-              const SizedBox(height: 48),
+              const SizedBox(height: 36),
               if (failed) ...[
                 Text('MEIRA belum bisa dinyalakan.', style: T.headline),
                 const SizedBox(height: 6),

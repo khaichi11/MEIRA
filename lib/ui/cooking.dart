@@ -80,7 +80,7 @@ class _CookingScreenState extends State<CookingScreen> {
                     duration: const Duration(milliseconds: 250),
                     height: 4,
                     margin: const EdgeInsets.symmetric(horizontal: 2),
-                    decoration: BoxDecoration(color: i <= _step ? C.sage : C.separator, borderRadius: BorderRadius.circular(2)),
+                    decoration: BoxDecoration(color: i <= _step ? C.herb : C.separator, borderRadius: BorderRadius.circular(2)),
                   ),
                 ),
             ]),
@@ -108,12 +108,12 @@ class _CookingScreenState extends State<CookingScreen> {
               padding: const EdgeInsets.only(bottom: 14),
               child: _left > 0
                   ? Text('${(_left ~/ 60).toString().padLeft(2, '0')}:${(_left % 60).toString().padLeft(2, '0')}',
-                      style: poppins(40, weight: FontWeight.w600, color: C.sageDeep))
+                      style: poppins(40, weight: FontWeight.w600, color: C.accent))
                   : FilledButton.tonalIcon(
                       onPressed: () => _startTimer(minutes),
                       icon: const Icon(Icons.timer_outlined),
                       label: Text('Timer $minutes menit'),
-                      style: FilledButton.styleFrom(backgroundColor: C.sageTint, foregroundColor: C.sageDeep),
+                      style: FilledButton.styleFrom(backgroundColor: C.accentTint, foregroundColor: C.accent),
                     ),
             ),
           if (_step == r.steps.length - 1 && r.tip.isNotEmpty)

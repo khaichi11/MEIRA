@@ -1,9 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_state.dart';
-import '../runtime/device.dart';
 import '../runtime/models.dart';
 import '../theme.dart';
 import 'widgets.dart';
@@ -38,102 +36,63 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
-  Future<void> _eyesUrl(AppState s) async {
-    final p = await SharedPreferences.getInstance();
-    final ctl = TextEditingController(text: p.getString('eyes_base_url') ?? '');
-    if (!mounted) return;
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        backgroundColor: C.bg,
-        title: Text('Sumber model Mata', style: T.headline),
-        content: TextField(controller: ctl, decoration: const InputDecoration(hintText: 'https://huggingface.co/akun/repo/resolve/main')),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Simpan')),
-        ],
-      ),
-    );
-    if (ok == true) await p.setString('eyes_base_url', ctl.text.trim());
-  }
-
   @override
   Widget build(BuildContext context) {
     final s = Scope.of(context);
     final u = _usage;
-    return ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 32), children: [
+    return ListView(padding: const EdgeInsets.fromLTRB(16, 0, 16, 120), children: [
       const Padding(padding: EdgeInsets.only(left: 4), child: LargeTitle('Pengaturan')),
       const SizedBox(height: 8),
-      Section(header: 'Suara', footer: 'Suara sistem memakai mesin TTS bawaan perangkat. Suara Piper perlu dipasang dulu di bagian Model.', children: [
-        for (final (v, label) in const [('sistem', 'Suara sistem'), ('piper', 'Suara Piper')])
-          Row2(title: label, onTap: () => s.setPref('tts_engine', v), trailing: s.ttsEngine == v ? const Icon(Icons.check_rounded, color: C.sageDeep) : null),
-        if (s.ttsEngine == 'sistem')
-          Row2(
-            title: 'Pilih suara',
-            subtitle: s.voiceName ?? 'Otomatis: suara Indonesia terbaik yang bisa offline',
-            trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary),
-            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => Scope(state: s, child: const _VoicePicker()))),
-          ),
-        Row2(title: 'Bacakan jawaban', trailing: Switch(value: s.speakAnswers, onChanged: (v) => s.setPref('speak', v))),
-        Row2(title: 'Percakapan suara', subtitle: 'Bicara tanpa menekan tombol; MEIRA mendengar lagi setelah menjawab', trailing: Switch(value: s.handsFree, onChanged: s.setHandsFree)),
+      Section(header: 'Profil', children: [
+        Row2(
+          title: 'Nama panggilan',
+          trailing: Text(s.userName?.isNotEmpty == true ? s.userName! : 'Belum diisi', style: T.footnote),
+          onTap: () async {
+            final ctl = TextEditingController(text: s.userName ?? '');
+            final name = await showDialog<String>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                backgroundColor: C.bg,
+                title: Text('Nama panggilan', style: T.headline),
+                content: TextField(controller: ctl, autofocus: true, textCapitalization: TextCapitalization.words),
+                actions: [
+                  TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Batal')),
+                  TextButton(onPressed: () => Navigator.pop(ctx, ctl.text), child: const Text('Simpan')),
+                ],
+              ),
+            );
+            if (name != null) await s.setPref('user_name', name);
+          },
+        ),
       ]),
-      Section(
-        header: 'Jawaban',
-        footer: 'Ringkas: rekomendasi dan langkah diambil langsung dari buku resep, instan dan tidak mengarang. Natural: semua jawaban disusun model bahasa.',
-        children: [
-          for (final (v, label) in const [('ringkas', 'Ringkas'), ('natural', 'Natural')])
-            Row2(title: label, onTap: () => s.setPref('answer_style', v), trailing: s.answerStyle == v ? const Icon(Icons.check_rounded, color: C.sageDeep) : null),
-        ],
-      ),
-      Section(
-        header: 'Penglihatan',
-        footer: 'Mata akurat (2B) lebih jarang melewatkan bahan pada foto ramai, tetapi hampir tiga kali lebih lama. Mode otomatis memakainya bila RAM ponsel 8 GB atau lebih. '
-            'Deteksi teliti membaca foto dua kali (asli dan dicerminkan) sehingga lebih sedikit bahan terlewat, dengan waktu sekitar dua kali lipat.',
-        children: [
-          Row2(
-            title: 'Model mata',
-            trailing: DropdownButton<String>(
-              // pilihan yang modelnya sudah dihapus kembali ke otomatis agar menu tetap valid
-              value: {'cepat': s.models.installed(eyesPack), 'akurat': s.models.installed(eyesAccuratePack)}[s.eyesChoice] ?? true ? s.eyesChoice : 'otomatis',
-              underline: const SizedBox.shrink(),
-              items: [
-                const DropdownMenuItem(value: 'otomatis', child: Text('Otomatis')),
-                if (s.models.installed(eyesPack)) const DropdownMenuItem(value: 'cepat', child: Text('Cepat (0,8B)')),
-                if (s.models.installed(eyesAccuratePack)) const DropdownMenuItem(value: 'akurat', child: Text('Akurat (2B)')),
-              ],
-              onChanged: (v) => s.setPref('eyes_model', v ?? 'otomatis'),
-            ),
-          ),
-          Row2(title: 'Deteksi teliti', trailing: Switch(value: s.thorough, onChanged: (v) => s.setPref('thorough', v))),
-          Row2(title: 'Baca tulisan kemasan', subtitle: 'Mi instan, minyak goreng, kecap, santan, dan sejenisnya', trailing: Switch(value: s.readPackages, onChanged: (v) => s.setPref('read_packages', v))),
-        ],
-      ),
-      Section(
-        header: 'Kinerja',
-        footer: 'Model mata dilatih dengan foto 768 piksel. Ukuran lebih kecil mempercepat deteksi, tetapi bahan kecil lebih mudah terlewat.',
-        children: [
-          Row2(
-            title: 'Ukuran foto untuk model',
-            trailing: DropdownButton<int>(
-              value: s.imageSide,
-              underline: const SizedBox.shrink(),
-              items: const [DropdownMenuItem(value: 384, child: Text('384 px')), DropdownMenuItem(value: 512, child: Text('512 px')), DropdownMenuItem(value: 768, child: Text('768 px'))],
-              onChanged: (v) => s.setPref('image_side', v ?? 768),
-            ),
-          ),
-          Row2(title: 'Lepas model saat di latar belakang', subtitle: 'Menghemat RAM bila MEIRA ditinggal lebih dari 3 menit', trailing: Switch(value: s.releaseInBackground, onChanged: (v) => s.setPref('release_bg', v))),
-        ],
-      ),
-      Section(header: 'Model di perangkat', footer: 'RAM perangkat ${Device.totalRamGb().toStringAsFixed(1)} GB. Model memakai ${_mb(s.models.usedBytes())} penyimpanan.', children: [
+      Section(header: 'Suara', children: [
+        Row2(title: 'Bacakan jawaban', trailing: Switch(value: s.speakAnswers, onChanged: (v) => s.setPref('speak', v))),
+        Row2(title: 'Bicara tanpa tombol', trailing: Switch(value: s.handsFree, onChanged: s.setHandsFree)),
+        Row2(
+          title: 'Pilihan suara',
+          subtitle: s.voiceName ?? 'Otomatis',
+          trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary),
+          onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => Scope(state: s, child: const _VoicePicker()))),
+        ),
+      ]),
+      Section(header: 'Gaya jawaban', children: [
+        for (final (v, label, sub) in const [('ringkas', 'Ringkas', 'Langsung dari buku resep'), ('natural', 'Natural', 'Disusun model bahasa')])
+          Row2(title: label, subtitle: sub, onTap: () => s.setPref('answer_style', v), trailing: s.answerStyle == v ? const Icon(Icons.check_rounded, color: C.accent) : null),
+      ]),
+      Section(header: 'Foto', children: [
+        Row2(title: 'Periksa dua kali', subtitle: 'Lebih teliti, sedikit lebih lama', trailing: Switch(value: s.thorough, onChanged: (v) => s.setPref('thorough', v))),
+        Row2(title: 'Baca tulisan kemasan', trailing: Switch(value: s.readPackages, onChanged: (v) => s.setPref('read_packages', v))),
+        Row2(title: 'Hemat RAM saat ditinggal', trailing: Switch(value: s.releaseInBackground, onChanged: (v) => s.setPref('release_bg', v))),
+      ]),
+      Section(header: 'Model', footer: 'Terpakai ${_mb(s.models.usedBytes())}', children: [
         for (final p in allPacks)
           Row2(
             title: p.title,
-            subtitle: p.id == 'mata' && !s.models.installed(p) ? 'Belum dipasang. Sementara memakai model Otak.' : p.subtitle,
             trailing: s.models.installed(p)
-                ? const Icon(Icons.check_circle, color: C.sage, size: 22)
+                ? const Icon(Icons.check_circle_rounded, color: C.herb, size: 22)
                 : _progress[p.id] != null
                     ? Text('${(_progress[p.id]! * 100).round()}%', style: T.footnote)
-                    : TextButton(onPressed: () => _install(s, p), child: Text('Pasang (${p.approxMb} MB)')),
+                    : TextButton(onPressed: () => _install(s, p), child: Text('Unduh ${p.approxMb} MB')),
           ),
         Row2(
           title: 'Pasang dari file',
@@ -146,9 +105,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
           trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary),
         ),
-        Row2(title: 'Sumber model Mata', onTap: () => _eyesUrl(s), trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary)),
       ]),
-      Section(header: 'Riwayat', footer: 'Riwayat hanya disimpan di perangkat ini. Foto lama dipangkas otomatis bila melebihi 300 MB.', children: [
+      Section(header: 'Riwayat', footer: 'Hanya disimpan di ponsel ini.', children: [
         Row2(title: 'Tersimpan', trailing: Text(u == null ? '' : '${u.$1} percakapan, ${_mb(u.$3)}', style: T.footnote)),
         Row2(
           title: 'Hapus semua riwayat',
@@ -196,9 +154,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 }
 
 const _legal = 'Kode MEIRA berlisensi Apache-2.0. Buku resep, catatan dapur, dan logo: CC0. '
-    'Model Qwen3.5: Apache-2.0. Whisper: MIT. sherpa-onnx: Apache-2.0, dengan espeak-ng (GPL-3.0) untuk suara Piper. '
-    'llama.cpp: MIT. flutter_tts: MIT. Font Poppins dan Inter: SIL OFL 1.1. Data latih deteksi bahan: anotasi '
-    'Open Images V7 dan LVIS v1 (CC BY 4.0) dengan foto berlisensi bebas; atribusi per foto ada di repo MEIRA-Before.';
+    'Model: Qwen3.5 (Apache-2.0), Whisper (MIT), detektor D-FINE (Apache-2.0), OCR PP-OCRv5 (Apache-2.0). '
+    'Pustaka: llama.cpp (MIT), ONNX Runtime (MIT), sherpa-onnx (Apache-2.0, memuat espeak-ng GPL-3.0), flutter_tts (MIT). '
+    'Font Poppins dan Inter: SIL OFL 1.1. Data latih: Open Images V7 dan LVIS v1 (anotasi CC BY 4.0). '
+    'Ilustrasi di aplikasi digambar sendiri dengan kode.';
 
 
 class _VoicePicker extends StatefulWidget {
@@ -236,7 +195,7 @@ class _VoicePickerState extends State<_VoicePicker> {
                     Row2(
                       title: 'Suara ${i + 1}${i == 0 ? ' (disarankan)' : ''}',
                       subtitle: '${v['name']}${v['offline'] == 'true' ? '' : ' · butuh internet'}',
-                      trailing: (s.voiceName ?? voices.first['name']) == v['name'] ? const Icon(Icons.check_rounded, color: C.sageDeep) : null,
+                      trailing: (s.voiceName ?? voices.first['name']) == v['name'] ? const Icon(Icons.check_rounded, color: C.accent) : null,
                       onTap: () async {
                         await s.setPref('voice_name', v['name']!);
                         await s.speak('Selamat datang, saya MEIRA. Pisang nomor satu sudah tersedia, Anda hanya perlu menyiapkan susu.');

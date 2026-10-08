@@ -52,7 +52,7 @@ class HistoryScreenState extends State<HistoryScreen> {
     for (final e in items) {
       groups.putIfAbsent(_group(e.updated), () => []).add(e);
     }
-    return ListView(padding: const EdgeInsets.only(bottom: 24), children: [
+    return ListView(padding: const EdgeInsets.only(bottom: 120), children: [
       const LargeTitle('Riwayat'),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 18),
@@ -86,7 +86,7 @@ class HistoryScreenState extends State<HistoryScreen> {
                     child: SizedBox(
                       width: 44,
                       height: 44,
-                      child: e.hasPhoto ? Image.file(s.history.thumbFile(e.id), fit: BoxFit.cover) : const ColoredBox(color: C.sageTint, child: Icon(Icons.chat_bubble_outline_rounded, size: 20, color: C.sageDeep)),
+                      child: e.hasPhoto ? Image.file(s.history.thumbFile(e.id), fit: BoxFit.cover) : const ColoredBox(color: C.accentTint, child: Icon(Icons.chat_bubble_outline_rounded, size: 20, color: C.accent)),
                     ),
                   ),
                   title: e.title.isEmpty ? 'Percakapan' : e.title,

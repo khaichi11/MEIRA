@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -9,11 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_state.dart';
-import '../core/generated.dart';
-import '../core/grounding.dart';
 import '../core/vocab.dart';
 import '../runtime/device.dart';
-import '../runtime/llama.dart';
 import '../theme.dart';
 import 'widgets.dart';
 
@@ -78,8 +74,8 @@ class StudioScreenState extends State<StudioScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(padding: const EdgeInsets.only(bottom: 24), children: [
-      LargeTitle('Dataset', trailing: IconButton(tooltip: 'Foto baru', onPressed: _new, icon: const Icon(Icons.add_circle_rounded, color: C.sageDeep, size: 28))),
+    return ListView(padding: const EdgeInsets.only(bottom: 120), children: [
+      LargeTitle('Dataset', trailing: IconButton(tooltip: 'Foto baru', onPressed: _new, icon: const Icon(Icons.add_circle_rounded, color: C.accent, size: 28))),
       Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 18),
         child: Text('Ajari MEIRA mengenali bahan di dapur Anda. Tandai setiap bahan, satu buah satu kotak. Contoh yang tersimpan akan dipakai pada pelatihan berikutnya.', style: T.subhead),
@@ -87,11 +83,11 @@ class StudioScreenState extends State<StudioScreen> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Section(children: [
-          Row2(title: 'Foto baru', leading: const Icon(Icons.photo_camera_rounded, color: C.sageDeep), onTap: _new, trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary)),
+          Row2(title: 'Foto baru', leading: const Icon(Icons.photo_camera_rounded, color: C.accent), onTap: _new, trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary)),
           Row2(
             title: 'Ekspor untuk training',
             subtitle: '${_items.length} contoh',
-            leading: const Icon(Icons.ios_share_rounded, color: C.sageDeep),
+            leading: const Icon(Icons.ios_share_rounded, color: C.accent),
             onTap: _items.isEmpty ? null : _export,
             trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary),
           ),
@@ -123,7 +119,7 @@ class StudioScreenState extends State<StudioScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                           decoration: BoxDecoration(color: Colors.white.withValues(alpha: .9), borderRadius: BorderRadius.circular(10)),
-                          child: Text('${(it['objects'] as List).length} label', style: inter(11, weight: FontWeight.w600, color: C.sageDeep)),
+                          child: Text('${(it['objects'] as List).length} label', style: inter(11, weight: FontWeight.w600, color: C.accent)),
                         ),
                       ),
                     ]),
@@ -171,19 +167,15 @@ class _EditorState extends State<_Editor> {
     super.dispose();
   }
 
+  /// Usulan kotak dari detektor bahan; pengguna tinggal memeriksa dan membetulkannya.
   Future<void> _autoLabel() async {
     final s = Scope.of(context);
-    final eyes = s.meira?.eyes;
-    if (eyes == null) return;
+    final vision = s.vision;
+    if (vision == null) return;
     setState(() => _busy = true);
     try {
-      final codec = await ui.instantiateImageCodec(widget.bytes, targetWidth: _size!.width >= _size!.height ? s.imageSide : null, targetHeight: _size!.height > _size!.width ? s.imageSide : null);
-      final png = await (await codec.getNextFrame()).image.toByteData(format: ui.ImageByteFormat.png);
-      final url = 'data:image/png;base64,${base64Encode(png!.buffer.asUint8List())}';
-      final prompt = s.eyesFineTuned ? promptGround : promptGroundZeroshot;
-      final raw = await eyes.chat(LlmClient.visionMessages(url, prompt), maxTokens: 700, sampling: visionSampling);
-      final dets = parseDetections(raw);
-      setState(() => _boxes.addAll([for (final d in dets) EditBox(d.label, [...d.box], group: d.group)]));
+      final res = await vision.detect(await AppState.visionInput(widget.bytes));
+      setState(() => _boxes.addAll([for (final d in res.detections) EditBox(d.label, [...d.box], group: d.group)]));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -274,7 +266,7 @@ class _EditorState extends State<_Editor> {
         leading: TextButton(onPressed: () => Navigator.pop(context), child: const Text('Batal')),
         leadingWidth: 84,
         title: const Text('Tandai bahan'),
-        actions: [TextButton(onPressed: _size == null ? null : _save, child: Text('Simpan', style: inter(16, weight: FontWeight.w600, color: C.sageDeep)))],
+        actions: [TextButton(onPressed: _size == null ? null : _save, child: Text('Simpan', style: inter(16, weight: FontWeight.w600, color: C.accent)))],
       ),
       body: _size == null
           ? const Center(child: CircularProgressIndicator())
@@ -306,7 +298,7 @@ class _EditorState extends State<_Editor> {
                                 decoration: BoxDecoration(
                                   color: i == _sel ? Colors.white.withValues(alpha: .15) : null,
                                   borderRadius: BorderRadius.circular(6),
-                                  border: Border.all(color: i == _sel ? C.sageDeep : Colors.white, width: i == _sel ? 2.5 : 1.5),
+                                  border: Border.all(color: i == _sel ? C.accent : Colors.white, width: i == _sel ? 2.5 : 1.5),
                                 ),
                                 alignment: Alignment.center,
                                 child: Marker(i + 1, size: 24, active: i == _sel),
@@ -356,10 +348,10 @@ class _EditorState extends State<_Editor> {
                         onSelected: (v) => setState(() => b.group = v),
                         visualDensity: VisualDensity.compact,
                         side: BorderSide.none,
-                        selectedColor: C.sageTint,
+                        selectedColor: C.accentTint,
                         backgroundColor: C.grouped,
                         showCheckmark: false,
-                        labelStyle: inter(12.5, color: b.group ? C.sageDeep : C.secondary),
+                        labelStyle: inter(12.5, color: b.group ? C.accent : C.secondary),
                       ),
                       IconButton(onPressed: () => setState(() => _boxes.removeAt(i)), icon: const Icon(Icons.remove_circle_rounded, color: C.clay, size: 22)),
                     ]),
@@ -374,7 +366,7 @@ class _EditorState extends State<_Editor> {
               ]),
               Section(header: 'Lisensi foto', children: [
                 for (final l in const ['CC BY 4.0', 'CC0 1.0'])
-                  Row2(title: l, onTap: () => setState(() => _license = l), trailing: _license == l ? const Icon(Icons.check_rounded, color: C.sageDeep) : null),
+                  Row2(title: l, onTap: () => setState(() => _license = l), trailing: _license == l ? const Icon(Icons.check_rounded, color: C.accent) : null),
               ]),
             ]),
     );

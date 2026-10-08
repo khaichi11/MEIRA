@@ -2,7 +2,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 import '../app_state.dart';
-import '../runtime/device.dart';
 import '../runtime/models.dart';
 import '../theme.dart';
 import 'widgets.dart';
@@ -26,7 +25,7 @@ class _SetupScreenState extends State<SetupScreen> {
       _error = null;
     });
     try {
-      for (final p in setupPacks(Device.totalRamGb())) {
+      for (final p in setupPacks()) {
         if (s.models.installed(p)) continue;
         try {
           await s.models.download(p, (done, total) => setState(() => _progress[p.id] = (done / total).clamp(0, 1)));
@@ -54,7 +53,7 @@ class _SetupScreenState extends State<SetupScreen> {
   @override
   Widget build(BuildContext context) {
     final s = Scope.of(context);
-    final packs = setupPacks(Device.totalRamGb());
+    final packs = setupPacks();
     final total = packs.where((p) => !s.models.installed(p)).fold<int>(0, (a, p) => a + p.approxMb);
     return Scaffold(
       body: SafeArea(
@@ -75,7 +74,7 @@ class _SetupScreenState extends State<SetupScreen> {
                     title: p.title,
                     subtitle: p.subtitle,
                     trailing: s.models.installed(p)
-                        ? const Icon(Icons.check_circle, color: C.sage, size: 22)
+                        ? const Icon(Icons.check_circle, color: C.herb, size: 22)
                         : _progress[p.id] != null
                             ? SizedBox(width: 46, child: Text('${(_progress[p.id]! * 100).round()}%', textAlign: TextAlign.right, style: T.footnote))
                             : Text('${p.approxMb} MB${p.required ? '' : '\nopsional'}', textAlign: TextAlign.right, style: T.caption),
@@ -89,7 +88,7 @@ class _SetupScreenState extends State<SetupScreen> {
               const SizedBox(height: 8),
               TextButton(onPressed: _running ? null : () => _import(s), child: const Text('Pasang dari file di perangkat')),
               const SizedBox(height: 6),
-              Text('Model mata dipilih sesuai RAM ponsel dan dapat diganti di Pengaturan. Selama belum terpasang, MEIRA memakai model Otak untuk melihat, dengan hasil yang jauh kurang teliti.',
+              Text('Detektor bahan dan pembaca tulisan kemasan sudah ada di dalam aplikasi, sehingga yang diunduh hanya model bahasa dan model suara.',
                   textAlign: TextAlign.center, style: T.footnote),
             ]),
           ),

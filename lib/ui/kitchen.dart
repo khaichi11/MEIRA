@@ -1,13 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../app_state.dart';
+import '../core/recipes.dart';
 import '../theme.dart';
-import 'photo.dart';
+import 'chat.dart';
+import 'illustrations.dart';
 import 'recipe.dart';
 import 'widgets.dart';
 
+/// Ambil atau pilih foto lalu kirim ke MEIRA. Dari beranda, layar percakapan dibuka lebih dulu.
+Future<void> pickPhoto(BuildContext context, AppState s, ImageSource source,
+    {String text = '', bool inChat = false, void Function(AppState s)? onCorrect}) async {
+  try {
+    final x = await ImagePicker().pickImage(source: source, maxWidth: 1600, imageQuality: 88);
+    if (x == null) return;
+    final bytes = await x.readAsBytes();
+    if (!inChat && context.mounted) openChat(context, s, onCorrect: onCorrect);
+    await s.sendPhoto(bytes, text: text);
+  } catch (e) {
+    if (context.mounted) toast(context, 'Foto tidak bisa dibuka');
+  }
+}
+
+/// Beranda Dapur: sapaan, kolom tanya, foto bahan, foto terakhir, dan buku resep.
 class KitchenScreen extends StatefulWidget {
   const KitchenScreen({super.key, required this.onCorrect});
   final void Function(AppState s) onCorrect;
@@ -17,345 +33,232 @@ class KitchenScreen extends StatefulWidget {
 }
 
 class _KitchenScreenState extends State<KitchenScreen> {
-  final _text = TextEditingController();
-  final _scroll = ScrollController();
-  bool _boxes = false;
-  int _lastCount = 0;
+  int _filter = 0;
+  bool _allRecipes = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _text.addListener(() => setState(() {}));
-  }
+  Future<void> _pick(AppState s, ImageSource source) => pickPhoto(context, s, source, onCorrect: widget.onCorrect);
 
-  @override
-  void dispose() {
-    _text.dispose();
-    _scroll.dispose();
-    super.dispose();
-  }
-
-  Future<void> _pick(AppState s, ImageSource source) async {
-    try {
-      final x = await ImagePicker().pickImage(source: source, maxWidth: 1600, imageQuality: 88);
-      if (x == null) return;
-      final text = _text.text.trim();
-      _text.clear();
-      await s.sendPhoto(await x.readAsBytes(), text: text);
-    } catch (e) {
-      if (mounted) toast(context, 'Foto tidak bisa dibuka');
-    }
-  }
-
-  void _send(AppState s, [String? preset]) {
-    final t = (preset ?? _text.text).trim();
-    if (t.isEmpty) return;
-    if (preset == null) _text.clear();
-    s.send(text: t);
-  }
-
-  Future<void> _mic(AppState s) async {
-    final err = await s.toggleMic();
-    if (err != null && mounted) toast(context, err);
-  }
-
-  void _autoScroll(AppState s) {
-    final count = s.messages.length + (s.messages.isEmpty ? 0 : s.messages.last.text.length ~/ 40);
-    if (count == _lastCount) return;
-    _lastCount = count;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scroll.hasClients) _scroll.animateTo(_scroll.position.maxScrollExtent, duration: const Duration(milliseconds: 250), curve: Curves.easeOut);
-    });
+  /// Pertanyaan dari beranda memulai percakapan baru di layar percakapan.
+  void _ask(AppState s, {String? say}) {
+    if (s.busy) return;
+    s.newConversation();
+    openChat(context, s, focus: say == null, onCorrect: widget.onCorrect);
+    if (say != null) s.send(text: say);
   }
 
   @override
   Widget build(BuildContext context) {
     final s = Scope.of(context);
-    _autoScroll(s);
-    final wide = MediaQuery.sizeOf(context).width >= 900;
-    final header = LargeTitle('Dapur', trailing: IconButton(tooltip: 'Percakapan baru', onPressed: s.busy ? null : s.newConversation, icon: const Icon(Icons.edit_square, color: C.sageDeep)));
-    if (wide) {
-      return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Expanded(
-          flex: 11,
-          child: ListView(padding: const EdgeInsets.fromLTRB(4, 0, 12, 24), children: [header, Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: _photoBlock(s))]),
+    return ListView(padding: EdgeInsets.fromLTRB(16, 0, 16, MediaQuery.paddingOf(context).bottom + 16), children: [
+      _header(s),
+      _askPill(s),
+      const SizedBox(height: 16),
+      _empty(s),
+    ]);
+  }
+
+  Widget _askPill(AppState s) => Material(
+        color: C.surface,
+        borderRadius: BorderRadius.circular(26),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(26),
+          onTap: () => _ask(s),
+          child: Container(
+            height: 52,
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(26), border: Border.all(color: C.separator)),
+            child: Row(children: [
+              const Icon(Icons.search_rounded, color: C.tertiary),
+              const SizedBox(width: 10),
+              Expanded(child: Text('Tanya soal resep atau bahan', style: inter(15.5, color: C.tertiary))),
+              const Icon(Icons.mic_none_rounded, color: C.secondary),
+            ]),
+          ),
         ),
+      );
+
+  Widget _header(AppState s) {
+    final h = DateTime.now().hour;
+    final time = h < 11 ? 'Selamat pagi' : h < 15 ? 'Selamat siang' : h < 18 ? 'Selamat sore' : 'Selamat malam';
+    final name = s.userName?.trim() ?? '';
+    final greet = name.isEmpty ? time : '$time, $name';
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 14, 0, 14),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
         Expanded(
-          flex: 10,
-          child: Column(children: [
-            Expanded(child: ListView(controller: _scroll, padding: const EdgeInsets.fromLTRB(16, 68, 20, 12), children: _conversation(s))),
-            _suggestions(s),
-            _composer(s),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(greet, style: inter(14, color: C.secondary)),
+            const SizedBox(height: 2),
+            Text('Mau masak apa hari ini?', style: poppins(24, height: 1.2)),
           ]),
         ),
-      ]);
-    }
-    return Column(children: [
-      Expanded(
-        child: ListView(controller: _scroll, padding: const EdgeInsets.only(bottom: 12), children: [
-          header,
-          Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: _photoBlock(s)),
-          const SizedBox(height: 8),
-          Padding(padding: const EdgeInsets.symmetric(horizontal: 16), child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: _conversation(s))),
-        ]),
-      ),
-      _suggestions(s),
-      _composer(s),
-    ]);
-  }
-
-  // ------------------------------------------------------------- foto
-  Widget _photoBlock(AppState s) {
-    if (s.photo == null) return _empty(s);
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      Stack(children: [
-        PhotoView(state: s, showBoxes: _boxes),
-        Positioned(top: 10, right: 10, child: _photoMenu(s)),
-        if (s.sceneMode != null)
-          Positioned(
-            left: 10,
-            top: 10,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(color: Colors.white.withValues(alpha: .92), borderRadius: BorderRadius.circular(20)),
-              child: Text(s.sceneMode == 'hidangan' ? (s.dish ?? 'Makanan jadi') : 'Bahan', style: inter(13, weight: FontWeight.w600, color: C.sageDeep)),
-            ),
-          ),
-      ]),
-      const SizedBox(height: 14),
-      SeenList(state: s),
-      if (s.detectSeconds != null && s.detections.isNotEmpty)
-        Padding(padding: const EdgeInsets.only(top: 8, left: 2), child: Text('Dibaca dalam ${s.detectSeconds!.toStringAsFixed(1)} detik', style: T.caption)),
-      if (s.currentMatch != null) ...[const SizedBox(height: 14), RecipeCard(state: s)],
-    ]);
-  }
-
-  Widget _photoMenu(AppState s) => Material(
-        color: Colors.white.withValues(alpha: .92),
-        shape: const CircleBorder(),
-        child: PopupMenuButton<String>(
-          icon: const Icon(Icons.more_horiz_rounded, color: C.label),
-          color: C.surface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-          onSelected: (v) async {
-            switch (v) {
-              case 'boxes':
-                setState(() => _boxes = !_boxes);
-              case 'bahan' || 'hidangan' || 'otomatis':
-                await s.setPref('photo_mode', v);
-                if (s.photo != null && !s.busy) await s.sendPhoto(s.photo!);
-              case 'correct':
-                widget.onCorrect(s);
-              case 'save':
-                final ok = await showDialog<bool>(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    backgroundColor: C.bg,
-                    title: Text('Simpan ke dataset?', style: T.headline),
-                    content: Text('Pastikan setiap bahan sudah bernomor dan tidak ada nomor yang salah. Foto ini akan dipakai untuk melatih MEIRA berikutnya.',
-                        style: T.callout),
-                    actions: [
-                      TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal')),
-                      TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Simpan')),
-                    ],
-                  ),
-                );
-                if (ok == true) {
-                  final id = await s.saveToDataset();
-                  if (mounted && id != null) toast(context, 'Tersimpan di Dataset');
-                }
-            }
-          },
-          itemBuilder: (_) => [
-            CheckedPopupMenuItem(value: 'boxes', checked: _boxes, child: const Text('Tampilkan kotak')),
-            const PopupMenuDivider(),
-            CheckedPopupMenuItem(value: 'otomatis', checked: s.photoMode == 'otomatis', child: const Text('Kenali otomatis')),
-            CheckedPopupMenuItem(value: 'bahan', checked: s.photoMode == 'bahan', child: const Text('Ini bahan mentah')),
-            CheckedPopupMenuItem(value: 'hidangan', checked: s.photoMode == 'hidangan', child: const Text('Ini makanan jadi')),
-            const PopupMenuDivider(),
-            const PopupMenuItem(value: 'correct', child: Text('Edit kotak di Dataset')),
-            const PopupMenuItem(value: 'save', child: Text('Semua benar, simpan ke dataset')),
-          ],
-        ),
-      );
-
-  Widget _empty(AppState s) => Container(
-        padding: const EdgeInsets.fromLTRB(24, 36, 24, 24),
-        decoration: card(),
-        child: Column(children: [
-          const LogoMark(size: 56),
-          const SizedBox(height: 18),
-          Text('Apa yang ada di dapur Anda?', textAlign: TextAlign.center, style: T.title),
-          const SizedBox(height: 8),
-          Text('Foto bahan atau makanan jadi. MEIRA menandai yang terlihat, lalu mencarikan resep yang cocok.', textAlign: TextAlign.center, style: T.subhead),
-          const SizedBox(height: 24),
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(onPressed: () => _pick(s, ImageSource.camera), child: const Text('Ambil foto')),
-          ),
-          TextButton(onPressed: () => _pick(s, ImageSource.gallery), child: const Text('Pilih dari galeri')),
-        ]),
-      );
-
-  // ------------------------------------------------------------- percakapan
-  List<Widget> _conversation(AppState s) => [
-        for (final m in s.messages)
-          switch (m.role) {
-            Role.user => Align(
-                alignment: Alignment.centerRight,
-                child: m.text.isEmpty
-                    ? const SizedBox.shrink()
-                    : Container(
-                        margin: const EdgeInsets.only(left: 56, top: 14),
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-                        decoration: BoxDecoration(color: C.sageTint, borderRadius: BorderRadius.circular(18)),
-                        child: Text(m.text, style: T.body),
-                      ),
-              ),
-            Role.meira => Padding(
-                padding: const EdgeInsets.only(top: 14, right: 24),
-                child: m.streaming && m.text.isEmpty
-                    ? const TypingDots()
-                    : AnswerText(m.text, onNumber: (n) => s.highlight(n == null ? [] : [n])),
-              ),
-            Role.status => Padding(
-                padding: const EdgeInsets.only(top: 14),
-                child: Row(children: [
-                  const TypingDots(),
-                  const SizedBox(width: 10),
-                  Text(m.text, style: T.subhead),
-                ]),
-              ),
-            Role.error => Padding(padding: const EdgeInsets.only(top: 14), child: Text(m.text, style: inter(14, color: C.clay))),
-          },
-      ];
-
-  Widget _suggestions(AppState s) {
-    if (s.session == null || s.busy || s.voice != VoiceState.idle) return const SizedBox.shrink();
-    final dish = s.sceneMode == 'hidangan';
-    final items = dish
-        ? const [('Bahannya apa saja?', 'Bahannya apa saja?'), ('Cara membuat', 'Bagaimana cara membuatnya?')]
-        : s.currentMatch != null
-            ? const [('Resep lain', 'Ganti resep yang lain'), ('Cara membuat', 'Bagaimana cara membuatnya?'), ('Lebih cepat', 'Yang lebih cepat, maksimal 15 menit')]
-            : const <(String, String)>[];
-    if (items.isEmpty) return const SizedBox.shrink();
-    return SizedBox(
-      height: 44,
-      child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.fromLTRB(16, 4, 16, 4), children: [
-        for (final (label, say) in items)
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: ActionChip(
-              label: Text(label),
-              onPressed: () => _send(s, say),
-              labelStyle: inter(14, weight: FontWeight.w500, color: C.sageDeep),
-              backgroundColor: C.surface,
-              side: BorderSide.none,
-              shape: const StadiumBorder(),
-              elevation: 0,
-            ),
-          ),
       ]),
     );
   }
 
-  Widget _composer(AppState s) {
-    final hasText = _text.text.trim().isNotEmpty;
-    final live = s.voice == VoiceState.listening;
-    final transcribing = s.voice == VoiceState.transcribing;
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          _round(Icons.photo_camera_rounded, s.busy ? null : () => _pick(s, ImageSource.camera), C.grouped, C.sageDeep),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(color: C.surface, borderRadius: BorderRadius.circular(22), border: Border.all(color: C.separator)),
-              child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                Expanded(
-                  child: CallbackShortcuts(
-                    bindings: {const SingleActivator(LogicalKeyboardKey.enter): () => _send(s)},
-                    child: TextField(
-                      controller: _text,
-                      minLines: 1,
-                      maxLines: 5,
-                      style: T.body,
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (_) => _send(s),
-                      decoration: InputDecoration(
-                        hintText: live ? 'Mendengarkan…' : transcribing ? 'Menuliskan ucapan Anda…' : 'Tanya MEIRA',
-                        filled: false,
-                        contentPadding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
-                      ),
+  Widget _empty(AppState s) => Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        // kartu utama: ilustrasi mangkuk dan dua cara memasukkan foto
+        Container(
+          height: 286,
+          decoration: BoxDecoration(color: C.accent, borderRadius: BorderRadius.circular(28)),
+          child: Stack(children: [
+            const Positioned(right: -18, top: -6, child: ProduceBowl(size: 230)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 24, 22, 20),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                SizedBox(width: 170, child: Text('Foto bahan, temukan resepnya', style: poppins(23, color: Colors.white, height: 1.2))),
+                const Spacer(),
+                Row(children: [
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () => _pick(s, ImageSource.camera),
+                      style: FilledButton.styleFrom(backgroundColor: Colors.white, foregroundColor: C.accentDeep),
+                      icon: const Icon(Icons.photo_camera_rounded),
+                      label: const Text('Kamera'),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: hasText
-                      ? _round(Icons.arrow_upward_rounded, s.busy ? null : () => _send(s), C.sageDeep, Colors.white, size: 36)
-                      : _MicButton(state: s, onTap: () => _mic(s)),
-                ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: FilledButton.icon(
+                      onPressed: () => _pick(s, ImageSource.gallery),
+                      style: FilledButton.styleFrom(backgroundColor: Colors.white.withValues(alpha: .22), foregroundColor: Colors.white),
+                      icon: const Icon(Icons.photo_library_rounded),
+                      label: const Text('Galeri'),
+                    ),
+                  ),
+                ]),
               ]),
             ),
+          ]),
+        ),
+        _recent(s),
+        _recipes(s),
+      ]);
+
+
+
+  static final _filters = <(String, bool Function(Recipe))>[
+    ('Semua', (_) => true),
+    ('Cepat', (r) => r.minutes <= 15),
+    ('Sarapan', (r) => r.tags.contains('sarapan')),
+    ('Tanpa kompor', (r) => r.tags.contains('tanpa-kompor')),
+    ('Minuman', (r) => r.tags.contains('minuman')),
+    ('Berkuah', (r) => r.tags.contains('berkuah')),
+  ];
+
+  /// Buku resep yang bisa dijelajahi tanpa foto, dengan saringan sederhana.
+  Widget _recipes(AppState s) {
+    final (_, test) = _filters[_filter];
+    final list = s.recipes.where(test).toList();
+    final shown = _allRecipes ? list : list.take(5).toList();
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      const SizedBox(height: 24),
+      Row(children: [
+        Expanded(child: Text('Resep', style: T.title)),
+        Text('${list.length} resep', style: T.footnote),
+      ]),
+      const SizedBox(height: 10),
+      SizedBox(
+        height: 38,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: _filters.length,
+          separatorBuilder: (_, _) => const SizedBox(width: 8),
+          itemBuilder: (_, i) => ChoiceChip(
+            label: Text(_filters[i].$1),
+            selected: _filter == i,
+            onSelected: (_) => setState(() {
+              _filter = i;
+              _allRecipes = false;
+            }),
+            showCheckmark: false,
+            labelStyle: inter(14, weight: FontWeight.w500, color: _filter == i ? Colors.white : C.label),
+            selectedColor: C.accent,
+            backgroundColor: C.surface,
+            side: BorderSide(color: _filter == i ? C.accent : C.separator),
+            shape: const StadiumBorder(),
           ),
-        ]),
+        ),
       ),
-    );
+      const SizedBox(height: 12),
+      for (final r in shown)
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: Material(
+            color: C.surface,
+            borderRadius: BorderRadius.circular(18),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(18),
+              onTap: () => showRecipeDetail(context, s, r),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12, 12, 8, 12),
+                child: Row(children: [
+                  Container(
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(color: C.accentTint, borderRadius: BorderRadius.circular(14)),
+                    child: Icon(_iconFor(r), color: C.accentDeep, size: 22),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                      Text(r.name, style: inter(15.5, weight: FontWeight.w600), maxLines: 1, overflow: TextOverflow.ellipsis),
+                      const SizedBox(height: 2),
+                      Text('${r.minutes} menit  ·  ${r.items.where((i) => i.main).map((i) => i.name).join(', ')}',
+                          style: T.footnote, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    ]),
+                  ),
+                  const Icon(Icons.chevron_right_rounded, color: C.tertiary),
+                ]),
+              ),
+            ),
+          ),
+        ),
+      if (list.length > shown.length)
+        TextButton(onPressed: () => setState(() => _allRecipes = true), child: Text('Lihat ${list.length - shown.length} resep lainnya')),
+    ]);
   }
 
-  Widget _round(IconData icon, VoidCallback? onTap, Color bg, Color fg, {double size = 44}) => Material(
-        color: onTap == null ? bg.withValues(alpha: .5) : bg,
-        shape: const CircleBorder(),
-        child: InkWell(customBorder: const CircleBorder(), onTap: onTap, child: SizedBox(width: size, height: size, child: Icon(icon, color: fg, size: size * .5))),
-      );
-}
+  static IconData _iconFor(Recipe r) => r.tags.contains('minuman')
+      ? Icons.local_cafe_outlined
+      : r.tags.contains('berkuah')
+          ? Icons.soup_kitchen_outlined
+          : r.tags.contains('sarapan')
+              ? Icons.egg_outlined
+              : r.tags.contains('camilan')
+                  ? Icons.cookie_outlined
+                  : Icons.restaurant_outlined;
 
-class _MicButton extends StatelessWidget {
-  const _MicButton({required this.state, required this.onTap});
-  final AppState state;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final live = state.voice == VoiceState.listening;
-    final busy = state.voice == VoiceState.transcribing;
-    return StreamBuilder<double>(
-      stream: state.speech?.level.stream,
-      initialData: 0,
-      builder: (_, snap) {
-        final lvl = live ? (snap.data ?? 0) : 0.0;
-        return SizedBox(
-          width: 36,
-          height: 36,
-          child: Stack(alignment: Alignment.center, clipBehavior: Clip.none, children: [
-            if (live)
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 90),
-                width: 36 + lvl * 22,
-                height: 36 + lvl * 22,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: C.sage.withValues(alpha: .22)),
-              ),
-            Material(
-              color: live ? C.sageDeep : Colors.transparent,
-              shape: const CircleBorder(),
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: busy ? null : onTap,
-                child: SizedBox(
-                  width: 36,
-                  height: 36,
-                  child: busy
-                      ? const Padding(padding: EdgeInsets.all(9), child: CircularProgressIndicator(strokeWidth: 2))
-                      : Icon(live ? Icons.stop_rounded : Icons.mic_none_rounded, color: live ? Colors.white : C.secondary, size: 21),
+  /// Foto terakhir dari riwayat, supaya bisa melanjutkan tanpa membuka tab Riwayat.
+  Widget _recent(AppState s) => FutureBuilder(
+        future: s.history.list(limit: 12),
+        builder: (context, snap) {
+          final items = [for (final e in snap.data ?? const []) if (e.hasPhoto) e].take(6).toList();
+          if (items.isEmpty) return const SizedBox.shrink();
+          return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const SizedBox(height: 22),
+            Text('Terakhir', style: T.headline),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 92,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: items.length,
+                separatorBuilder: (_, _) => const SizedBox(width: 10),
+                itemBuilder: (_, i) => GestureDetector(
+                  onTap: () async {
+                    await s.resume(items[i].id);
+                    if (context.mounted) openChat(context, s, onCorrect: widget.onCorrect);
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: Image.file(s.history.thumbFile(items[i].id), width: 92, height: 92, fit: BoxFit.cover),
+                  ),
                 ),
               ),
             ),
-          ]),
-        );
-      },
-    );
-  }
+          ]);
+        },
+      );
+
 }

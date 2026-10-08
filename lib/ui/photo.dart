@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../app_state.dart';
 import '../core/grounding.dart';
+import '../core/vocab.dart';
 import '../theme.dart';
 import 'marker_sheet.dart';
 import 'widgets.dart';
@@ -87,7 +88,7 @@ class _PhotoViewState extends State<PhotoView> with SingleTickerProviderStateMix
             duration: const Duration(milliseconds: 160),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: hot ? C.sageDeep : Colors.white.withValues(alpha: .9), width: hot ? 2.5 : 1.5),
+              border: Border.all(color: hot ? C.accent : Colors.white.withValues(alpha: .9), width: hot ? 2.5 : 1.5),
             ),
           ),
         ),
@@ -117,7 +118,7 @@ class SeenList extends StatelessWidget {
               duration: const Duration(milliseconds: 160),
               padding: const EdgeInsets.fromLTRB(6, 5, 12, 5),
               decoration: BoxDecoration(
-                color: g.numbers.any(s.highlighted.contains) ? C.sageTint : C.surface,
+                color: g.numbers.any(s.highlighted.contains) ? C.accentTint : C.surface,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -129,6 +130,17 @@ class SeenList extends StatelessWidget {
               ]),
             ),
           ),
+        ),
+      // bahan dari foto tambahan atau dari percakapan, tanpa penanda di foto ini
+      for (final key in (s.session?.prefs.include ?? const <String>{}).where((k) => !s.detections.any((d) => d.key == k)))
+        Container(
+          padding: const EdgeInsets.fromLTRB(10, 5, 12, 5),
+          decoration: BoxDecoration(color: C.herbTint, borderRadius: BorderRadius.circular(20)),
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.add_rounded, size: 16, color: C.herb),
+            const SizedBox(width: 4),
+            Text(displayName(key), style: inter(14.5, weight: FontWeight.w500)),
+          ]),
         ),
     ]);
   }

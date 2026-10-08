@@ -56,12 +56,12 @@ class _MarkerSheetState extends State<_MarkerSheet> {
           Section(children: [
             Row2(
               title: 'Sudah benar',
-              leading: const Icon(Icons.check_circle_outline_rounded, color: C.sage),
+              leading: const Icon(Icons.check_circle_outline_rounded, color: C.herb),
               onTap: () => Navigator.pop(context),
             ),
             Row2(
               title: 'Ganti nama bahan',
-              leading: const Icon(Icons.edit_outlined, color: C.sageDeep),
+              leading: const Icon(Icons.edit_outlined, color: C.accent),
               onTap: () => setState(() => _editing = true),
             ),
             Row2(
@@ -90,7 +90,7 @@ class _MarkerSheetState extends State<_MarkerSheet> {
                 ListTile(
                   title: Text(i.nameId, style: T.body),
                   subtitle: Text(i.nameEn, style: T.caption),
-                  trailing: i.key == d.key ? const Icon(Icons.check_rounded, color: C.sageDeep) : null,
+                  trailing: i.key == d.key ? const Icon(Icons.check_rounded, color: C.accent) : null,
                   onTap: () async {
                     HapticFeedback.selectionClick();
                     await s.correctMarker(d.number, i.key);

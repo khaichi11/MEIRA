@@ -37,7 +37,7 @@ class _RecipeCardState extends State<RecipeCard> {
     final dish = s.sceneMode == 'hidangan';
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       SizedBox(
-        height: 96,
+        height: 112,
         child: PageView.builder(
           controller: _pages,
           padEnds: false,
@@ -52,30 +52,43 @@ class _RecipeCardState extends State<RecipeCard> {
             final needed = r.items.where((it) => !it.optional && !pantry.contains(it.key)).toList();
             final seen = needed.where((it) => nums.containsKey(it.key) || m.have.contains(it.key)).length;
             return Padding(
-              padding: const EdgeInsets.only(right: 10),
-              child: Material(
-                color: C.surface,
-                borderRadius: BorderRadius.circular(18),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(18),
-                  onTap: () {
-                    s.selectRecipe(r.id);
-                    showRecipe(context, s);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
-                    child: Row(children: [
-                      Expanded(
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
-                          Text(i == 0 ? (dish ? 'Resep yang mirip' : 'Rekomendasi') : 'Alternatif $i', style: T.caption),
-                          const SizedBox(height: 3),
-                          Text(r.name, style: T.headline, maxLines: 1, overflow: TextOverflow.ellipsis),
-                          const SizedBox(height: 3),
-                          Text('${r.minutes} menit  ·  ${dish ? '${needed.length} bahan utama' : '$seen dari ${needed.length} bahan tersedia'}', style: T.footnote),
-                        ]),
-                      ),
-                      const Icon(Icons.chevron_right_rounded, color: C.tertiary),
-                    ]),
+              padding: const EdgeInsets.only(right: 10, bottom: 6),
+              child: Container(
+                decoration: card(),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(22),
+                    onTap: () {
+                      s.selectRecipe(r.id);
+                      showRecipe(context, s);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(14, 12, 10, 12),
+                      child: Row(children: [
+                        _HaveRing(have: dish ? 0 : seen, total: needed.length),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
+                            Text(i == 0 ? (dish ? 'Resep yang mirip' : 'Rekomendasi') : 'Alternatif $i',
+                                style: inter(12.5, weight: FontWeight.w600, color: C.accentDeep)),
+                            const SizedBox(height: 2),
+                            Text(r.name, style: poppins(17, height: 1.2), maxLines: 1, overflow: TextOverflow.ellipsis),
+                            const SizedBox(height: 4),
+                            Row(children: [
+                              const Icon(Icons.schedule_rounded, size: 15, color: C.secondary),
+                              const SizedBox(width: 4),
+                              Text('${r.minutes} menit', style: T.footnote),
+                              const SizedBox(width: 10),
+                              const Icon(Icons.signal_cellular_alt_rounded, size: 15, color: C.secondary),
+                              const SizedBox(width: 4),
+                              Text(r.difficulty, style: T.footnote),
+                            ]),
+                          ]),
+                        ),
+                        const Icon(Icons.chevron_right_rounded, color: C.tertiary),
+                      ]),
+                    ),
                   ),
                 ),
               ),
@@ -93,7 +106,7 @@ class _RecipeCardState extends State<RecipeCard> {
                 width: cands[i].recipe.id == s.session!.current ? 16 : 6,
                 height: 6,
                 margin: const EdgeInsets.only(right: 4),
-                decoration: BoxDecoration(color: cands[i].recipe.id == s.session!.current ? C.sage : C.separator, borderRadius: BorderRadius.circular(3)),
+                decoration: BoxDecoration(color: cands[i].recipe.id == s.session!.current ? C.accent : C.separator, borderRadius: BorderRadius.circular(3)),
               ),
             const SizedBox(width: 6),
             Text('Geser untuk alternatif', style: T.caption),
@@ -101,6 +114,31 @@ class _RecipeCardState extends State<RecipeCard> {
         ),
     ]);
   }
+}
+
+/// Cincin kecil: berapa bahan resep yang sudah terlihat di foto.
+class _HaveRing extends StatelessWidget {
+  const _HaveRing({required this.have, required this.total});
+  final int have;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        width: 52,
+        height: 52,
+        child: Stack(alignment: Alignment.center, children: [
+          SizedBox.expand(
+            child: CircularProgressIndicator(
+              value: total == 0 ? 0 : have / total,
+              strokeWidth: 5,
+              strokeCap: StrokeCap.round,
+              color: C.herb,
+              backgroundColor: C.herbTint,
+            ),
+          ),
+          Text(total == 0 ? '-' : '$have/$total', style: inter(13, weight: FontWeight.w700, color: C.herb)),
+        ]),
+      );
 }
 
 void showRecipe(BuildContext context, AppState state) {
@@ -112,23 +150,34 @@ void showRecipe(BuildContext context, AppState state) {
   );
 }
 
+/// Detail resep dari daftar resep di Dapur, tanpa foto.
+void showRecipeDetail(BuildContext context, AppState state, Recipe recipe) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    builder: (_) => Scope(state: state, child: _RecipeSheet(recipe: recipe)),
+  );
+}
+
 class _RecipeSheet extends StatelessWidget {
-  const _RecipeSheet();
+  const _RecipeSheet({this.recipe});
+  final Recipe? recipe; // diisi bila dibuka dari daftar resep, bukan dari hasil foto
 
   @override
   Widget build(BuildContext context) {
     final s = Scope.of(context);
-    final m = s.currentMatch;
-    if (m == null) return const SizedBox(height: 200);
-    final r = m.recipe;
-    final nums = s.session!.numbers();
-    final dish = s.sceneMode == 'hidangan';
+    final m = recipe == null ? s.currentMatch : null;
+    if (recipe == null && m == null) return const SizedBox(height: 200);
+    final r = recipe ?? m!.recipe;
+    final nums = m == null ? const <String, List<int>>{} : s.session!.numbers();
+    final dish = m != null && s.sceneMode == 'hidangan';
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: .86,
       maxChildSize: .95,
       builder: (context, scroll) => ListView(controller: scroll, padding: const EdgeInsets.fromLTRB(20, 0, 20, 32), children: [
-        if (s.candidates.length > 1)
+        if (m != null && s.candidates.length > 1)
           Padding(
             padding: const EdgeInsets.only(bottom: 18),
             child: SegmentedButton<String>(
@@ -164,7 +213,7 @@ class _RecipeSheet extends StatelessWidget {
           decoration: BoxDecoration(color: C.surface, borderRadius: BorderRadius.circular(14)),
           child: Column(children: [
             for (var i = 0; i < r.items.length; i++) ...[
-              _ItemRow(r.items[i], nums[r.items[i].key] ?? const [], m.have.contains(r.items[i].key) && !dish, dish, s),
+              _ItemRow(r.items[i], nums[r.items[i].key] ?? const [], (m?.have.contains(r.items[i].key) ?? false) && !dish, dish, s),
               if (i < r.items.length - 1) const Padding(padding: EdgeInsets.only(left: 48), child: Divider()),
             ],
           ]),
@@ -176,7 +225,7 @@ class _RecipeSheet extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 14),
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              SizedBox(width: 28, child: Text('${i + 1}', style: poppins(17, weight: FontWeight.w600, color: C.sage))),
+              SizedBox(width: 28, child: Text('${i + 1}', style: poppins(17, weight: FontWeight.w600, color: C.herb))),
               Expanded(child: Text(r.steps[i], style: T.body)),
             ]),
           ),
@@ -201,9 +250,10 @@ class _RecipeSheet extends StatelessWidget {
           onPressed: () => s.speak('${r.name}. ${[for (var i = 0; i < r.steps.length; i++) '${i + 1}. ${r.steps[i]}'].join('\n')}'),
           icon: const Icon(Icons.volume_up_rounded, size: 20),
           label: const Text('Bacakan semua langkah'),
-          style: OutlinedButton.styleFrom(minimumSize: const Size(0, 50), foregroundColor: C.sageDeep, side: const BorderSide(color: C.separator),
+          style: OutlinedButton.styleFrom(minimumSize: const Size(0, 50), foregroundColor: C.accent, side: const BorderSide(color: C.separator),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
         ),
+        if (m != null) ...[
         const SizedBox(height: 8),
         TextButton(
           onPressed: s.busy
@@ -214,6 +264,7 @@ class _RecipeSheet extends StatelessWidget {
                 },
           child: const Text('Cari resep lain'),
         ),
+        ],
       ]),
     );
   }
@@ -250,9 +301,9 @@ class _ItemRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final base = pantry.contains(it.key);
     final (icon, color, note) = numbers.isNotEmpty
-        ? (Icons.check_circle_rounded, C.sage, '')
+        ? (Icons.check_circle_rounded, C.herb, '')
         : owned
-            ? (Icons.check_circle_outline_rounded, C.sage, 'Anda miliki')
+            ? (Icons.check_circle_outline_rounded, C.herb, 'Anda miliki')
             : base
                 ? (Icons.circle, C.separator, 'bumbu dasar')
                 : it.optional
