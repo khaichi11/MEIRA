@@ -105,17 +105,17 @@ class Session {
   }
 
   Map<String, dynamic> toState() => {
-        'mode': mode,
-        'dish': dish,
-        'dish_guess': dishGuess,
-        'detections': [for (final d in detections) d.toJson()],
-        'prefs': prefs.toJson(),
-        'shown': shown,
-        'candidates': [for (final m in candidates) m.recipe.id],
-        'current': current,
-        'memory': memory.toJson(),
-        'summary': memory.summary,
-      };
+    'mode': mode,
+    'dish': dish,
+    'dish_guess': dishGuess,
+    'detections': [for (final d in detections) d.toJson()],
+    'prefs': prefs.toJson(),
+    'shown': shown,
+    'candidates': [for (final m in candidates) m.recipe.id],
+    'current': current,
+    'memory': memory.toJson(),
+    'summary': memory.summary,
+  };
 
   static Session restore(String id, Map<String, dynamic> st, List<Recipe> recipes, {int memoryBudget = 1100}) {
     final s = Session(id, memoryBudget: memoryBudget)
@@ -190,7 +190,11 @@ class Meira {
     final partial = <Detection>[];
     var line = '';
     final prompt = eyesFineTuned ? promptGround : promptGroundZeroshot;
-    await for (final tok in eyes!.stream(LlmClient.visionMessages(s.imageDataUrl!, prompt), maxTokens: 700, sampling: eyesFineTuned ? groundingSampling : visionSampling)) {
+    await for (final tok in eyes!.stream(
+      LlmClient.visionMessages(s.imageDataUrl!, prompt),
+      maxTokens: 700,
+      sampling: eyesFineTuned ? groundingSampling : visionSampling,
+    )) {
       buf.write(tok);
       line += tok;
       while (line.contains('\n')) {
@@ -207,7 +211,11 @@ class Meira {
     if (thorough && s.imageDataUrlFlipped != null) {
       // mode teliti: pandangan kedua dari foto cermin menangkap bahan yang terlewat
       yield PartialEvent(List.of(s.detections));
-      final second = await eyes!.chat(LlmClient.visionMessages(s.imageDataUrlFlipped!, prompt), maxTokens: 700, sampling: eyesFineTuned ? groundingSampling : visionSampling);
+      final second = await eyes!.chat(
+        LlmClient.visionMessages(s.imageDataUrlFlipped!, prompt),
+        maxTokens: 700,
+        sampling: eyesFineTuned ? groundingSampling : visionSampling,
+      );
       s.detections = mergeViews(s.detections, flipBack(parseDetections(second)));
     }
     yield DetectionsEvent(s.detections, sw.elapsedMilliseconds / 1000);
@@ -276,7 +284,11 @@ class Meira {
       return (vr.present(key) || added.isNotEmpty, added);
     }
     final prompt = (eyesFineTuned ? promptVerify : promptVerifyZeroshot).replaceAll('{name}', name);
-    final raw = await eyes!.chat(LlmClient.visionMessages(s.imageDataUrl!, prompt), maxTokens: 200, sampling: eyesFineTuned ? groundingSampling : visionSampling);
+    final raw = await eyes!.chat(
+      LlmClient.visionMessages(s.imageDataUrl!, prompt),
+      maxTokens: 200,
+      sampling: eyesFineTuned ? groundingSampling : visionSampling,
+    );
     final (present, boxes) = parseVerify(raw);
     final added = <Detection>[];
     for (final b in boxes) {
@@ -292,14 +304,16 @@ class Meira {
   // --------------------------------------------------------------- niat
   Future<Intent> _intent(String text) async {
     final rule = ruleIntent(text);
-    // pertanyaan dapur yang cocok kuat dengan catatan tidak perlu ditafsirkan model
-    if (rule.action == 'rekomendasi' && knowledge != null && kitchenQuestion(text, knowledge!)) return rule..action = 'obrolan';
+    // pertanyaan dapur atau pertanyaan tentang sifat bahan dijawab sebagai obrolan, bukan rekomendasi resep
+    if (rule.action == 'rekomendasi' && chatQuestion(text, knowledge)) return rule..action = 'obrolan';
     final plain = rule.action == 'rekomendasi' && rule.maxMinutes == null && rule.tags.isEmpty && rule.exclude.isEmpty && rule.include.isEmpty;
     if (!useLlmIntent || brain == null || !plain || text.split(' ').length < 4) return rule;
-    final llm = await brain!.json([
-      {'role': 'system', 'content': promptIntentSystem},
-      {'role': 'user', 'content': text},
-    ], intentSchema).timeout(const Duration(seconds: 8), onTimeout: () => null);
+    final llm = await brain!
+        .json([
+          {'role': 'system', 'content': promptIntentSystem},
+          {'role': 'user', 'content': text},
+        ], intentSchema)
+        .timeout(const Duration(seconds: 8), onTimeout: () => null);
     if (llm == null) return rule;
     final a = llm['action'];
     if (a is String && ['rekomendasi', 'hidangan', 'ganti', 'pilih', 'detail', 'substitusi', 'cek', 'obrolan'].contains(a)) rule.action = a;
@@ -430,7 +444,9 @@ class Meira {
       s.mode = mode == 'otomatis' ? (sc?['jenis'] == 'hidangan' ? 'hidangan' : 'bahan') : mode;
       // nama hidangan yang hanya berupa golongan bahan ("buah", "sayur") berarti foto bahan mentah, bukan masakan
       final dishName = '${sc?['hidangan'] ?? ''}'.trim().toLowerCase();
-      if (mode == 'otomatis' && s.mode == 'hidangan' && (dishName.isEmpty || _rawGroups.hasMatch(dishName)) &&
+      if (mode == 'otomatis' &&
+          s.mode == 'hidangan' &&
+          (dishName.isEmpty || _rawGroups.hasMatch(dishName)) &&
           s.detections.where((d) => d.key != null).length >= 2) {
         s.mode = 'bahan';
       }
@@ -451,7 +467,7 @@ class Meira {
     }
 
     if (text.isNotEmpty && imageDataUrl == null) {
-      final guard = Guardrails.checkInput(text, knownIngredient: mentions(text).isNotEmpty, ragScore: ragScore(text));
+      final guard = Guardrails.checkInput(text, knownIngredient: Guardrails.kitchenRequest(text), ragScore: ragScore(text));
       if (!guard.allowed) {
         yield TokenEvent(guard.reply);
         await _remember(s, text, guard.reply, 'pengaman');
@@ -462,9 +478,11 @@ class Meira {
     }
     final it = text.isNotEmpty ? await _intent(text) : Intent(imageDataUrl != null && s.mode == 'hidangan' ? 'hidangan' : 'rekomendasi');
     if (imageDataUrl != null && s.mode == 'hidangan' && it.action == 'rekomendasi') it.action = 'hidangan';
+    // bahan yang baru disebut lewat ketikan ("ada telur juga") diakui di awal jawaban
+    final added = it.include.difference(s.have());
     _applyPrefs(s, it);
     var task = it.action;
-    final extra = <String, String>{};
+    final extra = <String, String>{if (added.isNotEmpty) 'added': added.map(displayName).join(', ')};
 
     if (it.action == 'cek') {
       yield* _check(s, text, it);
@@ -495,7 +513,15 @@ class Meira {
         if (chosen != null) {
           if (!s.candidates.any((m) => m.recipe.id == chosen!.id)) {
             final found = rank([chosen], s.have(), Prefs(), k: 1);
-            s.candidates.insert(0, found.isNotEmpty ? found.first : Match(chosen, 0, [], [for (final i in chosen.items) if (!i.optional && !pantry.contains(i.key)) i.key]));
+            s.candidates.insert(
+              0,
+              found.isNotEmpty
+                  ? found.first
+                  : Match(chosen, 0, [], [
+                      for (final i in chosen.items)
+                        if (!i.optional && !pantry.contains(i.key)) i.key,
+                    ]),
+            );
           }
           s.current = chosen.id;
           task = 'detail';
@@ -568,6 +594,7 @@ class Meira {
     final grounded = cur != null && (task == 'rekomendasi' || task == 'detail' || task == 'hidangan' || swapKnown);
     if (grounded) {
       var core = greet(s, template(s, task, extra));
+      if (extra['added'] != null) core = 'Baik, ${extra['added']} saya catat. $core';
       var source = 'templat';
       if (answerStyle == 'natural' && brain != null && text.isNotEmpty) {
         // gaya natural: LLM hanya menambah satu kalimat personal, faktanya tetap dari buku resep
@@ -582,8 +609,13 @@ class Meira {
       yield DoneEvent(core, source);
       return;
     }
-    // pertanyaan pengetahuan dapur yang cocok kuat dengan sebuah catatan: faktanya dari catatan itu
-    final notes = knowledge?.search(text, k: 2) ?? const [];
+    // pertanyaan pengetahuan dapur yang cocok kuat dengan sebuah catatan: faktanya dari catatan itu. Catatan yang
+    // tidak menyebut bahan yang ditanyakan dilewati, misalnya soal apel tidak dijawab dengan catatan tentang telur.
+    final asked = mentions(text).toSet();
+    final notes = [
+      for (final n in knowledge?.search(text, k: 2) ?? const <(Note, double, int)>[])
+        if (asked.isEmpty || mentions('${n.$1.title} ${n.$1.body}').any(asked.contains)) n,
+    ];
     final strong = notes.where((n) => n.$3 >= 2 || n.$2 >= Guardrails.ragThreshold).toList();
     // pengganti bahan yang tidak ada di resep terpilih juga dijawab dari catatan ("kalau tidak ada mentega, pakai apa?")
     final offRecipe = task == 'substitusi' && !(cur?.recipe.items.any((i) => i.key == resolve(extra['ingredient'] ?? '')) ?? false);
@@ -614,6 +646,9 @@ class Meira {
     }
     var source = 'llm';
     if (full.trim().isNotEmpty) full = Guardrails.checkOutput(fixRefs(full, s.detections));
+    // kalimat terakhir yang terpotong batas token dibuang agar jawaban tidak berhenti di tengah kata
+    final end = full.lastIndexOf(RegExp(r'[.!?](\s|$)'));
+    if (end > 0 && !RegExp(r'[.!?]\s*$').hasMatch(full)) full = full.substring(0, end + 1);
     // penjelasan berputar atau kosong: pakai catatan dapur yang relevan bila ada
     if ((full.trim().isEmpty || Guardrails.isCircular(full)) && notes.isNotEmpty) {
       full = notes.first.$1.body;
@@ -644,8 +679,9 @@ class Meira {
     final source = notes.map((n) => '- ${n.title}: ${n.body}').join('\n');
     lastNotes = source;
     try {
-      var out = await AnswerChain(brain!)
-          .complete(system: promptBrainSystem, prompt: 'CATATAN DAPUR:\n$source\n\nPERTANYAAN: $text\n\nTUGAS: $promptNoteTask');
+      var out = await AnswerChain(
+        brain!,
+      ).complete(system: promptBrainSystem, prompt: 'CATATAN DAPUR:\n$source\n\nPERTANYAAN: $text\n\nTUGAS: $promptNoteTask');
       lastDraft = out;
       out = Guardrails.checkOutput(out);
       if (out.isNotEmpty && !Guardrails.isCircular(out) && Guardrails.supported(out, source, question: text)) return (out, 'llm');
@@ -705,22 +741,24 @@ class Meira {
 
   String _recipeBlock(Match m, Map<String, List<int>> nums, bool full, String mode) {
     final r = m.recipe;
-    final items = r.items.map((it) {
-      final mark = nums.containsKey(it.key)
-          ? 'terlihat ${_nums(nums[it.key]!)}'
-          : m.have.contains(it.key)
+    final items = r.items
+        .map((it) {
+          final mark = nums.containsKey(it.key)
+              ? 'terlihat ${_nums(nums[it.key]!)}'
+              : m.have.contains(it.key)
               ? 'dimiliki pengguna'
               : pantry.contains(it.key)
-                  ? 'bumbu dasar'
-                  : it.optional
-                      ? 'opsional'
-                      : mode == 'hidangan'
-                          ? 'perkiraan, tidak terlihat'
-                          : detectableKeys.contains(it.key)
-                              ? 'PERLU DISIAPKAN'
-                              : 'tidak bisa dicek kamera, pastikan tersedia';
-      return '${it.name} ${it.amount} [$mark]';
-    }).join('; ');
+              ? 'bumbu dasar'
+              : it.optional
+              ? 'opsional'
+              : mode == 'hidangan'
+              ? 'perkiraan, tidak terlihat'
+              : detectableKeys.contains(it.key)
+              ? 'PERLU DISIAPKAN'
+              : 'tidak bisa dicek kamera, pastikan tersedia';
+          return '${it.name} ${it.amount} [$mark]';
+        })
+        .join('; ');
     var text = '${r.name} (${r.minutes} menit, ${r.servings} porsi, ${r.difficulty}). ${r.desc}\nBahan: $items';
     if (full) {
       text += '\nLangkah: ${[for (var i = 0; i < r.steps.length; i++) '${i + 1}. ${r.steps[i]}'].join(' ')}';
@@ -730,12 +768,15 @@ class Meira {
   }
 
   static const _tasks = {
-    'rekomendasi': 'Rekomendasikan RESEP TERPILIH dalam 3 sampai 5 kalimat: sebut bahan dari foto beserta nomornya, bahan yang perlu disiapkan, '
+    'rekomendasi':
+        'Rekomendasikan RESEP TERPILIH dalam 3 sampai 5 kalimat: sebut bahan dari foto beserta nomornya, bahan yang perlu disiapkan, '
         'dan lama memasak. Sebut singkat KANDIDAT LAIN sebagai alternatif, lalu tawarkan untuk menjelaskan langkahnya.',
-    'hidangan': 'Foto ini makanan jadi. Sebut perkiraan nama hidangannya, bahan yang TERLIHAT beserta nomornya, lalu bahan lain yang biasanya '
+    'hidangan':
+        'Foto ini makanan jadi. Sebut perkiraan nama hidangannya, bahan yang TERLIHAT beserta nomornya, lalu bahan lain yang biasanya '
         'dipakai (sebut sebagai perkiraan). Bila ada RESEP TERPILIH yang cocok, pakai daftar bahannya dan tawarkan langkah membuatnya. Maksimal 5 kalimat.',
     'detail': 'Jelaskan cara membuat RESEP TERPILIH: sebut bahan yang perlu disiapkan, lalu langkah singkat bernomor.',
-    'substitusi': 'Jawab bahan pengganti untuk {ingredient} dalam RESEP TERPILIH. Gunakan saran pengganti dari buku resep bila ada. Maksimal 3 kalimat.',
+    'substitusi':
+        'Jawab bahan pengganti untuk {ingredient} dalam RESEP TERPILIH. Gunakan saran pengganti dari buku resep bila ada. Maksimal 3 kalimat.',
     'obrolan': 'Jawab permintaan pengguna dengan memakai konteks di atas. Maksimal 4 kalimat.',
   };
 
@@ -758,12 +799,14 @@ class Meira {
     final lines = [
       'JENIS FOTO: ${s.mode == 'hidangan' ? 'makanan jadi' : 'bahan'}',
       'DAFTAR BAHAN DI FOTO: ${_ingredientsLine(s)}',
-      if (s.mode == 'hidangan') 'PERKIRAAN HIDANGAN: ${s.dish ?? 'tidak yakin'}; bahan perkiraan: ${s.dishGuess.isEmpty ? '-' : s.dishGuess.map(displayName).join(', ')}',
+      if (s.mode == 'hidangan')
+        'PERKIRAAN HIDANGAN: ${s.dish ?? 'tidak yakin'}; bahan perkiraan: ${s.dishGuess.isEmpty ? '-' : s.dishGuess.map(displayName).join(', ')}',
       'BAHAN TAMBAHAN MENURUT PENGGUNA: ${p.include.isEmpty ? '-' : p.include.map(displayName).join(', ')}',
       'PREFERENSI: ${prefs.isEmpty ? '-' : prefs}',
       'RINGKASAN SEBELUMNYA: ${summary.isEmpty ? '-' : summary}',
       'RESEP TERPILIH: ${cur != null ? _recipeBlock(cur, nums, task != 'rekomendasi', s.mode) : 'tidak ada resep di buku yang cocok'}',
-      if (cur != null && cur.recipe.swaps.isNotEmpty) 'SARAN PENGGANTI: ${cur.recipe.swaps.entries.map((e) => '${displayName(e.key)} -> ${e.value}').join('; ')}',
+      if (cur != null && cur.recipe.swaps.isNotEmpty)
+        'SARAN PENGGANTI: ${cur.recipe.swaps.entries.map((e) => '${displayName(e.key)} -> ${e.value}').join('; ')}',
       if (others.isNotEmpty) 'KANDIDAT LAIN: ${others.map((m) => '${m.recipe.name} (${m.recipe.minutes} menit)').join('; ')}',
       'TUGAS: ${_tasks[task]!.replaceAll('{ingredient}', extra['ingredient'] ?? '')}',
     ];
@@ -778,22 +821,37 @@ class Meira {
       var txt = s.dish != null ? 'Tampaknya ini ${s.dish}.' : 'Saya belum yakin nama hidangannya.';
       if (seen.isNotEmpty) txt += ' Yang terlihat di foto: ${seen.join(', ')}.';
       if (cur != null) {
-        final guess = [for (final i in cur.recipe.items) if (!nums.containsKey(i.key) && !i.optional && !pantry.contains(i.key)) i.name];
+        final guess = [
+          for (final i in cur.recipe.items)
+            if (!nums.containsKey(i.key) && !i.optional && !pantry.contains(i.key)) i.name,
+        ];
         return '$txt Menurut resep ${cur.recipe.name}, hidangan ini biasanya juga memakai ${guess.join(', ')} (perkiraan). Apakah Anda ingin saya jelaskan cara membuatnya?';
       }
       if (s.dishGuess.isNotEmpty) txt += ' Bahan yang biasanya dipakai (perkiraan) adalah ${s.dishGuess.map(displayName).join(', ')}.';
       return txt;
     }
-    if (cur == null) return 'Mohon maaf, saya belum menemukan resep yang cocok di buku resep. Silakan coba foto lain, sebutkan bahan yang Anda miliki, atau longgarkan batas waktunya.';
+    if (cur == null) {
+      return 'Mohon maaf, saya belum menemukan resep yang cocok di buku resep. Silakan coba foto lain, sebutkan bahan yang Anda miliki, atau longgarkan batas waktunya.';
+    }
     final r = cur.recipe;
-    final seen = [for (final k in cur.have) if (nums.containsKey(k)) '${displayName(k)} (${nums[k]!.map((n) => '#$n').join(', ')})'];
+    final seen = [
+      for (final k in cur.have)
+        if (nums.containsKey(k)) '${displayName(k)} (${nums[k]!.map((n) => '#$n').join(', ')})',
+    ];
     // bahan yang bisa dikenali kamera tapi tidak terlihat = memang kurang; sisanya hanya perlu dipastikan
-    final missing = [for (final k in cur.missing) if (detectableKeys.contains(k)) displayName(k)];
-    final confirm = [for (final k in cur.missing) if (!detectableKeys.contains(k)) displayName(k)];
+    final missing = [
+      for (final k in cur.missing)
+        if (detectableKeys.contains(k)) displayName(k),
+    ];
+    final confirm = [
+      for (final k in cur.missing)
+        if (!detectableKeys.contains(k)) displayName(k),
+    ];
     if (task == 'detail') {
-      final steps = [for (var i = 0; i < r.steps.length; i++) '${i + 1}. ${r.steps[i]}'].join(' ');
+      // satu langkah per baris supaya mudah diikuti sambil memasak
+      final steps = [for (var i = 0; i < r.steps.length; i++) '${i + 1}. ${r.steps[i]}'].join('\n');
       final prep = [...missing, ...confirm];
-      return 'Berikut cara membuat ${r.name}. ${prep.isNotEmpty ? 'Siapkan terlebih dahulu ${prep.join(', ')}. ' : ''}$steps';
+      return 'Berikut cara membuat ${r.name}.${prep.isNotEmpty ? ' Siapkan terlebih dahulu ${prep.join(', ')}.' : ''}\n$steps';
     }
     if (task == 'substitusi') {
       final k = resolve(extra['ingredient'] ?? '');
@@ -804,7 +862,10 @@ class Meira {
     if (seen.isNotEmpty) txt += ' Dari foto, sudah tersedia ${seen.join(', ')}.';
     if (missing.isNotEmpty) txt += ' Bahan yang perlu disiapkan adalah ${missing.join(', ')}.';
     if (confirm.isNotEmpty) txt += ' Mohon pastikan juga tersedia ${confirm.join(', ')}.';
-    final others = [for (final m in s.candidates) if (m != cur) m.recipe.name];
+    final others = [
+      for (final m in s.candidates)
+        if (m != cur) m.recipe.name,
+    ];
     if (others.isNotEmpty) txt += ' Sebagai alternatif, Anda dapat memilih ${others.join(' atau ')}.';
     return '$txt Apakah Anda ingin saya jelaskan langkah-langkahnya?';
   }
@@ -842,7 +903,8 @@ String fixRefs(String text, List<Detection> detections) {
     last = m.end;
   }
   out.write(text.substring(last));
-  var cleaned = out.toString()
+  var cleaned = out
+      .toString()
       .replaceAll(RegExp(r'\bRESEP TERPILIH\b', caseSensitive: false), 'resep ini')
       .replaceAll(RegExp(r'\bKANDIDAT LAIN\b', caseSensitive: false), 'pilihan lain')
       .replaceAll(RegExp(r'\bDAFTAR BAHAN DI FOTO\b', caseSensitive: false), 'foto')

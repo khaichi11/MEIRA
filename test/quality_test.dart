@@ -10,9 +10,9 @@ import 'package:meira/llm/knowledge.dart';
 import 'package:meira/llm/retriever.dart';
 
 List<Map<String, dynamic>> _rows(String name) => [
-      for (final l in File('test/fixtures/$name').readAsLinesSync())
-        if (l.trim().isNotEmpty) jsonDecode(l) as Map<String, dynamic>,
-    ];
+  for (final l in File('test/fixtures/$name').readAsLinesSync())
+    if (l.trim().isNotEmpty) jsonDecode(l) as Map<String, dynamic>,
+];
 
 double _gate(String key) => (jsonDecode(File('test/fixtures/gates.json').readAsStringSync())[key]['value'] as num).toDouble();
 
@@ -71,7 +71,9 @@ void main() {
         ranked = [for (final h in retriever.search(row['query'], k: 5)) h.recipe.id];
       } else {
         final p = Prefs.fromJson(Map<String, dynamic>.from(row['prefs'] ?? {}));
-        ranked = [for (final m in rank(recipes, {...(row['have'] as List).cast<String>()}.difference(p.exclude), p, k: 5)) m.recipe.id];
+        ranked = [
+          for (final m in rank(recipes, {...(row['have'] as List).cast<String>()}.difference(p.exclude), p, k: 5)) m.recipe.id,
+        ];
       }
       n++;
       if (ranked.take(3).any(expect_.contains)) hits++;
@@ -99,7 +101,7 @@ void main() {
       final r1 = retriever.search(text, k: 1, minScore: 0).where((h) => h.matched >= 2);
       final r2 = kb.search(text, k: 1, minScore: 0).where((h) => h.$3 >= 2);
       final score = [...r1.map((h) => h.score), ...r2.map((h) => h.$2), 0.0].reduce((a, b) => a > b ? a : b);
-      final g = Guardrails.checkInput(text, knownIngredient: mentions(text).isNotEmpty, ragScore: score);
+      final g = Guardrails.checkInput(text, knownIngredient: Guardrails.kitchenRequest(text), ragScore: score);
       if (g.verdict.name == r['expect']) ok++;
       if (r['expect'] == 'allow') {
         allowRows++;
@@ -115,7 +117,11 @@ void main() {
     final home = Platform.environment['MEIRA_HOME'] ?? '..';
     File('$home/runs/eval/guardrails.json')
       ..createSync(recursive: true)
-      ..writeAsStringSync(jsonEncode({'metrics': {'guardrail_accuracy': acc, 'guardrail_false_block': fb > hFb ? fb : hFb, 'guardrail_holdout_accuracy': hAcc}}));
+      ..writeAsStringSync(
+        jsonEncode({
+          'metrics': {'guardrail_accuracy': acc, 'guardrail_false_block': fb > hFb ? fb : hFb, 'guardrail_holdout_accuracy': hAcc},
+        }),
+      );
     expect(fb, lessThanOrEqualTo(_gate('guardrail_false_block')));
     expect(hFb, lessThanOrEqualTo(_gate('guardrail_false_block')));
     expect(hAcc, greaterThanOrEqualTo(_gate('guardrail_holdout_accuracy')));
@@ -135,12 +141,16 @@ void main() {
       final hits = kb.search(r['text'], k: 1);
       if (hits.isNotEmpty && hits.first.$1.title == r['note']) top1++;
       final a = ruleIntent(r['text']).action;
-      if (['obrolan', 'substitusi'].contains(a) || (a == 'rekomendasi' && kitchenQuestion(r['text'], kb))) routed++;
+      if (['obrolan', 'substitusi'].contains(a) || (a == 'rekomendasi' && chatQuestion(r['text'], kb))) routed++;
     }
     final home = Platform.environment['MEIRA_HOME'] ?? '..';
     File('$home/runs/eval/kb.json')
       ..createSync(recursive: true)
-      ..writeAsStringSync(jsonEncode({'metrics': {'kb_recall_at_1': top1 / rows.length, 'kb_routing': routed / rows.length}}));
+      ..writeAsStringSync(
+        jsonEncode({
+          'metrics': {'kb_recall_at_1': top1 / rows.length, 'kb_routing': routed / rows.length},
+        }),
+      );
     expect(top1 / rows.length, greaterThanOrEqualTo(_gate('kb_recall_at_1')));
     expect(routed / rows.length, greaterThanOrEqualTo(_gate('kb_routing')));
   });
@@ -150,13 +160,22 @@ void main() {
     final wrong = [
       for (final f in ['intents.jsonl', 'intents_holdout.jsonl'])
         for (final r in _rows(f))
-          if (r['action'] == 'rekomendasi' && kitchenQuestion(r['text'], kb)) r['text'],
+          if (r['action'] == 'rekomendasi' && chatQuestion(r['text'], kb)) r['text'],
     ];
     expect(wrong, isEmpty);
   });
 
+  test('pertanyaan tentang sifat bahan tidak dijawab dengan rekomendasi resep', () {
+    expect(ingredientQuestion('apel hijau rasanya beda nggak sama apel merah'), isTrue);
+    expect(ingredientQuestion('kenapa pisang cepat menghitam'), isTrue);
+    expect(ingredientQuestion('ada telur juga'), isFalse);
+    expect(ingredientQuestion('saya punya apel dan pir, enaknya dibuat apa?'), isFalse);
+    expect(ingredientQuestion('masih ada tomat nggak'), isFalse);
+  });
+
   test('jawaban yang mengarang ditolak, parafrase yang setia diterima', () {
-    const ikan = 'Ikan segar bermata jernih, insangnya merah cerah, dan dagingnya kenyal saat ditekan. Baunya segar seperti laut, bukan amis menyengat.';
+    const ikan =
+        'Ikan segar bermata jernih, insangnya merah cerah, dan dagingnya kenyal saat ditekan. Baunya segar seperti laut, bukan amis menyengat.';
     expect(Guardrails.supported('Ikan segar ditandai dengan warna hijau-putih, tekstur lunak, dan aroma khas tanpa kerusakan.', ikan), isFalse);
     expect(Guardrails.supported('Pilih ikan yang matanya jernih, insangnya merah cerah, dan dagingnya kenyal bila ditekan.', ikan), isTrue);
     const telur = 'Hitung waktu sejak air mendidih. Telur setengah matang sekitar 6 sampai 7 menit, matang penuh sekitar 10 sampai 12 menit.';

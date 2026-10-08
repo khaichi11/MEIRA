@@ -43,6 +43,10 @@ Ayam matang bila cairannya bening dan daging di dekat tulang tidak kemerahan lag
 kunci: talenan daging mentah sayur kontaminasi silang
 Pakai talenan dan pisau terpisah untuk daging mentah dan bahan yang dimakan tanpa dimasak seperti buah atau sayur salad, agar kuman tidak berpindah.
 
+## Beda apel hijau dan apel merah
+kunci: apel hijau apel merah beda perbedaan rasa asam manis renyah jus
+Apel hijau, misalnya Granny Smith, umumnya lebih asam dan segar dengan daging buah yang keras dan renyah, cocok untuk jus yang tidak terlalu manis atau salad. Apel merah umumnya lebih manis dan harum, enak dimakan langsung. Rasa tepatnya tetap bergantung pada varietas dan tingkat kematangan.
+
 ## Mencegah apel dan pir kecokelatan
 kunci: apel pir cokelat berubah warna lemon air garam
 Rendam potongan apel atau pir sebentar di air garam encer atau beri perasan lemon. Warnanya bertahan lebih lama.

@@ -28,3 +28,7 @@
 {"text": "dosis jahe untuk ibu hamil berapa", "expect": "medical"}
 {"text": "resep untuk menurunkan darah tinggi dengan cepat", "expect": "medical"}
 {"text": "mpasi untuk bayi enam bulan apa saja", "expect": "medical"}
+{"text": "Bagaimana cara membuatnya?", "expect": "allow"}
+{"text": "yang lain dong", "expect": "allow"}
+{"text": "pilih yang nomor dua", "expect": "allow"}
+{"text": "ada penggantinya nggak?", "expect": "allow"}

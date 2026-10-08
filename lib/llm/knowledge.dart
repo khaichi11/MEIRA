@@ -44,9 +44,43 @@ class KnowledgeBase {
   final Map<String, int> _df = {};
   late final double _avg;
 
-  static const _stop = {'yang', 'dan', 'atau', 'di', 'ke', 'dari', 'untuk', 'dengan', 'ini', 'itu', 'apa', 'apakah', 'bagaimana', 'gimana', 'saya', 'aku', 'bisa', 'ada', 'tidak', 'nggak', 'gak', 'agar', 'supaya'};
+  // kata tanya dan kata waktu umum tidak dihitung, agar "berapa harga saham hari ini" tidak dianggap soal dapur
+  static const _stop = {
+    'yang',
+    'dan',
+    'atau',
+    'di',
+    'ke',
+    'dari',
+    'untuk',
+    'dengan',
+    'ini',
+    'itu',
+    'apa',
+    'apakah',
+    'bagaimana',
+    'gimana',
+    'saya',
+    'aku',
+    'bisa',
+    'ada',
+    'tidak',
+    'nggak',
+    'gak',
+    'agar',
+    'supaya',
+    'berapa',
+    'hari',
+    'kapan',
+    'kenapa',
+    'mengapa',
+    'boleh',
+  };
 
-  static List<String> _tokens(String text) => [for (final w in norm(text).split(' ')) if (w.length > 2 && !_stop.contains(w)) w];
+  static List<String> _tokens(String text) => [
+    for (final w in norm(text).split(' '))
+      if (w.length > 2 && !_stop.contains(w)) w,
+  ];
 
   /// Hasil: (catatan, skor BM25, jumlah kata berbeda yang cocok).
   List<(Note, double, int)> search(String query, {int k = 2, double minScore = 1.5}) {
@@ -74,14 +108,34 @@ class KnowledgeBase {
 
 /// Pertanyaan pengetahuan dapur yang tidak tertangkap aturan: berbentuk pertanyaan, tidak meminta resep, dan cocok
 /// kuat (minimal dua kata berbeda) dengan sebuah catatan. Contoh: "apakah sayur perlu dicuci pakai sabun?".
+final _wantsRecipe = RegExp(
+  r'\b(resep|masak apa|menu|ide|rekomendasi|sarankan|bikin apa|buat apa|dibuat apa|dimasak apa|'
+  r'olahan|bisa (saya |aku )?(masak|buat|bikin)|bisa dibuat|bisa dimasak|enaknya)\b',
+);
+
 bool kitchenQuestion(String text, KnowledgeBase kb) {
   final t = ' ${text.toLowerCase()} ';
-  final asks = text.trim().endsWith('?') ||
-      RegExp(r'\b(apakah|bagaimana|gimana|berapa|kenapa|mengapa|perlu|haruskah|bisakah|bolehkah|cara)\b').hasMatch(t);
-  final wantsRecipe = RegExp(r'\b(resep|masak apa|menu|ide|rekomendasi|sarankan|bikin apa|buat apa|dibuat apa|dimasak apa|'
-          r'olahan|bisa (saya |aku )?(masak|buat|bikin)|bisa dibuat|bisa dimasak|enaknya)\b')
-      .hasMatch(t);
-  if (!asks || wantsRecipe) return false;
+  final asks =
+      text.trim().endsWith('?') || RegExp(r'\b(apakah|bagaimana|gimana|berapa|kenapa|mengapa|perlu|haruskah|bisakah|bolehkah|cara)\b').hasMatch(t);
+  if (!asks || _wantsRecipe.hasMatch(t)) return false;
   final hits = kb.search(text, k: 1);
   return hits.isNotEmpty && hits.first.$3 >= 2;
 }
+
+/// Pertanyaan tentang sifat bahan, misalnya "apel hijau rasanya beda nggak sama apel merah", bukan permintaan resep
+/// walaupun menyebut bahan. Pertanyaan seperti ini dijawab sebagai obrolan, bukan dengan rekomendasi resep.
+bool ingredientQuestion(String text) {
+  final t = ' ${text.toLowerCase().replaceAll('?', ' ? ')} ';
+  if (_wantsRecipe.hasMatch(t)) return false;
+  final strong = RegExp(
+    r'\b(beda|bedanya|perbedaan|dibanding|dibandingkan|daripada|rasanya|teksturnya|kenapa|mengapa|kok|'
+    r'lebih (enak|manis|asam|sehat|segar|awet|lembut|renyah))\b',
+  ).hasMatch(t);
+  // "... nggak?" di akhir kalimat juga pertanyaan, kecuali pernyataan bahan seperti "ada telur juga"
+  final tag = RegExp(r'\b(nggak|enggak|gak|ga|tidak|kah)\s*\??\s*$').hasMatch(t.trim());
+  final states = RegExp(r'\b(ada|punya|tambah|tambahkan|juga|sisa|masih)\b').hasMatch(t);
+  return strong || (tag && !states);
+}
+
+/// Pesan yang dijawab sebagai obrolan walaupun aturan menebak permintaan rekomendasi resep.
+bool chatQuestion(String text, KnowledgeBase? kb) => ingredientQuestion(text) || (kb != null && kitchenQuestion(text, kb));
