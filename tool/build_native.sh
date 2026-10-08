@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Kompilasi llama-server (llama.cpp) untuk Android dan salin ke jniLibs.
+# Kompilasi llama-server (llama.cpp) untuk Android, ambil ONNX Runtime resmi, lalu salin ke jniLibs.
 #   ANDROID_NDK=~/Android/Sdk/ndk/29.0.14206865 tool/build_native.sh
 # Hasil: android/app/src/main/jniLibs/{arm64-v8a,x86_64}/ (libllama_server.so dijalankan sebagai proses).
 set -euo pipefail
@@ -31,5 +31,13 @@ for ABI in arm64-v8a x86_64; do
   "$STRIP" --strip-unneeded -o "$OUT/libllama_server.so" "$B/bin/llama-server"
   TRIPLE=$([ "$ABI" = arm64-v8a ] && echo aarch64-linux-android || echo x86_64-linux-android)
   cp "$NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/$TRIPLE/libc++_shared.so" "$OUT/"
+done
+# ONNX Runtime lengkap (Maven resmi, MIT) untuk detektor bahan dan OCR. Versi bawaan sherpa-onnx dipangkas dan
+# tidak memuat semua operator yang dibutuhkan detektor; berkas ini menggantikannya saat pengemasan (pickFirst).
+ORT_VERSION="${ORT_VERSION:-1.30.0}"
+AAR="$WORK/onnxruntime-android-$ORT_VERSION.aar"
+[ -f "$AAR" ] || curl -fL -o "$AAR" "https://repo1.maven.org/maven2/com/microsoft/onnxruntime/onnxruntime-android/$ORT_VERSION/onnxruntime-android-$ORT_VERSION.aar"
+for ABI in arm64-v8a x86_64; do
+  unzip -o -q -j "$AAR" "jni/$ABI/libonnxruntime.so" -d "android/app/src/main/jniLibs/$ABI"
 done
 echo "selesai: android/app/src/main/jniLibs"

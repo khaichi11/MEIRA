@@ -43,6 +43,9 @@ android {
             // library native diekstrak ke disk agar libllama_server.so bisa dijalankan sebagai proses
             useLegacyPackaging = true
             pickFirsts += "**/libc++_shared.so"
+            // ONNX Runtime lengkap (Maven resmi, MIT) di jniLibs aplikasi menggantikan versi ringkas bawaan sherpa-onnx,
+            // yang tidak memuat operator detektor (Cos, Erf, GatherElements). API C-nya kompatibel ke belakang.
+            pickFirsts += "**/libonnxruntime.so"
         }
     }
 }
