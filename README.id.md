@@ -1,0 +1,82 @@
+# MEIRA
+
+**Multimodal Edge Intelligence for Recipe Assistance.** Asisten dapur luring untuk Android. Potret bahan di dapur
+Anda, lalu MEIRA memberi nomor pada setiap bahan, membaca tulisan kemasan, dan menyarankan resep dari buku resep di
+ponsel. Pertanyaan lanjutan bisa diketik atau diucapkan.
+
+[English](README.md)
+
+<p align="center"><img src="docs/img/demo.gif" width="300" alt="Demo: pembuka, nama panggilan, foto bahan, penanda bernomor, resep, pertanyaan lanjutan, tambah bahan, mode memasak, dan tab lain"></p>
+
+![Tampilan aplikasi](docs/img/tampilan.jpg)
+
+## Fitur
+
+- **Penanda bernomor** pada setiap bahan di foto, satu penanda untuk satu buah. Nomor yang keliru bisa diketuk
+  untuk dibetulkan.
+- **Tulisan kemasan** seperti mi instan, minyak goreng, dan kecap manis dibaca dengan OCR.
+- **Tambah bahan** dari foto kedua atau lewat ketikan, misalnya "ada telur juga".
+- **Buku resep** di beranda dengan saringan cepat, sarapan, tanpa kompor, minuman, dan berkuah.
+- **Percakapan** lewat teks atau suara, dengan mode memasak dan pengatur waktu per langkah.
+- **Jawaban berpijak pada sumber.** Resep dan langkah diambil dari buku resep; pertanyaan dapur dijawab dari
+  catatan tulisan tangan.
+- **Pengaman yang sopan** untuk permintaan berbahaya atau di luar topik.
+- **Riwayat lokal** dengan batas ukuran otomatis, serta nama panggilan untuk menyapa Anda.
+- **Tanpa internet** setelah model diunduh. Tidak ada data yang keluar dari ponsel.
+
+## Model
+
+| Peran | Model | Runtime | Ukuran |
+|---|---|---|---:|
+| Penanda bahan | D-FINE small, dilatih MEIRA | ONNX Runtime | 42 MB, di dalam APK |
+| Pembaca kemasan | PP-OCRv5 mobile | ONNX Runtime | 13 MB, di dalam APK |
+| Percakapan dan makanan jadi | Qwen3.5-0.8B instruct | llama.cpp | 0,7 GB, diunduh sekali |
+| Ucapan menjadi teks | Whisper small int8 | sherpa-onnx | 0,4 GB, diunduh sekali |
+| Suara | mesin TTS ponsel | Android | |
+
+Penanda bahan masih terus diperbaiki; hasil terkini dan kekurangannya ada di
+[evaluasi MEIRA-Before](https://github.com/khaichi11/MEIRA-Before/blob/main/docs/id/evaluasi.md).
+
+## Teknologi
+
+| Lapisan | Alat |
+|---|---|
+| Aplikasi | Flutter 3.41, Dart 3.11, Material 3, font Inter dan Poppins |
+| Inferensi di ponsel | ONNX Runtime 1.30 lewat FFI untuk detektor dan OCR, `llama-server` dari llama.cpp untuk model bahasa, sherpa-onnx untuk Whisper |
+| Pencarian | BM25 atas buku resep dan catatan dapur |
+| Penyimpanan | SQLite (sqflite) dan shared_preferences |
+| Platform | Android 9 atau lebih baru; suara lewat mesin TTS ponsel (flutter_tts) |
+| Perkakas | flutter test, dart format, ffmpeg dan Pillow untuk gambar demo |
+
+Hanya detektor bahan yang di-fine-tune untuk aplikasi ini (D-FINE small, 60 epoch pada 3.842 foto, 90 kelas). Model
+lain dipakai apa adanya. Daftar latihan, termasuk eksperimen LoRA pada Qwen3.5, ada di
+[MEIRA-Before](https://github.com/khaichi11/MEIRA-Before/blob/main/README.id.md#model-hasil-fine-tune).
+
+## Kebutuhan
+
+- Android 9 atau lebih baru, arm64, RAM minimal 6 GB (disarankan 8 GB).
+- Ruang kosong sekitar 1,2 GB untuk model yang diunduh.
+
+## Build dan uji
+
+```bash
+flutter pub get
+tool/build_native.sh            # llama-server dan ONNX Runtime untuk Android, memerlukan Android NDK
+flutter build apk --release
+flutter test
+```
+
+## Dokumentasi
+
+| Bahasa Indonesia | English |
+|---|---|
+| [Arsitektur](docs/id/arsitektur.md) | [Architecture](docs/en/architecture.md) |
+| [Pengembangan](docs/id/pengembangan.md) | [Development](docs/en/development.md) |
+| [Lisensi](LICENSES.md) | [Licenses](LICENSES.md) |
+
+Data, pelatihan, dan evaluasi ada di [MEIRA-Before](https://github.com/khaichi11/MEIRA-Before).
+
+## Lisensi
+
+Kode berlisensi Apache-2.0. Logo, buku resep, dan catatan dapur berlisensi CC0. Model dan pustaka pihak ketiga
+tercantum di [LICENSES.md](LICENSES.md) dan di menu Pengaturan > Lisensi.

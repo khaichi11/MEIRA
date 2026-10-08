@@ -1,0 +1,90 @@
+# Arsitektur aplikasi
+
+[English](../en/architecture.md)
+
+Aplikasi ditulis dengan Flutter untuk Android. Semua model berjalan di ponsel: detektor bahan dan OCR lewat ONNX
+Runtime, model bahasa lewat `llama-server` dari llama.cpp yang dijalankan sebagai proses lokal, dan Whisper lewat
+sherpa-onnx.
+
+## Susunan kode
+
+```
+lib/
+  main.dart            titik masuk; animasi pembuka, penyiapan model, nama panggilan, lalu beranda
+  app_state.dart       keadaan aplikasi: pengaturan, model, sesi, riwayat, persiapan foto untuk model
+  core/
+    pipeline.dart      satu giliran: foto, penanda, pemahaman permintaan, pemilihan jawaban
+    grounding.dart     penanda: penggabungan kotak kembar, penomoran, satuan hitung
+    recipes.dart       buku resep, peringkat, aturan pemahaman permintaan
+    vocab.dart         kosakata bahan dan merek kemasan
+    history.dart       riwayat SQLite dengan batas ukuran
+    generated.dart     data bersama dari repo MEIRA-Before (jangan disunting manual)
+  vision/
+    detector.dart      detektor bahan D-FINE (ONNX)
+    ocr.dart           OCR kemasan PP-OCRv5 (ONNX)
+    ort.dart           pembungkus ONNX Runtime lewat FFI
+    vision.dart        isolate yang menjalankan detektor dan OCR
+  llm/
+    memory.dart        memori percakapan dengan ringkasan
+    retriever.dart     pencarian resep BM25
+    knowledge.dart     pencarian catatan dapur BM25
+    chain.dart         rantai jawaban dengan lanjutan otomatis
+    guardrails.dart    pemeriksaan masukan dan keluaran
+  runtime/
+    llama.dart         pengelola llama-server dan klien HTTP-nya
+    speech.dart        Whisper dan TTS bawaan ponsel
+    models.dart        daftar model, unduhan, dan pemasangan dari berkas
+  ui/                  pembuka, beranda, layar percakapan, resep, mode memasak, riwayat, dataset, pengaturan
+assets/models/         detektor dan OCR yang dibawa di dalam APK
+```
+
+## Layar
+
+| Layar | Isi |
+|---|---|
+| Pembuka | layar hijau membuka lubang bundar kecil, wajan muncul di dalamnya, lalu lubang melebar hingga layar putih selama model dimuat |
+| Nama panggilan | wajan memudar dan kotak hijau turun dari atas membawa sapaan; ditanyakan sekali dan hanya disimpan di ponsel. Setelah nama diisi, lembar putih naik dan beranda langsung tampil |
+| Dapur (beranda) | sapaan, kolom tanya, tombol kamera dan galeri, buku resep dengan saringan |
+| Percakapan | foto berpenanda, kartu resep, jawaban, saran pertanyaan, kolom tanya; tanpa bilah navigasi, dengan tombol kembali |
+| Resep | bahan dengan tanda tersedia, langkah, mode memasak dengan pengatur waktu |
+| Riwayat, Dataset, Pengaturan | tab di bilah navigasi bawah |
+
+![Layar aplikasi](../img/tampilan.jpg)
+
+## Satu giliran percakapan
+
+1. **Penanda.** Foto diubah ke 640 x 640 piksel dan diperiksa detektor di isolate tersendiri. Kotak di atas
+   ambang menjadi penanda bernomor.
+2. **Kemasan.** OCR membaca tulisan kemasan; baris yang menyebut bahan atau merek dikenal menjadi penanda.
+3. **Foto tambahan.** Tombol tambah foto di layar percakapan menambah bahan dari foto lain tanpa mengganti foto
+   utama.
+4. **Pengaman masukan.** `Guardrails.checkInput` menolak upaya mengubah instruksi, permintaan berbahaya,
+   pertanyaan medis, dan pesan di luar topik. Permintaan lanjutan seperti "cara membuatnya" selalu diteruskan.
+5. **Pemahaman permintaan.** `ruleIntent` menentukan jenis permintaan dan isiannya.
+6. **Jawaban.** Resep diambil dari buku resep, pertanyaan dapur dari catatan dapur, dan pertanyaan lain dijawab
+   Qwen3.5-0.8B dengan konteks lalu diperiksa. Catatan dipakai hanya bila menyebut bahan yang ditanyakan.
+   Pertanyaan tentang sifat bahan, misalnya beda apel hijau dan apel merah, dijawab sebagai obrolan, bukan dengan
+   rekomendasi resep; tanpa catatan yang cocok, model menjawab dan kalimat yang terpotong dibuang. Bahan yang disebut
+   lewat ketikan diakui di awal jawaban,
+   dan jawaban pertama dibuka dengan nama panggilan pengguna.
+7. **Memori.** Giliran lama diringkas bila melewati 700 token.
+
+## Gerak
+
+Animasi dibuat singkat dan lembut agar aplikasi terasa tenang: rangkaian pembuka, perpindahan tab yang memudar, baris
+resep yang masuk bergantian, kartu yang sedikit mengecil saat ditekan, penanda bernomor yang muncul memantul, sapuan
+cahaya di atas foto selama foto dibaca, dan jawaban yang muncul kata demi kata. Pembuka digerakkan oleh jam yang
+membatasi lompatan tiap bingkai, sehingga saat aplikasi pertama kali dibuka dan ponsel sempat tersendat, gerakan
+berhenti sejenak lalu berlanjut, bukan melompat ke akhir.
+
+## Pengelolaan sumber daya
+
+- Detektor dan OCR dimuat sekali di isolate saat foto pertama diproses.
+- `llama-server` dapat dilepas saat aplikasi ditinggal lebih dari tiga menit.
+- Whisper dimuat saat mikrofon dipakai dan dilepas setelah dua menit tidak aktif.
+- Riwayat dibatasi 200 sesi dan 300 MB foto; yang paling lama dihapus lebih dulu.
+
+## Data dan privasi
+
+Semua data tersimpan di folder aplikasi: riwayat, foto, pengaturan, nama panggilan, dan model. Internet hanya
+dipakai untuk mengunduh model saat penyiapan, dan langkah itu bisa dilewati dengan memasang model dari berkas.

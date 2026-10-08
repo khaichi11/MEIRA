@@ -1,56 +1,81 @@
 # MEIRA
 
-**Multimodal Edge Intelligence for Recipe Assistance.** MEIRA adalah asisten dapur yang berjalan sepenuhnya di
-ponsel Android. Anda cukup memotret bahan atau makanan jadi. MEIRA memberi nomor pada setiap bahan yang benar-benar
-terlihat, lalu menyarankan resep dari buku resep di perangkat. Percakapan dapat dilanjutkan lewat ketikan atau
-suara, misalnya "yang lain dong", "tanpa kompor", "maksimal 10 menit", atau "ada telur nggak?".
+**Multimodal Edge Intelligence for Recipe Assistance.** An offline kitchen assistant for Android. Take a photo of
+your ingredients, and MEIRA puts a number on each one, reads package labels, and suggests recipes from a recipe book
+stored on the phone. Ask follow-up questions by typing or speaking.
 
-![MEIRA](assets/icon.png)
+[Bahasa Indonesia](README.id.md)
 
-## Fitur
+<p align="center"><img src="docs/img/demo.gif" width="300" alt="Demo: opening, nickname, ingredient photo, numbered markers, recipe, follow-up questions, extra ingredients, cooking mode, and the other tabs"></p>
 
-- **Penanda bernomor** di tengah setiap bahan, satu buah satu penanda. Penanda muncul bertahap selagi model membaca
-  foto, dan nomor yang keliru dapat diketuk untuk diperbaiki.
-- **Dua jenis foto.** Foto bahan menghasilkan saran resep; foto makanan jadi menghasilkan perkiraan nama hidangan
-  beserta bahannya.
-- **Kemasan dikenali**, misalnya mi instan, minyak goreng, dan kecap.
-- **Percakapan** multi-giliran lewat teks atau suara, termasuk mode memasak dengan pengatur waktu per langkah.
-- **Jawaban berpijak pada sumber.** Resep dan langkah diambil dari buku resep, dan pertanyaan seputar dapur dijawab
-  dari catatan dapur yang ditulis tangan.
-- **Pengaman percakapan** yang menolak permintaan berbahaya atau di luar topik dengan sopan.
-- **Riwayat** tersimpan di perangkat dengan batas ukuran otomatis.
-- **Dataset**: foto dan koreksi penanda dapat diekspor sebagai zip untuk pelatihan berikutnya.
-- **Tanpa internet** setelah model diunduh. Tidak ada data yang dikirim keluar.
+![App screens](docs/img/tampilan.jpg)
 
-## Model
+## Features
 
-| Peran | Model | Runtime | Ukuran |
+- **Numbered markers** on every ingredient in the photo, one marker per item. Tap a wrong number to fix it.
+- **Package labels** such as instant noodles, cooking oil, and sweet soy sauce are read with OCR.
+- **More ingredients** from a second photo or by typing, for example "there is egg too".
+- **Recipe book** on the home screen with filters for quick, breakfast, no-stove, drinks, and soups.
+- **Conversation** by text or voice, with a cooking mode that has step timers.
+- **Grounded answers.** Recipes and steps come from the recipe book; kitchen questions are answered from
+  hand-written notes.
+- **Polite guardrails** for harmful or off-topic requests.
+- **Local history** with automatic size limits, and a nickname used to greet you.
+- **No internet needed** after the models are downloaded. No data leaves the phone.
+
+## Models
+
+| Role | Model | Runtime | Size |
 |---|---|---|---:|
-| Mata | Qwen3.5-0.8B-Base hasil fine-tune MEIRA | llama.cpp (`llama-server` di dalam APK) | 0,7 GB |
-| Otak | Qwen3.5-0.8B instruct | llama.cpp | 0,7 GB |
-| Telinga | Whisper small int8 | sherpa-onnx | 0,4 GB |
-| Suara | mesin TTS Android; Piper bahasa Indonesia sebagai pilihan | sistem atau sherpa-onnx | 0 atau 21 MB |
+| Ingredient markers | D-FINE small, trained by MEIRA | ONNX Runtime | 42 MB, inside the APK |
+| Package reader | PP-OCRv5 mobile | ONNX Runtime | 13 MB, inside the APK |
+| Conversation and finished dishes | Qwen3.5-0.8B instruct | llama.cpp | 0.7 GB, downloaded once |
+| Speech to text | Whisper small int8 | sherpa-onnx | 0.4 GB, downloaded once |
+| Voice | the phone's TTS engine | Android | |
 
-Data, pelatihan, dan evaluasi model ada di repo [MEIRA-Before](https://github.com/khaichi11/MEIRA-Before).
+The ingredient marker is still being improved; current results and known weaknesses are in the
+[MEIRA-Before evaluation](https://github.com/khaichi11/MEIRA-Before/blob/main/docs/en/evaluation.md).
 
-## Kebutuhan
+## Tech stack
 
-- Android 9 atau lebih baru, prosesor arm64, RAM minimal 6 GB (disarankan 8 GB).
-- Ruang kosong sekitar 2 GB untuk model.
+| Layer | Tools |
+|---|---|
+| App | Flutter 3.41, Dart 3.11, Material 3, Inter and Poppins fonts |
+| On-device inference | ONNX Runtime 1.30 over FFI for the detector and OCR, llama.cpp `llama-server` for the language model, sherpa-onnx for Whisper |
+| Retrieval | BM25 over the recipe book and kitchen notes |
+| Storage | SQLite (sqflite) and shared_preferences |
+| Platform | Android 9 or newer; voice through the phone's TTS engine (flutter_tts) |
+| Tooling | flutter test, dart format, ffmpeg and Pillow for the demo images |
 
-## Build dan uji
+Only the ingredient detector is fine-tuned for this app (D-FINE small, 60 epochs on 3,842 photos, 90 classes). The
+other models are used as released. Training runs, including the LoRA experiments on Qwen3.5, are listed in
+[MEIRA-Before](https://github.com/khaichi11/MEIRA-Before#fine-tuned-models).
+
+## Requirements
+
+- Android 9 or newer, arm64, at least 6 GB of RAM (8 GB recommended).
+- About 1.2 GB of free space for the downloaded models.
+
+## Build and test
 
 ```bash
 flutter pub get
-tool/build_native.sh            # kompilasi llama-server untuk Android, memerlukan Android NDK
+tool/build_native.sh            # llama-server and ONNX Runtime for Android, needs the Android NDK
 flutter build apk --release
-flutter test                    # uji unit dan gerbang mutu
+flutter test
 ```
 
-Penjelasan lebih lengkap ada di [docs/arsitektur.md](docs/arsitektur.md) dan
-[docs/pengembangan.md](docs/pengembangan.md).
+## Documentation
 
-## Lisensi
+| English | Bahasa Indonesia |
+|---|---|
+| [Architecture](docs/en/architecture.md) | [Arsitektur](docs/id/arsitektur.md) |
+| [Development](docs/en/development.md) | [Pengembangan](docs/id/pengembangan.md) |
+| [Licenses](LICENSES.md) | [Lisensi](LICENSES.md) |
 
-Kode berlisensi Apache-2.0, sedangkan logo, buku resep, dan catatan dapur berlisensi CC0. Lisensi model dan pustaka
-pihak ketiga tercantum di [LICENSES.md](LICENSES.md) dan di menu Pengaturan > Lisensi.
+Data, training, and evaluation live in [MEIRA-Before](https://github.com/khaichi11/MEIRA-Before).
+
+## License
+
+Code is Apache-2.0. The logo, recipe book, and kitchen notes are CC0. Third-party models and libraries are listed in
+[LICENSES.md](LICENSES.md) and under Settings > Licenses in the app.
