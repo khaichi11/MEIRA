@@ -1,0 +1,80 @@
+{"text": "aku mau masak yang cepat", "action": "rekomendasi", "max_minutes": 15}
+{"text": "ada resep yang bisa dibuat dalam 10 menit?", "action": "rekomendasi", "max_minutes": 10}
+{"text": "yang lain dong", "action": "ganti"}
+{"text": "ganti resep lain, jangan pedas ya", "action": "ganti", "exclude": ["chili"]}
+{"text": "nggak suka itu, ada pilihan lain?", "action": "ganti"}
+{"text": "bosen, kasih alternatif", "action": "ganti"}
+{"text": "yang lain tapi maksimal 20 menit", "action": "ganti", "max_minutes": 20}
+{"text": "caranya gimana?", "action": "detail"}
+{"text": "bagaimana cara membuatnya", "action": "detail"}
+{"text": "langkah-langkahnya apa saja", "action": "detail"}
+{"text": "jelasin resepnya dong", "action": "detail"}
+{"text": "gimana bikinnya", "action": "detail"}
+{"text": "kalau nggak ada santan pengganti apa", "action": "substitusi", "ingredient": "coconut_milk"}
+{"text": "mentega bisa diganti apa?", "action": "substitusi", "ingredient": "butter"}
+{"text": "pengganti yoghurt apa ya", "action": "substitusi", "ingredient": "yogurt"}
+{"text": "kalau tidak ada keju gimana", "action": "substitusi", "ingredient": "cheese"}
+{"text": "apakah ada telur di foto?", "action": "cek", "ingredient": "egg"}
+{"text": "beneran ada apel di situ?", "action": "cek", "ingredient": "apple"}
+{"text": "cek ada wortel nggak", "action": "cek", "ingredient": "carrot"}
+{"text": "periksa apakah ada tomat", "action": "cek", "ingredient": "tomato"}
+{"text": "ada brokoli nggak di foto", "action": "cek", "ingredient": "broccoli"}
+{"text": "mau yang nomor 2", "action": "pilih", "choice": 2}
+{"text": "pilih yang pertama", "action": "pilih", "choice": 1}
+{"text": "aku ambil yang ketiga", "action": "pilih", "choice": 3}
+{"text": "yang kedua aja", "action": "pilih", "choice": 2}
+{"text": "ini makanan apa?", "action": "hidangan"}
+{"text": "bahannya apa saja?", "action": "hidangan"}
+{"text": "ini terbuat dari apa", "action": "hidangan"}
+{"text": "masakan apa ini ya", "action": "hidangan"}
+{"text": "pakai bahan apa aja itu", "action": "hidangan"}
+{"text": "aku punya tempe dan tahu", "action": "rekomendasi", "include": ["tempeh", "tofu"]}
+{"text": "di kulkas ada wortel, kentang dan kol", "action": "rekomendasi", "include": ["carrot", "potato", "cabbage"]}
+{"text": "aku juga punya keju", "action": "rekomendasi", "include": ["cheese"]}
+{"text": "stok telur sama nasi masih ada", "action": "rekomendasi", "include": ["egg", "rice"]}
+{"text": "pakai pisang yang ada aja", "action": "rekomendasi", "include": ["banana"]}
+{"text": "jangan pakai bawang bombay", "action": "rekomendasi", "exclude": ["onion"]}
+{"text": "aku alergi udang", "action": "rekomendasi", "exclude": ["shrimp"]}
+{"text": "tanpa jamur ya", "action": "rekomendasi", "exclude": ["mushroom"]}
+{"text": "nggak suka terong", "action": "ganti", "exclude": ["eggplant"]}
+{"text": "jangan yang pedas", "action": "rekomendasi", "exclude": ["chili"]}
+{"text": "yang tanpa kompor", "action": "rekomendasi", "tags": ["tanpa-kompor"]}
+{"text": "mau sarapan yang sehat", "action": "rekomendasi", "tags": ["sarapan", "sehat"]}
+{"text": "camilan buat anak", "action": "rekomendasi", "tags": ["camilan", "anak"]}
+{"text": "pengen yang berkuah hangat", "action": "rekomendasi", "tags": ["berkuah"]}
+{"text": "minuman segar dong", "action": "rekomendasi", "tags": ["minuman", "segar"]}
+{"text": "yang manis buat pencuci mulut", "action": "rekomendasi", "tags": ["manis"]}
+{"text": "menu vegetarian ada?", "action": "rekomendasi", "tags": ["vegetarian"]}
+{"text": "yang hemat aja", "action": "rekomendasi", "tags": ["hemat"]}
+{"text": "pengen yang pedas", "action": "rekomendasi", "tags": ["pedas"]}
+{"text": "buru-buru nih, yang kilat", "action": "rekomendasi", "max_minutes": 15}
+{"text": "cuma punya setengah jam", "action": "rekomendasi", "max_minutes": 30}
+{"text": "yang lima belas menit saja", "action": "rekomendasi", "max_minutes": 15}
+{"text": "resep sambal tomat", "action": "rekomendasi"}
+{"text": "mau bikin sup jagung", "action": "rekomendasi"}
+{"text": "aku pengen kolak", "action": "rekomendasi"}
+{"text": "rekomendasi minuman jahe", "action": "rekomendasi", "tags": ["minuman"]}
+{"text": "ganti yang tanpa kompor dan nggak pedas", "action": "ganti", "tags": ["tanpa-kompor"], "exclude": ["chili"]}
+{"text": "yang lain, aku nggak mau keju", "action": "ganti", "exclude": ["cheese"]}
+{"text": "kasih yang lain, 10 menit aja", "action": "ganti", "max_minutes": 10}
+{"text": "aku punya alpukat, bikin apa ya", "action": "rekomendasi", "include": ["avocado"]}
+{"text": "punya jagung dan telur", "action": "rekomendasi", "include": ["corn", "egg"]}
+{"text": "kalau gak ada mentega pakai apa", "action": "substitusi", "ingredient": "butter"}
+{"text": "cara masaknya bagaimana", "action": "detail"}
+{"text": "apakah ada pisang", "action": "cek", "ingredient": "banana"}
+{"text": "cek dulu ada paprika gak", "action": "cek", "ingredient": "bell_pepper"}
+{"text": "tolong pilih nomor 1", "action": "pilih", "choice": 1}
+{"text": "ini isinya apa", "action": "hidangan"}
+{"text": "tanpa daging ya, vegetarian", "action": "rekomendasi", "tags": ["vegetarian"]}
+{"text": "yang ringan dan segar", "action": "rekomendasi", "tags": ["sehat", "segar"]}
+{"text": "buat sarapan anak yang cepat", "action": "rekomendasi", "tags": ["sarapan", "anak"], "max_minutes": 15}
+{"text": "aku nggak punya oven, yang lain dong", "action": "ganti"}
+{"text": "jangan pakai susu, alergi", "action": "rekomendasi", "exclude": ["milk"]}
+{"text": "ada stroberi sama pisang di rumah", "action": "rekomendasi", "include": ["strawberry", "banana"]}
+{"text": "resep pakai brokoli", "action": "rekomendasi"}
+{"text": "pengganti cabai apa kalau anak nggak suka pedas", "action": "substitusi", "ingredient": "chili", "exclude": ["chili"]}
+{"text": "langkah pertama apa", "action": "detail"}
+{"text": "mau yang nomor tiga", "action": "pilih", "choice": 3}
+{"text": "bener ada kentang di foto itu?", "action": "cek", "ingredient": "potato"}
+{"text": "terima kasih ya", "action": "obrolan"}
+{"text": "berapa lama merebus telur setengah matang?", "action": "obrolan"}

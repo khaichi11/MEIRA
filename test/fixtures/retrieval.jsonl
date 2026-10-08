@@ -1,0 +1,42 @@
+{"type": "text", "query": "resep sambal tomat", "expect": ["sambal-tomat"]}
+{"type": "text", "query": "mau bikin sup jagung", "expect": ["sup-jagung-telur", "sup-kepiting-jagung"]}
+{"type": "text", "query": "cara membuat perkedel", "expect": ["perkedel-kentang"]}
+{"type": "text", "query": "aku pengen kolak", "expect": ["kolak-pisang-labu", "kolak-ubi"]}
+{"type": "text", "query": "minuman jahe hangat", "expect": ["wedang-jahe-serai", "susu-jahe-hangat"]}
+{"type": "text", "query": "resep rendang", "expect": ["rendang-daging"]}
+{"type": "text", "query": "pancake pisang", "expect": ["pancake-pisang"]}
+{"type": "text", "query": "salad buah pakai yoghurt", "expect": ["salad-buah-yoghurt"]}
+{"type": "text", "query": "spaghetti", "expect": ["spaghetti-carbonara-rumahan", "spaghetti-bolognese"]}
+{"type": "text", "query": "gado gado", "expect": ["gado-gado"]}
+{"type": "text", "query": "nasi goreng", "expect": ["nasi-goreng-telur", "nasi-goreng-kampung", "nasi-goreng-sosis"]}
+{"type": "text", "query": "es buah segar", "expect": ["es-buah-segar"]}
+{"type": "text", "query": "jus alpukat", "expect": ["jus-alpukat-cokelat"]}
+{"type": "text", "query": "terong balado", "expect": ["terong-balado"]}
+{"type": "text", "query": "opor", "expect": ["opor-ayam"]}
+{"type": "text", "query": "sayur asem", "expect": ["sayur-asem"]}
+{"type": "text", "query": "makaroni keju", "expect": ["makaroni-keju", "makaroni-schotel-kukus"]}
+{"type": "text", "query": "omelet jamur", "expect": ["omelet-jamur-keju"]}
+{"type": "text", "query": "pizza dari roti tawar", "expect": ["pizza-roti-tawar-teflon"]}
+{"type": "text", "query": "kentang goreng renyah", "expect": ["kentang-goreng"]}
+{"type": "have", "have": ["banana", "milk"], "expect": ["smoothie-pisang-susu"]}
+{"type": "have", "have": ["tomato", "egg"], "expect": ["orak-arik-telur-tomat", "telur-masak-tomat-paprika", "sup-telur-tomat"]}
+{"type": "have", "have": ["potato", "egg"], "expect": ["perkedel-kentang", "salad-telur-kentang", "kentang-telur-balado"]}
+{"type": "have", "have": ["pasta", "tomato"], "expect": ["pasta-saus-tomat", "spaghetti-bolognese"]}
+{"type": "have", "have": ["bread", "cheese"], "expect": ["roti-panggang-keju", "sandwich-sayur-keju", "roti-bakar-cokelat-keju", "roti-buah-tin-keju"]}
+{"type": "have", "have": ["mushroom", "egg", "cheese"], "expect": ["omelet-jamur-keju"]}
+{"type": "have", "have": ["broccoli", "carrot"], "expect": ["tumis-brokoli-wortel", "capcay-kuah", "capcay-goreng"]}
+{"type": "have", "have": ["orange", "carrot"], "expect": ["jus-jeruk-wortel"]}
+{"type": "have", "have": ["apple", "pear"], "expect": ["jus-apel-pir"]}
+{"type": "have", "have": ["pumpkin", "banana"], "expect": ["kolak-pisang-labu"]}
+{"type": "have", "have": ["cucumber", "carrot"], "expect": ["acar-timun-wortel"]}
+{"type": "have", "have": ["crab", "corn"], "expect": ["sup-kepiting-jagung"]}
+{"type": "have", "have": ["grapefruit", "shrimp"], "expect": ["salad-jeruk-bali-udang"]}
+{"type": "have", "have": ["radish", "carrot"], "expect": ["acar-lobak-wortel", "sup-lobak"]}
+{"type": "have", "have": ["pomegranate", "pear"], "expect": ["salad-delima-pir"]}
+{"type": "have", "have": ["cantaloupe", "milk"], "expect": ["melon-susu"]}
+{"type": "have", "have": ["zucchini", "mushroom"], "expect": ["tumis-zukini-jamur"]}
+{"type": "have", "have": ["bell_pepper", "mushroom"], "expect": ["oseng-paprika-jamur"]}
+{"type": "have", "have": ["strawberry", "banana"], "expect": ["smoothie-stroberi-pisang", "overnight-oats-pisang"]}
+{"type": "have", "have": ["shrimp", "asparagus"], "expect": ["tumis-asparagus-udang"]}
+{"type": "have", "have": ["banana", "milk"], "prefs": {"tags": ["tanpa-kompor"], "max_minutes": 10}, "expect": ["smoothie-pisang-susu"]}
+{"type": "have", "have": ["egg", "tomato", "chili"], "prefs": {"exclude": ["chili"]}, "expect": ["orak-arik-telur-tomat", "sup-telur-tomat"]}

@@ -1,0 +1,198 @@
+{
+  "_catatan": "Ambang lulus ditetapkan sebelum hasil model dilihat dan hanya boleh dinaikkan. Jangan diturunkan untuk meloloskan model; perbaiki modelnya.",
+  "eyes_marker_f1": {
+    "op": ">=",
+    "value": 0.8,
+    "desc": "F1 penanda: stiker jatuh di bahan yang benar, satu stiker per bahan"
+  },
+  "eyes_marker_precision": {
+    "op": ">=",
+    "value": 0.8,
+    "desc": "presisi penanda"
+  },
+  "eyes_marker_recall": {
+    "op": ">=",
+    "value": 0.8,
+    "desc": "recall penanda (bahan yang tertandai)"
+  },
+  "eyes_f1": {
+    "op": ">=",
+    "value": 0.6,
+    "desc": "F1 penanda (IoU >= 0,5 dan label benar)"
+  },
+  "eyes_precision": {
+    "op": ">=",
+    "value": 0.65,
+    "desc": "presisi penanda"
+  },
+  "eyes_recall": {
+    "op": ">=",
+    "value": 0.55,
+    "desc": "recall penanda"
+  },
+  "eyes_empty_per_img": {
+    "op": "<=",
+    "value": 0.3,
+    "desc": "penanda di area kosong per foto"
+  },
+  "eyes_duplicate_per_img": {
+    "op": "<=",
+    "value": 0.1,
+    "desc": "penanda ganda per foto"
+  },
+  "eyes_verify_pos_acc": {
+    "op": ">=",
+    "value": 0.9,
+    "desc": "akurasi 'apakah ada X' saat X memang ada"
+  },
+  "eyes_hallucination": {
+    "op": "<=",
+    "value": 0.05,
+    "desc": "menjawab 'ada' padahal tidak ada"
+  },
+  "eyes_format_valid": {
+    "op": ">=",
+    "value": 0.98,
+    "desc": "keluaran bisa dibaca parser"
+  },
+  "eyes_label_bleu": {
+    "op": ">=",
+    "value": 50.0,
+    "desc": "BLEU urutan label vs jawaban emas"
+  },
+  "eyes_output_chrf": {
+    "op": ">=",
+    "value": 55.0,
+    "desc": "chrF keluaran lengkap vs jawaban emas"
+  },
+  "eyes_ppl": {
+    "op": "<=",
+    "value": 2.5,
+    "desc": "perplexity jawaban emas di model fine-tune"
+  },
+  "eyes_ppl_gain": {
+    "op": ">=",
+    "value": 2.0,
+    "desc": "perplexity base dibagi perplexity fine-tune"
+  },
+  "eyes_latency_p95_gpu": {
+    "op": "<=",
+    "value": 1.5,
+    "desc": "latensi deteksi p95 (detik, GPU desktop)"
+  },
+  "asr_wer": {
+    "op": "<=",
+    "value": 0.2,
+    "desc": "WER Whisper pada ucapan Piper"
+  },
+  "asr_cer": {
+    "op": "<=",
+    "value": 0.1,
+    "desc": "CER Whisper pada ucapan Piper"
+  },
+  "retrieval_recall_at_3": {
+    "op": ">=",
+    "value": 0.9,
+    "desc": "resep yang diharapkan ada di 3 teratas"
+  },
+  "retrieval_mrr": {
+    "op": ">=",
+    "value": 0.75,
+    "desc": "mean reciprocal rank pencarian resep"
+  },
+  "intent_action_acc": {
+    "op": ">=",
+    "value": 0.9,
+    "desc": "akurasi jenis permintaan"
+  },
+  "intent_slot_f1": {
+    "op": ">=",
+    "value": 0.9,
+    "desc": "F1 isian (waktu, bahan dihindari/dimiliki, pilihan)"
+  },
+  "answer_faithfulness": {
+    "op": ">=",
+    "value": 0.95,
+    "desc": "jawaban LLM tanpa nomor palsu, tanpa label konteks, tanpa tanda pisah"
+  },
+  "answer_chrf": {
+    "op": ">=",
+    "value": 30.0,
+    "desc": "chrF jawaban LLM vs jawaban acuan buku resep"
+  },
+  "answer_rouge_l": {
+    "op": ">=",
+    "value": 0.2,
+    "desc": "ROUGE-L jawaban LLM vs acuan"
+  },
+  "answer_complete": {
+    "op": ">=",
+    "value": 0.98,
+    "desc": "jawaban berakhir di akhir kalimat (tidak terpotong)"
+  },
+  "recipes_detectable": {
+    "op": ">=",
+    "value": 1.0,
+    "desc": "porsi resep aktif yang semua bahan utamanya terdeteksi"
+  },
+  "docs_style_issues": {
+    "op": "<=",
+    "value": 0,
+    "desc": "temuan pemeriksa gaya dokumentasi"
+  },
+  "intent_holdout_action_acc": {
+    "op": ">=",
+    "value": 0.85,
+    "desc": "akurasi jenis permintaan pada set terpisah yang tidak dipakai saat menyusun aturan"
+  },
+  "intent_holdout_slot_f1": {
+    "op": ">=",
+    "value": 0.85,
+    "desc": "F1 isian pada set terpisah"
+  },
+  "answer_grounded": {
+    "op": ">=",
+    "value": 0.8,
+    "desc": "jawaban LLM menyebut resep yang sama dengan acuan buku resep (tidak melenceng isi)"
+  },
+  "guardrail_accuracy": {
+    "op": ">=",
+    "value": 0.95,
+    "desc": "guardrail memberi keputusan benar (izinkan, di luar topik, berbahaya, injeksi, medis)"
+  },
+  "guardrail_false_block": {
+    "op": "<=",
+    "value": 0.0,
+    "desc": "pertanyaan dapur yang sah tidak boleh diblokir"
+  },
+  "guardrail_holdout_accuracy": {
+    "op": ">=",
+    "value": 0.85,
+    "desc": "akurasi guardrail pada set terpisah yang tidak dipakai saat menyusun aturan"
+  },
+  "answer_fact_recall": {
+    "op": ">=",
+    "value": 0.8,
+    "desc": "pertanyaan bebas: semua fakta kunci muncul di jawaban (RAG pengetahuan dapur)"
+  },
+  "answer_formal": {
+    "op": ">=",
+    "value": 0.95,
+    "desc": "jawaban berbahasa sopan dan formal (tanpa kata tidak baku)"
+  },
+  "answer_circular": {
+    "op": "<=",
+    "value": 0.0,
+    "desc": "tidak ada penjelasan yang berputar (X adalah X)"
+  },
+  "kb_recall_at_1": {
+    "op": ">=",
+    "value": 0.9,
+    "desc": "pertanyaan pengetahuan dapur: catatan yang benar ada di urutan pertama"
+  },
+  "kb_routing": {
+    "op": ">=",
+    "value": 0.9,
+    "desc": "pertanyaan pengetahuan dapur dikenali sebagai pertanyaan, bukan permintaan resep"
+  }
+}

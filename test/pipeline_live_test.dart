@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:meira/core/history.dart';
 import 'package:meira/core/pipeline.dart';
 import 'package:meira/core/recipes.dart';
@@ -21,12 +22,15 @@ void main() {
       model: '$home/models/app/qwen3.5-0.8b-instruct-Q4_K_M.gguf',
       mmproj: '$home/models/app/qwen3.5-0.8b-instruct-mmproj-F16.gguf',
       port: 8399,
+      binary: Directory('$home/external/llama.cpp').listSync(recursive: true).whereType<File>().firstWhere((f) => f.path.endsWith('/llama-server')).path,
+      gpuLayers: 99,
     );
     final sw = Stopwatch()..start();
     await server.start(maxImageTokens: 256);
     print('llama-server siap dalam ${sw.elapsedMilliseconds} ms');
     final tmp = await Directory.systemTemp.createTemp('meira_live');
-    final history = await History.open(at: tmp);
+    sqfliteFfiInit();
+    final history = await History.open(at: tmp, factory: databaseFactoryFfi);
     final recipes = parseRecipes(File('assets/resep.md').readAsStringSync());
     final meira = Meira(recipes: recipes, history: history, eyes: server.client, brain: server.client);
     final bytes = await File(photo).readAsBytes();
@@ -51,7 +55,7 @@ void main() {
       await for (final ev in meira.turn(s, text: 'ganti yang lain, jangan pedas')) {
         if (ev is DoneEvent) print('lanjutan: ${ev.text}');
       }
-      expect(s.history, isNotEmpty);
+      expect(s.memory.turns, isNotEmpty);
     } finally {
       await server.stop();
     }

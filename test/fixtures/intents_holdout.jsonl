@@ -1,0 +1,30 @@
+{"text": "tolong kasih ide masakan dari bahan ini", "action": "rekomendasi"}
+{"text": "ada pilihan lain nggak yang lebih gampang", "action": "ganti"}
+{"text": "skip yang ini, cari yang lain", "action": "ganti"}
+{"text": "terus langkah selanjutnya gimana", "action": "detail"}
+{"text": "cara bikinnya gimana sih", "action": "detail"}
+{"text": "jelaskan langkah memasaknya", "action": "detail"}
+{"text": "kalau nggak punya kecap diganti apa", "action": "substitusi", "ingredient": "sweet_soy_sauce"}
+{"text": "bisa pakai pengganti susu?", "action": "substitusi", "ingredient": "milk"}
+{"text": "apakah ada jamur di gambar ini", "action": "cek", "ingredient": "mushroom"}
+{"text": "beneran itu ada mentimun?", "action": "cek", "ingredient": "cucumber"}
+{"text": "tolong cek ada telur atau tidak", "action": "cek", "ingredient": "egg"}
+{"text": "aku pilih nomor dua", "action": "pilih", "choice": 2}
+{"text": "ambil yang pertama aja", "action": "pilih", "choice": 1}
+{"text": "ini nama masakannya apa", "action": "hidangan"}
+{"text": "bahan apa saja yang dipakai di makanan ini", "action": "hidangan"}
+{"text": "aku masih punya sosis dan telur", "action": "rekomendasi", "include": ["sausage", "egg"]}
+{"text": "di rumah ada tahu", "action": "rekomendasi", "include": ["tofu"]}
+{"text": "jangan pakai kacang, aku alergi", "action": "rekomendasi", "exclude": ["peanut"]}
+{"text": "aku nggak suka paprika", "action": "ganti", "exclude": ["bell_pepper"]}
+{"text": "yang nggak pedas ya", "action": "rekomendasi", "exclude": ["chili"]}
+{"text": "pengen camilan manis", "action": "rekomendasi", "tags": ["camilan", "manis"]}
+{"text": "menu sarapan yang cepat dong", "action": "rekomendasi", "tags": ["sarapan"], "max_minutes": 15}
+{"text": "yang bisa jadi 20 menit", "action": "rekomendasi", "max_minutes": 20}
+{"text": "minuman yang segar buat siang", "action": "rekomendasi", "tags": ["minuman", "segar"]}
+{"text": "tanpa masak ya, nggak ada kompor", "action": "rekomendasi", "tags": ["tanpa-kompor"]}
+{"text": "makasih banyak", "action": "obrolan"}
+{"text": "berapa lama menyimpan sup di kulkas?", "action": "obrolan"}
+{"text": "kenapa nasi goreng harus pakai nasi dingin?", "action": "obrolan"}
+{"text": "yang lain, yang berkuah", "action": "ganti", "tags": ["berkuah"]}
+{"text": "mau yang ketiga", "action": "pilih", "choice": 3}

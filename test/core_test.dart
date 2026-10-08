@@ -5,6 +5,8 @@ import 'package:meira/core/grounding.dart';
 import 'package:meira/core/pipeline.dart';
 import 'package:meira/core/recipes.dart';
 import 'package:meira/core/vocab.dart';
+import 'package:meira/llm/memory.dart';
+import 'package:meira/llm/retriever.dart';
 
 void main() {
   group('kosakata', () {
@@ -82,5 +84,26 @@ void main() {
     ];
     final out = fixRefs('Siapkan pir (#1) saja, apel (#2 #5) sudah ada. KANDIDAT LAIN seperti salad. Tawarkan langkahnya. Selamat — mencoba!', d);
     expect(out, 'Siapkan pir saja, apel (#2) sudah ada. pilihan lain seperti salad. Selamat, mencoba!');
+  });
+
+  group('LLM', () {
+    test('memori meringkas giliran lama dan menjaga anggaran', () {
+      final m = ConversationMemory(budgetTokens: 60);
+      for (var i = 0; i < 6; i++) {
+        m.add('pertanyaan nomor $i tentang resep sup wortel', 'Jawaban nomor $i. Ini kalimat kedua yang cukup panjang untuk dihitung.');
+      }
+      final w = m.window();
+      expect(w.first['role'], 'system');
+      expect(w.first['content'], contains('Ringkasan percakapan'));
+      expect(w.where((e) => e['role'] == 'user').length, lessThan(6));
+      expect(w.last['content'], contains('Jawaban nomor 5'));
+    });
+
+    test('retriever menemukan resep dari teks bebas', () {
+      final r = RecipeRetriever(parseRecipes(File('assets/resep.md').readAsStringSync()));
+      expect(r.search('aku mau bikin sambal tomat').first.recipe.id, 'sambal-tomat');
+      expect(r.search('resep kolak pisang').first.recipe.name.toLowerCase(), contains('kolak'));
+      expect(r.search('qwerty zxcv'), isEmpty);
+    });
   });
 }
