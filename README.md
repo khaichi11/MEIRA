@@ -61,7 +61,7 @@ The ingredient marker is still being improved; current results and known weaknes
 Two models are fine-tuned for this app: the ingredient detector (D-FINE small, 132 classes from Open Images, LVIS, and Wikimedia Commons photos)
 and a 22 MB LoRA chat adapter for Qwen3.5-0.8B instruct that answers food questions only from the facts it is given
 and rewrites recipe-book answers in the natural style. On held-out questions the adapter raises fact-based accuracy
-from 0.72 to 0.98. The other models are used as released. The VLM eyes and the brain candidate remain research runs:
+from 0.67 to 0.96. The other models are used as released. The VLM eyes and the brain candidate remain research runs:
 the detector proved more accurate and faster than the eyes. All runs are listed in
 [MEIRA-Before](https://github.com/khaichi11/MEIRA-Before#fine-tuned-models).
 

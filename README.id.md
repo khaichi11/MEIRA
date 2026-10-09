@@ -62,7 +62,7 @@ Penanda bahan masih terus diperbaiki; hasil terkini dan kekurangannya ada di
 Dua model di-fine-tune untuk aplikasi ini: detektor bahan (D-FINE small, 132 kelas dari foto Open Images, LVIS, dan Wikimedia Commons) dan
 adaptor LoRA obrolan sebesar 22 MB untuk Qwen3.5-0.8B instruct yang menjawab pertanyaan makanan hanya dari fakta yang
 diberikan dan menulis ulang jawaban buku resep pada gaya natural. Pada pertanyaan yang disisihkan, adaptor ini
-menaikkan akurasi jawaban berbasis fakta dari 0,72 menjadi 0,98. Model lain dipakai apa adanya. Mata VLM dan kandidat
+menaikkan akurasi jawaban berbasis fakta dari 0,67 menjadi 0,96. Model lain dipakai apa adanya. Mata VLM dan kandidat
 otak tetap menjadi latihan riset: detektor terbukti lebih akurat dan lebih cepat daripada mata VLM. Daftar seluruh latihan ada
 di [MEIRA-Before](https://github.com/khaichi11/MEIRA-Before/blob/main/README.id.md#model-hasil-fine-tune).
 
