@@ -244,7 +244,8 @@ void main() {
     expect(n.energy, 1820); // (10*80 + 6,25*165 - 5*30 + 5) * 1,375 - 500 = 1.818,6
     expect(n.sugar, 45);
     expect(n.fat, 51);
-    const mi = 'Perkiraan kandungan gizi mi instan per 100 gram: energi 440 kkal, protein 10,2 g, lemak 17,6 g, '
+    const mi =
+        'Perkiraan kandungan gizi mi instan per 100 gram: energi 440 kkal, protein 10,2 g, lemak 17,6 g, '
         'karbohidrat 60,3 g, serat 2,9 g, gula 2,0 g, natrium 1855 mg.';
     final line = compareWithNeeds('Kandungan gizi mi instan', mi, n)!;
     expect(line, contains('100 gram mi instan memenuhi sekitar 24% energi'));
