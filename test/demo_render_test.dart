@@ -159,7 +159,7 @@ void main() {
     await run('beranda', const Duration(milliseconds: 1500));
 
     // 3. foto bahan: buah naga ditandai detektor (kotak dari model sungguhan, test/fixtures/naga_deteksi.json) dan resepnya
-    final photo = File(Platform.environment['MEIRA_DEMO_PHOTO'] ?? '/tmp/naga/naga1.jpg');
+    final photo = File(Platform.environment['MEIRA_DEMO_PHOTO'] ?? 'test/fixtures/naga.jpg');
     if (photo.existsSync()) {
       final bytes = photo.readAsBytesSync();
       final dets = [
@@ -178,7 +178,7 @@ void main() {
         ..current = session.candidates.first.recipe.id;
       s
         ..photo = bytes
-        ..photoSize = const Size(960, 1442)
+        ..photoSize = const Size(640, 961)
         ..detections = session.detections
         ..sceneMode = 'bahan'
         ..session = session

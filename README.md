@@ -9,9 +9,9 @@ text or voice.
 
 [Bahasa Indonesia](README.id.md)
 
-<p align="center"><img src="docs/img/demo.gif" width="300" alt="Demo: opening, nickname, ingredient photo, numbered markers, recipe, follow-up questions, extra ingredients, cooking mode, and the other tabs"></p>
+<p align="center"><img src="docs/img/demo.gif" width="300" alt="Demo: opening, home with the cooking streak, ingredient photo with numbered markers and a recipe, nutrition chat, Gizi Seimbang, recipe book, and the tour"></p>
 
-![App screens](docs/img/tampilan.jpg)
+![Home, ingredient photo, nutrition chat, Gizi Seimbang, and the recipe book](docs/img/tampilan.jpg)
 
 ## Features
 

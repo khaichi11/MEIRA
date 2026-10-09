@@ -1,6 +1,8 @@
 """Susun beberapa tangkapan layar menjadi satu gambar dokumentasi, masing-masing di dalam bingkai ponsel generik.
 
     python3 tool/make_screens.py docs/img/tampilan.jpg pembuka.png nama.png dapur.png ...
+
+Untuk bingkai dari test/demo_render_test.dart (isi aplikasi saja, tanpa bilah status), tambahkan --tanpa-bilah-status.
 """
 
 import sys
@@ -16,11 +18,11 @@ WIDTH = 330  # lebar layar tiap ponsel
 GAP, PAD = 28, 40
 
 
-def main(out: str, *screens: str) -> None:
+def main(out: str, *screens: str, status_bar: bool = True) -> None:
     phones = []
     for f in screens:
         im = Image.open(f).convert("RGB")
-        phones.append(phone(im.resize((WIDTH, round(im.height * WIDTH / im.width)), Image.LANCZOS)))
+        phones.append(phone(im.resize((WIDTH, round(im.height * WIDTH / im.width)), Image.LANCZOS), status_bar=status_bar))
     pw, ph = phones[0].size
     sheet = Image.new("RGBA", (PAD * 2 + len(phones) * pw + (len(phones) - 1) * GAP, PAD * 2 + ph), BG + (255,))
     for i, p in enumerate(phones):
@@ -35,4 +37,5 @@ def main(out: str, *screens: str) -> None:
 
 
 if __name__ == "__main__":
-    main(*sys.argv[1:])
+    args = [a for a in sys.argv[1:] if a != "--tanpa-bilah-status"]
+    main(*args, status_bar="--tanpa-bilah-status" not in sys.argv)

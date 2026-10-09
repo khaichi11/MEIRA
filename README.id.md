@@ -9,9 +9,9 @@ suara.
 
 [English](README.md)
 
-<p align="center"><img src="docs/img/demo.gif" width="300" alt="Demo: pembuka, nama panggilan, foto bahan, penanda bernomor, resep, pertanyaan lanjutan, tambah bahan, mode memasak, dan tab lain"></p>
+<p align="center"><img src="docs/img/demo.gif" width="300" alt="Demo: pembuka, beranda dengan jejak masak, foto bahan dengan penanda bernomor dan resep, obrolan gizi, Gizi Seimbang, buku resep, dan tur"></p>
 
-![Tampilan aplikasi](docs/img/tampilan.jpg)
+![Beranda, foto bahan, obrolan gizi, Gizi Seimbang, dan buku resep](docs/img/tampilan.jpg)
 
 ## Fitur
 
