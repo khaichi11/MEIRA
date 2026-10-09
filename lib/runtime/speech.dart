@@ -100,6 +100,14 @@ class Speech {
   bool get recording => _micSub != null;
 
   // ------------------------------------------------------------ isolate
+  /// Muat Whisper lebih awal (misalnya saat layar percakapan dibuka), supaya ucapan pertama tidak menunggu lama.
+  Future<void> warmUp() async {
+    if (!paths.hasAsr) return;
+    try {
+      await _ensure();
+    } catch (_) {}
+  }
+
   Future<SendPort> _ensure() async {
     _idle?.cancel();
     _idle = Timer(idleTimeout, unload);

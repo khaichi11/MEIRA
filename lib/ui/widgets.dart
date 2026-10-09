@@ -466,3 +466,49 @@ class _ScrollHintState extends State<ScrollHint> with SingleTickerProviderStateM
     ),
   );
 }
+
+/// Gelombang suara kecil: lima batang yang bergerak naik turun saat aktif, ikut keras pelannya suara bila ada [level].
+class VoiceWave extends StatefulWidget {
+  const VoiceWave({super.key, required this.active, this.level});
+  final bool active;
+  final Stream<double>? level;
+
+  @override
+  State<VoiceWave> createState() => _VoiceWaveState();
+}
+
+class _VoiceWaveState extends State<VoiceWave> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat();
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => StreamBuilder<double>(
+    stream: widget.level,
+    initialData: 0,
+    builder: (_, snap) => AnimatedBuilder(
+      animation: _c,
+      builder: (_, _) => SizedBox(
+        width: 30,
+        height: 22,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            for (var i = 0; i < 5; i++)
+              Container(
+                width: 3.5,
+                height: widget.active
+                    ? 5 + 15 * (.35 + .65 * (math.sin((_c.value * 2 * math.pi) + i * 1.1).abs())) * (.55 + .45 * (snap.data ?? 0).clamp(0.0, 1.0))
+                    : 5,
+                decoration: BoxDecoration(color: C.accent, borderRadius: BorderRadius.circular(2)),
+              ),
+          ],
+        ),
+      ),
+    ),
+  );
+}

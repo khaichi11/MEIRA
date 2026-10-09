@@ -80,7 +80,8 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
 
   // ------------------------------------------------------------- pengaturan
   bool speakAnswers = false;
-  bool handsFree = false;
+  bool handsFree = false; // percakapan suara sedang berjalan
+  bool autoVoiceChat = true; // pertanyaan lewat suara otomatis memulai percakapan suara
   bool releaseInBackground = true;
   int imageSide = 512; // foto untuk model bahasa (makanan jadi); detektor selalu memakai 640 x 640
   String photoMode = 'otomatis';
@@ -305,6 +306,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
       final p = await SharedPreferences.getInstance();
       speakAnswers = p.getBool('speak') ?? false;
       handsFree = false;
+      autoVoiceChat = p.getBool('auto_voice') ?? true;
       releaseInBackground = p.getBool('release_bg') ?? true;
       imageSide = p.getInt('image_side') ?? 512;
       photoMode = p.getString('photo_mode') ?? 'otomatis';
@@ -826,12 +828,40 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
         if (handsFree) unawaited(_listenHandsFree());
         return text == null ? null : 'Suara kurang jelas';
       }
+      // "berhenti" atau "sudah" mengakhiri percakapan suara
+      if (handsFree && RegExp(r'^\W*(berhenti|stop|sudah|udah|selesai|cukup)\W*$', caseSensitive: false).hasMatch(text)) {
+        await endVoiceChat();
+        return null;
+      }
+      // pertanyaan lewat suara memulai percakapan suara: setelah jawaban dibacakan, mikrofon mendengar lagi otomatis
+      if (autoVoiceChat && !handsFree) {
+        handsFree = true;
+        speech?.keepLoaded = true;
+      }
       await send(text: text, spoken: true);
       return null;
     } catch (e) {
       voice = VoiceState.idle;
       notifyListeners();
       return 'Suara tidak terbaca: $e';
+    }
+  }
+
+  /// Akhiri percakapan suara (tombol "Matikan" atau ucapan "berhenti").
+  Future<void> endVoiceChat() async {
+    if (!handsFree) return;
+    await setHandsFree(false);
+  }
+
+  /// Muat Whisper saat layar percakapan dibuka dan biarkan termuat selama layar itu terbuka.
+  void voiceReady(bool open) {
+    final sp = speech;
+    if (sp == null) return;
+    sp.keepLoaded = open || handsFree;
+    if (open) {
+      unawaited(sp.warmUp());
+    } else if (!handsFree) {
+      sp.unload();
     }
   }
 
@@ -868,15 +898,17 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
     });
     _vad = Timer.periodic(const Duration(milliseconds: 150), (_) {
       final now = DateTime.now();
-      if ((heard && now.difference(lastLoud).inMilliseconds > 1200) || now.difference(started).inSeconds > 15) {
+      if ((heard && now.difference(lastLoud).inMilliseconds > 1200) || (!heard && now.difference(started).inSeconds > 8)) {
         _stopVad();
         if (heard) {
           _finishListening();
         } else {
+          // tidak ada yang bicara: percakapan suara berakhir, tidak mendengarkan terus tanpa henti
           sp.cancelListening().then((_) {
             voice = VoiceState.idle;
+            handsFree = false;
+            sp.keepLoaded = false;
             notifyListeners();
-            _listenHandsFree();
           });
         }
       }
@@ -929,6 +961,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
       case 'tour_done':
         tourDone = value as bool;
         await p.setBool(key, tourDone);
+      case 'auto_voice':
+        autoVoiceChat = value as bool;
+        await p.setBool(key, autoVoiceChat);
       case 'healthy_mode':
         healthyMode = value as bool;
         meira?.healthMode = healthyMode;

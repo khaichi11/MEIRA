@@ -53,13 +53,19 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _state = Scope.of(context);
+    if (_state == null) {
+      _state = Scope.of(context);
+      // Whisper dimuat saat layar percakapan dibuka, supaya ucapan pertama tidak menunggu lama
+      _state!.voiceReady(true);
+    }
   }
 
   @override
   void dispose() {
-    // keluar dari percakapan menghentikan suara yang masih dibacakan
+    // keluar dari percakapan menghentikan suara yang masih dibacakan dan percakapan suara
     _state?.stopSpeaking();
+    _state?.endVoiceChat();
+    _state?.voiceReady(false);
     _text.dispose();
     _scroll.dispose();
     super.dispose();
@@ -199,7 +205,11 @@ class _ChatScreenState extends State<ChatScreen> {
               sizeFactor: a,
               child: FadeTransition(opacity: a, child: child),
             ),
-            child: s.voice == VoiceState.speaking ? _stopVoice(s) : const SizedBox.shrink(),
+            child: s.handsFree
+                ? _voiceChat(s)
+                : s.voice == VoiceState.speaking
+                ? _stopVoice(s)
+                : const SizedBox.shrink(),
           ),
           _suggestions(s),
           _composer(s),
@@ -286,6 +296,38 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     ),
   );
+
+  /// Percakapan suara sedang berjalan: gelombang kecil mengikuti keadaan (mendengar, menulis, membacakan), dan tombol
+  /// untuk mematikannya.
+  Widget _voiceChat(AppState s) {
+    final label = switch (s.voice) {
+      VoiceState.listening => 'Mendengarkan…',
+      VoiceState.transcribing => 'Menulis ucapan Anda…',
+      VoiceState.speaking => 'Membacakan jawaban…',
+      _ => 'Percakapan suara aktif',
+    };
+    return Padding(
+      key: const ValueKey('suara'),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(14, 6, 6, 6),
+        decoration: BoxDecoration(color: C.accentTint, borderRadius: BorderRadius.circular(22)),
+        child: Row(
+          children: [
+            VoiceWave(active: s.voice == VoiceState.listening || s.voice == VoiceState.speaking, level: s.speech?.level.stream),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                label,
+                style: inter(14, weight: FontWeight.w600, color: C.accentDeep),
+              ),
+            ),
+            TextButton(onPressed: s.endVoiceChat, child: const Text('Matikan')),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _photoMenu(AppState s, {bool inBar = false}) => Material(
     color: inBar ? Colors.transparent : Colors.white.withValues(alpha: .92),

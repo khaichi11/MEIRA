@@ -85,6 +85,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               trailing: Switch(value: s.speakAnswers, onChanged: (v) => s.setPref('speak', v)),
             ),
             Row2(
+              title: 'Lanjut mendengar setelah menjawab',
+              subtitle: 'Setelah bertanya lewat suara, mikrofon menyala lagi otomatis; ucapkan "berhenti" atau diam untuk selesai',
+              trailing: Switch(value: s.autoVoiceChat, onChanged: (v) => s.setPref('auto_voice', v)),
+            ),
+            Row2(
               title: 'Bicara tanpa tombol',
               trailing: Switch(value: s.handsFree, onChanged: s.setHandsFree),
             ),
