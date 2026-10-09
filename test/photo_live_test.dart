@@ -53,7 +53,7 @@ void main() {
         ),
         brain: server.client,
         useLlmIntent: false,
-      answerStyle: Platform.environment['MEIRA_STYLE'] ?? 'ringkas',
+        answerStyle: Platform.environment['MEIRA_STYLE'] ?? 'ringkas',
         parallelVision: false,
         knowledge: KnowledgeBase.parse(
           File('assets/pengetahuan.md').readAsStringSync(),
