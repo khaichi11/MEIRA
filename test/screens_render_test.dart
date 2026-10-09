@@ -9,10 +9,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meira/app_state.dart';
+import 'package:meira/core/body.dart';
 import 'package:meira/core/recipes.dart';
 import 'package:meira/theme.dart';
 import 'package:meira/ui/health.dart';
 import 'package:meira/ui/kitchen.dart';
+import 'package:meira/ui/tour.dart';
 import 'package:meira/ui/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -45,7 +47,8 @@ void main() {
     final s = AppState()
       ..recipes = parseRecipes(File('assets/resep.md').readAsStringSync())
       ..userName = 'Khai'
-      ..healthGoal = 'turun';
+      ..healthGoal = 'turun'
+      ..body = const BodyProfile(heightCm: 165, weightKg: 80, age: 30, male: true);
     final now = DateTime.now();
     for (final d in [0, 1, 2, 4, 5, 9, 10, 11, 12, 20, 21, 30, 31, 32]) {
       s.cooks.add((now.subtract(Duration(days: d)), s.recipes[d % s.recipes.length].id));
@@ -56,6 +59,8 @@ void main() {
       ('beranda', KitchenScreen(onCorrect: (_) {}) as Widget, 0.0),
       ('beranda-bawah', KitchenScreen(onCorrect: (_) {}) as Widget, 900.0),
       ('sehat', const HealthScreen() as Widget, 0.0),
+      ('sehat-bawah', const HealthScreen() as Widget, 1100.0),
+      ('tur', const TourScreen() as Widget, 0.0),
     ]) {
       final key = GlobalKey();
       await tester.pumpWidget(

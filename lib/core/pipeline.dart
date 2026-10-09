@@ -17,6 +17,7 @@ import '../runtime/llama.dart';
 import '../vision/ocr.dart';
 import '../vision/vision.dart';
 import 'generated.dart';
+import 'body.dart';
 import 'grounding.dart';
 import 'health.dart';
 import 'history.dart';
@@ -153,6 +154,7 @@ class Meira {
     this.readPackages = true,
     this.thorough = false,
     this.healthMode = false,
+    this.needs,
     this.rewriteNotes = false,
     this.vision,
   });
@@ -168,6 +170,7 @@ class Meira {
   String answerStyle; // ringkas: rekomendasi dan langkah dari buku resep; natural: semua lewat LLM
   bool parallelVision; // false di HP: deteksi dulu agar penanda cepat tampil, baru kenali hidangan
   bool readPackages; // baca tulisan kemasan (mi instan, minyak, kecap, santan, ...)
+  DailyNeeds? needs; // kebutuhan gizi harian dari kalkulator tubuh, bila pengguna mengisinya
   bool healthMode; // "enak dan sehat": resep ringan didahulukan dan jawaban resep diberi satu saran agar lebih ringan
   bool thorough; // deteksi teliti: foto asli + cermin digabung, recall lebih tinggi, waktu sekitar 2x
   late final RecipeRetriever retriever = RecipeRetriever(recipes);
@@ -495,6 +498,9 @@ class Meira {
     }
     final it = text.isNotEmpty ? await _intent(text) : Intent(imageDataUrl != null && s.mode == 'hidangan' ? 'hidangan' : 'rekomendasi');
     if (imageDataUrl != null && s.mode == 'hidangan' && it.action == 'rekomendasi') it.action = 'hidangan';
+    // pertanyaan gizi ("mi instan masih cocok untuk saya?", "berapa kalori nasi goreng?") dijawab dari fakta gizi,
+    // bukan dengan rekomendasi resep
+    if (it.action == 'rekomendasi' && _nutritionQuestion.hasMatch(text.toLowerCase())) it.action = 'obrolan';
     // "buah naga bisa dibuat apa?": makanan yang tidak ada di kosakata maupun nama resep dijawab dari fakta, bukan
     // dengan resep acak yang kebetulan berbagi kata
     if (it.action == 'rekomendasi' &&
@@ -711,7 +717,14 @@ class Meira {
     }
     if (task == 'obrolan' && brain != null) {
       // RAG: catatan dapur yang cukup dekat ditambah fakta Wikidata dan USDA untuk makanan yang disebut namanya
-      final facts = [for (final n in related.take(2)) 'Catatan dapur "${n.$1.title}": ${n.$1.body}', for (final f in linked) f.text];
+      final facts = [
+        for (final n in related.take(2)) 'Catatan dapur "${n.$1.title}": ${n.$1.body}',
+        for (final f in linked) f.text,
+        // perbandingan dengan kebutuhan harian pengguna sudah dihitung di sini; model cukup menyampaikannya
+        if (needs != null)
+          for (final f in linked.where((f) => f.nutrition)) ?compareWithNeeds(f.title, f.text, needs!),
+        if (needs != null && _personal.hasMatch(text.toLowerCase())) needs!.factLine,
+      ];
       yield* _chat(s, text, facts, photo: aboutPhoto || linked.isEmpty);
       return;
     }
@@ -1244,3 +1257,9 @@ String? correction(String text) {
   if (name == null || name.isEmpty || name.split(' ').length > 4) return null;
   return name;
 }
+
+final _nutritionQuestion = RegExp(
+  r'\b(gizi|kalori|kkal|protein|lemak|karbohidrat|natrium|kandungan|cocok untuk (saya|aku)|masih ideal|ideal (nggak|gak|tidak|enggak)|'
+  r'sehat (nggak|gak|tidak|enggak)|aman untuk diet|boleh (dimakan|makan) (saat|waktu) diet)\b',
+);
+final _personal = RegExp(r'\b(saya|aku|untukku|buatku|diet|ideal|kebutuhan|harian|berat badan)\b');

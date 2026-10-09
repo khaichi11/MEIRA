@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../app_state.dart';
 import '../runtime/models.dart';
 import '../theme.dart';
+import 'tour.dart';
 import 'widgets.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -209,6 +210,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Text('Versi 0.2.4', style: T.caption),
                 ],
               ),
+            ),
+            Row2(
+              title: 'Tur singkat fitur',
+              onTap: () => showTour(context),
+              trailing: const Icon(Icons.chevron_right_rounded, color: C.tertiary),
             ),
             Row2(
               title: 'Lisensi',

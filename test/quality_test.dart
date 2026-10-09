@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meira/core/body.dart';
 import 'package:meira/core/pipeline.dart';
 import 'package:meira/core/recipes.dart';
 import 'package:meira/core/vocab.dart';
@@ -231,5 +232,23 @@ void main() {
     expect(Guardrails.respectful('Resep ini cocok untuk orang gemuk.'), 'Resep ini cocok untuk orang dengan berat badan berlebih.');
     expect(Guardrails.respectful('Kegemukan bisa dicegah.'), 'berat badan berlebih bisa dicegah.');
     expect(Guardrails.respectful('Pilih daging yang tidak gemuk.'), 'Pilih daging yang tidak gemuk.');
+  });
+
+  test('kalkulator tubuh dan perbandingan gizi harian', () {
+    final n = needsFor(const BodyProfile(heightCm: 165, weightKg: 80, age: 30, male: true, activity: 'ringan'), goal: 'turun');
+    expect(n.bmi, closeTo(29.4, .1));
+    expect(n.category, 'Obesitas');
+    expect(n.idealMin, closeTo(50.4, .1));
+    expect(n.idealMax, closeTo(68.1, .1));
+    expect(n.broca, closeTo(58.5, .1));
+    expect(n.energy, 1820); // (10*80 + 6,25*165 - 5*30 + 5) * 1,375 - 500 = 1.818,6
+    expect(n.sugar, 45);
+    expect(n.fat, 51);
+    const mi = 'Perkiraan kandungan gizi mi instan per 100 gram: energi 440 kkal, protein 10,2 g, lemak 17,6 g, '
+        'karbohidrat 60,3 g, serat 2,9 g, gula 2,0 g, natrium 1855 mg.';
+    final line = compareWithNeeds('Kandungan gizi mi instan', mi, n)!;
+    expect(line, contains('100 gram mi instan memenuhi sekitar 24% energi'));
+    expect(line, contains('93% batas garam'));
+    expect(line, contains('garam-nya tinggi'));
   });
 }

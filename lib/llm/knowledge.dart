@@ -90,7 +90,9 @@ class KnowledgeBase {
     return _byName[key]?.where((f) => !f.nutrition).firstOrNull ?? _byEnglish[key];
   }
 
-  static final _nutritionWords = RegExp(r'\b(gizi|nutrisi|kalori|kkal|protein|lemak|karbohidrat|vitamin|serat|kandungan|mineral)\b');
+  static final _nutritionWords = RegExp(
+    r'\b(gizi|nutrisi|kalori|kkal|protein|lemak|karbohidrat|vitamin|serat|kandungan|mineral|gula|garam|natrium|diet|ideal|cocok|sehat)\b',
+  );
 
   /// Fakta untuk makanan yang disebut namanya dalam pertanyaan, nama terpanjang lebih dulu ("pisang kepok" sebelum
   /// "pisang"). Fakta gizi hanya ikut bila pertanyaannya memang tentang gizi.

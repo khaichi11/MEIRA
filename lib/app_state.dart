@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/body.dart';
 import 'core/grounding.dart';
 import 'core/health.dart';
 import 'core/history.dart';
@@ -83,7 +84,24 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   String? userName; // nama panggilan, disimpan di perangkat
   bool readPackages = true;
   bool healthyMode = false; // "enak dan sehat"
-  String? healthGoal; // turun, jaga, atau seimbang; null bila program hidup sehat belum dimulai
+  bool tourDone = true; // tur singkat fitur sudah dilihat atau dilewati
+  String? healthGoal; // turun, jaga, atau seimbang; null bila program Gizi Seimbang belum dimulai
+  BodyProfile? body; // tinggi, berat, usia, jenis kelamin, dan aktivitas; hanya disimpan di ponsel
+
+  /// Kebutuhan gizi harian dari kalkulator tubuh, menyesuaikan tujuan program.
+  DailyNeeds? get needs => body == null ? null : needsFor(body!, goal: healthGoal);
+
+  Future<void> setBody(BodyProfile? b) async {
+    body = b;
+    final p = await SharedPreferences.getInstance();
+    if (b == null) {
+      await p.remove('body');
+    } else {
+      await p.setString('body', jsonEncode({'h': b.heightCm, 'w': b.weightKg, 'a': b.age, 'm': b.male, 'act': b.activity}));
+    }
+    meira?.needs = needs;
+    notifyListeners();
+  }
 
   // ------------------------------------------------------------- jejak masak
   /// Setiap resep yang selesai dimasak: tanggal dan id resep, tersimpan di perangkat.
@@ -187,7 +205,18 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       userName = p.getString('user_name');
       readPackages = p.getBool('read_packages') ?? true;
       healthyMode = p.getBool('healthy_mode') ?? false;
+      tourDone = p.getBool('tour_done') ?? false;
       healthGoal = p.getString('health_goal');
+      if (p.getString('body') case final raw?) {
+        final j = jsonDecode(raw) as Map<String, dynamic>;
+        body = BodyProfile(
+          heightCm: (j['h'] as num).toDouble(),
+          weightKg: (j['w'] as num).toDouble(),
+          age: j['a'] as int,
+          male: j['m'] as bool,
+          activity: j['act'] as String? ?? 'ringan',
+        );
+      }
       cooks
         ..clear()
         ..addAll([
@@ -224,6 +253,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         parallelVision: false,
         thorough: thorough,
         healthMode: healthyMode,
+        needs: needs,
         readPackages: readPackages,
         knowledge: knowledge,
       )..userName = userName;
@@ -726,6 +756,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         answerStyle = value as String;
         meira?.answerStyle = answerStyle;
         await p.setString(key, answerStyle);
+      case 'tour_done':
+        tourDone = value as bool;
+        await p.setBool(key, tourDone);
       case 'healthy_mode':
         healthyMode = value as bool;
         meira?.healthMode = healthyMode;
@@ -738,6 +771,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         } else {
           await p.setString(key, v);
         }
+        meira?.needs = needs;
     }
     notifyListeners();
   }

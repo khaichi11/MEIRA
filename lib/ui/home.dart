@@ -8,6 +8,7 @@ import 'history.dart';
 import 'kitchen.dart';
 import 'settings.dart';
 import 'studio.dart';
+import 'tour.dart';
 import 'widgets.dart';
 
 class HomeShell extends StatefulWidget {
@@ -61,6 +62,15 @@ class _HomeShellState extends State<HomeShell> with SingleTickerProviderStateMix
   void _correct(AppState st) {
     _go(2);
     _studio.currentState?.open(st);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // pengguna baru melihat tur singkat sekali; tur bisa dilewati dan dibuka lagi dari Pengaturan
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && !Scope.of(context).tourDone) showTour(context);
+    });
   }
 
   @override
