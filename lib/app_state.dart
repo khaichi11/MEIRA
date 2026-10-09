@@ -462,6 +462,24 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
     return VisionInput(square: square, squareSize: 640, full: full, width: w, height: h);
   }
 
+  /// Potongan foto asli (kotak relatif 0..1) dengan sisi terpanjang [maxSide], untuk OCR kedua pada label gizi.
+  static Future<VisionInput?> cropInput(Uint8List bytes, List<double> box, {int maxSide = 1600}) async {
+    try {
+      final img = (await (await ui.instantiateImageCodec(bytes)).getNextFrame()).image;
+      final src = Rect.fromLTRB(box[0] * img.width, box[1] * img.height, box[2] * img.width, box[3] * img.height);
+      if (src.width < 20 || src.height < 20) return null;
+      final scale = math.min(2.5, maxSide / math.max(src.width, src.height));
+      final w = (src.width * scale).round(), h = (src.height * scale).round();
+      final rec = ui.PictureRecorder();
+      ui.Canvas(rec).drawImageRect(img, src, Rect.fromLTWH(0, 0, w.toDouble(), h.toDouble()), ui.Paint()..filterQuality = ui.FilterQuality.high);
+      final out = await rec.endRecording().toImage(w, h);
+      final data = await out.toByteData(format: ui.ImageByteFormat.rawRgba);
+      return VisionInput(square: Uint8List(0), squareSize: 0, full: data!.buffer.asUint8List(), width: w, height: h);
+    } catch (_) {
+      return null;
+    }
+  }
+
   int get _imageTokens => ((imageSide / 32) * (imageSide / 32)).round();
 
   Future<void> _warmup() async {
@@ -548,6 +566,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
     notifyListeners();
     final dataUrl = await _modelImage(bytes);
     _visionInput = await visionInput(bytes);
+    meira?.zoom = (box) => cropInput(bytes, box);
     unawaited(_thumb(bytes).then((t) => history.savePhoto(session!.id, bytes, t)));
     await send(text: text, imageDataUrl: dataUrl, photoBytes: bytes);
   }

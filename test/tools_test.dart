@@ -2,8 +2,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:meira/core/body.dart';
 import 'package:meira/core/fasting.dart';
 import 'package:meira/core/intake.dart';
+import 'package:meira/core/label.dart';
 import 'package:meira/core/recipes.dart';
 import 'package:meira/core/tools.dart';
+import 'package:meira/vision/ocr.dart';
 
 /// Data palsu untuk menguji perintah fitur di obrolan tanpa aplikasi.
 class FakeData implements AppData {
@@ -112,5 +114,37 @@ void main() {
     expect((await run('buka kalkulator', FakeData()))!.actions, contains('tubuh'));
     expect((await run('tolong buka buku resep', FakeData()))!.actions, ['resep']);
     expect(await run('apa bedanya rendang dan kalio?', FakeData()), isNull);
+  });
+
+  test('label gizi kemasan dibaca dan dijawab per sajian dan per kemasan', () {
+    TextLine l(String t, double y, [double x = .2]) => TextLine(t, .9, [x, y, x + .3, y + .02]);
+    final lines = [
+      l('INFORMASI NILAI GIZI', .10),
+      l('Takaran saji 25 g', .14),
+      l('Jumlah Sajian per Kemasan : 4', .17),
+      l('Energi total', .21),
+      l('130 kkal', .21, .6),
+      l('Lemak total', .25),
+      l('6 g', .25, .6),
+      l('Protein', .28),
+      l('2 g', .28, .6),
+      l('Karbohidrat total', .31),
+      l('17 g', .31, .6),
+      l('Gula', .34),
+      l('Og', .34, .6),
+      l('Garam (Natrium)', .37),
+      l('290 mg', .37, .6),
+    ];
+    final label = nutritionLabel(lines)!;
+    expect(label.energy, 130);
+    expect(label.servings, 4);
+    expect(label.sugar, 0);
+    expect(label.sodium, 290);
+    final t = Targets.of(null);
+    final a = labelAnswer(label, t);
+    expect(a, contains('Satu sajian memenuhi sekitar 6% energi'));
+    expect(a, contains('Bila satu kemasan (4 sajian) dihabiskan sekaligus, energinya sekitar 520 kkal'));
+    expect(a, contains('sebaiknya cukup 2 sajian'));
+    expect(a, contains('tekanan darah tinggi'));
   });
 }

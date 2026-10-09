@@ -20,6 +20,8 @@ import 'generated.dart';
 import 'body.dart';
 import 'grounding.dart';
 import 'health.dart';
+import 'intake.dart';
+import 'label.dart';
 import 'history.dart';
 import 'recipes.dart';
 import 'tools.dart';
@@ -83,6 +85,7 @@ class Session {
   String? dish;
   List<String> dishGuess = [];
   String? guess; // bahan utama menurut model penglihatan bila detektor tidak mengenalnya, misalnya buah naga
+  NutritionLabel? label; // label gizi kemasan yang terbaca dari foto
   List<Detection> detections = [];
   VisionInput? visionInput; // foto siap pakai untuk detektor dan OCR (tidak disimpan ke riwayat)
   VisionResult? visionResult;
@@ -180,6 +183,8 @@ class Meira {
   bool readPackages; // baca tulisan kemasan (mi instan, minyak, kecap, santan, ...)
   DailyNeeds? needs; // kebutuhan gizi harian dari kalkulator tubuh, bila pengguna mengisinya
   AppData? appData; // data fitur yang bisa dibaca dan diubah lewat obrolan
+  /// Potongan foto asli beresolusi lebih tinggi untuk OCR kedua di sekitar label gizi (diisi AppState per foto).
+  Future<VisionInput?> Function(List<double> box)? zoom;
   bool healthMode; // "enak dan sehat": resep ringan didahulukan dan jawaban resep diberi satu saran agar lebih ringan
   bool thorough; // deteksi teliti: foto asli + cermin digabung, recall lebih tinggi, waktu sekitar 2x
   late final RecipeRetriever retriever = RecipeRetriever(recipes);
@@ -239,7 +244,26 @@ class Meira {
 
   /// Produk kemasan dikenali dari tulisan labelnya oleh model otak (visi), lalu diberi nomor seperti bahan lain.
   Future<List<Detection>> _packages(Session s) async {
-    if (vision != null && s.visionInput != null) return packagesFromText(await vision!.read(s.visionInput!), s.detections);
+    if (vision != null && s.visionInput != null) {
+      final lines = await vision!.read(s.visionInput!);
+      s.label = nutritionLabel(lines);
+      // label gizi bertulisan kecil: baca ulang potongan di sekitar judulnya dengan resolusi lebih tinggi
+      final header = lines.where((l) => RegExp(r'nilai gizi|nutrition facts', caseSensitive: false).hasMatch(l.text)).firstOrNull;
+      if (header != null && zoom != null) {
+        final w = header.box[2] - header.box[0];
+        final crop = await zoom!([
+          math.max(0, header.box[0] - w * .6),
+          math.max(0, header.box[1] - .02),
+          math.min(1, header.box[2] + w * .6),
+          math.min(1, header.box[1] + w * 2.6),
+        ]);
+        if (crop != null) {
+          final again = nutritionLabel(await vision!.read(crop));
+          if (again != null && (s.label == null || again.fieldCount >= s.label!.fieldCount)) s.label = again;
+        }
+      }
+      return packagesFromText(lines, s.detections);
+    }
     if (brain == null || !brainHasVision) return [];
     final res = await brain!
         .json(LlmClient.visionMessages(s.imageDataUrl!, promptPackages), packagesSchema, maxTokens: 260)
@@ -446,7 +470,8 @@ class Meira {
         ..current = null
         ..dish = null
         ..dishGuess = []
-        ..guess = null;
+        ..guess = null
+        ..label = null;
       yield StatusEvent('Melihat foto');
       Future<Map<String, dynamic>?>? sceneFuture = mode != 'bahan' && parallelVision ? _scene(s) : null;
       if (eyes == null && vision == null) {
@@ -475,14 +500,47 @@ class Meira {
       }
       if (s.mode == 'bahan' && sc != null) s.guess = _guess(sc, s.detections);
       yield SceneEvent(s.mode, s.dish);
-      if (s.mode == 'bahan' && readPackages) {
+      // tulisan kemasan dan label gizi dibaca pada semua foto; penanda kemasan hanya untuk foto bahan
+      if (readPackages) {
         yield StatusEvent('Membaca kemasan');
         final pkg = await _packages(s);
-        if (pkg.isNotEmpty) {
+        if (s.mode == 'bahan' && pkg.isNotEmpty) {
           s.detections = number([...s.detections, ...pkg]);
           yield DetectionsEvent(s.detections, null);
         }
+        if (s.label != null && text.isEmpty) {
+          // foto label gizi: jawabannya angka dari label dibandingkan kebutuhan harian, beserta saran porsi
+          final answer = labelAnswer(s.label!, Targets.of(needs));
+          yield TokenEvent(answer);
+          yield ActionsEvent(const ['gizi']);
+          await _remember(s, '(foto label gizi)', answer, 'label');
+          yield DoneEvent(answer, 'label');
+          await _persist(s);
+          return;
+        }
       }
+    }
+    // koreksi angka label gizi yang terbaca keliru ("lemaknya 5 g"), lalu jawab ulang dengan angka yang benar
+    if (imageDataUrl == null && s.label != null) {
+      if (labelCorrection(text) case (final field, final value)) {
+        s.label = s.label!.corrected(field, value);
+        final answer = 'Baik, sudah saya perbaiki. ${labelAnswer(s.label!, Targets.of(needs))}';
+        yield TokenEvent(answer);
+        await _remember(s, text, answer, 'label');
+        yield DoneEvent(answer, 'label');
+        await _persist(s);
+        return;
+      }
+    }
+    // pertanyaan lanjutan tentang label gizi yang sudah terbaca ("kalau saya makan semuanya?")
+    if (imageDataUrl == null && s.label != null && _labelFollowUp.hasMatch(text.toLowerCase())) {
+      final whole = RegExp(r'\b(semua|semuanya|seluruh|sekaligus|satu kemasan|sebungkus|habis)').hasMatch(text.toLowerCase());
+      final answer = labelAnswer(s.label!, Targets.of(needs), whole: whole);
+      yield TokenEvent(answer);
+      await _remember(s, text, answer, 'label');
+      yield DoneEvent(answer, 'label');
+      await _persist(s);
+      return;
     }
 
     // perintah fitur: catat berat atau makanan, isi data tubuh, tanya IMT, progres, jejak masak, atau buka fitur
@@ -1285,3 +1343,7 @@ final _nutritionQuestion = RegExp(
   r'sehat (nggak|gak|tidak|enggak)|aman untuk diet|boleh (dimakan|makan) (saat|waktu) diet)\b',
 );
 final _personal = RegExp(r'\b(saya|aku|untukku|buatku|diet|ideal|kebutuhan|harian|berat badan)\b');
+
+final _labelFollowUp = RegExp(
+  r'\b(semua|semuanya|seluruh|sekaligus|satu kemasan|sebungkus|habis|berapa sajian|porsi|sebaiknya|boleh dimakan|aman)\b',
+);
