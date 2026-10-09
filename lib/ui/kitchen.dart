@@ -50,16 +50,58 @@ class _KitchenScreenState extends State<KitchenScreen> {
     if (say != null) s.send(text: say);
   }
 
+  final _scroll = ScrollController();
+  bool _scrolled = false; // panah petunjuk gulir disembunyikan setelah pengguna menggulir
+
+  @override
+  void initState() {
+    super.initState();
+    _scroll.addListener(() {
+      final past = _scroll.offset > 40;
+      if (past != _scrolled) setState(() => _scrolled = past);
+    });
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = Scope.of(context);
-    return ListView(
-      padding: EdgeInsets.fromLTRB(16, 0, 16, MediaQuery.paddingOf(context).bottom + 16),
+    return Stack(
       children: [
-        FadeIn(child: _header(s)),
-        FadeIn(delay: const Duration(milliseconds: 70), child: _askPill(s)),
-        const SizedBox(height: 16),
-        FadeIn(delay: const Duration(milliseconds: 140), child: _empty(s)),
+        ListView(
+          controller: _scroll,
+          padding: EdgeInsets.fromLTRB(16, 0, 16, MediaQuery.paddingOf(context).bottom + 16),
+          children: [
+            FadeIn(child: _header(s)),
+            FadeIn(delay: const Duration(milliseconds: 70), child: _askPill(s)),
+            const SizedBox(height: 16),
+            FadeIn(delay: const Duration(milliseconds: 140), child: _empty(s)),
+          ],
+        ),
+        // panah kecil yang naik turun: tanda bahwa beranda masih berlanjut ke bawah (jejak masak, gizi seimbang)
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 8,
+          child: IgnorePointer(
+            ignoring: _scrolled,
+            child: AnimatedOpacity(
+              opacity: _scrolled ? 0 : 1,
+              duration: const Duration(milliseconds: 250),
+              child: Center(
+                child: GestureDetector(
+                  onTap: () => _scroll.animateTo(380, duration: const Duration(milliseconds: 500), curve: Curves.easeOutCubic),
+                  child: const ScrollHint(),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -193,7 +235,15 @@ class _KitchenScreenState extends State<KitchenScreen> {
           children: [
             const Icon(Icons.eco_rounded, color: C.herb),
             const SizedBox(width: 8),
-            Expanded(child: Text(s.healthGoal == null ? 'Hidup sehat' : goalTitle(s.healthGoal), style: T.headline)),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(programName, style: T.headline),
+                  if (s.healthGoal != null) Text(goalTitle(s.healthGoal), style: T.footnote),
+                ],
+              ),
+            ),
             TextButton(onPressed: () => openHealth(context), child: Text(s.healthGoal == null ? 'Mulai' : 'Lihat')),
           ],
         ),
@@ -201,7 +251,7 @@ class _KitchenScreenState extends State<KitchenScreen> {
           Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: Text(
-              'Rencana makan harian dari resep yang lebih ringan, untuk menjaga atau menurunkan berat badan secara bertahap.',
+              'Rencana makan harian dari resep yang lebih ringan, mengikuti pedoman gizi seimbang Kementerian Kesehatan.',
               style: T.subhead,
             ),
           )

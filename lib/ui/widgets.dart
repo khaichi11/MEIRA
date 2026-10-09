@@ -432,3 +432,37 @@ class _PulseState extends State<Pulse> with SingleTickerProviderStateMixin {
     child: widget.child,
   );
 }
+
+/// Panah ke bawah yang naik turun perlahan, sebagai petunjuk bahwa layar bisa digulir.
+class ScrollHint extends StatefulWidget {
+  const ScrollHint({super.key});
+
+  @override
+  State<ScrollHint> createState() => _ScrollHintState();
+}
+
+class _ScrollHintState extends State<ScrollHint> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1100))..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: _c,
+    builder: (_, child) => Transform.translate(offset: Offset(0, 6 * Curves.easeInOut.transform(_c.value)), child: child),
+    child: Container(
+      width: 40,
+      height: 40,
+      decoration: BoxDecoration(
+        color: C.surface,
+        shape: BoxShape.circle,
+        boxShadow: [BoxShadow(color: C.label.withValues(alpha: .10), blurRadius: 12, offset: const Offset(0, 3))],
+      ),
+      child: const Icon(Icons.keyboard_arrow_down_rounded, color: C.accentDeep, size: 28),
+    ),
+  );
+}

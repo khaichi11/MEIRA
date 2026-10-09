@@ -8,10 +8,14 @@ import 'widgets.dart';
 /// Tujuan program hidup sehat. Kata-katanya netral dan sopan; istilah medis seperti obesitas hanya dipakai sebagai
 /// keterangan, tidak pernah sebagai sebutan untuk pengguna.
 const healthGoals = [
-  ('turun', 'Menurunkan berat badan bertahap', 'Untuk berat badan berlebih atau obesitas: perbanyak sayur, kurangi gorengan dan gula.'),
+  ('turun', 'Menuju berat badan ideal', 'Perbanyak sayur, kurangi gorengan dan gula, dan turunkan berat badan secara bertahap.'),
   ('jaga', 'Menjaga berat badan', 'Porsi seimbang dan resep ringan untuk sehari-hari.'),
   ('seimbang', 'Makan lebih seimbang', 'Lebih banyak sayur, buah, dan lauk rendah lemak.'),
 ];
+
+/// Nama program yang tampil di beranda dan judul layar; memakai istilah Kementerian Kesehatan, bukan sebutan tentang
+/// bentuk tubuh.
+const programName = 'Gizi Seimbang';
 
 String goalTitle(String? key) => healthGoals.firstWhere((g) => g.$1 == key, orElse: () => healthGoals.last).$2;
 
@@ -98,7 +102,7 @@ class HealthScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(tooltip: 'Kembali', icon: const Icon(Icons.arrow_back_rounded), onPressed: () => Navigator.pop(context)),
-        title: const Text('Hidup sehat'),
+        title: const Text(programName),
       ),
       body: ListView(
         padding: EdgeInsets.fromLTRB(16, 4, 16, MediaQuery.paddingOf(context).bottom + 24),

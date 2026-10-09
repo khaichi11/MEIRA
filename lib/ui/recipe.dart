@@ -207,7 +207,7 @@ class _RecipeSheet extends StatelessWidget {
       maxChildSize: .95,
       builder: (context, scroll) => ListView(
         controller: scroll,
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+        padding: EdgeInsets.fromLTRB(20, 0, 20, 32 + MediaQuery.viewPaddingOf(context).bottom),
         children: [
           if (m != null && s.candidates.length > 1)
             Padding(
