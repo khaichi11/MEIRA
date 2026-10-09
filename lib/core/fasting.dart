@@ -1,6 +1,6 @@
-/// Puasa berselang (intermittent fasting): jendela makan harian dan statusnya saat ini.
+/// Pembatasan waktu makan (time-restricted eating): jendela makan harian dan statusnya saat ini.
 ///
-/// Pola yang tersedia 12:12, 14:10, 16:8, dan 18:6 (jam puasa : jam makan). Pengguna memilih jam mulai makan; jam
+/// Pola yang tersedia 12:12, 14:10, 16:8, dan 18:6 (jam tanpa asupan energi : jam jendela makan). Pengguna memilih jam mulai makan; jam
 /// selesai dihitung dari lamanya jendela makan. Ini hanya pengatur waktu, bukan anjuran medis.
 library;
 

@@ -776,7 +776,7 @@ class _ChartPainter extends CustomPainter {
   bool shouldRepaint(_ChartPainter old) => old.t != t || old.points != points;
 }
 
-/// Puasa berselang: pilih pola dan jam mulai makan; lingkaran menunjukkan kemajuan tahap saat ini.
+/// Jendela makan: pilih pola dan jam dibuka; lingkaran menunjukkan kemajuan tahap saat ini.
 class FastingCard extends StatefulWidget {
   const FastingCard({super.key});
 
@@ -811,7 +811,7 @@ class _FastingCardState extends State<FastingCard> {
     final now = DateTime.now();
     final st = f == null ? null : fastingState(f, now);
     return _Card(
-      title: 'Puasa berselang',
+      title: 'Jendela makan',
       icon: Icons.schedule_rounded,
       color: C.blue,
       action: f == null ? null : TextButton(onPressed: () => _set(s, null), child: const Text('Matikan')),
@@ -842,11 +842,11 @@ class _FastingCardState extends State<FastingCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(st.eating ? 'Waktu makan' : 'Sedang puasa', style: T.headline),
+                      Text(st.eating ? 'Jendela makan terbuka' : 'Di luar jendela makan', style: T.headline),
                       Text(
                         st.eating
-                            ? 'Selesai pukul ${clock(f!.endMinute)}, ${untilText(st.next, now)} lagi'
-                            : 'Boleh makan pukul ${clock(f!.startMinute)}, ${untilText(st.next, now)} lagi',
+                            ? 'Ditutup pukul ${clock(f!.endMinute)}, ${untilText(st.next, now)} lagi'
+                            : 'Dibuka pukul ${clock(f!.startMinute)}, ${untilText(st.next, now)} lagi',
                         style: T.footnote,
                       ),
                     ],
@@ -873,7 +873,7 @@ class _FastingCardState extends State<FastingCard> {
                 ),
               ActionChip(
                 avatar: const Icon(Icons.access_time_rounded, size: 18),
-                label: Text('Mulai makan ${clock(f?.startMinute ?? 12 * 60)}'),
+                label: Text('Dibuka ${clock(f?.startMinute ?? 12 * 60)}'),
                 backgroundColor: C.surface,
                 side: const BorderSide(color: C.separator),
                 shape: const StadiumBorder(),

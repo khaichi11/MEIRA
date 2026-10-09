@@ -295,11 +295,11 @@ class _KitchenScreenState extends State<KitchenScreen> {
                         : pill(Icons.monitor_weight_outlined, fmt(s.needs!.bmi), 'IMT', C.violet),
                     const SizedBox(width: 8),
                     st == null
-                        ? pill(Icons.schedule_rounded, 'Mati', 'puasa', C.blue)
+                        ? pill(Icons.schedule_rounded, 'Mati', 'jendela makan', C.blue)
                         : pill(
                             Icons.schedule_rounded,
                             clock(st.eating ? s.fasting!.endMinute : s.fasting!.startMinute),
-                            st.eating ? 'mulai puasa' : 'mulai makan',
+                            st.eating ? 'jendela tutup' : 'jendela buka',
                             C.blue,
                           ),
                   ],

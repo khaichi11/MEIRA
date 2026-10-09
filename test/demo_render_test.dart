@@ -210,7 +210,7 @@ void main() {
         Message(Role.meira, 'Dicatat untuk makan siang. Energi hari ini sekitar 620 dari 1.800 kkal. Gula, lemak, dan garam masih dalam batas aman.')
           ..actions = const ['gizi'],
         Message(Role.user, 'Boleh makan sekarang?'),
-        Message(Role.meira, 'Menurut jadwal 16:8, sebaiknya tunggu sampai pukul 12.00. Air putih, teh, atau kopi tanpa gula tetap boleh.')
+        Message(Role.meira, 'Menurut pola 16:8, jendela makan dibuka pukul 12.00. Air putih, teh, atau kopi tanpa gula tidak menambah energi.')
           ..actions = const ['puasa'],
       ]);
     await show(const ChatScreen());

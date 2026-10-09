@@ -107,7 +107,7 @@ void main() {
       [('nasi', 300.0), ('mi instan', 85.0)],
     );
     expect([for (final (f, g, _) in parseMeal('nasi 1 piring mi instan 2 bungkus', d.foods)) (f.name, g)], [('nasi', 150.0), ('mi instan', 170.0)]);
-    expect([for (final (f, g, _) in parseMeal('mi instan 1,5 bungkus', d.foods)) g], [127.5]);
+    expect([for (final (_, g, _) in parseMeal('mi instan 1,5 bungkus', d.foods)) g], [127.5]);
   });
 
   test('pesan yang bukan catatan makan tidak dicatat', () async {

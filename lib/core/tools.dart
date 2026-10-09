@@ -65,7 +65,7 @@ const routeLabels = {
   'resep': 'Buka buku resep',
   'tur': 'Lihat tur fitur',
   'info': 'Sumber data dan rumus',
-  'puasa': 'Atur puasa berselang',
+  'puasa': 'Atur jendela makan',
 };
 
 class ToolReply {
@@ -160,7 +160,7 @@ const _notName = {
 
 const _help =
     'Tentu, saya siap membantu. Saya bisa mencarikan resep dari foto bahan, menjelaskan cara memasak, menjawab pertanyaan '
-    'tentang makanan dan gizi, serta mencatat makan, berat badan, dan jadwal puasa Anda. Mau mulai dari mana?';
+    'tentang makanan dan gizi, serta mencatat makan, berat badan, dan jendela makan Anda. Mau mulai dari mana?';
 
 /// Perkenalan ("saya khai") dan permintaan bantuan tanpa topik ("bantu saya"). Bekerja juga tanpa data fitur; nama
 /// hanya disimpan bila [d] ada.
@@ -283,8 +283,8 @@ ToolReply? appTool(String text, AppData d) {
     final f = d.fasting!, st = fastingState(f, DateTime.now());
     return ToolReply(
       st.eating
-          ? 'Boleh, sekarang masih waktu makan pola ${f.name} sampai pukul ${clock(f.endMinute)}.'
-          : 'Menurut jadwal ${f.name}, sebaiknya tunggu sampai pukul ${clock(f.startMinute)}, ${untilText(st.next, DateTime.now())} lagi. '
+          ? 'Ya, jendela makan pola ${f.name} sedang terbuka sampai pukul ${clock(f.endMinute)}.'
+          : 'Menurut pola ${f.name}, jendela makan dibuka pukul ${clock(f.startMinute)}, ${untilText(st.next, DateTime.now())} lagi. '
                 'Bila merasa pusing atau lemas, makanlah; jadwal bisa digeser kapan saja.',
       actions: const ['puasa'],
     );
@@ -293,14 +293,14 @@ ToolReply? appTool(String text, AppData d) {
   // puasa berselang: atur, matikan, atau tanya status
   // "puasa" saja bisa berarti puasa Ramadan ("lagi puasa, masak apa buat nanti?"), jadi perlu kata pengatur atau status
   if (RegExp(
-        r'\b(puasa berselang|intermittent fasting|jadwal puasa|puasa (12|14|16|18)\b|pola puasa)|'
+        r'\b(puasa berselang|intermittent fasting|time.restricted eating|pembatasan waktu makan|jendela makan|jadwal puasa|puasa (12|14|16|18)\b|pola puasa)|'
         r'\b(atur|aktifkan|matikan|hentikan|nonaktifkan|status|sisa)\b.*\bpuasa\b|\bpuasa\b.*\b(berapa (jam|lama) lagi|kapan selesai|sisa)\b',
       ).hasMatch(t) &&
       !RegExp(r'\b(ramadan|ramadhan|sahur|buka puasa|takjil)\b').hasMatch(t)) {
     final plan = RegExp(r'\b(12|14|16|18)\s*[:/]\s*(12|10|8|6)\b').firstMatch(t);
     final hours = plan == null ? int.tryParse(RegExp(r'\b(12|14|16|18) jam\b').firstMatch(t)?[1] ?? '') : int.parse(plan[1]!);
     if (RegExp(r'\b(matikan|hentikan|berhenti|stop|nonaktifkan)\b').hasMatch(t)) {
-      return ToolReply('Puasa berselang dimatikan dan pengingatnya dihapus.', effect: () => d.setFasting(null));
+      return ToolReply('Pembatasan waktu makan dinonaktifkan dan pengingatnya dihapus.', effect: () => d.setFasting(null));
     }
     if (hours != null && FastingPlan.options.contains(hours)) {
       final at = RegExp(r'\bjam (\d{1,2})(?:[.:](\d{2}))?(?: (pagi|siang|sore|malam))?').firstMatch(t);
@@ -310,8 +310,8 @@ ToolReply? appTool(String text, AppData d) {
       final start = hour * 60 + int.parse(at?[2] ?? '0');
       final p = FastingPlan(hours, start);
       return ToolReply(
-        'Puasa berselang ${p.name} diatur: makan pukul ${clock(p.startMinute)} sampai ${clock(p.endMinute)}, puasa di luar jam itu. '
-        'Saya akan mengingatkan saat waktu makan dimulai dan selesai.',
+        'Pembatasan waktu makan pola ${p.name} diatur: jendela makan pukul ${clock(p.startMinute)} sampai ${clock(p.endMinute)}. '
+        'Pengingat muncul saat jendela makan dibuka dan ditutup.',
         actions: const ['puasa'],
         effect: () => d.setFasting(p),
       );
@@ -319,16 +319,16 @@ ToolReply? appTool(String text, AppData d) {
     final f = d.fasting;
     if (f == null) {
       return const ToolReply(
-        'Puasa berselang belum diatur. Ketik misalnya "atur puasa 16:8 mulai makan jam 12", atau atur di Gizi Seimbang.',
+        'Pembatasan waktu makan belum diatur. Ketik misalnya "atur jendela makan 16:8 mulai jam 12", atau atur di Gizi Seimbang.',
         actions: ['puasa'],
       );
     }
     final st = fastingState(f, DateTime.now());
     return ToolReply(
       st.eating
-          ? 'Sekarang waktu makan (pola ${f.name}). Jendela makan selesai pukul ${clock(f.endMinute)}, ${untilText(st.next, DateTime.now())} lagi.'
-          : 'Sekarang masih jam puasa (pola ${f.name}). Anda boleh makan pukul ${clock(f.startMinute)}, ${untilText(st.next, DateTime.now())} lagi. '
-                'Air putih, teh, atau kopi tanpa gula tetap boleh.',
+          ? 'Jendela makan pola ${f.name} sedang terbuka dan ditutup pukul ${clock(f.endMinute)}, ${untilText(st.next, DateTime.now())} lagi.'
+          : 'Saat ini di luar jendela makan pola ${f.name}. Jendela makan dibuka pukul ${clock(f.startMinute)}, ${untilText(st.next, DateTime.now())} lagi. '
+                'Air putih, teh, atau kopi tanpa gula tidak menambah energi.',
       actions: const ['puasa'],
     );
   }

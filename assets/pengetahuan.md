@@ -433,15 +433,15 @@ Jejak masak di beranda berisi kotak per hari yang terisi setiap kali Anda menyel
 
 ## Fitur Gizi Seimbang
 kunci: gizi seimbang fitur program kalkulator tubuh imt berat badan ideal kebutuhan harian catat makan
-Gizi Seimbang berisi kalkulator tubuh untuk IMT, berat badan ideal, dan kebutuhan harian; catatan makan per waktu makan dengan batas gula, garam, dan lemak; progres berat; puasa berselang; serta rencana makan dari resep yang lebih ringan. Buka dari kartu Gizi Seimbang di beranda, atau minta di obrolan, misalnya "buka kalkulator".
+Gizi Seimbang berisi kalkulator tubuh untuk IMT, berat badan ideal, dan kebutuhan harian; catatan makan per waktu makan dengan batas gula, garam, dan lemak; progres berat; pembatasan waktu makan; serta rencana makan dari resep yang lebih ringan. Buka dari kartu Gizi Seimbang di beranda, atau minta di obrolan, misalnya "buka kalkulator".
 
 ## Mencatat makanan dan berat badan
 kunci: catat makan makanan hari ini berat badan progres cara mencatat obrolan
 Makanan bisa dicatat lewat tombol tambah di Gizi Seimbang, atau lewat obrolan, misalnya "tadi pagi saya makan nasi goreng 1 piring". Berat badan dicatat dengan mengetik misalnya "berat saya 70 kg". Semua catatan hanya disimpan di ponsel.
 
-## Puasa berselang
-kunci: puasa berselang intermittent fasting jendela makan 16:8 notifikasi pengingat
-Puasa berselang mengatur jendela makan harian, misalnya pola 16:8 berarti makan selama 8 jam dan berpuasa 16 jam. MEIRA memberi pengingat saat waktu makan dimulai dan selesai, dan jadwalnya bisa digeser kapan saja. Pola ini tidak disarankan untuk ibu hamil atau menyusui, penderita diabetes, orang dengan gangguan makan, dan anak.
+## Pembatasan waktu makan
+kunci: puasa berselang intermittent fasting time-restricted eating pembatasan waktu makan jendela makan 16:8 notifikasi pengingat
+Pembatasan waktu makan (time-restricted eating) membatasi asupan energi pada jendela makan harian. Pola 16:8 berarti jendela makan 8 jam dan 16 jam tanpa asupan energi; air putih, teh, atau kopi tanpa gula tidak menambah energi. MEIRA memberi pengingat saat jendela makan dibuka dan ditutup, dan jadwalnya bisa digeser kapan saja. Pola ini tidak disarankan untuk ibu hamil atau menyusui, penderita diabetes, orang dengan gangguan makan, dan anak.
 
 ## Membaca label gizi kemasan
 kunci: label gizi kemasan informasi nilai gizi foto takaran saji sajian per kemasan nugget mi instan

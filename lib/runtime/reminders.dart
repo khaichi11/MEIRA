@@ -4,7 +4,8 @@ import 'package:timezone/timezone.dart' as tz;
 
 import '../core/fasting.dart';
 
-/// Pengingat puasa berselang lewat notifikasi lokal: satu saat jendela makan dibuka dan satu saat ditutup, diulang
+/// Pengingat pembatasan waktu makan (time-restricted eating) lewat notifikasi lokal: satu saat jendela makan dibuka dan
+/// satu saat ditutup, diulang
 /// setiap hari. Jadwal tidak memakai alarm tepat waktu (cukup sekitar menit itu), jadi tidak perlu izin alarm khusus.
 class Reminders {
   Reminders._();
@@ -15,8 +16,8 @@ class Reminders {
 
   static const _channel = AndroidNotificationDetails(
     'puasa',
-    'Puasa berselang',
-    channelDescription: 'Pengingat saat waktu makan dimulai dan selesai',
+    'Jendela makan',
+    channelDescription: 'Pengingat saat jendela makan dibuka dan ditutup',
     importance: Importance.defaultImportance,
     priority: Priority.defaultPriority,
   );
@@ -90,8 +91,8 @@ class Reminders {
       );
     }
 
-    await daily(1, plan.startMinute, 'Waktu makan dimulai', 'Jendela makan ${plan.name} terbuka sampai pukul ${clock(plan.endMinute)}.');
-    await daily(2, plan.endMinute, 'Waktu makan selesai', 'Puasa dimulai sampai pukul ${clock(plan.startMinute)} besok.');
+    await daily(1, plan.startMinute, 'Jendela makan dibuka', 'Pola ${plan.name}: jendela makan terbuka sampai pukul ${clock(plan.endMinute)}.');
+    await daily(2, plan.endMinute, 'Jendela makan ditutup', 'Jendela makan berikutnya dibuka pukul ${clock(plan.startMinute)}.');
     return true;
   }
 }

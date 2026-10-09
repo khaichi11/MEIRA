@@ -33,11 +33,11 @@ class InfoScreen extends StatelessWidget {
       ],
     ),
     (
-      'Puasa berselang',
+      'Jendela makan',
       Icons.schedule_rounded,
       C.blue,
       [
-        ('Jadwal', 'Pola waktu makan saja, bukan anjuran medis.'),
+        ('Pola', 'Pembatasan waktu makan (time-restricted eating); hanya pengatur jadwal, bukan anjuran medis.'),
         ('Tidak disarankan', 'Untuk ibu hamil atau menyusui, penderita diabetes, gangguan makan, dan anak.'),
       ],
     ),
