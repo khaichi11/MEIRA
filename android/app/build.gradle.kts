@@ -24,8 +24,11 @@ android {
         // llama.cpp dikompilasi untuk android-28
         minSdk = 28
         ndk {
-            // library llama.cpp tersedia untuk HP (arm64) dan emulator (x86_64)
-            abiFilters += listOf("arm64-v8a", "x86_64")
+            // library llama.cpp tersedia untuk ponsel (arm64) dan emulator (x86_64). Saat --split-per-abi,
+            // pembagian per arsitektur diatur Flutter, dan filter ini harus dilewati agar tidak bentrok.
+            if (!project.hasProperty("split-per-abi")) {
+                abiFilters += listOf("arm64-v8a", "x86_64")
+            }
         }
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

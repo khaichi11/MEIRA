@@ -86,7 +86,7 @@ on an arm64 phone, and a software-rendered emulator can stutter on the first fra
 ## Release
 
 ```bash
-flutter build apk --release --split-per-abi
+flutter build apk --release --split-per-abi --target-platform android-arm64
 ```
 
 Commit messages follow Conventional Commits, for example `feat(chat): ...`, `fix(vision): ...`, or `docs: ...`.

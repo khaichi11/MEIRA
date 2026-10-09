@@ -88,7 +88,7 @@ ponsel arm64, dan emulator dengan render perangkat lunak bisa tersendat pada bin
 ## Rilis
 
 ```bash
-flutter build apk --release --split-per-abi
+flutter build apk --release --split-per-abi --target-platform android-arm64
 ```
 
 Pesan commit mengikuti Conventional Commits, misalnya `feat(chat): ...`, `fix(vision): ...`, atau `docs: ...`.
