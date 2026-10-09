@@ -2,6 +2,7 @@
 /// ke konteks model sebagai pegangan fakta.
 library;
 
+import 'dart:convert';
 import 'dart:math' as math;
 
 import '../core/vocab.dart';
@@ -13,8 +14,33 @@ class Note {
   final String body;
 }
 
+/// Fakta ringkas tentang satu makanan atau bahan, dari Wikidata (CC0) atau USDA FoodData Central (domain publik).
+class Fact {
+  Fact(this.title, this.names, this.text, this.source, {this.nutrition = false, this.english = const []});
+  final String title;
+  final List<String> names;
+  final String text;
+  final String source;
+  final bool nutrition;
+
+  /// Nama Inggris, hanya untuk menerjemahkan tebakan model penglihatan ("dragon fruit" menjadi buah naga).
+  final List<String> english;
+}
+
 class KnowledgeBase {
-  KnowledgeBase(this.notes, {this.k1 = 1.4, this.b = .75}) {
+  KnowledgeBase(this.notes, {this.facts = const [], this.k1 = 1.4, this.b = .75}) {
+    for (final f in facts) {
+      for (final name in f.names) {
+        final key = norm(name);
+        if (key.length >= 3) _byName.putIfAbsent(key, () => []).add(f);
+      }
+      if (!f.nutrition) {
+        for (final e in f.english) {
+          _byEnglish.putIfAbsent(norm(e), () => f);
+        }
+      }
+    }
+    _names = _byName.keys.toList()..sort((a, b) => b.length.compareTo(a.length));
     for (final n in notes) {
       final toks = _tokens('${n.title} ${n.title} ${n.keywords} ${n.keywords} ${n.body}');
       _docs.add(toks);
@@ -25,7 +51,8 @@ class KnowledgeBase {
     _avg = _docs.isEmpty ? 1 : _docs.fold<int>(0, (a, d) => a + d.length) / _docs.length;
   }
 
-  static KnowledgeBase parse(String markdown) {
+  /// Catatan dapur (markdown) ditambah fakta luas (JSONL, satu objek per baris: t, n, x, s, gizi).
+  static KnowledgeBase parse(String markdown, {String facts = ''}) {
     final notes = <Note>[];
     for (final block in markdown.split('\n## ').skip(1)) {
       final lines = block.split('\n');
@@ -34,7 +61,54 @@ class KnowledgeBase {
       final body = lines.skip(1).where((l) => !l.startsWith('kunci:') && l.trim().isNotEmpty).join(' ').trim();
       notes.add(Note(title, kw, body));
     }
-    return KnowledgeBase(notes);
+    final parsed = [
+      for (final line in const LineSplitter().convert(facts))
+        if (line.trim().isNotEmpty)
+          () {
+            final m = jsonDecode(line) as Map<String, dynamic>;
+            return Fact(
+              m['t'] as String,
+              [for (final n in m['n'] as List) n as String],
+              m['x'] as String,
+              m['s'] as String,
+              nutrition: m['gizi'] == true,
+              english: [for (final e in (m['e'] as List?) ?? const []) e as String],
+            );
+          }(),
+    ];
+    return KnowledgeBase(notes, facts: parsed);
+  }
+
+  final List<Fact> facts;
+  final Map<String, List<Fact>> _byName = {};
+  final Map<String, Fact> _byEnglish = {};
+  late final List<String> _names;
+
+  /// Fakta (bukan gizi) untuk satu nama makanan dalam bahasa Indonesia atau Inggris.
+  Fact? named(String name) {
+    final key = norm(name);
+    return _byName[key]?.where((f) => !f.nutrition).firstOrNull ?? _byEnglish[key];
+  }
+
+  static final _nutritionWords = RegExp(r'\b(gizi|nutrisi|kalori|kkal|protein|lemak|karbohidrat|vitamin|serat|kandungan|mineral)\b');
+
+  /// Fakta untuk makanan yang disebut namanya dalam pertanyaan, nama terpanjang lebih dulu ("pisang kepok" sebelum
+  /// "pisang"). Fakta gizi hanya ikut bila pertanyaannya memang tentang gizi.
+  List<Fact> link(String query, {int max = 4}) {
+    var t = ' ${norm(query)} ';
+    final wantsNutrition = _nutritionWords.hasMatch(t);
+    final out = <Fact>[];
+    for (final name in _names) {
+      if (out.length >= max) break;
+      if (!t.contains(' $name ')) continue;
+      final hits = _byName[name]!.where((f) => f.nutrition == wantsNutrition || (!wantsNutrition && !f.nutrition)).toList();
+      for (final f in hits) {
+        if (!out.contains(f) && out.length < max) out.add(f);
+      }
+      // nama yang sudah dipakai dihapus supaya "pisang" tidak ikut menautkan setelah "pisang kepok"
+      t = t.replaceAll(' $name ', ' # ');
+    }
+    return out;
   }
 
   final List<Note> notes;
@@ -85,6 +159,12 @@ class KnowledgeBase {
   /// Hasil: (catatan, skor BM25, jumlah kata berbeda yang cocok).
   /// Jumlah kata bermakna dalam pertanyaan; dipakai untuk menghitung seberapa banyak pertanyaan diliput sebuah catatan.
   int termCount(String query) => _tokens(query).toSet().length;
+
+  static const _titleGeneric = {'beda', 'bedanya', 'perbedaan', 'jenis', 'macam', 'cara', 'tips', 'kue', 'buah', 'sayur', 'makanan'};
+
+  /// Judul catatan berbagi kata isi dengan pertanyaan, misalnya "tempe" pada catatan "Tempe terasa pahit". Kata umum
+  /// seperti "beda" atau "buah" tidak dihitung, agar soal kue cubit tidak dijawab dengan catatan tentang tepung.
+  bool titleShares(Note n, String query) => _tokens(n.title).toSet().difference(_titleGeneric).intersection(_tokens(query).toSet()).isNotEmpty;
 
   List<(Note, double, int)> search(String query, {int k = 2, double minScore = 1.5}) {
     final q = _tokens(query).toSet();

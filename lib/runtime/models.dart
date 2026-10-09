@@ -46,6 +46,10 @@ const earsPack = ModelPack('telinga', 'Telinga', 'Whisper small (int8), mengubah
 
 const allPacks = [brainPack, earsPack];
 
+/// Adaptor LoRA hasil SFT obrolan dan gaya natural untuk Qwen3.5-0.8B, dilatih di repo MEIRA-Before; ikut di dalam APK.
+/// Bila berkasnya tidak ada saat build, aplikasi tetap jalan dengan model dasar.
+const chatAdapterAsset = 'meira-chat-lora-f16.gguf';
+
 /// Yang diunduh saat penyiapan. Detektor bahan dan OCR sudah ada di dalam APK, dan suara memakai mesin TTS ponsel.
 List<ModelPack> setupPacks() => [brainPack, earsPack];
 

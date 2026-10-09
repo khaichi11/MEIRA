@@ -33,7 +33,7 @@ class LlamaServer {
   Process? _proc;
   final List<String> log = [];
 
-  late final LlmClient client = LlmClient('http://127.0.0.1:$port');
+  late final LlmClient client = LlmClient('http://127.0.0.1:$port', chatLora: lora != null);
   bool get running => _proc != null;
 
   Future<void> start({int maxImageTokens = 256, int ctx = 4096}) async {
@@ -59,7 +59,9 @@ class LlamaServer {
       '--parallel',
       '1',
       if (mmproj != null) ...['--mmproj', mmproj!, '--image-max-tokens', '$maxImageTokens'],
-      if (lora != null) ...['--lora', lora!],
+      // adaptor obrolan dimuat dengan skala 0 dan hanya dinyalakan per permintaan obrolan, supaya tugas lain
+      // (pengenalan hidangan, JSON niat) tetap memakai model aslinya
+      if (lora != null) ...['--lora', lora!, '--lora-init-without-apply'],
     ];
     _proc = await Process.start(bin, args, environment: {'LD_LIBRARY_PATH': File(bin).parent.path});
     _proc!.stdout.transform(utf8.decoder).listen(_keep);
@@ -105,8 +107,20 @@ class TimeoutError implements Exception {
 }
 
 class LlmClient {
-  LlmClient(this.baseUrl);
+  LlmClient(this.baseUrl, {this.chatLora = false});
   final String baseUrl;
+
+  /// Server memuat adaptor LoRA obrolan (id 0) yang bisa dinyalakan per permintaan.
+  final bool chatLora;
+
+  /// Bagian permintaan yang menyalakan adaptor obrolan; kosong bila server tidak memuatnya.
+  Map<String, dynamic> get chatAdapter => chatLora
+      ? {
+          'lora': [
+            {'id': 0, 'scale': 1.0},
+          ],
+        }
+      : const {};
   final http.Client _http = http.Client();
 
   Map<String, dynamic> _payload(
@@ -158,10 +172,11 @@ class LlmClient {
     int maxTokens = 512,
     Map<String, dynamic> sampling = textSampling,
     void Function(String reason)? onFinish,
+    Map<String, dynamic>? extra,
   }) async* {
     final req = http.Request('POST', Uri.parse('$baseUrl/v1/chat/completions'))
       ..headers['Content-Type'] = 'application/json'
-      ..body = jsonEncode(_payload(messages, maxTokens, sampling, stream: true));
+      ..body = jsonEncode(_payload(messages, maxTokens, sampling, stream: true, extra: extra));
     final res = await _http.send(req);
     if (res.statusCode != 200) throw HttpException('LLM ${res.statusCode}');
     await for (final line in res.stream.transform(utf8.decoder).transform(const LineSplitter())) {

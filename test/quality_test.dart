@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meira/core/pipeline.dart';
 import 'package:meira/core/recipes.dart';
 import 'package:meira/core/vocab.dart';
 import 'package:meira/llm/guardrails.dart';
@@ -185,5 +186,33 @@ void main() {
     expect(Guardrails.supported('Rebus telur setengah matang sekitar 4 menit.', telur), isFalse);
     const kentang = 'Simpan kentang di tempat gelap, sejuk, dan kering, terpisah dari bawang. Buang bagian yang hijau atau bertunas sebelum dimasak.';
     expect(Guardrails.supported('Ya, kentang dengan kulit kehijauan tetap bisa dicicipi dan dihidangkan sebagai topping.', kentang), isFalse);
+  });
+
+  test('gaya natural: tulisan ulang yang membalik status bahan ditolak', () {
+    // kasus yang sama diperiksa scripts/make_paraphrase_sft.py, agar penyaring data latih dan aplikasi sepakat
+    final cases = jsonDecode(File('test/fixtures/natural_cases.json').readAsStringSync()) as List;
+    for (final c in cases) {
+      expect(naturalMatches(c[0] as String, c[1] as String, ['Capcay Goreng', 'Mie Goreng Jawa']), c[2], reason: c[1] as String);
+    }
+    // angka baru dan bahan baru juga ditolak
+    const core =
+        'Saya menyarankan Telur Dadar Tomat, dengan waktu memasak sekitar 10 menit. Dari foto, sudah tersedia telur (#1). '
+        'Apakah Anda ingin saya jelaskan langkah-langkahnya?';
+    expect(
+      naturalMatches(core, 'Telur Dadar Tomat cocok, sekitar 15 menit saja dengan telur (#1). Mau saya jelaskan langkahnya?', ['Telur Dadar Tomat']),
+      isFalse,
+    );
+    expect(
+      naturalMatches(core, 'Telur Dadar Tomat cocok, sekitar 10 menit dengan telur (#1) dan keju. Mau saya jelaskan langkahnya?', [
+        'Telur Dadar Tomat',
+      ]),
+      isFalse,
+    );
+    expect(
+      naturalMatches(core, 'Telur Dadar Tomat cocok karena hanya sekitar 10 menit, dan telur (#1) sudah ada. Mau saya jelaskan langkahnya?', [
+        'Telur Dadar Tomat',
+      ]),
+      isTrue,
+    );
   });
 }

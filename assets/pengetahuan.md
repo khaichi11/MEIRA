@@ -182,3 +182,227 @@ Tekan siung bawang putih dengan sisi pisau yang lebar sampai kulitnya retak, lal
 ## Memilih semangka matang
 kunci: semangka matang memilih manis
 Pilih semangka yang terasa berat untuk ukurannya dan bagian bawahnya, tempat buah menempel di tanah, berwarna kuning krem.
+
+## Pisang ambon
+kunci: pisang ambon ambon kuning ambon lumut pisang meja manis lembut
+Pisang ambon adalah pisang meja yang biasa dimakan langsung: dagingnya lembut, manis, dan harum. Ada ambon kuning yang kulitnya kuning saat matang dan ambon lumut yang kulitnya tetap kehijauan walau sudah matang. Pisang ini cocok untuk smoothie, roti pisang, dan kue, tetapi mudah lembek bila digoreng.
+
+## Pisang kepok
+kunci: pisang kepok kepok kuning kepok putih pisang olahan rebus kukus goreng kolak keripik
+Pisang kepok berbentuk agak pipih dan bersudut, dagingnya padat, sedikit bertepung, dan tidak terlalu manis. Pisang ini lebih enak dimasak, misalnya direbus, dikukus, digoreng, dibuat kolak, atau keripik, karena tidak hancur saat dipanaskan. Ada kepok kuning yang lebih manis dan kepok putih yang lebih padat.
+
+## Beda pisang ambon dan pisang kepok
+kunci: beda perbedaan pisang ambon pisang kepok bedanya
+Pisang ambon adalah pisang meja yang lembut, manis, dan harum, sehingga paling enak dimakan langsung. Pisang kepok lebih padat, sedikit bertepung, dan kurang manis, sehingga lebih cocok direbus, dikukus, digoreng, atau dibuat kolak. Bentuknya juga berbeda: ambon panjang dan membulat, kepok lebih pendek, pipih, dan bersudut.
+
+## Pisang raja
+kunci: pisang raja manis legit harum pisang goreng
+Pisang raja berdaging kuning, manis legit, dan beraroma kuat. Pisang ini enak dimakan langsung maupun dimasak menjadi pisang goreng, pisang bakar, atau isian kue, dan harganya biasanya lebih mahal daripada pisang lain.
+
+## Pisang tanduk
+kunci: pisang tanduk besar panjang plantain digoreng
+Pisang tanduk berukuran besar, panjang, dan melengkung seperti tanduk. Pisang ini termasuk pisang olahan yang hampir selalu dimasak, misalnya digoreng, dikukus, atau dibuat keripik, karena kurang enak dimakan mentah.
+
+## Pisang susu, pisang mas, dan pisang barangan
+kunci: pisang susu pisang mas pisang barangan kecil manis medan
+Pisang susu dan pisang mas berukuran kecil, berkulit tipis, dan sangat manis, sehingga biasa dimakan langsung. Pisang barangan berasal dari Sumatera Utara, dagingnya kuning kemerahan dan manis, juga lebih sering dimakan langsung.
+
+## Pisang hijau dan es pisang ijo
+kunci: pisang hijau pisang ijo mentah belum matang es pisang ijo makassar
+Pisang hijau biasanya berarti pisang yang belum matang: kulitnya hijau, dagingnya keras, bertepung, dan kurang manis, sehingga lebih cocok untuk keripik atau sayur. Ada juga pisang ambon lumut yang kulitnya tetap kehijauan walau matang. Es pisang ijo adalah hidangan khas Makassar berupa pisang yang dibalut adonan tepung berwarna hijau dari daun pandan, disajikan dengan bubur sumsum, sirup merah, dan es.
+
+## Pisang yang cocok untuk pisang goreng
+kunci: pisang goreng pisang yang cocok kepok tanduk raja lembek
+Pisang kepok, tanduk, dan raja paling cocok untuk pisang goreng karena dagingnya padat dan tidak lembek saat digoreng. Pilih pisang yang sudah matang tetapi masih padat agar manis dan tidak menyerap terlalu banyak minyak.
+
+## Tempe terasa pahit
+kunci: tempe pahit kenapa tempe busuk semangit amonia fermentasi
+Tempe terasa pahit biasanya karena fermentasinya sudah terlalu lama, sehingga protein kedelai terurai dan menghasilkan amonia serta rasa pahit. Tempe yang baik padat, berwarna putih merata, dan berbau khas kedelai. Tempe yang berlendir, berbau busuk menyengat, atau berwarna tidak wajar sebaiknya dibuang.
+
+## Beda tempe dan tahu
+kunci: beda perbedaan tempe tahu kedelai fermentasi
+Tempe dibuat dari kedelai utuh yang difermentasi dengan kapang Rhizopus sehingga butirnya saling menyatu dan seratnya tinggi. Tahu dibuat dari sari kedelai yang digumpalkan lalu dicetak, sehingga teksturnya lebih lembut dan halus. Keduanya sumber protein nabati yang baik.
+
+## Beda tahu putih dan tahu kuning
+kunci: beda tahu putih tahu kuning kunyit
+Keduanya sama-sama tahu dari sari kedelai. Tahu kuning diberi warna kunyit dan biasanya direbus dengan sedikit garam, sehingga rasanya agak gurih dan lebih tahan; tahu putih lebih lembut dan netral rasanya.
+
+## Telur ayam kampung dan telur ayam negeri
+kunci: telur ayam kampung telur ayam negeri ras beda perbedaan
+Telur ayam kampung berasal dari ayam buras yang biasanya dilepas, ukurannya lebih kecil, kulitnya krem atau cokelat muda, dan harganya lebih mahal. Telur ayam negeri berasal dari ayam ras petelur, ukurannya lebih besar dan seragam. Kandungan gizinya umumnya mirip; warna kuning telur lebih dipengaruhi pakan daripada jenis ayam.
+
+## Telur asin
+kunci: telur asin bebek garam abu bata cara membuat
+Telur asin umumnya dibuat dari telur bebek yang dibalut adonan garam dengan abu gosok atau bubuk batu bata selama sekitar 7 sampai 14 hari, lalu direbus. Telur bebek dipakai karena kuningnya lebih besar dan berminyak.
+
+## Beda rendang dan kalio
+kunci: beda perbedaan rendang kalio gulai minang
+Kalio adalah rendang yang dimasak lebih singkat, sehingga masih berkuah kental dan warnanya cokelat kemerahan. Rendang dimasak lebih lama sampai santannya menyusut habis, bumbunya kering, warnanya cokelat gelap, dan lebih tahan lama. Gulai berada di urutan sebelumnya, dengan kuah santan yang masih cukup encer.
+
+## Beda gulai dan kari
+kunci: beda perbedaan gulai kari santan kuning
+Gulai dan kari sama-sama berkuah santan berbumbu kuning. Gulai khas Minang dan Melayu mengandalkan kunyit, lengkuas, serai, dan cabai, sedangkan kari mendapat pengaruh India dan memakai lebih banyak rempah kering seperti jintan, adas, dan kapulaga atau bubuk kari.
+
+## Beda opor dan kari ayam
+kunci: beda opor kari ayam santan putih
+Opor ayam berkuah santan putih kekuningan yang gurih dan tidak pedas, dengan bumbu kemiri, ketumbar, lengkuas, dan serai. Kari ayam lebih kuning dan beraroma rempah kuat karena memakai bubuk kari atau rempah seperti jintan dan kunyit, dan sering lebih pedas.
+
+## Beda semur dan rendang
+kunci: beda semur rendang kecap pala cengkih
+Semur adalah daging yang dimasak dengan kecap manis, pala, cengkih, dan kayu manis hingga berkuah cokelat, mendapat pengaruh masakan Belanda. Rendang dimasak dengan santan, cabai, dan rempah dalam waktu lama sampai kering dan berwarna cokelat gelap.
+
+## Beda soto dan sop
+kunci: beda soto sop sup kuah bening rempah
+Soto berkuah rempah, sering kuning karena kunyit atau keruh karena santan, dan disajikan dengan pelengkap seperti koya, sambal, dan jeruk nipis. Sop atau sup berkuah bening dengan bumbu sederhana seperti bawang, merica, dan pala, berisi sayuran dan daging.
+
+## Rawon
+kunci: rawon kluwek kuah hitam jawa timur
+Rawon adalah sup daging khas Jawa Timur dengan kuah hitam dari kluwek. Kluwek mentah beracun, sehingga harus diolah dan dimasak sampai matang; biji kluwek yang baik terasa gurih, tidak pahit, dan tidak berbau tengik.
+
+## Ragam sate
+kunci: sate madura sate padang sate lilit sate ayam bumbu kacang
+Sate madura memakai bumbu kacang dan kecap manis, sate padang disiram kuah kuning kental berbumbu rempah, dan sate lilit khas Bali dibuat dari daging cincang berbumbu yang dililitkan pada batang serai. Daging sate harus dibakar sampai matang di bagian dalam.
+
+## Beda gado-gado, pecel, dan karedok
+kunci: beda gado-gado pecel karedok bumbu kacang sayur
+Ketiganya sayuran dengan bumbu kacang. Gado-gado khas Betawi memakai sayur rebus, kentang, telur, dan lontong; pecel khas Jawa memakai sayur rebus dengan sambal kacang yang lebih pedas dan beraroma kencur serta daun jeruk; karedok khas Sunda memakai sayur mentah dengan bumbu kacang dan kencur.
+
+## Beda bakso dan cilok
+kunci: beda bakso cilok pentol tapioka aci daging
+Bakso dibuat terutama dari daging giling dengan sedikit tepung tapioka. Cilok, singkatan dari aci dicolok, dibuat terutama dari tepung tapioka dengan sedikit atau tanpa daging, sehingga lebih kenyal dan lebih murah.
+
+## Beda siomay dan batagor
+kunci: beda siomay batagor ikan tenggiri kukus goreng
+Siomay dan batagor sama-sama dari adonan ikan, biasanya tenggiri, dengan tepung tapioka dan disajikan dengan bumbu kacang. Siomay dikukus, sedangkan batagor, singkatan dari bakso tahu goreng, digoreng sehingga renyah di luar.
+
+## Beda martabak manis dan martabak telur
+kunci: beda martabak manis terang bulan martabak telur
+Martabak manis, yang juga disebut terang bulan, adalah adonan tepung tebal yang dipanggang di loyang dan diisi cokelat, keju, atau kacang. Martabak telur memakai kulit tipis berisi telur, daging cincang, dan daun bawang yang digoreng, disajikan dengan acar.
+
+## Beda nasi uduk, nasi kuning, dan nasi liwet
+kunci: beda nasi uduk nasi kuning nasi liwet santan kunyit
+Nasi uduk dimasak dengan santan, serai, dan daun salam sehingga gurih. Nasi kuning juga dimasak dengan santan tetapi diberi kunyit sehingga berwarna kuning dan biasa disajikan pada acara syukuran. Nasi liwet dimasak dengan santan atau kaldu beserta bumbu seperti bawang dan daun salam, sering di dalam kastrol.
+
+## Beda lontong dan ketupat
+kunci: beda lontong ketupat daun pisang janur
+Keduanya nasi yang dimasak padat dalam bungkus. Lontong dibungkus daun pisang berbentuk silinder, sedangkan ketupat dimasak dalam anyaman janur atau daun kelapa muda berbentuk segi empat.
+
+## Beda jahe, lengkuas, kunyit, dan kencur
+kunci: beda jahe lengkuas laos kunyit kencur rimpang bumbu
+Jahe berdaging kuning pucat dengan rasa pedas hangat, cocok untuk minuman dan tumisan. Lengkuas lebih keras dan berserat dengan aroma segar, biasa digeprek untuk gulai dan rendang. Kunyit berwarna oranye terang dan memberi warna kuning, sedangkan kencur kecil dengan aroma khas yang kuat, dipakai pada pecel, karedok, dan beras kencur.
+
+## Daun salam dan bay leaf
+kunci: daun salam bay leaf laurel pengganti beda
+Daun salam Indonesia berbeda dengan bay leaf atau daun laurel dari Eropa: aromanya lebih lembut dan agak asam. Keduanya bisa saling menggantikan dalam keadaan terpaksa, tetapi rasa masakan akan sedikit berubah.
+
+## Beda bawang merah, bawang putih, dan bawang bombay
+kunci: beda bawang merah bawang putih bawang bombay bumbu dasar
+Bawang merah kecil, berlapis, beraroma tajam dan manis setelah ditumis, menjadi dasar banyak bumbu Indonesia. Bawang putih berupa siung dengan aroma kuat yang muncul saat ditumis. Bawang bombay besar, berair, dan lebih manis, cocok untuk tumisan ala barat dan saus.
+
+## Beda kecap manis, kecap asin, dan saus tiram
+kunci: beda kecap manis kecap asin saus tiram
+Kecap manis kental dan manis karena mengandung banyak gula aren, khas masakan Indonesia. Kecap asin encer dan asin. Saus tiram kental, gurih, dan agak manis, dibuat dari ekstrak tiram, sering dipakai untuk tumisan ala Tionghoa.
+
+## Beda gula aren, gula kelapa, dan gula pasir
+kunci: beda gula aren gula merah gula jawa gula kelapa gula pasir
+Gula aren dibuat dari nira pohon aren dan gula kelapa dari nira kelapa; keduanya sering disebut gula merah atau gula jawa, berwarna cokelat dan beraroma karamel. Gula pasir dibuat dari tebu, putih, dan rasanya manis tanpa aroma khas.
+
+## Santan agar tidak pecah
+kunci: santan pecah menggumpal berminyak cara agar tidak
+Aduk santan terus-menerus saat dimasak dan gunakan api sedang supaya tidak pecah atau berminyak. Masukkan santan kental di akhir dan hindari mendidihkannya terlalu lama.
+
+## Tingkat pedas cabai
+kunci: cabai rawit cabai merah keriting cabai merah besar pedas beda
+Cabai rawit paling pedas, cabai merah keriting cukup pedas dan memberi warna, sedangkan cabai merah besar paling ringan pedasnya dan lebih banyak memberi warna. Membuang biji dan urat putih mengurangi rasa pedas.
+
+## Kemiri harus dimasak
+kunci: kemiri mentah beracun mual dimasak sangrai
+Kemiri tidak boleh dimakan mentah karena dapat menyebabkan mual dan sakit perut. Sangrai atau tumis kemiri bersama bumbu sampai matang sebelum disajikan.
+
+## Jengkol dan petai
+kunci: jengkol petai jengkolan bau aman
+Jengkol yang dimakan berlebihan dapat menyebabkan jengkolan, yaitu gangguan berkemih karena kristal asam jengkolat; makan secukupnya dan minum banyak air. Petai aman dikonsumsi, tetapi membuat bau napas dan urine.
+
+## Singkong harus dimasak
+kunci: singkong pahit beracun sianida mentah rebus
+Singkong mengandung senyawa yang dapat menghasilkan sianida, terutama singkong yang pahit. Kupas, cuci, rendam bila perlu, lalu masak sampai matang; jangan makan singkong mentah.
+
+## Kentang hijau dan bertunas
+kunci: kentang hijau bertunas solanin aman
+Bagian kentang yang berwarna hijau atau bertunas mengandung solanin yang dapat menyebabkan sakit perut. Buang bagian hijau dan tunasnya; bila sebagian besar kentang sudah hijau, sebaiknya tidak dimakan.
+
+## Nasi sisa dan keamanan
+kunci: nasi sisa basi kulkas suhu ruang aman
+Jangan biarkan nasi matang di suhu ruang lebih dari dua jam. Simpan nasi sisa dalam wadah tertutup di kulkas, habiskan dalam satu atau dua hari, dan panaskan sampai benar-benar panas sebelum dimakan.
+
+## Beda beras pulen dan pera
+kunci: beras pulen pera ketan nasi lengket
+Beras pulen menghasilkan nasi yang lembut dan agak lengket, sedangkan beras pera menghasilkan nasi yang kering dan butirnya terpisah, cocok untuk nasi goreng. Beras ketan sangat lengket dan dipakai untuk kue seperti lemper dan wajik.
+
+## Jenis tepung terigu
+kunci: tepung terigu protein tinggi sedang rendah roti kue
+Terigu protein tinggi cocok untuk roti dan mi karena membentuk gluten yang kuat. Terigu protein sedang serbaguna untuk gorengan dan kue basah, sedangkan protein rendah cocok untuk kue kering dan bolu yang lembut.
+
+## Beda tepung tapioka, maizena, dan sagu
+kunci: beda tapioka aci maizena sagu pengental
+Tapioka atau aci dibuat dari singkong dan menghasilkan tekstur kenyal, seperti pada cilok dan pempek. Maizena dari jagung dipakai sebagai pengental yang bening. Sagu dibuat dari batang pohon sagu dan dipakai untuk papeda dan kue tradisional.
+
+## Beda mi, bihun, soun, dan kwetiau
+kunci: beda mi mie bihun soun kwetiau
+Mi telur dibuat dari tepung terigu dan telur. Bihun dibuat dari tepung beras dan berwarna putih. Soun dibuat dari pati, misalnya pati kacang hijau atau aren, dan menjadi bening setelah direbus. Kwetiau adalah mi beras yang lebar dan pipih.
+
+## Keripik apel
+kunci: keripik apel malang batu goreng vakum kering
+Keripik apel dibuat dari irisan tipis apel yang dikeringkan atau digoreng vakum, sehingga renyah tanpa banyak minyak; produk ini terkenal dari Malang dan Batu. Karena airnya hilang, keripik apel lebih tinggi gula dan kalori per 100 gram dibanding apel segar.
+
+## Beda keripik dan kerupuk
+kunci: beda keripik kerupuk tapioka udang
+Keripik dibuat dari irisan bahan utuh seperti singkong, pisang, atau kentang yang digoreng. Kerupuk dibuat dari adonan tepung tapioka dengan perisa seperti udang atau ikan, dicetak, dijemur, lalu digoreng sampai mengembang.
+
+## Beda abon dan dendeng
+kunci: beda abon dendeng daging sapi
+Abon adalah daging yang direbus, disuwir halus, dibumbui, lalu digoreng sampai kering dan berserat. Dendeng adalah irisan daging tipis berbumbu yang dikeringkan, lalu digoreng atau dibakar sebelum dimakan.
+
+## Tape singkong dan tape ketan
+kunci: tape singkong tape ketan ragi fermentasi
+Tape dibuat dengan memfermentasi singkong atau beras ketan yang sudah dikukus memakai ragi tape selama dua sampai tiga hari. Hasilnya manis, sedikit asam, dan beraroma alkohol ringan; tape singkong lebih padat, tape ketan lebih berair.
+
+## Beda bajigur dan bandrek
+kunci: beda bajigur bandrek minuman hangat sunda jahe santan
+Keduanya minuman hangat khas Sunda. Bajigur dibuat dari santan dan gula aren dengan sedikit jahe, sehingga gurih dan manis. Bandrek didominasi jahe dan rempah sehingga terasa pedas hangat, biasanya tanpa atau dengan sedikit santan.
+
+## Cendol dan dawet
+kunci: cendol dawet beda santan gula merah
+Cendol dan dawet sama-sama butiran kenyal dari tepung beras atau hunkwe, disajikan dengan santan, gula merah cair, dan es. Sebutan cendol lebih umum di Jawa Barat dan Jakarta, sedangkan dawet di Jawa Tengah dan Jawa Timur.
+
+## Jamu kunyit asam dan beras kencur
+kunci: jamu kunyit asam beras kencur minuman tradisional
+Kunyit asam dibuat dari kunyit, asam jawa, dan gula aren, rasanya asam manis segar. Beras kencur dibuat dari beras yang direndam dan kencur, rasanya manis dengan aroma kencur yang khas.
+
+## Jenis mangga
+kunci: mangga harum manis gedong gincu manalagi jenis
+Mangga harum manis berkulit hijau kebiruan dan manis harum. Gedong gincu berkulit merah kekuningan dengan aroma sangat kuat, sedangkan manalagi berdaging manis dan agak padat, juga enak dimakan saat masih mengkal.
+
+## Beda jeruk nipis, jeruk limau, dan lemon
+kunci: beda jeruk nipis jeruk limau lemon asam
+Jeruk nipis kecil, hijau, sangat asam, dan dipakai untuk soto, sambal, dan minuman. Jeruk limau berukuran kecil dengan aroma kulit yang harum. Lemon lebih besar, kuning, dan asamnya lebih lembut dengan aroma kulit yang khas.
+
+## Alpukat matang
+kunci: alpukat matang memilih lunak
+Alpukat matang terasa sedikit lunak saat ditekan lembut di dekat tangkainya. Alpukat yang masih keras bisa diperam di suhu ruang dalam kantong kertas selama beberapa hari.
+
+## Ayam harus matang
+kunci: ayam matang aman suhu merah muda
+Daging ayam harus dimasak sampai matang di seluruh bagian, tanpa bagian merah muda dan dengan cairan yang bening. Gunakan talenan terpisah untuk ayam mentah dan cuci tangan setelah memegangnya.
+
+## Beda bakwan dan perkedel
+kunci: bakwan perkedel bedanya gorengan sayur kentang
+Bakwan adalah gorengan dari adonan tepung terigu yang dicampur irisan sayuran seperti kol, wortel, dan tauge, lalu digoreng sedikit demi sedikit. Perkedel dibuat dari kentang rebus atau goreng yang dihaluskan, dibumbui, dibentuk bulat pipih, lalu dicelup kocokan telur sebelum digoreng. Jadi bakwan bertumpu pada tepung dan sayur, sedangkan perkedel bertumpu pada kentang.
+
+## Beda ayam goreng dan ayam bakar
+kunci: ayam goreng ayam bakar bedanya ungkep
+Keduanya biasanya diungkep dulu dengan bumbu sampai bumbunya meresap. Ayam goreng kemudian digoreng dalam minyak panas sampai kulitnya kering dan kecokelatan, sedangkan ayam bakar dibakar di atas bara atau panggangan sambil diolesi bumbu, sering kali dengan kecap, sehingga aromanya berasap dan rasanya cenderung manis gurih.
+
+## Buah naga
+kunci: buah naga pitaya merah putih
+Buah naga adalah buah dari tanaman kaktus Selenicereus. Kulitnya merah muda dengan sisik hijau, dagingnya putih atau merah dengan biji hitam kecil yang ikut dimakan. Rasanya segar dan agak manis, enak dimakan langsung, dibuat jus, atau dicampur ke salad buah dan puding. Buah naga berdaging merah dapat membuat urine atau tinja berwarna kemerahan; hal ini wajar dan tidak berbahaya.

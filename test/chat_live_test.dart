@@ -34,6 +34,7 @@ void main() {
         // MEIRA_BRAIN memilih model lain untuk dibandingkan, misalnya models/gguf/Qwen3.5-2B-Q4_K_M.gguf
         model: Platform.environment['MEIRA_BRAIN'] ?? '$home/models/app/qwen3.5-0.8b-instruct-Q4_K_M.gguf',
         mmproj: Platform.environment['MEIRA_BRAIN'] == null ? '$home/models/app/qwen3.5-0.8b-instruct-mmproj-F16.gguf' : null,
+        lora: (Platform.environment['MEIRA_LORA'] ?? '').isEmpty ? null : Platform.environment['MEIRA_LORA'],
         port: 8398,
         binary: Directory(
           '$home/external/llama.cpp',
@@ -50,10 +51,14 @@ void main() {
         eyes: null,
         brain: server.client,
         useLlmIntent: false,
-        knowledge: KnowledgeBase.parse(File('assets/pengetahuan.md').readAsStringSync()),
+        knowledge: KnowledgeBase.parse(
+          File('assets/pengetahuan.md').readAsStringSync(),
+          facts: File('assets/pengetahuan_luas.jsonl').readAsStringSync(),
+        ),
       )..userName = 'Khai';
       try {
-        for (final q in questions) {
+        final asked = (Platform.environment['MEIRA_TEST_ASK'] ?? '').split('|').where((q) => q.isNotEmpty).toList();
+        for (final q in asked.isEmpty ? questions : asked) {
           final s = Session('obrolan');
           final sw = Stopwatch()..start();
           await for (final ev in meira.turn(s, text: q)) {

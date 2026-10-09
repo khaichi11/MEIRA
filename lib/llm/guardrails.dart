@@ -51,7 +51,7 @@ class Guardrails {
     r'\b(masak|memasak|resep|bahan|bumbu|goreng|rebus|tumis|panggang|kukus|bakar|makan|makanan|minuman|minum|sarapan|camilan|'
     r'dapur|kulkas|simpan|menyimpan|segar|matang|potong|iris|cincang|blender|wajan|panci|teflon|oven|kompor|porsi|menit|'
     r'pengganti|ganti|enak|pedas|manis|asin|gurih|sayur|buah|daging|telur|nasi|mi|mie|roti|susu|keju|ikan|udang|ayam|tahu|tempe|'
-    r'santan|gula|garam|minyak|tepung|foto|nomor|penanda|alergi|vegetarian)\b',
+    r'santan|gula|garam|minyak|tepung|foto|nomor|penanda|alergi|vegetarian|dibuat|diolah|dijadikan|olahan|bikin|dimasak|gizi|kalori)\b',
     caseSensitive: false,
   );
 

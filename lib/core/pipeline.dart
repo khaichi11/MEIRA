@@ -73,6 +73,7 @@ class Session {
   String mode = 'bahan';
   String? dish;
   List<String> dishGuess = [];
+  String? guess; // bahan utama menurut model penglihatan bila detektor tidak mengenalnya, misalnya buah naga
   List<Detection> detections = [];
   VisionInput? visionInput; // foto siap pakai untuk detektor dan OCR (tidak disimpan ke riwayat)
   VisionResult? visionResult;
@@ -375,7 +376,7 @@ class Meira {
     if (s.current != null && !s.shown.contains(s.current)) s.shown.add(s.current!);
   }
 
-  static final _rawGroups = RegExp(r'^(buah|buah-buahan|sayur|sayuran|sayur-mayur|bahan|bahan makanan|bahan mentah|aneka buah)\b');
+  static final _rawGroups = RegExp(r'^(buah|buah-buahan|sayur|sayuran|sayur-mayur|aneka buah)$|^bahan\b');
 
   /// Foto tambahan dalam percakapan yang sama (misalnya isi kulkas lalu isi rak): bahan yang terlihat ditambahkan
   /// ke daftar bahan, lalu resep dicari ulang. Penanda tetap di foto utama.
@@ -428,7 +429,8 @@ class Meira {
         ..candidates = []
         ..current = null
         ..dish = null
-        ..dishGuess = [];
+        ..dishGuess = []
+        ..guess = null;
       yield StatusEvent('Melihat foto');
       Future<Map<String, dynamic>?>? sceneFuture = mode != 'bahan' && parallelVision ? _scene(s) : null;
       if (eyes == null && vision == null) {
@@ -444,10 +446,10 @@ class Meira {
       s.mode = mode == 'otomatis' ? (sc?['jenis'] == 'hidangan' ? 'hidangan' : 'bahan') : mode;
       // nama hidangan yang hanya berupa golongan bahan ("buah", "sayur") berarti foto bahan mentah, bukan masakan
       final dishName = '${sc?['hidangan'] ?? ''}'.trim().toLowerCase();
+      // ("bahan makanan yang belum dimasak" juga), meski detektor hanya menandai sedikit bahan
       if (mode == 'otomatis' &&
           s.mode == 'hidangan' &&
-          (dishName.isEmpty || _rawGroups.hasMatch(dishName)) &&
-          s.detections.where((d) => d.key != null).length >= 2) {
+          (_rawGroups.hasMatch(dishName) || (dishName.isEmpty && s.detections.where((d) => d.key != null).length >= 2))) {
         s.mode = 'bahan';
       }
       if (s.mode == 'hidangan' && sc != null) {
@@ -455,6 +457,7 @@ class Meira {
         s.dish = dish == null || dish.isEmpty ? null : dish;
         s.dishGuess = [for (final x in (sc['bahan_utama'] as List?) ?? []) ?resolve('$x')];
       }
+      if (s.mode == 'bahan' && sc != null) s.guess = _guess(sc, s.detections);
       yield SceneEvent(s.mode, s.dish);
       if (s.mode == 'bahan' && readPackages) {
         yield StatusEvent('Membaca kemasan');
@@ -467,7 +470,9 @@ class Meira {
     }
 
     if (text.isNotEmpty && imageDataUrl == null) {
-      final guard = Guardrails.checkInput(text, knownIngredient: Guardrails.kitchenRequest(text), ragScore: ragScore(text));
+      // dalam sesi yang sudah punya foto atau resep, permintaan lanjutan seperti "aku mau yang cepat" tetap soal dapur
+      final inContext = s.imageDataUrl != null || s.current != null;
+      final guard = Guardrails.checkInput(text, knownIngredient: inContext || Guardrails.kitchenRequest(text), ragScore: ragScore(text));
       if (!guard.allowed) {
         yield TokenEvent(guard.reply);
         await _remember(s, text, guard.reply, 'pengaman');
@@ -478,6 +483,11 @@ class Meira {
     }
     final it = text.isNotEmpty ? await _intent(text) : Intent(imageDataUrl != null && s.mode == 'hidangan' ? 'hidangan' : 'rekomendasi');
     if (imageDataUrl != null && s.mode == 'hidangan' && it.action == 'rekomendasi') it.action = 'hidangan';
+    // "kue cubit dibuat dari apa?" tanpa foto, atau menyebut makanan yang ada di basis pengetahuan, adalah pertanyaan
+    // pengetahuan, bukan permintaan menebak hidangan di foto
+    if (it.action == 'hidangan' && imageDataUrl == null && (s.imageDataUrl == null || (knowledge?.link(text).isNotEmpty ?? false))) {
+      it.action = 'obrolan';
+    }
     // bahan yang baru disebut lewat ketikan ("ada telur juga") diakui di awal jawaban
     final added = it.include.difference(s.have());
     _applyPrefs(s, it);
@@ -491,6 +501,24 @@ class Meira {
     }
     // foto bahan tanpa satu pun bahan yang dikenali: jangan menyarankan resep tebakan
     final known = s.detections.where((d) => d.key != null).length;
+    if (imageDataUrl != null && s.mode == 'bahan' && s.guess != null) {
+      final key = resolve(s.guess!);
+      if (known == 0 && key != null) {
+        // bahan yang ada di buku resep tetapi terlewat detektor: dipakai sebagai bahan milik pengguna
+        s.prefs.include.add(key);
+        extra['guess'] = 'Detektor belum menandai bahan ini, tetapi tampaknya ini ${s.guess}.';
+      } else if (known == 0) {
+        yield* _guessed(s, text, s.guess!);
+        await _persist(s);
+        return;
+      } else if (key == null && text.isEmpty && s.detections.map((d) => d.key).whereType<String>().toSet().length == 1) {
+        // detektor dan model penglihatan tidak sepakat (buah naga ditandai sebagai artichoke): sebut keduanya
+        final g = grouped(s.detections).firstWhere((g) => g.key != null);
+        yield* _guessed(s, text, s.guess!, marked: '${g.label} (${g.numbers.map((n) => '#$n').join(', ')})');
+        await _persist(s);
+        return;
+      }
+    }
     if (imageDataUrl != null && s.mode == 'bahan' && known == 0 && s.prefs.include.isEmpty) {
       final n = s.detections.length;
       final msg = n == 0
@@ -595,18 +623,30 @@ class Meira {
     if (grounded) {
       var core = greet(s, template(s, task, extra));
       if (extra['added'] != null) core = 'Baik, ${extra['added']} saya catat. $core';
+      if (extra['guess'] != null) core = '${extra['guess']} $core';
       var source = 'templat';
-      if (answerStyle == 'natural' && brain != null && text.isNotEmpty) {
-        // gaya natural: LLM hanya menambah satu kalimat personal, faktanya tetap dari buku resep
-        final personal = await _personalTouch(s, text, cur.recipe);
-        if (personal.isNotEmpty) {
-          core = '$personal $core';
+      if (answerStyle == 'natural' && brain != null && task != 'detail') {
+        // gaya natural: model menulis ulang jawaban buku resep menjadi kalimat lisan; hasilnya dipakai hanya bila semua
+        // nama, nomor, dan angka tetap ada dan tidak ada bahan atau angka baru
+        yield StatusEvent('Menyusun jawaban');
+        final natural = await _naturalize(text, core);
+        if (natural != null) {
+          core = natural;
           source = 'llm';
         }
       }
       yield TokenEvent(core);
       await _remember(s, text.isEmpty ? '(foto baru)' : text, core, source);
       yield DoneEvent(core, source);
+      return;
+    }
+    // permintaan resep tanpa resep yang cocok (misalnya bahan di foto tidak punya resep di bawah 15 menit): jangan
+    // biarkan model mengarang resep lain, cukup katakan terus terang dan sarankan longgarkan syaratnya
+    if (cur == null && const {'rekomendasi', 'ganti', 'pilih', 'detail'}.contains(task) && (s.imageDataUrl != null || s.have().isNotEmpty)) {
+      final answer = template(s, task, extra);
+      yield TokenEvent(answer);
+      await _remember(s, text.isEmpty ? '(foto baru)' : text, answer, 'templat');
+      yield DoneEvent(answer, 'templat');
       return;
     }
     // pertanyaan pengetahuan dapur yang cocok kuat dengan sebuah catatan: faktanya dari catatan itu. Catatan yang
@@ -621,8 +661,14 @@ class Meira {
     // kepok, tidak dipakai sebagai jawaban; model menjawab sendiri dengan catatan yang cukup dekat sebagai rujukan.
     final terms = knowledge?.termCount(text) ?? 0;
     double cover((Note, double, int) n) => terms == 0 ? 0 : n.$3 / terms;
-    final strong = notes.where((n) => (n.$3 >= 2 || n.$2 >= Guardrails.ragThreshold) && cover(n) >= .6).toList();
-    final related = notes.where((n) => cover(n) >= .5).toList();
+    bool titled((Note, double, int) n) => knowledge!.titleShares(n.$1, text);
+    // pertanyaan tentang isi foto ("ini buah apa?") dijawab dari foto, bukan dari catatan yang kebetulan berbagi kata
+    final linked = knowledge?.link(text) ?? const <Fact>[];
+    final aboutPhoto = s.imageDataUrl != null && linked.isEmpty && RegExp(r'\b(ini|itu|foto|gambar)\b').hasMatch(text.toLowerCase());
+    final strong = aboutPhoto
+        ? <(Note, double, int)>[]
+        : notes.where((n) => (n.$3 >= 2 || n.$2 >= Guardrails.ragThreshold) && cover(n) >= .6 && titled(n)).toList();
+    final related = aboutPhoto ? <(Note, double, int)>[] : notes.where((n) => titled(n) && cover(n) >= .3).toList();
     // pengganti bahan yang tidak ada di resep terpilih juga dijawab dari catatan ("kalau tidak ada mentega, pakai apa?")
     final offRecipe = task == 'substitusi' && !(cur?.recipe.items.any((i) => i.key == resolve(extra['ingredient'] ?? '')) ?? false);
     if ((task == 'obrolan' || offRecipe) && strong.isNotEmpty) {
@@ -632,8 +678,14 @@ class Meira {
       yield DoneEvent(answer, source);
       return;
     }
+    if (task == 'obrolan' && aboutPhoto && s.guess != null) {
+      yield* _guessed(s, text, s.guess!);
+      return;
+    }
     if (task == 'obrolan' && brain != null) {
-      yield* _chat(s, text, related);
+      // RAG: catatan dapur yang cukup dekat ditambah fakta Wikidata dan USDA untuk makanan yang disebut namanya
+      final facts = [for (final n in related.take(2)) 'Catatan dapur "${n.$1.title}": ${n.$1.body}', for (final f in linked) f.text];
+      yield* _chat(s, text, facts);
       return;
     }
     var prompt = context(s, task, extra);
@@ -673,25 +725,38 @@ class Meira {
   /// Obrolan bebas: sapaan, ucapan terima kasih, dan pertanyaan pengetahuan dapur. Model 0,8B diberi perintah pendek dan
   /// konteks seperlunya, karena perintah resep yang panjang membuatnya melantur, menjelaskan rencananya sendiri, dan
   /// mengarang resep. Catatan dapur yang relevan disertakan sebagai rujukan (RAG), bukan disalin mentah.
-  Stream<MeiraEvent> _chat(Session s, String text, List<(Note, double, int)> notes) async* {
-    final facts = [
+  Stream<MeiraEvent> _chat(Session s, String text, List<String> facts) async* {
+    // pertanyaan fakta tanpa sumber tidak diserahkan ke model kecil, karena ia akan mengarang dengan yakin
+    if (facts.isEmpty && !Guardrails.smallTalk(text) && ingredientQuestion(text)) {
+      const answer =
+          'Maaf, saya belum punya informasi yang pasti tentang itu. Saya bisa membantu memilih resep dari bahan yang ada, '
+          'menjelaskan cara memasaknya, atau menjawab pertanyaan tentang bahan dan hidangan yang saya kenal.';
+      yield TokenEvent(answer);
+      await _remember(s, text, answer, 'pengaman');
+      yield DoneEvent(answer, 'pengaman');
+      return;
+    }
+    final context = [
       if (s.detections.isNotEmpty) 'Bahan di foto pengguna: ${grouped(s.detections).map((g) => g.label).join(', ')}.',
+      if (s.guess != null) 'Foto pengguna tampaknya berisi ${s.guess} (dugaan model penglihatan).',
       if (s.currentMatch != null) 'Resep yang sedang dibahas: ${s.currentMatch!.recipe.name}.',
-      for (final n in notes.take(2)) 'Catatan dapur "${n.$1.title}": ${n.$1.body}',
+      ...facts,
     ];
     final name = userName?.trim() ?? '';
     final system = name.isEmpty ? promptChatSystem : '$promptChatSystem Nama pengguna: $name.';
-    final user = facts.isEmpty ? text : '${facts.join('\n')}\n\nPertanyaan: $text';
+    final user = context.isEmpty ? text : 'FAKTA:\n${context.join('\n')}\n\nPertanyaan: $text';
     var full = '';
     try {
       await for (final piece in brain!.stream(
         [
+          // tanpa riwayat: adaptor dilatih dengan satu pertanyaan dan faktanya, dan dengan riwayat model kecil cenderung
+          // menyalin jawaban sebelumnya
           {'role': 'system', 'content': system},
-          ...s.memory.window(),
           {'role': 'user', 'content': user},
         ],
         maxTokens: 200,
         sampling: chatSampling,
+        extra: brain!.chatAdapter,
       )) {
         full += piece;
         yield TokenEvent(piece);
@@ -702,10 +767,8 @@ class Meira {
     full = completeSentences(Guardrails.checkOutput(full));
     var source = 'llm';
     if (full.isEmpty) {
-      full = notes.isNotEmpty
-          ? notes.first.$1.body
-          : 'Maaf, saya belum bisa menjawab itu. Silakan tanyakan hal lain seputar bahan, resep, atau cara memasak.';
-      source = notes.isNotEmpty ? 'catatan' : 'templat';
+      full = 'Maaf, saya belum bisa menjawab itu. Silakan tanyakan hal lain seputar bahan, resep, atau cara memasak.';
+      source = 'templat';
     }
     await _remember(s, text, full, source);
     yield DoneEvent(full, source);
@@ -738,21 +801,75 @@ class Meira {
     return (plain, 'catatan');
   }
 
-  /// Satu kalimat pembuka yang menanggapi permintaan pengguna (tanpa fakta baru: tanpa angka, bahan, atau langkah).
-  Future<String> _personalTouch(Session s, String text, Recipe r) async {
+  /// Gaya natural: model menulis ulang jawaban buku resep menjadi kalimat lisan. Mengembalikan null bila tulisan ulang
+  /// tidak lolos [naturalMatches], sehingga jawaban buku resep yang dipakai.
+  Future<String?> _naturalize(String text, String core) async {
     try {
-      final out = await brain!.chat([
-        {'role': 'system', 'content': promptPersonalSystem.replaceAll('{recipe}', r.name)},
-        {'role': 'user', 'content': text},
-      ], maxTokens: 40);
-      var line = out.split(RegExp(r'(?<=[.!?])\s')).first.trim().replaceAll(RegExp(r'[—–]'), ',');
-      // buang bila kalimatnya membawa fakta (angka, nomor) atau terlalu panjang
-      if (line.isEmpty || RegExp(r'\d|#').hasMatch(line) || line.split(' ').length > 18) return '';
-      if (!RegExp(r'[.!?]$').hasMatch(line)) line = '$line.';
-      return line;
+      final out = await brain!.chat(
+        [
+          {'role': 'system', 'content': promptParaphraseSystem},
+          {'role': 'user', 'content': '${text.isEmpty ? 'Pengguna mengirim foto bahan.' : 'Permintaan pengguna: $text'}\nTEKS: $core'},
+        ],
+        maxTokens: 220,
+        sampling: chatSampling,
+        extra: brain!.chatAdapter,
+      );
+      final line = out.trim().replaceAll(RegExp(r'[—–]'), ',');
+      return naturalMatches(core, line, recipes.map((r) => r.name)) ? line : null;
     } catch (_) {
-      return '';
+      return null;
     }
+  }
+
+  /// Nama bahan utama menurut model penglihatan, dalam bahasa Indonesia bila dikenal ("dragon fruit" menjadi buah
+  /// naga). Nama yang tidak ada di kosakata maupun basis pengetahuan tidak dipercaya, dan nama yang sudah ditandai
+  /// detektor tidak perlu disebut lagi.
+  String? _guess(Map<String, dynamic> sc, List<Detection> dets) {
+    final items = [for (final x in (sc['bahan_utama'] as List?) ?? const []) '$x'.trim()]..removeWhere((x) => x.isEmpty);
+    if (items.isEmpty) return null;
+    final key = resolve(items.first);
+    if (key != null) return dets.any((d) => d.key == key) ? null : displayName(key);
+    return knowledge?.named(items.first)?.title.toLowerCase();
+  }
+
+  /// Foto bahan yang tidak dikenali detektor tetapi dikenali model penglihatan, misalnya buah naga: sebut dugaannya,
+  /// jelaskan singkat dari basis pengetahuan, lalu minta bahan lain untuk mencari resep.
+  Stream<MeiraEvent> _guessed(Session s, String text, String name, {String? marked}) async* {
+    final fact = knowledge?.named(name);
+    final facts = [
+      for (final n in knowledge?.search(name, k: 1) ?? const <(Note, double, int)>[])
+        if (knowledge!.titleShares(n.$1, name)) 'Catatan dapur "${n.$1.title}": ${n.$1.body}',
+      if (fact != null) fact.text,
+    ];
+    var about = '';
+    if (facts.isNotEmpty && brain != null) {
+      yield StatusEvent('Mencari keterangan $name');
+      try {
+        final out = await brain!.chat(
+          [
+            {'role': 'system', 'content': promptChatSystem},
+            {'role': 'user', 'content': 'FAKTA:\n${facts.join('\n')}\n\nPertanyaan: $name itu apa?'},
+          ],
+          maxTokens: 120,
+          sampling: chatSampling,
+          extra: brain!.chatAdapter,
+        );
+        about = completeSentences(Guardrails.checkOutput(out));
+        if (Guardrails.isCircular(about) || RegExp(r'belum punya informasi', caseSensitive: false).hasMatch(about)) about = '';
+      } catch (_) {}
+    }
+    final answer = [
+      marked == null
+          ? 'Tampaknya ini $name. Bahan ini belum bisa ditandai oleh detektor, jadi namanya masih dugaan model penglihatan.'
+          : 'Saya belum yakin dengan foto ini. Detektor menandai $marked, tetapi model penglihatan menduga ini $name.',
+      if (about.isNotEmpty) about,
+      marked == null
+          ? 'Bila ingin saran resep, sebutkan bahan lain yang Anda miliki, misalnya "ada susu dan madu".'
+          : 'Bila penanda detektor benar, minta saja saran resep dan saya carikan dari bahan itu.',
+    ].join(' ');
+    yield TokenEvent(answer);
+    await _remember(s, text.isEmpty ? '(foto baru)' : text, answer, about.isEmpty ? 'templat' : 'llm');
+    yield DoneEvent(answer, about.isEmpty ? 'templat' : 'llm');
   }
 
   String _reference(Recipe r) {
@@ -924,14 +1041,6 @@ final _ref = RegExp(r'\s*\(?\s*(?:#|nomor\s+|no\.\s*)(\d+)(?:\s*(?:,|dan|-|–)\
 
 /// Pertahankan rujukan nomor (#n) hanya bila nama bahan nomor itu memang disebut tepat sebelumnya,
 /// lalu bersihkan label konteks yang bocor dan tanda pisah panjang.
-/// Perintah sistem untuk obrolan bebas; sengaja pendek agar model kecil fokus menjawab.
-const promptChatSystem =
-    'Anda adalah MEIRA, asisten dapur yang ramah dan sopan. Jawab dalam bahasa Indonesia yang wajar, langsung ke inti, '
-    'paling banyak tiga kalimat. Untuk sapaan atau ucapan terima kasih, balas dengan hangat dalam satu kalimat lalu '
-    'tawarkan bantuan memasak. Untuk pertanyaan tentang bahan atau teknik memasak, jelaskan faktanya dengan konkret; '
-    'bila tidak yakin, katakan terus terang. Jangan membuat resep, daftar bahan, atau langkah kecuali diminta, dan '
-    'jangan menjelaskan apa yang akan Anda lakukan.';
-
 /// Buang kalimat terakhir yang terpotong batas token agar jawaban tidak berhenti di tengah kata.
 String completeSentences(String text) {
   final t = text.trim();
@@ -979,4 +1088,59 @@ String fixRefs(String text, List<Detection> detections) {
       .replaceAll('—', ', ')
       .replaceAll(RegExp(r'[ \t]{2,}'), ' ');
   return cleaned.trim();
+}
+
+final _informal = RegExp(r'\b(kamu|nggak|gak|ngga|banget|lho|sih|dong|nih|kok|aja|bikin)\b', caseSensitive: false);
+final _emoji = RegExp(r'[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]', unicode: true);
+
+/// Tulisan ulang gaya natural sah bila semua nama resep, nomor (#n), angka, dan bahan dari [core] tetap ada, tidak ada
+/// bahan atau angka baru, tanpa daftar bernomor, emoji, atau bahasa terlalu santai, dan paling banyak lima kalimat.
+/// Aturannya sama dengan penyaring data latih di scripts/make_paraphrase_sft.py.
+bool naturalMatches(String core, String rewrite, Iterable<String> recipeNames) {
+  final a = rewrite.toLowerCase(), c = core.toLowerCase();
+  if (rewrite.isEmpty || _informal.hasMatch(rewrite) || _emoji.hasMatch(rewrite) || RegExp(r'(^|\n)\s*\d+[.)]').hasMatch(rewrite)) {
+    return false;
+  }
+  if (RegExp(r'[.!?](\s|$)').allMatches(rewrite).length > 5 || rewrite.length > core.length * 1.6) return false;
+  for (final name in recipeNames) {
+    if (c.contains(name.toLowerCase()) && !a.contains(name.toLowerCase())) return false;
+  }
+  Set<String> nums(String t) => RegExp(r'\d+').allMatches(t).map((m) => m[0]!).toSet();
+  Set<String> refs(String t) => RegExp(r'#\d+').allMatches(t).map((m) => m[0]!).toSet();
+  if (!nums(core).containsAll(nums(rewrite)) || !nums(rewrite).containsAll(nums(core))) return false;
+  if (!refs(rewrite).containsAll(refs(core))) return false;
+  if (!mentions(rewrite).toSet().containsAll(mentions(core)) || !mentions(core).toSet().containsAll(mentions(rewrite))) return false;
+  if (core.trimRight().endsWith('?') && !rewrite.trimRight().endsWith('?')) return false;
+  return _statusKept(core, rewrite);
+}
+
+final _need = RegExp(
+  r'siapkan|disiapkan|perlu|pastikan|belum|butuh|dibutuhkan|diperlukan|sediakan|tambahkan|kurang|tinggal|lengkapi',
+  caseSensitive: false,
+);
+final _haveWords = RegExp(r'tersedia|sudah ada|sudah memiliki|sudah punya|terlihat|dari foto|di foto', caseSensitive: false);
+final _alt = RegExp(r'alternatif|pilihan lain|bisa juga|juga bisa|atau|lainnya|selain itu', caseSensitive: false);
+
+/// Bahan yang perlu disiapkan tidak boleh berubah menjadi bahan yang sudah ada, dan resep alternatif tetap disebut
+/// sebagai alternatif.
+bool _statusKept(String core, String rewrite) {
+  final sentences = rewrite.trim().split(RegExp(r'(?<=[.!?])\s+')).where((x) => x.isNotEmpty).toList();
+  final missing = <String>{
+    for (final m in RegExp(r'(?:Bahan yang perlu disiapkan adalah|Mohon pastikan juga tersedia) ([^.]*)\.').allMatches(core)) ...mentions(m[1]!),
+  };
+  for (final key in missing) {
+    final found = sentences.where((x) => mentions(x).contains(key)).toList();
+    if (found.isEmpty || !found.any(_need.hasMatch)) return false;
+    for (final x in found) {
+      for (final clause in x.split(RegExp(r',|;|\bsehingga\b|\btetapi\b|\bnamun\b'))) {
+        if (mentions(clause).contains(key) && _haveWords.hasMatch(clause) && !_need.hasMatch(clause)) return false;
+      }
+    }
+  }
+  final alt = RegExp(r'Sebagai alternatif, Anda dapat memilih ([^.]*)\.').firstMatch(core);
+  for (final name in alt == null ? const <String>[] : alt[1]!.split(' atau ')) {
+    final found = sentences.where((x) => x.toLowerCase().contains(name.toLowerCase())).toList();
+    if (found.isEmpty || !found.any(_alt.hasMatch)) return false;
+  }
+  return true;
 }

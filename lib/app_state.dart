@@ -135,7 +135,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         return;
       }
       recipes = parseRecipes(await rootBundle.loadString('assets/resep.md'));
-      knowledge = KnowledgeBase.parse(await rootBundle.loadString('assets/pengetahuan.md'));
+      knowledge = KnowledgeBase.parse(
+        await rootBundle.loadString('assets/pengetahuan.md'),
+        facts: await rootBundle.loadString('assets/pengetahuan_luas.jsonl'),
+      );
       history = await History.open();
       _done(0);
       vision ??= IsolateVision(await _visionPaths(), threads: math.min(4, Device.inferenceThreads));
@@ -179,9 +182,32 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   /// Model bahasa hanya untuk percakapan dan mengenali makanan jadi; penandaan bahan dikerjakan detektor.
   Future<void> _startModels() async {
     final brainModel = models.path(brainPack.files[0].name), brainProj = models.path(brainPack.files[1].name);
-    _brainServer = LlamaServer(name: 'otak', model: brainModel, mmproj: brainProj, port: 8392);
-    await _brainServer!.start(maxImageTokens: _imageTokens);
+    final adapter = await _chatAdapter();
+    _brainServer = LlamaServer(name: 'otak', model: brainModel, mmproj: brainProj, lora: adapter, port: 8392);
+    try {
+      await _brainServer!.start(maxImageTokens: _imageTokens);
+    } on StateError {
+      if (adapter == null) rethrow;
+      // adaptor yang tidak cocok dengan llama-server di ponsel tidak boleh menghentikan aplikasi: jalan tanpa adaptor
+      _brainServer = LlamaServer(name: 'otak', model: brainModel, mmproj: brainProj, port: 8392);
+      await _brainServer!.start(maxImageTokens: _imageTokens);
+    }
     _done(2);
+  }
+
+  /// Adaptor LoRA obrolan (±22 MB) dibawa di dalam APK dan disalin sekali ke folder model, sehingga model bahasa yang
+  /// sudah terunduh tidak perlu diunduh ulang. Adaptor dipasang per permintaan hanya untuk obrolan dan gaya natural.
+  Future<String?> _chatAdapter() async {
+    try {
+      final data = await rootBundle.load('assets/models/$chatAdapterAsset');
+      final f = File(models.path(chatAdapterAsset));
+      if (!f.existsSync() || f.lengthSync() != data.lengthInBytes) {
+        await f.writeAsBytes(data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes), flush: true);
+      }
+      return f.path;
+    } catch (_) {
+      return null;
+    }
   }
 
   /// Model penglihatan dibawa di dalam APK (±30 MB); disalin sekali ke folder model karena ONNX Runtime membaca berkas.
