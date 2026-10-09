@@ -140,6 +140,7 @@
 {"t": "Arroz à grega", "n": ["Arroz à grega"], "x": "Arroz à grega. Jenis: makanan. Bahan: jagung, kismis, Ercis, Wortel liar, beras. Asal: Brasil.", "s": "Wikidata Q4796283 (CC0)", "e": ["arroz a grega"]}
 {"t": "Arsik", "n": ["Arsik"], "x": "Arsik: hidangan khas Batak berbahan ikan mas berbumbu pedas. Jenis: jenis makanan atau masakan, makanan manusia, hidangan. Bahan: Ikan mas hias, Lengkuas, Kecombrang, kacang panjang, bawang, Asam gelugur. Asal: Indonesia, Batak Toba.", "s": "Wikidata Q4796545 (CC0)"}
 {"t": "Arsik nurung ikan mas", "n": ["Arsik nurung ikan mas"], "x": "Arsik nurung ikan mas: hidangan khas Karo. Jenis: hidangan, hidangan khas Karo.", "s": "Wikidata Q137799219 (CC0)"}
+{"t": "articok", "n": ["articok", "artichoke"], "x": "articok: Tumbuhan varietas thistle dari keluarga Asteraceae. Nama ilmiah: Cynara cardunculus Scolymus Group, Cynara scolymus. Nama lain: artichoke.", "s": "Wikidata Q23041430 (CC0)", "e": ["globe artichoke", "artichoke", "artichokes"]}
 {"t": "Asado", "n": ["Asado"], "x": "Asado. Bahan: daging sapi, daging babi, Lama, Chorizo, sosis darah. Asal: Argentina.", "s": "Wikidata Q720254 (CC0)"}
 {"t": "Asam asetat", "n": ["Asam asetat", "Asetil hidroksida", "Asam acetat", "Asam cuka", "Cuka", "Asam asetat glasial", "Hidrogen asetat", "Asam etanoat"], "x": "Asam asetat: senyawa kimia. Jenis: tipe entitas kimia. Kegunaan: Bahan tambahan makanan, obat. Nama lain: Asetil hidroksida, Asam acetat, Vinegar, Asam cuka.", "s": "Wikidata Q47512 (CC0)", "e": ["acetic acid", "ethanoic acid", "methanecarboxylic acid", "ethylic acid", "ethoic acid"]}
 {"t": "Asam gelugur", "n": ["Asam gelugur", "Asam gelugor", "Garcinia atroviridis", "Asam potong", "Asam keping"], "x": "Asam gelugur. Jenis: takson. Nama ilmiah: Garcinia atroviridis. Nama lain: Asam gelugor, Garcinia atroviridis, Asam potong, Asam keping.", "s": "Wikidata Q4920519 (CC0)", "e": ["garcinia atroviridis"]}
@@ -156,6 +157,7 @@
 {"t": "Asida", "n": ["Asida"], "x": "Asida: Makanan Khas di Yaman. Jenis: bubur. Bahan: tepung terigu.", "s": "Wikidata Q2984652 (CC0)", "e": ["aseeda", "assida", "assîda"]}
 {"t": "asinan Betawi", "n": ["asinan Betawi"], "x": "asinan Betawi: hidangan buah dan/atau sayuran yang direndam dalam kuah cuka. Jenis: makanan. Bahan: toge, Selada, tahu, kerupuk, Bawang goreng. Asal: Indonesia.", "s": "Wikidata Q4807004 (CC0)", "e": ["asinan"]}
 {"t": "asinan Bogor", "n": ["asinan Bogor"], "x": "asinan Bogor: jenis asinan dari Bogor dengan isi buah-buahan dan/atau sayuran dalam cuka. Jenis: jenis makanan atau masakan, makanan manusia, hidangan. Bahan: cabe merah, salak, pepaya, Bengkuang, Ubi jalar, Kedondong. Asal: Indonesia.", "s": "Wikidata Q56231369 (CC0)"}
+{"t": "Asparagus", "n": ["Asparagus", "Asparagus officinalis"], "x": "Asparagus. Jenis: takson. Nama ilmiah: Asparagus officinalis. Kegunaan: tumbuhan obat, makanan. Nama lain: Asparagus officinalis.", "s": "Wikidata Q28367 (CC0)", "e": ["asparagus officinalis", "asparagus plant", "sparrow grass", "garden asparagus", "wild asparagus"]}
 {"t": "Aspic", "n": ["Aspic"], "x": "Aspic: Makanan Khas di Ukraina. Jenis: hidangan pembuka. Bahan: daging babi, daging sapi.", "s": "Wikidata Q837480 (CC0)", "e": ["kholodets"]}
 {"t": "Asyura (makanan)", "n": ["Asyura (makanan)"], "x": "Asyura (makanan). Jenis: hidangan. Bahan: Phaseolus, Ercis, Gandum, beras, air, kismis. Asal: Timur Dekat Kuno.", "s": "Wikidata Q136922 (CC0)", "e": ["aşure", "aşure", "noah's pudding", "varvara", "barbara", "ashura porridge"]}
 {"t": "Aunu Senebre", "n": ["Aunu Senebre"], "x": "Aunu Senebre: makanan khas Indonesia.", "s": "Wikidata Q119541284 (CC0)"}
@@ -371,10 +373,12 @@
 {"t": "Bekicot", "n": ["Bekicot", "Achatina fulica"], "x": "Bekicot: spesies siput terestrial. Jenis: takson. Nama ilmiah: Achatina fulica. Nama lain: Achatina fulica.", "s": "Wikidata Q26908 (CC0)", "e": ["achatina fulica", "giant african land snail", "east african land snail", "giant african snail", "giant east african snail"]}
 {"t": "belalang", "n": ["belalang", "belalang (tumbuhan)", "pohon karub", "roti Santo Yohanes", "kacang lokus"], "x": "belalang: spesies tumbuhan. Jenis: takson. Nama ilmiah: Ceratonia siliqua. Nama lain: belalang (tumbuhan), pohon karub, roti Santo Yohanes, kacang lokus.", "s": "Wikidata Q68763 (CC0)", "e": ["ceratonia siliqua", "locust bean", "carob tree", "st john's-bread", "locust-tree"]}
 {"t": "belalang goreng", "n": ["belalang goreng", "Walang Goreng"], "x": "belalang goreng: Kuliner ekstrim dari Kabupaten Gunungkidul. Jenis: makanan, makanan manusia, makanan tradisional. Bahan: Belalang, Bawang Merah, bawang putih, garam. Asal: Indonesia. Nama lain: Walang Goreng.", "s": "Wikidata Q98915549 (CC0)", "e": ["deep-fried grashopper"]}
+{"t": "Beligo", "n": ["Beligo", "Bligo", "Kundur"], "x": "Beligo. Jenis: takson. Nama ilmiah: Benincasa hispida. Kegunaan: tumbuhan obat, sayuran, makanan. Nama lain: Bligo, Kundur.", "s": "Wikidata Q652206 (CC0)", "e": ["wax gourd", "benincasa cerifera", "cucurbita hispida", "white gourd", "benincasa hispida", "ash gourd", "winter gourd"]}
 {"t": "Belimbing", "n": ["Belimbing"], "x": "Belimbing. Jenis: takson. Nama ilmiah: Averrhoa carambola. Kegunaan: buah, tumbuhan obat, sayuran.", "s": "Wikidata Q159447 (CC0)", "e": ["averrhoa carambola", "carambola", "chinese gooseberry", "star fruit"]}
 {"t": "Belimbing sayur", "n": ["Belimbing sayur", "Belimbing wuluh", "Buah belimbing buluh", "Belimbing besi", "Belimbing botol", "Belimbing asam", "Belimbing buluh"], "x": "Belimbing sayur: Spesies tanaman. Jenis: takson. Nama ilmiah: Averrhoa bilimbi. Nama lain: Belimbing wuluh, Buah belimbing buluh, Belimbing besi, Belimbing botol.", "s": "Wikidata Q237465 (CC0)", "e": ["averrhoa bilimbi", "bilimbi", "cucumber tree", "tree sorrel"]}
 {"t": "Belut", "n": ["Belut"], "x": "Belut: ikan berbentuk mirip ular. Jenis: bahan makanan. Nama ilmiah: Anguilliformes.", "s": "Wikidata Q5347044 (CC0)", "e": ["eel as food", "eel flesh", "eel meat", "anguilliformes as food"]}
 {"t": "Belut Pedas", "n": ["Belut Pedas"], "x": "Belut Pedas. Jenis: makanan.", "s": "Wikidata Q56231426 (CC0)"}
+{"t": "Bendi", "n": ["Bendi"], "x": "Bendi. Jenis: takson. Nama ilmiah: Abelmoschus esculentus. Kegunaan: makanan, Serat, tumbuhan obat, sayuran, memasak.", "s": "Wikidata Q80531 (CC0)", "e": ["abelmoschus esculentus", "okra plant", "ladyfinger", "gumbo", "okra", "ladies' finger", "ocra"]}
 {"t": "Bengkuang", "n": ["Bengkuang"], "x": "Bengkuang: Tanaman jenis umbi-umbian. Jenis: takson. Nama ilmiah: Pachyrhizus erosus. Kegunaan: makanan, tumbuhan obat, pakan, sayuran.", "s": "Wikidata Q517283 (CC0)", "e": ["pachyrhizus erosus", "jicama", "mexican yam bean", "mexican turnip"]}
 {"t": "Bensin", "n": ["Bensin", "Petrol", "Minyak bensin"], "x": "Bensin: jenis bahan bakar minyak untuk kendaraan bermotor. Nama lain: Petrol, Minyak bensin.", "s": "Wikidata Q39558 (CC0)", "e": ["gasoline", "petrol", "motor fuel", "motor spirits", "gas", "motor spirit"]}
 {"t": "Bentō", "n": ["Bentō", "Bento"], "x": "Bentō: variasi makanan khas Jepang. Asal: Jepang. Nama lain: Bento.", "s": "Wikidata Q380532 (CC0)", "e": ["bento", "bento box", "obento", "obentō"]}
@@ -440,6 +444,7 @@
 {"t": "Biskuit mentega", "n": ["Biskuit mentega", "Butter cookies"], "x": "Biskuit mentega: salah satu jenis roti. Bahan: tepung terigu, gula, mentega. Asal: Denmark. Nama lain: Butter cookies.", "s": "Wikidata Q1038537 (CC0)", "e": ["butter cookie", "danish cookie", "danish butter cookie"]}
 {"t": "Bisque", "n": ["Bisque"], "x": "Bisque: Makanan. Bahan: Anggur putih, Krustasea. Asal: Prancis.", "s": "Wikidata Q866640 (CC0)"}
 {"t": "Bistik tartar", "n": ["Bistik tartar"], "x": "Bistik tartar. Bahan: daging sapi, telur, daging kuda, bahan penyedap, garam, Biji Lada. Asal: Prancis, Frankia.", "s": "Wikidata Q749593 (CC0)", "e": ["steak tartare"]}
+{"t": "Bit gula", "n": ["Bit gula", "Bit"], "x": "Bit gula. Jenis: takson. Nama ilmiah: Beta vulgaris. Kegunaan: pakan, tumbuhan obat, makanan. Nama lain: Bit.", "s": "Wikidata Q165191 (CC0)", "e": ["beta vulgaris", "beet", "sea beet"]}
 {"t": "Bitterballen", "n": ["Bitterballen", "Bitterbal"], "x": "Bitterballen: Makanan Khas di Belanda. Nama lain: Bitterbal.", "s": "Wikidata Q878961 (CC0)"}
 {"t": "black pudding", "n": ["black pudding"], "x": "black pudding. Asal: Britania Raya, Pulau Irlandia.", "s": "Wikidata Q15462145 (CC0)"}
 {"t": "Blancmange", "n": ["Blancmange"], "x": "Blancmange: Makanan Khas di Inggris. Bahan: susu. Asal: Prancis, Italia.", "s": "Wikidata Q551514 (CC0)", "e": ["biancomangiare pat"]}
@@ -810,6 +815,7 @@
 {"t": "Dawet Jepara", "n": ["Dawet Jepara", "Es Dawet Jepara"], "x": "Dawet Jepara. Jenis: makanan. Nama lain: Es Dawet Jepara.", "s": "Wikidata Q20427337 (CC0)"}
 {"t": "Dawet Siwalan", "n": ["Dawet Siwalan"], "x": "Dawet Siwalan. Jenis: makanan.", "s": "Wikidata Q56231493 (CC0)"}
 {"t": "dekke na niarsik", "n": ["dekke na niarsik", "ikan yang diarsik"], "x": "dekke na niarsik: makanan ikan dari Sumatera Utara. Jenis: jenis makanan atau masakan, makanan manusia, hidangan. Bahan: Ikan, Serai, Kunyit. Asal: Indonesia. Nama lain: ikan yang diarsik.", "s": "Wikidata Q105480600 (CC0)"}
+{"t": "Delima", "n": ["Delima", "Punica granatum"], "x": "Delima: tanaman buah. Jenis: takson. Nama ilmiah: Punica granatum. Kegunaan: makanan, tumbuhan obat, sayuran. Nama lain: Punica granatum.", "s": "Wikidata Q13188 (CC0)", "e": ["pomegranate", "pomegranate tree", "anar"]}
 {"t": "dendeng", "n": ["dendeng"], "x": "dendeng: olahan daging.", "s": "Wikidata Q1072897 (CC0)", "e": ["jerky"]}
 {"t": "dendeng balado", "n": ["dendeng balado"], "x": "dendeng balado: hidangan khas Sumatra Barat. Jenis: jenis makanan atau masakan. Bahan: daging sapi, daging. Asal: Indonesia.", "s": "Wikidata Q5256658 (CC0)", "e": ["dendeng"]}
 {"t": "dendeng baracik", "n": ["dendeng baracik"], "x": "dendeng baracik: dendeng. Bahan: daging sapi, cabe merah, Air kelapa, bawang merah, bawang putih, tomat. Asal: Indonesia.", "s": "Wikidata Q98915664 (CC0)"}
@@ -852,6 +858,7 @@
 {"t": "Dragon's Breath", "n": ["Dragon's Breath"], "x": "Dragon's Breath. Jenis: hidangan penutup. Bahan: Nitrogen cair, Sereal sarapan.", "s": "Wikidata Q49001494 (CC0)"}
 {"t": "Dubu", "n": ["Dubu"], "x": "Dubu: makanan khas Korea.", "s": "Wikidata Q56388365 (CC0)"}
 {"t": "dubu-kimchi", "n": ["dubu-kimchi"], "x": "dubu-kimchi: variasi makanan khas Korea. Asal: Korea.", "s": "Wikidata Q841543 (CC0)"}
+{"t": "Duku", "n": ["Duku", "Langsat", "Lansium domesticum", "Buah Langsat"], "x": "Duku: sejenis buah-buahan di Asia Tenggara. Jenis: takson. Nama ilmiah: Lansium domesticum. Nama lain: Langsat, Lansium domesticum, Buah Langsat.", "s": "Wikidata Q860731 (CC0)", "e": ["lansium domesticum", "langsat", "lanzones"]}
 {"t": "Duku Candran", "n": ["Duku Candran"], "x": "Duku Candran. Jenis: makanan.", "s": "Wikidata Q56231507 (CC0)"}
 {"t": "Duku Woro", "n": ["Duku Woro"], "x": "Duku Woro. Jenis: makanan.", "s": "Wikidata Q56231508 (CC0)"}
 {"t": "Dumbleg", "n": ["Dumbleg"], "x": "Dumbleg. Jenis: makanan.", "s": "Wikidata Q56231509 (CC0)"}
@@ -2108,6 +2115,7 @@
 {"t": "lepet jagung", "n": ["lepet jagung"], "x": "lepet jagung: camilan khas Jawa. Jenis: jenis makanan atau masakan, makanan manusia, hidangan, makanan tradisional. Bahan: jagung, singkong. Asal: Indonesia. Nama lain: Lepet Jagung.", "s": "Wikidata Q12494545 (CC0)"}
 {"t": "Lerak", "n": ["Lerak", "Sapindus rarak"], "x": "Lerak. Jenis: takson. Nama ilmiah: Sapindus rarak. Kegunaan: makanan, tumbuhan obat, kayu. Nama lain: Sapindus rarak.", "s": "Wikidata Q7420977 (CC0)", "e": ["sapindus rarak"]}
 {"t": "Leupeut suuk", "n": ["Leupeut suuk"], "x": "Leupeut suuk: hidangan khas Sunda.", "s": "Wikidata Q124218864 (CC0)"}
+{"t": "Lici", "n": ["Lici"], "x": "Lici: jenis tanaman. Jenis: takson. Nama ilmiah: Litchi chinensis. Kegunaan: buah, tumbuhan obat, makanan, kayu.", "s": "Wikidata Q13182 (CC0)", "e": ["litchi chinensis", "litchi", "lychee"]}
 {"t": "Lidah sapi", "n": ["Lidah sapi"], "x": "Lidah sapi: kudapam khas daerah. Jenis: jenis makanan atau masakan, kue. Bahan: tepung terigu, minyak goreng, air, gula merah, Natrium bikarbonat. Asal: Indonesia.", "s": "Wikidata Q123398955 (CC0)"}
 {"t": "Lillet", "n": ["Lillet"], "x": "Lillet. Asal: Prancis.", "s": "Wikidata Q1644339 (CC0)"}
 {"t": "Limburger", "n": ["Limburger"], "x": "Limburger: salah satu hidangan dari susu. Jenis: keju. Asal: Belgia.", "s": "Wikidata Q776025 (CC0)"}
@@ -2118,6 +2126,7 @@
 {"t": "Linongot", "n": ["Linongot"], "x": "Linongot. Jenis: makanan.", "s": "Wikidata Q130389191 (CC0)"}
 {"t": "Liptauer", "n": ["Liptauer"], "x": "Liptauer: Makanan Khas di Hongaria. Bahan: quark, Bryndza. Asal: Slowakia.", "s": "Wikidata Q254922 (CC0)", "e": ["liptauer cheese spread", "liptauer spread"]}
 {"t": "Lison", "n": ["Lison"], "x": "Lison. Jenis: anggur. Asal: Italia.", "s": "Wikidata Q16572904 (CC0)", "e": ["lison docg"]}
+{"t": "Lobak", "n": ["Lobak"], "x": "Lobak. Jenis: takson. Nama ilmiah: Raphanus sativus. Kegunaan: pakan, tumbuhan obat, sayuran.", "s": "Wikidata Q7224565 (CC0)", "e": ["raphanus sativus", "radish"]}
 {"t": "Lobak putih", "n": ["Lobak putih"], "x": "Lobak putih: Tanaman. Jenis: takson. Nama ilmiah: Raphanus sativus subsp. acanthiformis. Kegunaan: sayuran.", "s": "Wikidata Q7224757 (CC0)", "e": ["white radish", "daikon", "mooli", "long white radish", "raphanus sativus var. longipinnatus", "raphanus sativus subsp. acanthiformis"]}
 {"t": "Lobster air tawar", "n": ["Lobster air tawar"], "x": "Lobster air tawar: krustasea dalam superfamili Astacoidea dan Parastacoidea. Jenis: sekelompok organisme yang dikenal dengan satu nama umum.", "s": "Wikidata Q1211742 (CC0)", "e": ["crayfish", "crawfish", "crawdads"]}
 {"t": "Lobster Thermidor", "n": ["Lobster Thermidor"], "x": "Lobster Thermidor. Jenis: masakan laut. Asal: Prancis.", "s": "Wikidata Q2894864 (CC0)"}
@@ -2721,6 +2730,7 @@
 {"t": "pepes", "n": ["pepes"], "x": "pepes: hidangan asal Bali. Jenis: jenis makanan atau masakan, makanan manusia, hidangan. Bahan: jahe, Lengkuas, Ikan. Asal: Indonesia. Nama lain: pelas.", "s": "Wikidata Q4887922 (CC0)"}
 {"t": "pepes ikan", "n": ["pepes ikan"], "x": "pepes ikan: masakan khas Timor Leste.", "s": "Wikidata Q13199989 (CC0)", "e": ["ikan pepes", "pais lauk"]}
 {"t": "Pepes Mlanding Teri", "n": ["Pepes Mlanding Teri"], "x": "Pepes Mlanding Teri: makanan tradisional Indonesia. Jenis: makanan, hidangan, makanan tradisional. Asal: Indonesia, Jawa Tengah, Banjarnegara.", "s": "Wikidata Q139585819 (CC0)"}
+{"t": "Peria", "n": ["Peria"], "x": "Peria: jenis tumbuhan merambat. Jenis: takson. Nama ilmiah: Momordica charantia. Kegunaan: pakan, tumbuhan obat, sayuran, makanan.", "s": "Wikidata Q428750 (CC0)", "e": ["momordica charantia", "bitter gourd", "bitter squash", "balsam-pear", "goya", "karela", "bitter melon"]}
 {"t": "Perkedel", "n": ["Perkedel"], "x": "Perkedel: salah satu jenis roti. Bahan: bawang putih, daun bawang, telur, kentang, jagung, Seledri. Asal: Indonesia.", "s": "Wikidata Q20128299 (CC0)", "e": ["manis"]}
 {"t": "Perkedel jagung", "n": ["Perkedel jagung", "ampal jagung", "gorejag"], "x": "Perkedel jagung: variasi makanan khas Indonesia. Jenis: jenis makanan atau masakan, makanan manusia, hidangan. Bahan: Jagung manis, tepung terigu. Asal: Indonesia. Nama lain: ampal jagung, gorejag.", "s": "Wikidata Q5171054 (CC0)", "e": ["corn fritter"]}
 {"t": "perkedel nike", "n": ["perkedel nike"], "x": "perkedel nike: makanan tradisional dari Manado. Jenis: makanan, hidangan, makanan tradisional. Asal: Indonesia, Manado, Sulawesi Utara.", "s": "Wikidata Q137816671 (CC0)"}
@@ -2730,6 +2740,7 @@
 {"t": "Permen keras", "n": ["Permen keras"], "x": "Permen keras. Bahan: sirup, karamel.", "s": "Wikidata Q17116096 (CC0)", "e": ["hard candy", "boiled sweet"]}
 {"t": "Permen tongkat", "n": ["Permen tongkat"], "x": "Permen tongkat. Bahan: gula. Asal: Jerman.", "s": "Wikidata Q17103699 (CC0)", "e": ["candy cane"]}
 {"t": "peros masin", "n": ["peros masin"], "x": "peros masin: Banyaknya sungai yang mengalir di Kabupaten Pesisir Barat merupakan habitat ikan pelus. Karena itulah penduduk sekitar memvariasikan masakan, salah satunya dengan mengolah pelus menjadi masakan khas daerah Kabupaten Pesisir Barat.. Jenis: hidangan. Asal: Indonesia, Lampung.", "s": "Wikidata Q108808192 (CC0)"}
+{"t": "Persik", "n": ["Persik"], "x": "Persik. Jenis: takson. Nama ilmiah: Prunus persica. Kegunaan: buah, pakan, tumbuhan obat.", "s": "Wikidata Q13189 (CC0)", "e": ["prunus persica", "peach tree", "peachtree", "peach"]}
 {"t": "Pesan Be Pasih", "n": ["Pesan Be Pasih"], "x": "Pesan Be Pasih. Jenis: makanan.", "s": "Wikidata Q56232203 (CC0)"}
 {"t": "Pescado frito", "n": ["Pescado frito"], "x": "Pescado frito. Jenis: Ikan goreng, makanan berbahan dasar ikan.", "s": "Wikidata Q3080606 (CC0)", "e": ["pescaíto frito"]}
 {"t": "Pescetarianisme", "n": ["Pescetarianisme"], "x": "Pescetarianisme. Jenis: diet.", "s": "Wikidata Q1500138 (CC0)", "e": ["pescetarianism", "pescatarianism", "pescetarian", "pescatarian", "pesco-vegetarism", "pesco-vegetarian"]}
@@ -3289,6 +3300,7 @@
 {"t": "Sekoteng", "n": ["Sekoteng", "sekuteng", "ronde"], "x": "Sekoteng: variasi minuman khas Indonesia. Jenis: minuman. Bahan: jahe, air, Kacang tanah, roti. Asal: Indonesia. Nama lain: sekuteng, ronde.", "s": "Wikidata Q12513153 (CC0)"}
 {"t": "Sekubal", "n": ["Sekubal"], "x": "Sekubal: makanan khas daerah.", "s": "Wikidata Q119442222 (CC0)"}
 {"t": "Selada", "n": ["Selada"], "x": "Selada. Jenis: takson. Nama ilmiah: Lactuca sativa. Kegunaan: Sayuran daun.", "s": "Wikidata Q83193 (CC0)", "e": ["lactuca sativa", "lettuce"]}
+{"t": "Selada air", "n": ["Selada air"], "x": "Selada air. Jenis: takson. Nama ilmiah: Nasturtium officinale. Kegunaan: tumbuhan obat, tanaman hias, sayuran.", "s": "Wikidata Q150452 (CC0)", "e": ["nasturtium officinale", "watercress", "yellowcress"]}
 {"t": "selada bangka", "n": ["selada bangka"], "x": "selada bangka: masakan khas Bangka berbahan tahu dengan siraman saus kacang. Asal: Indonesia.", "s": "Wikidata Q105528183 (CC0)", "e": ["salad"]}
 {"t": "Selada Banjar", "n": ["Selada Banjar"], "x": "Selada Banjar: makanan khas daerah.", "s": "Wikidata Q119580736 (CC0)", "e": ["banjarese salad"]}
 {"t": "Selai bakon", "n": ["Selai bakon"], "x": "Selai bakon. Bahan: Bacon.", "s": "Wikidata Q472612 (CC0)", "e": ["bacon jam"]}
@@ -3381,6 +3393,7 @@
 {"t": "sirup kawis", "n": ["sirup kawis"], "x": "sirup kawis: minuman Indonesia. Jenis: makanan.", "s": "Wikidata Q13097164 (CC0)"}
 {"t": "Sirup Kayu Manis", "n": ["Sirup Kayu Manis"], "x": "Sirup Kayu Manis. Jenis: makanan.", "s": "Wikidata Q56232370 (CC0)"}
 {"t": "Sirup Tjampolay", "n": ["Sirup Tjampolay"], "x": "Sirup Tjampolay. Jenis: makanan.", "s": "Wikidata Q56232371 (CC0)"}
+{"t": "sitrun", "n": ["sitrun", "citrus medica limonium"], "x": "sitrun. Jenis: takson, Hibrida. Nama ilmiah: Citrus × limon. Kegunaan: makanan, rempah-rempah, tumbuhan obat. Nama lain: citrus medica limonium, lemon.", "s": "Wikidata Q500 (CC0)", "e": ["citrus × limon", "citrus limon", "citrus ×limon", "lemon", "citrus x limon", "lemon tree"]}
 {"t": "Siumei", "n": ["Siumei"], "x": "Siumei: Makanan Khas di Tiongkok.", "s": "Wikidata Q844314 (CC0)", "e": ["siu mei", "siu lap"]}
 {"t": "sloe", "n": ["sloe"], "x": "sloe: tumbuhan dalam marga prunus. Nama ilmiah: Prunus spinosa.", "s": "Wikidata Q12059685 (CC0)", "e": ["blackthorn drupe", "sloeberry"]}
 {"t": "Sloppy joe", "n": ["Sloppy joe"], "x": "Sloppy joe: salah satu jenis roti. Jenis: Masakan daging sapi. Asal: Amerika Serikat.", "s": "Wikidata Q2095632 (CC0)"}
@@ -3473,6 +3486,7 @@
 {"t": "stik bawang", "n": ["stik bawang"], "x": "stik bawang: makanan tradisional Indonesia. Jenis: makanan, hidangan, makanan tradisional. Asal: Indonesia, Jambi, Sumatera.", "s": "Wikidata Q137856615 (CC0)", "e": ["onion stick"]}
 {"t": "Stik kepiting", "n": ["Stik kepiting"], "x": "Stik kepiting: Makanan Khas di Jepang. Bahan: Surimi, minyak nabati, amilum, telur, Kedelai, gula. Asal: Jepang.", "s": "Wikidata Q1188911 (CC0)", "e": ["crab stick", "imitation crab meat", "krab", "seafood stick"]}
 {"t": "stik tahu", "n": ["stik tahu"], "x": "stik tahu: makanan khas Kediri berbahan dasar tahu. Jenis: jenis makanan atau masakan, makanan manusia, hidangan. Asal: Indonesia.", "s": "Wikidata Q56232363 (CC0)"}
+{"t": "stroberi", "n": ["stroberi"], "x": "stroberi: notospesies tanaman merah berukuran sedang. Jenis: takson. Nama ilmiah: Fragaria × ananassa. Kegunaan: buah.", "s": "Wikidata Q13158 (CC0)", "e": ["strawberry", "strawberry plant", "garden strawberry", "fragaria ananassa ex", "strawberries", "fragaria ×ananassa", "fragaria × ananassa"]}
 {"t": "stroganina", "n": ["stroganina"], "x": "stroganina. Jenis: hidangan. Asal: Rusia, Sakha.", "s": "Wikidata Q3848253 (CC0)"}
 {"t": "stroopwafel", "n": ["stroopwafel"], "x": "stroopwafel: makanan khas di Belanda. Bahan: sirup, adonan. Asal: Belanda.", "s": "Wikidata Q267877 (CC0)", "e": ["syrup waffle", "treacle waffle", "caramel waffle", "caramel wafers", "syrup wafers"]}
 {"t": "Sturgeon", "n": ["Sturgeon", "Ikan Sturgeon"], "x": "Sturgeon. Jenis: takson, makanan laut. Nama ilmiah: Acipenseridae. Nama lain: Ikan Sturgeon.", "s": "Wikidata Q181871 (CC0)", "e": ["acipenseridae", "sturgeons"]}
@@ -3935,6 +3949,7 @@
 {"t": "Zeeuwse bolus", "n": ["Zeeuwse bolus"], "x": "Zeeuwse bolus: Makanan Khas di Belanda. Asal: Belanda.", "s": "Wikidata Q2476143 (CC0)"}
 {"t": "Ziziphus jujuba", "n": ["Ziziphus jujuba", "bidara cina", "bidara", "jujube", "angco", "putsa", "futsa", "apel India"], "x": "Ziziphus jujuba: spesies tumbuhan. Jenis: takson. Kegunaan: tumbuhan obat, makanan. Nama lain: bidara cina, bidara, jujube, angco.", "s": "Wikidata Q11181633 (CC0)", "e": ["chinese jujube", "ziziphus jujube", "common jujuba", "chinese dates", "jujube"]}
 {"t": "Zobo", "n": ["Zobo"], "x": "Zobo: Zobo adalah minuman asal Nigeria yang terbuat dari bunga tanaman Rosella kering.. Jenis: minuman, makanan manusia.", "s": "Wikidata Q107357156 (CC0)"}
+{"t": "zukini", "n": ["zukini"], "x": "zukini. Jenis: takson. Nama ilmiah: Cucurbita pepo var. cylindrica, Cucurbita pepo.", "s": "Wikidata Q7533 (CC0)", "e": ["zucchini", "courgette", "baby marrow", "cucurbita pepo var. cylindrica"]}
 {"t": "zōni", "n": ["zōni"], "x": "zōni: makanan khas di Jepang. Jenis: jenis makanan atau masakan. Bahan: kecap asin, Miso, Mochi. Asal: Jepang.", "s": "Wikidata Q249169 (CC0)"}
 {"t": "çörek", "n": ["çörek"], "x": "çörek. Jenis: hidangan. Asal: Turki.", "s": "Wikidata Q12849581 (CC0)"}
 {"t": "Çılbır", "n": ["Çılbır"], "x": "Çılbır. Jenis: hidangan. Bahan: telur. Asal: Turki.", "s": "Wikidata Q3678059 (CC0)"}

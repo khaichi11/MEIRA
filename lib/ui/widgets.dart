@@ -129,10 +129,12 @@ class _FloatingState extends State<Floating> with SingleTickerProviderStateMixin
 
 /// Muncul perlahan sambil bergeser sedikit ke atas; [delay] untuk urutan bertahap.
 class FadeIn extends StatefulWidget {
-  const FadeIn({super.key, required this.child, this.delay = Duration.zero, this.offset = 10});
+  const FadeIn({super.key, required this.child, this.delay = Duration.zero, this.offset = 10, this.dx = 0, this.scale = 1});
   final Widget child;
   final Duration delay;
   final double offset;
+  final double dx; // geser mendatar saat masuk, misalnya pesan pengguna dari kanan
+  final double scale; // ukuran awal, misalnya .96 untuk efek sedikit membesar
 
   @override
   State<FadeIn> createState() => _FadeInState();
@@ -159,7 +161,10 @@ class _FadeInState extends State<FadeIn> with SingleTickerProviderStateMixin {
     animation: _t,
     builder: (_, child) => Opacity(
       opacity: _t.value,
-      child: Transform.translate(offset: Offset(0, (1 - _t.value) * widget.offset), child: child),
+      child: Transform.translate(
+        offset: Offset((1 - _t.value) * widget.dx, (1 - _t.value) * widget.offset),
+        child: widget.scale == 1 ? child : Transform.scale(scale: widget.scale + (1 - widget.scale) * _t.value, child: child),
+      ),
     ),
     child: widget.child,
   );
@@ -399,5 +404,31 @@ class _TypingDotsState extends State<TypingDots> with SingleTickerProviderStateM
           ),
       ],
     ),
+  );
+}
+
+/// Denyut halus berulang, misalnya untuk ikon api pada rentetan hari memasak.
+class Pulse extends StatefulWidget {
+  const Pulse({super.key, required this.child, this.amount = .08});
+  final Widget child;
+  final double amount;
+
+  @override
+  State<Pulse> createState() => _PulseState();
+}
+
+class _PulseState extends State<Pulse> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400))..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => ScaleTransition(
+    scale: Tween(begin: 1.0, end: 1 + widget.amount).animate(CurvedAnimation(parent: _c, curve: Curves.easeInOut)),
+    child: widget.child,
   );
 }

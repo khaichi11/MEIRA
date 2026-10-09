@@ -125,8 +125,17 @@ class Guardrails {
     ).hasMatch(a)) {
       a += ' Catatan keamanan: ayam harus dimasak sampai matang sempurna, tanpa bagian merah muda.';
     }
-    return a;
+    return respectful(a);
   }
+
+  /// Sebutan tentang berat badan diganti dengan istilah yang sopan, misalnya "orang gemuk" menjadi "orang dengan berat
+  /// badan berlebih". "Daging gemuk" (berlemak) tidak diubah karena maknanya lain.
+  static String respectful(String text) => text
+      .replaceAllMapped(
+        RegExp(r'\b(orang|anak|tubuh|badan|pengguna|anda)( yang)? (gemuk|gendut)\b', caseSensitive: false),
+        (m) => '${m[1]} dengan berat badan berlebih',
+      )
+      .replaceAll(RegExp(r'\b(kegemukan|kegendutan)\b', caseSensitive: false), 'berat badan berlebih');
 
   /// Kata penghubung dan kata umum yang boleh ditambahkan model walau tidak ada di sumber.
   static const _glue = {

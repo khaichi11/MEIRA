@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../app_state.dart';
-import '../core/recipes.dart';
 import '../theme.dart';
 import 'chat.dart';
 import 'illustrations.dart';
-import 'recipe.dart';
+import 'cook_grid.dart';
+import 'health.dart';
+import 'recipe_book.dart';
 import 'widgets.dart';
 
 /// Ambil atau pilih foto lalu kirim ke MEIRA. Dari beranda, layar percakapan dibuka lebih dulu.
@@ -29,7 +30,7 @@ Future<void> pickPhoto(
   }
 }
 
-/// Beranda Dapur: sapaan, kolom tanya, foto bahan, foto terakhir, dan buku resep.
+/// Beranda Dapur: sapaan, kolom tanya, foto bahan, jejak masak, program hidup sehat, dan pintasan buku resep.
 class KitchenScreen extends StatefulWidget {
   const KitchenScreen({super.key, required this.onCorrect});
   final void Function(AppState s) onCorrect;
@@ -39,9 +40,6 @@ class KitchenScreen extends StatefulWidget {
 }
 
 class _KitchenScreenState extends State<KitchenScreen> {
-  int _filter = 0;
-  bool _allRecipes = false;
-
   Future<void> _pick(AppState s, ImageSource source) => pickPhoto(context, s, source, onCorrect: widget.onCorrect);
 
   /// Pertanyaan dari beranda memulai percakapan baru di layar percakapan.
@@ -175,125 +173,71 @@ class _KitchenScreenState extends State<KitchenScreen> {
           ],
         ),
       ),
-      _recipes(s),
+      const SizedBox(height: 16),
+      const FadeIn(delay: Duration(milliseconds: 200), child: CookJourneyCard()),
+      const SizedBox(height: 16),
+      FadeIn(delay: const Duration(milliseconds: 260), child: _health(s)),
+      const SizedBox(height: 16),
+      FadeIn(delay: const Duration(milliseconds: 320), child: _book(s)),
     ],
   );
 
-  static final _filters = <(String, bool Function(Recipe))>[
-    ('Semua', (_) => true),
-    ('Cepat', (r) => r.minutes <= 15),
-    ('Sarapan', (r) => r.tags.contains('sarapan')),
-    ('Tanpa kompor', (r) => r.tags.contains('tanpa-kompor')),
-    ('Minuman', (r) => r.tags.contains('minuman')),
-    ('Berkuah', (r) => r.tags.contains('berkuah')),
-  ];
-
-  /// Buku resep yang bisa dijelajahi tanpa foto, dengan saringan sederhana.
-  Widget _recipes(AppState s) {
-    final (_, test) = _filters[_filter];
-    final list = s.recipes.where(test).toList();
-    final shown = _allRecipes ? list : list.take(5).toList();
-    return Column(
+  /// Program hidup sehat: ajakan memulai, atau rencana makan hari ini bila program sudah berjalan.
+  Widget _health(AppState s) => Container(
+    padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+    decoration: BoxDecoration(color: C.herbTint, borderRadius: BorderRadius.circular(22)),
+    child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 24),
         Row(
           children: [
-            Expanded(child: Text('Resep', style: T.title)),
-            Text('${list.length} resep', style: T.footnote),
+            const Icon(Icons.eco_rounded, color: C.herb),
+            const SizedBox(width: 8),
+            Expanded(child: Text(s.healthGoal == null ? 'Hidup sehat' : goalTitle(s.healthGoal), style: T.headline)),
+            TextButton(onPressed: () => openHealth(context), child: Text(s.healthGoal == null ? 'Mulai' : 'Lihat')),
+          ],
+        ),
+        if (s.healthGoal == null)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(
+              'Rencana makan harian dari resep yang lebih ringan, untuk menjaga atau menurunkan berat badan secara bertahap.',
+              style: T.subhead,
+            ),
+          )
+        else ...[
+          const SizedBox(height: 4),
+          const DailyPlan(compact: true),
+        ],
+        const Padding(padding: EdgeInsets.only(bottom: 10), child: TasteToggle()),
+      ],
+    ),
+  );
+
+  /// Pintasan ke buku resep lengkap; daftar resep tidak lagi memenuhi beranda.
+  Widget _book(AppState s) => Container(
+    padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+    decoration: BoxDecoration(color: C.surface, borderRadius: BorderRadius.circular(22)),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(child: Text('Buku resep', style: T.headline)),
+            Text('${s.recipes.length} resep', style: T.footnote),
           ],
         ),
         const SizedBox(height: 10),
-        SizedBox(
-          height: 38,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: _filters.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 8),
-            itemBuilder: (_, i) => ChoiceChip(
-              label: Text(_filters[i].$1),
-              selected: _filter == i,
-              onSelected: (_) => setState(() {
-                _filter = i;
-                _allRecipes = false;
-              }),
-              showCheckmark: false,
-              labelStyle: inter(14, weight: FontWeight.w500, color: _filter == i ? Colors.white : C.label),
-              selectedColor: C.accent,
-              backgroundColor: C.surface,
-              side: BorderSide(color: _filter == i ? C.accent : C.separator),
-              shape: const StadiumBorder(),
-            ),
+        RecipeFilterChips(selected: -1, onSelected: (i) => openRecipeBook(context, filter: i)),
+        const SizedBox(height: 10),
+        Pressable(
+          child: OutlinedButton.icon(
+            onPressed: () => openRecipeBook(context),
+            icon: const Icon(Icons.menu_book_rounded),
+            label: const Text('Buka buku resep'),
           ),
         ),
-        const SizedBox(height: 12),
-        for (final (i, r) in shown.indexed)
-          FadeIn(
-            // kunci ikut saringan supaya daftar masuk ulang dengan berurutan saat saringan diganti
-            key: ValueKey('$_filter/${r.name}'),
-            delay: Duration(milliseconds: 45 * (i % 6)),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Pressable(
-                child: Material(
-                  color: C.surface,
-                  borderRadius: BorderRadius.circular(18),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(18),
-                    onTap: () => showRecipeDetail(context, s, r),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 12, 8, 12),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 46,
-                            height: 46,
-                            decoration: BoxDecoration(color: C.accentTint, borderRadius: BorderRadius.circular(14)),
-                            child: Icon(_iconFor(r), color: C.accentDeep, size: 22),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  r.name,
-                                  style: inter(15.5, weight: FontWeight.w600),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  '${r.minutes} menit  ·  ${r.items.where((i) => i.main).map((i) => i.name).join(', ')}',
-                                  style: T.footnote,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const Icon(Icons.chevron_right_rounded, color: C.tertiary),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        if (list.length > shown.length)
-          TextButton(onPressed: () => setState(() => _allRecipes = true), child: Text('Lihat ${list.length - shown.length} resep lainnya')),
       ],
-    );
-  }
-
-  static IconData _iconFor(Recipe r) => r.tags.contains('minuman')
-      ? Icons.local_cafe_outlined
-      : r.tags.contains('berkuah')
-      ? Icons.soup_kitchen_outlined
-      : r.tags.contains('sarapan')
-      ? Icons.egg_outlined
-      : r.tags.contains('camilan')
-      ? Icons.cookie_outlined
-      : Icons.restaurant_outlined;
+    ),
+  );
 }

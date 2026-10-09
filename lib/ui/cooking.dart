@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../app_state.dart';
 import '../core/recipes.dart';
 import '../theme.dart';
 import 'widgets.dart';
@@ -25,8 +26,17 @@ class _CookingScreenState extends State<CookingScreen> {
 
   Recipe get r => widget.recipe;
 
+  AppState? _state;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _state = Scope.of(context);
+  }
+
   @override
   void dispose() {
+    _state?.stopSpeaking();
     _timer?.cancel();
     _pages.dispose();
     super.dispose();
@@ -135,11 +145,23 @@ class _CookingScreenState extends State<CookingScreen> {
                 children: [
                   IconButton.filledTonal(onPressed: _step > 0 ? () => _go(_step - 1) : null, icon: const Icon(Icons.arrow_back_rounded)),
                   const SizedBox(width: 10),
-                  IconButton.filledTonal(onPressed: () => s.speak('Langkah ${_step + 1}. $step'), icon: const Icon(Icons.volume_up_rounded)),
+                  IconButton.filledTonal(
+                    tooltip: s.voice == VoiceState.speaking ? 'Hentikan suara' : 'Bacakan langkah',
+                    onPressed: () => s.voice == VoiceState.speaking ? s.stopSpeaking() : s.speak('Langkah ${_step + 1}. $step'),
+                    icon: Icon(s.voice == VoiceState.speaking ? Icons.stop_rounded : Icons.volume_up_rounded),
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: FilledButton(
-                      onPressed: _step < r.steps.length - 1 ? () => _go(_step + 1) : () => Navigator.pop(context),
+                      onPressed: _step < r.steps.length - 1
+                          ? () => _go(_step + 1)
+                          : () async {
+                              // resep yang selesai dimasak masuk ke jejak masak di beranda
+                              await s.logCooked(r);
+                              if (!context.mounted) return;
+                              toast(context, s.streak > 1 ? 'Tercatat. ${s.streak} hari memasak berturut-turut.' : 'Tercatat di jejak masak.');
+                              Navigator.pop(context);
+                            },
                       child: Text(_step < r.steps.length - 1 ? 'Langkah berikutnya' : 'Selesai'),
                     ),
                   ),

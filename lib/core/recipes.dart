@@ -1,6 +1,7 @@
 /// Buku resep lokal: parser Markdown, pencocokan dengan bahan di foto, dan pemahaman permintaan.
 library;
 
+import 'health.dart';
 import 'vocab.dart';
 
 const recipeTags = ['sarapan', 'camilan', 'minuman', 'berkuah', 'pedas', 'manis', 'segar', 'sehat', 'vegetarian', 'anak', 'tanpa-kompor', 'hemat'];
@@ -84,6 +85,7 @@ List<Recipe> parseRecipes(String markdown) {
 
 class Prefs {
   int? maxMinutes;
+  bool healthy = false; // mode "enak dan sehat": resep yang lebih ringan didahulukan
   Set<String> tags = {};
   Set<String> exclude = {};
   Set<String> include = {};
@@ -130,7 +132,8 @@ List<Match> rank(List<Recipe> recipes, Set<String> have, Prefs prefs, {Set<Strin
             if (i.optional) i.key,
         }.intersection(have).length;
     final penalty = .15 * {for (final i in r.items) i.key}.intersection(prefs.exclude).length;
-    final score = .55 * covMain + .3 * covAll + .15 * tagHit + bonus - penalty;
+    final health = prefs.healthy ? .2 * healthScore(r) : 0.0;
+    final score = .55 * covMain + .3 * covAll + .15 * tagHit + bonus + health - penalty;
     out.add(
       Match(
         r,
@@ -242,7 +245,7 @@ Intent ruleIntent(String text) {
     'berkuah': r'kuah|hangat',
     'manis': r'manis|dessert|pencuci mulut',
     'segar': r'segar|seger',
-    'sehat': r'sehat|diet|ringan',
+    'sehat': r'sehat|diet|ringan|rendah kalori|kalori rendah|obesitas|berat badan|menurunkan berat',
     'vegetarian': r'vegetarian|tanpa daging|vegan',
     'anak': r'anak|bocah|si kecil',
     'tanpa-kompor': r'tanpa kompor|(nggak|gak|tidak) (pakai|pake|ada) kompor|tanpa masak|(tidak|gak|nggak) masak',

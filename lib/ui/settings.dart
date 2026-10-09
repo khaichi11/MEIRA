@@ -102,7 +102,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         Section(
           header: 'Gaya jawaban',
           children: [
-            for (final (v, label, sub) in const [('ringkas', 'Ringkas', 'Langsung dari buku resep'), ('natural', 'Natural', 'Disusun model bahasa')])
+            for (final (v, label, sub) in const [
+              ('ringkas', 'Ringkas', 'Langsung dari buku resep'),
+              ('natural', 'Natural', 'Dirangkai dengan bahasa sehari-hari'),
+            ])
               Row2(
                 title: label,
                 subtitle: sub,

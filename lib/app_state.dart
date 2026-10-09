@@ -12,6 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/grounding.dart';
+import 'core/health.dart';
 import 'core/history.dart';
 import 'core/pipeline.dart';
 import 'core/recipes.dart';
@@ -61,9 +62,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   String bootError = '';
   final steps = [
     BootStep('Membuka buku resep'),
-    BootStep('Menyiapkan model penglihatan'),
-    BootStep('Menyiapkan model bahasa'),
-    BootStep('Pemanasan'),
+    BootStep('Menyiapkan pengenal bahan'),
+    BootStep('Menyiapkan asisten berbahasa Indonesia'),
+    BootStep('Hampir siap'),
   ];
   String get bootLabel => steps.firstWhere((s) => !s.done, orElse: () => steps.last).title;
   double get bootProgress => steps.where((s) => s.done).length / steps.length;
@@ -81,6 +82,65 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   String? voiceName;
   String? userName; // nama panggilan, disimpan di perangkat
   bool readPackages = true;
+  bool healthyMode = false; // "enak dan sehat"
+  String? healthGoal; // turun, jaga, atau seimbang; null bila program hidup sehat belum dimulai
+
+  // ------------------------------------------------------------- jejak masak
+  /// Setiap resep yang selesai dimasak: tanggal dan id resep, tersimpan di perangkat.
+  final List<(DateTime, String)> cooks = [];
+
+  static DateTime _day(DateTime t) => DateTime(t.year, t.month, t.day);
+
+  /// Jumlah masakan per hari, untuk kotak-kotak jejak masak.
+  Map<DateTime, int> get cookDays {
+    final out = <DateTime, int>{};
+    for (final (t, _) in cooks) {
+      out.update(_day(t), (v) => v + 1, ifAbsent: () => 1);
+    }
+    return out;
+  }
+
+  /// Hari berturut-turut memasak sampai hari ini (atau sampai kemarin, bila hari ini belum memasak).
+  int get streak {
+    final days = cookDays;
+    var d = _day(DateTime.now());
+    if (!days.containsKey(d)) d = d.subtract(const Duration(days: 1));
+    var n = 0;
+    while (days.containsKey(d)) {
+      n++;
+      d = d.subtract(const Duration(days: 1));
+    }
+    return n;
+  }
+
+  int get bestStreak {
+    final days = cookDays.keys.toList()..sort();
+    var best = 0, run = 0;
+    for (var i = 0; i < days.length; i++) {
+      run = i > 0 && days[i].difference(days[i - 1]).inDays == 1 ? run + 1 : 1;
+      if (run > best) best = run;
+    }
+    return best;
+  }
+
+  /// Masakan dalam tujuh hari terakhir, dan berapa di antaranya tergolong sehat.
+  (int, int) get cookedThisWeek {
+    final from = _day(DateTime.now()).subtract(const Duration(days: 6));
+    final recent = [
+      for (final (t, id) in cooks)
+        if (!t.isBefore(from)) id,
+    ];
+    final byId = {for (final r in recipes) r.id: r};
+    return (recent.length, recent.where((id) => byId[id] != null && isHealthy(byId[id]!)).length);
+  }
+
+  Future<void> logCooked(Recipe r) async {
+    cooks.add((DateTime.now(), r.id));
+    final p = await SharedPreferences.getInstance();
+    if (cooks.length > 2000) cooks.removeRange(0, cooks.length - 2000);
+    await p.setStringList('cook_log', [for (final (t, id) in cooks) '${t.toIso8601String()}|$id']);
+    notifyListeners();
+  }
 
   // ------------------------------------------------------------- sesi
   Session? session;
@@ -126,6 +186,14 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       voiceName = p.getString('voice_name');
       userName = p.getString('user_name');
       readPackages = p.getBool('read_packages') ?? true;
+      healthyMode = p.getBool('healthy_mode') ?? false;
+      healthGoal = p.getString('health_goal');
+      cooks
+        ..clear()
+        ..addAll([
+          for (final line in p.getStringList('cook_log') ?? const <String>[])
+            if (DateTime.tryParse(line.split('|').first) case final t?) (t, line.split('|').last),
+        ]);
 
       models = await Models.open();
       if (models.missingRequired().isNotEmpty) await models.installBundled();
@@ -155,6 +223,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         answerStyle: answerStyle,
         parallelVision: false,
         thorough: thorough,
+        healthMode: healthyMode,
         readPackages: readPackages,
         knowledge: knowledge,
       )..userName = userName;
@@ -526,8 +595,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> stopSpeaking() async {
     if (voice == VoiceState.speaking) {
-      await speech?.stopSpeaking();
       voice = VoiceState.idle;
+      notifyListeners();
+      await speech?.stopSpeaking();
     }
   }
 
@@ -656,6 +726,18 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         answerStyle = value as String;
         meira?.answerStyle = answerStyle;
         await p.setString(key, answerStyle);
+      case 'healthy_mode':
+        healthyMode = value as bool;
+        meira?.healthMode = healthyMode;
+        await p.setBool(key, healthyMode);
+      case 'health_goal':
+        final v = value as String;
+        healthGoal = v.isEmpty ? null : v;
+        if (healthGoal == null) {
+          await p.remove(key);
+        } else {
+          await p.setString(key, v);
+        }
     }
     notifyListeners();
   }

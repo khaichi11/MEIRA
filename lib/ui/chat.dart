@@ -46,8 +46,18 @@ class _ChatScreenState extends State<ChatScreen> {
     _text.addListener(() => setState(() {}));
   }
 
+  AppState? _state; // disimpan agar suara bisa dihentikan saat layar ditutup
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _state = Scope.of(context);
+  }
+
   @override
   void dispose() {
+    // keluar dari percakapan menghentikan suara yang masih dibacakan
+    _state?.stopSpeaking();
     _text.dispose();
     _scroll.dispose();
     super.dispose();
@@ -138,7 +148,15 @@ class _ChatScreenState extends State<ChatScreen> {
         leading: IconButton(tooltip: 'Kembali', icon: const Icon(Icons.arrow_back_rounded), onPressed: () => Navigator.pop(context)),
         title: Text(title),
         actions: [
+          // tombol hentikan suara dan menu foto ada di bilah atas, jadi tetap terjangkau setelah percakapan panjang
+          if (s.voice == VoiceState.speaking)
+            IconButton(
+              tooltip: 'Hentikan suara',
+              onPressed: s.stopSpeaking,
+              icon: const Icon(Icons.volume_off_rounded, color: C.accent),
+            ),
           IconButton(tooltip: 'Tambah bahan dari foto', onPressed: s.busy ? null : () => _addPhoto(s), icon: const Icon(Icons.add_a_photo_outlined)),
+          if (s.photo != null) _photoMenu(s, inBar: true),
         ],
       ),
       body: Column(
@@ -149,6 +167,14 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
               children: [if (s.photo != null) _photoBlock(s), const SizedBox(height: 8), ..._conversation(s)],
             ),
+          ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 220),
+            transitionBuilder: (child, a) => SizeTransition(
+              sizeFactor: a,
+              child: FadeTransition(opacity: a, child: child),
+            ),
+            child: s.voice == VoiceState.speaking ? _stopVoice(s) : const SizedBox.shrink(),
           ),
           _suggestions(s),
           _composer(s),
@@ -207,11 +233,41 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Widget _photoMenu(AppState s) => Material(
-    color: Colors.white.withValues(alpha: .92),
+  /// Tombol besar untuk menghentikan suara yang sedang dibacakan, misalnya bila tombol suara tidak sengaja tertekan.
+  Widget _stopVoice(AppState s) => Padding(
+    padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+    child: Pressable(
+      child: Material(
+        color: C.accentTint,
+        borderRadius: BorderRadius.circular(22),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(22),
+          onTap: s.stopSpeaking,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.stop_circle_rounded, color: C.accentDeep, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  'Hentikan suara',
+                  style: inter(14.5, weight: FontWeight.w600, color: C.accentDeep),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  Widget _photoMenu(AppState s, {bool inBar = false}) => Material(
+    color: inBar ? Colors.transparent : Colors.white.withValues(alpha: .92),
     shape: const CircleBorder(),
     child: PopupMenuButton<String>(
-      icon: const Icon(Icons.more_horiz_rounded, color: C.label),
+      tooltip: 'Menu foto',
+      icon: Icon(inBar ? Icons.more_vert_rounded : Icons.more_horiz_rounded, color: C.label),
       color: C.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       onSelected: (v) async {
@@ -264,6 +320,9 @@ class _ChatScreenState extends State<ChatScreen> {
     for (final m in s.messages)
       FadeIn(
         key: ObjectKey(m),
+        // pesan pengguna masuk dari kanan, jawaban MEIRA dari kiri
+        dx: m.role == Role.user ? 18 : -12,
+        scale: .97,
         child: switch (m.role) {
           Role.user => Align(
             alignment: Alignment.centerRight,

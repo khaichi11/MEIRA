@@ -245,7 +245,11 @@ class _RecipeSheet extends StatelessWidget {
             child: Column(
               children: [
                 for (var i = 0; i < r.items.length; i++) ...[
-                  _ItemRow(r.items[i], nums[r.items[i].key] ?? const [], (m?.have.contains(r.items[i].key) ?? false) && !dish, dish, s),
+                  FadeIn(
+                    delay: Duration(milliseconds: 40 * i),
+                    offset: 6,
+                    child: _ItemRow(r.items[i], nums[r.items[i].key] ?? const [], (m?.have.contains(r.items[i].key) ?? false) && !dish, dish, s),
+                  ),
                   if (i < r.items.length - 1) const Padding(padding: EdgeInsets.only(left: 48), child: Divider()),
                 ],
               ],
@@ -296,15 +300,27 @@ class _RecipeSheet extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           OutlinedButton.icon(
-            onPressed: () => s.speak('${r.name}. ${[for (var i = 0; i < r.steps.length; i++) '${i + 1}. ${r.steps[i]}'].join('\n')}'),
-            icon: const Icon(Icons.volume_up_rounded, size: 20),
-            label: const Text('Bacakan semua langkah'),
+            // tombol yang sama menghentikan suara, supaya bacaan panjang yang tidak sengaja dimulai mudah dihentikan
+            onPressed: () => s.voice == VoiceState.speaking
+                ? s.stopSpeaking()
+                : s.speak('${r.name}. ${[for (var i = 0; i < r.steps.length; i++) '${i + 1}. ${r.steps[i]}'].join('\n')}'),
+            icon: Icon(s.voice == VoiceState.speaking ? Icons.stop_rounded : Icons.volume_up_rounded, size: 20),
+            label: Text(s.voice == VoiceState.speaking ? 'Hentikan suara' : 'Bacakan semua langkah'),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size(0, 50),
               foregroundColor: C.accent,
               side: const BorderSide(color: C.separator),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
             ),
+          ),
+          const SizedBox(height: 4),
+          TextButton.icon(
+            onPressed: () async {
+              await s.logCooked(r);
+              if (context.mounted) toast(context, 'Tercatat di jejak masak.');
+            },
+            icon: const Icon(Icons.check_circle_outline_rounded, size: 20),
+            label: const Text('Sudah saya masak'),
           ),
           if (m != null) ...[
             const SizedBox(height: 8),

@@ -226,4 +226,10 @@ void main() {
     expect(correction('ini ada telur juga'), isNull);
     expect(correction('ini telur dan tomat'), isNull);
   });
+
+  test('sebutan berat badan dibuat sopan', () {
+    expect(Guardrails.respectful('Resep ini cocok untuk orang gemuk.'), 'Resep ini cocok untuk orang dengan berat badan berlebih.');
+    expect(Guardrails.respectful('Kegemukan bisa dicegah.'), 'berat badan berlebih bisa dicegah.');
+    expect(Guardrails.respectful('Pilih daging yang tidak gemuk.'), 'Pilih daging yang tidak gemuk.');
+  });
 }

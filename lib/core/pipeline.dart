@@ -18,6 +18,7 @@ import '../vision/ocr.dart';
 import '../vision/vision.dart';
 import 'generated.dart';
 import 'grounding.dart';
+import 'health.dart';
 import 'history.dart';
 import 'recipes.dart';
 import 'vocab.dart';
@@ -151,6 +152,7 @@ class Meira {
     this.knowledge,
     this.readPackages = true,
     this.thorough = false,
+    this.healthMode = false,
     this.rewriteNotes = false,
     this.vision,
   });
@@ -166,6 +168,7 @@ class Meira {
   String answerStyle; // ringkas: rekomendasi dan langkah dari buku resep; natural: semua lewat LLM
   bool parallelVision; // false di HP: deteksi dulu agar penanda cepat tampil, baru kenali hidangan
   bool readPackages; // baca tulisan kemasan (mi instan, minyak, kecap, santan, ...)
+  bool healthMode; // "enak dan sehat": resep ringan didahulukan dan jawaban resep diberi satu saran agar lebih ringan
   bool thorough; // deteksi teliti: foto asli + cermin digabung, recall lebih tinggi, waktu sekitar 2x
   late final RecipeRetriever retriever = RecipeRetriever(recipes);
   final KnowledgeBase? knowledge; // catatan dapur untuk RAG pertanyaan bebas
@@ -344,6 +347,7 @@ class Meira {
   }
 
   void _rerank(Session s, {required bool skipShown, String query = ''}) {
+    s.prefs.healthy = healthMode || s.prefs.tags.contains('sehat');
     final have = {...s.have(), if (s.mode == 'hidangan') ...s.dishGuess};
     final skip = skipShown ? s.shown.toSet() : const <String>{};
     if (have.isEmpty && query.trim().isNotEmpty) {
@@ -642,6 +646,11 @@ class Meira {
       if (extra['added'] != null) core = 'Baik, ${extra['added']} saya catat. $core';
       if (extra['guess'] != null) core = '${extra['guess']} $core';
       if (extra['fixed'] != null) core = '${extra['fixed']} $core';
+      // mode enak dan sehat: satu saran agar resep lebih ringan, dari pedoman umum (lihat core/health.dart)
+      if ((healthMode || s.prefs.tags.contains('sehat')) && (task == 'rekomendasi' || task == 'ganti')) {
+        final tip = healthTip(cur.recipe);
+        if (tip.isNotEmpty) core = core.replaceFirst(RegExp(r' Apakah Anda ingin'), ' $tip Apakah Anda ingin');
+      }
       var source = 'templat';
       if (answerStyle == 'natural' && brain != null && task != 'detail') {
         // gaya natural: model menulis ulang jawaban buku resep menjadi kalimat lisan; hasilnya dipakai hanya bila semua

@@ -406,3 +406,23 @@ Keduanya biasanya diungkep dulu dengan bumbu sampai bumbunya meresap. Ayam goren
 ## Buah naga
 kunci: buah naga pitaya merah putih
 Buah naga adalah buah dari tanaman kaktus Selenicereus. Kulitnya merah muda dengan sisik hijau, dagingnya putih atau merah dengan biji hitam kecil yang ikut dimakan. Rasanya segar dan agak manis, enak dimakan langsung, dibuat jus, atau dicampur ke salad buah dan puding. Buah naga berdaging merah dapat membuat urine atau tinja berwarna kemerahan; hal ini wajar dan tidak berbahaya.
+
+## Isi Piringku
+kunci: isi piringku makan sehat porsi piring sayur buah lauk makanan pokok gizi seimbang
+Isi Piringku adalah pedoman makan sekali makan dari Kementerian Kesehatan: separuh piring berisi sayur dan buah, seperempat makanan pokok seperti nasi atau ubi, dan seperempat lauk pauk. Pedoman ini juga menganjurkan minum air putih yang cukup, aktif bergerak, dan mencuci tangan sebelum makan.
+
+## Batas gula, garam, dan lemak
+kunci: batas gula garam lemak sehari GGL anjuran kemenkes kalori diet sehat
+Kementerian Kesehatan menganjurkan batas sehari paling banyak 50 gram gula (sekitar 4 sendok makan), 5 gram garam (sekitar 1 sendok teh), dan 67 gram lemak (sekitar 5 sendok makan minyak). Batas ini berlaku untuk orang dewasa sehat dan mencakup gula, garam, dan minyak di dalam masakan maupun minuman.
+
+## Menurunkan berat badan dengan aman
+kunci: menurunkan berat badan diet obesitas berat badan berlebih turun berat aman resep sehat
+Penurunan berat badan yang aman biasanya bertahap, sekitar setengah sampai satu kilogram per minggu, dengan mengurangi porsi, gorengan, minuman manis, dan camilan tinggi gula, serta memperbanyak sayur, buah, dan lauk rendah lemak. Aktivitas fisik rutin membantu. Untuk obesitas atau penyakit penyerta seperti diabetes dan hipertensi, rencana makan sebaiknya disusun bersama dokter atau ahli gizi.
+
+## Obesitas
+kunci: obesitas berat badan berlebih IMT indeks massa tubuh kegemukan
+Obesitas adalah kelebihan lemak tubuh yang dapat mengganggu kesehatan. Di Indonesia, Kementerian Kesehatan memakai indeks massa tubuh (berat badan dalam kilogram dibagi kuadrat tinggi badan dalam meter): di atas 25 tergolong berat badan berlebih dan di atas 27 tergolong obesitas. Pola makan seimbang, aktivitas fisik, dan pemeriksaan ke tenaga kesehatan membantu menanganinya.
+
+## Cara memasak yang lebih ringan
+kunci: masak sehat rendah lemak kukus rebus panggang tumis sedikit minyak ganti goreng
+Mengukus, merebus, memanggang, atau menumis dengan sedikit minyak membuat masakan lebih ringan daripada menggoreng dalam minyak banyak. Pakai santan encer atau kurangi jumlahnya, kurangi gula dan kecap manis, dan perkuat rasa dengan bumbu dapur, rempah, serta perasan jeruk nipis.
