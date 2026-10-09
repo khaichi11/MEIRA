@@ -171,6 +171,8 @@ void main() {
     expect(ingredientQuestion('ada telur juga'), isFalse);
     expect(ingredientQuestion('saya punya apel dan pir, enaknya dibuat apa?'), isFalse);
     expect(ingredientQuestion('masih ada tomat nggak'), isFalse);
+    expect(ingredientQuestion('pisang hijau itu pisang apa sih?'), isTrue);
+    expect(ingredientQuestion('aku punya telur, bisa masak apa?'), isFalse);
   });
 
   test('jawaban yang mengarang ditolak, parafrase yang setia diterima', () {

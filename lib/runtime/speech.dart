@@ -94,6 +94,9 @@ class Speech {
 
   /// Level suara 0..1 untuk animasi tombol dan deteksi jeda.
   final StreamController<double> level = StreamController.broadcast();
+
+  /// Mode bicara tanpa tombol mendengarkan berulang kali, jadi Whisper tetap dimuat selama mode itu aktif.
+  bool keepLoaded = false;
   bool get recording => _micSub != null;
 
   // ------------------------------------------------------------ isolate
@@ -104,7 +107,15 @@ class Speech {
     final ready = ReceivePort();
     final replies = ReceivePort();
     _isolate = await Isolate.spawn(_workerMain, [ready.sendPort, replies.sendPort, paths.encoder, paths.decoder, paths.tokens, threads]);
-    _worker = await ready.first as SendPort;
+    // isolate kerja mengirim SendPort bila siap, atau pesan galat bila pustaka sherpa-onnx gagal dimuat;
+    // jangan menunggu selamanya, supaya tombol mikrofon tidak berputar tanpa akhir
+    final first = await ready.first.timeout(const Duration(seconds: 30), onTimeout: () => 'ERROR:pengenal suara tidak merespons');
+    if (first is! SendPort) {
+      _isolate?.kill(priority: Isolate.immediate);
+      _isolate = null;
+      throw StateError('$first'.replaceFirst('ERROR:', ''));
+    }
+    _worker = first;
     replies.listen((msg) {
       final (id, result) = msg as (int, dynamic);
       _pending.remove(id)?.complete(result);
@@ -158,7 +169,12 @@ class Speech {
       samples[i] = pcm[i] / 32768.0;
     }
     final text = await _call<String>('asr', samples);
-    return text.trim();
+    // Whisper small memakai sekitar 600 MB; dilepas segera supaya model bahasa dan detektor tidak ikut dimatikan sistem
+    // saat memori ponsel menipis. Memuat ulang hanya perlu beberapa detik saat mikrofon dipakai lagi.
+    if (!keepLoaded) unload();
+    // Whisper menulis keterangan dalam kurung siku atau kurung biasa untuk bunyi yang bukan ucapan, misalnya
+    // "[musik]" atau "(suara pembinaan)" saat hening; keterangan seperti itu tidak dianggap sebagai pertanyaan
+    return text.replaceAll(RegExp(r'\[[^\]]*\]|\([^)]*\)'), ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
   }
 
   Future<void> cancelListening() async {
@@ -234,7 +250,12 @@ void _workerMain(List<dynamic> args) {
   final ready = args[0] as SendPort, replies = args[1] as SendPort;
   final encoder = args[2] as String, decoder = args[3] as String, tokens = args[4] as String;
   final threads = args[5] as int;
-  so.initBindings();
+  try {
+    so.initBindings();
+  } catch (e) {
+    ready.send('ERROR:pustaka pengenal suara gagal dimuat ($e)');
+    return;
+  }
   so.OfflineRecognizer? asr;
   final inbox = ReceivePort();
   ready.send(inbox.sendPort);

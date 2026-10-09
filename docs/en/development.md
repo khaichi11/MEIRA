@@ -20,8 +20,10 @@ Runtime 1.30.0 from Maven. Everything is copied to `android/app/src/main/jniLibs
 
 - `llama-server` is packaged as `libllama_server.so` because Android only allows executables from the native library
   folder. `useLegacyPackaging` makes sure files are extracted to disk.
-- The full ONNX Runtime replaces the trimmed build bundled with sherpa-onnx (`pickFirsts`), because the trimmed build
-  lacks operators the detector needs. Its C API is backward compatible, so Whisper keeps working.
+- The full ONNX Runtime is packaged as `libonnxruntime_meira.so`, with its SONAME changed by `patchelf`, next to the
+  trimmed `libonnxruntime.so` that sherpa-onnx brings. The detector needs operators the trimmed build lacks, while
+  sherpa-onnx is linked against the versioned symbols of its own build (`VERS_1.28.2`), so Whisper only loads with
+  that library. Replacing one with the other breaks either the detector or voice input.
 
 ## Models inside the APK
 

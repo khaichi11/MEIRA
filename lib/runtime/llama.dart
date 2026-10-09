@@ -12,6 +12,9 @@ import 'device.dart';
 /// Sampling yang disarankan Qwen3.5 untuk mode non-thinking.
 const visionSampling = {'temperature': .7, 'top_p': .8, 'top_k': 20, 'presence_penalty': 1.5, 'seed': 7};
 const textSampling = {'temperature': .7, 'top_p': .8, 'top_k': 20, 'presence_penalty': 1.0};
+
+/// Obrolan singkat: lebih tenang dan tidak melantur, karena model 0,8B mudah mengarang bila suhunya tinggi.
+const chatSampling = {'temperature': .3, 'top_p': .8, 'top_k': 20, 'presence_penalty': .5};
 const greedy = {'temperature': 0.0, 'top_k': 1};
 
 /// Model mata hasil fine-tune: greedy, sama dengan GROUNDING di meira/prompts.py.

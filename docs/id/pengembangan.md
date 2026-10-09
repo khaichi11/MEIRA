@@ -21,8 +21,11 @@ git.
 
 - `llama-server` dikemas sebagai `libllama_server.so` karena Android hanya mengizinkan eksekusi dari folder
   library native. `useLegacyPackaging` memastikan berkas diekstrak ke disk.
-- ONNX Runtime lengkap menggantikan versi ringkas bawaan sherpa-onnx (`pickFirsts`), karena versi ringkas tidak
-  memuat operator yang dibutuhkan detektor. API C-nya kompatibel ke belakang, sehingga Whisper tetap berjalan.
+- ONNX Runtime lengkap dikemas sebagai `libonnxruntime_meira.so`, dengan SONAME yang diubah memakai `patchelf`, di
+  samping `libonnxruntime.so` versi ringkas yang dibawa sherpa-onnx. Detektor memerlukan operator yang tidak ada di
+  versi ringkas, sedangkan sherpa-onnx ditautkan ke simbol berversi milik versinya sendiri (`VERS_1.28.2`), sehingga
+  Whisper hanya bisa dimuat dengan pustaka itu. Mengganti salah satunya dengan yang lain akan merusak detektor atau
+  input suara.
 
 ## Model di dalam APK
 

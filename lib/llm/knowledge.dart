@@ -83,6 +83,9 @@ class KnowledgeBase {
   ];
 
   /// Hasil: (catatan, skor BM25, jumlah kata berbeda yang cocok).
+  /// Jumlah kata bermakna dalam pertanyaan; dipakai untuk menghitung seberapa banyak pertanyaan diliput sebuah catatan.
+  int termCount(String query) => _tokens(query).toSet().length;
+
   List<(Note, double, int)> search(String query, {int k = 2, double minScore = 1.5}) {
     final q = _tokens(query).toSet();
     if (q.isEmpty) return [];
@@ -134,7 +137,9 @@ bool ingredientQuestion(String text) {
   // "... nggak?" di akhir kalimat juga pertanyaan, kecuali pernyataan bahan seperti "ada telur juga"
   final tag = RegExp(r'\b(nggak|enggak|gak|ga|tidak|kah)\s*\??\s*$').hasMatch(t.trim());
   final states = RegExp(r'\b(ada|punya|tambah|tambahkan|juga|sisa|masih)\b').hasMatch(t);
-  return strong || (tag && !states);
+  // pertanyaan biasa tentang bahan atau hidangan ("pisang hijau itu pisang apa?") juga obrolan, selama bukan minta resep
+  final asks = t.contains('?') || RegExp(r'\b(apa|apakah|kenapa|mengapa|kok|bagaimana|gimana|berapa|jenis|macam)\b').hasMatch(t);
+  return strong || asks || (tag && !states);
 }
 
 /// Pesan yang dijawab sebagai obrolan walaupun aturan menebak permintaan rekomendasi resep.

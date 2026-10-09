@@ -1,5 +1,5 @@
-/// Pembungkus ONNX Runtime yang ringkas untuk detektor bahan dan OCR. Memakai libonnxruntime.so yang sudah
-/// dibawa paket sherpa_onnx, jadi tidak menambah pustaka native. Tensor masuk dan keluar berupa Float32List.
+/// Pembungkus ONNX Runtime yang ringkas untuk detektor bahan dan OCR. Memakai ONNX Runtime lengkap yang dikemas sebagai
+/// libonnxruntime_meira.so (lihat tool/build_native.sh). Tensor masuk dan keluar berupa Float32List.
 library;
 
 import 'dart:ffi' as ffi;
@@ -29,7 +29,8 @@ class OrtModel {
   static ffi.DynamicLibrary _open() {
     final custom = Platform.environment['MEIRA_ORT_LIB'];
     if (custom != null && custom.isNotEmpty) return ffi.DynamicLibrary.open(custom);
-    return ffi.DynamicLibrary.open('libonnxruntime.so');
+    // versi lengkap dikemas dengan nama sendiri; libonnxruntime.so di APK adalah versi ringkas milik sherpa-onnx (Whisper)
+    return ffi.DynamicLibrary.open('libonnxruntime_meira.so');
   }
 
   static OrtApi get _api {

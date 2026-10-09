@@ -541,6 +541,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   Future<void> setHandsFree(bool v) async {
     handsFree = v;
+    speech?.keepLoaded = v;
     if (v) {
       speakAnswers = true;
       unawaited(_listenHandsFree());

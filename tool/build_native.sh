@@ -32,12 +32,23 @@ for ABI in arm64-v8a x86_64; do
   TRIPLE=$([ "$ABI" = arm64-v8a ] && echo aarch64-linux-android || echo x86_64-linux-android)
   cp "$NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/$TRIPLE/libc++_shared.so" "$OUT/"
 done
-# ONNX Runtime lengkap (Maven resmi, MIT) untuk detektor bahan dan OCR. Versi bawaan sherpa-onnx dipangkas dan
-# tidak memuat semua operator yang dibutuhkan detektor; berkas ini menggantikannya saat pengemasan (pickFirst).
+# ONNX Runtime lengkap (Maven resmi, MIT) untuk detektor bahan dan OCR. Versi bawaan sherpa-onnx dipangkas dan tidak
+# memuat semua operator yang dibutuhkan detektor, tetapi sherpa-onnx sendiri memerlukan versinya (simbol berversi
+# VERS_1.28.2) untuk Whisper. Karena itu keduanya ikut di APK: versi lengkap diberi nama dan SONAME
+# libonnxruntime_meira.so agar tidak menggantikan libonnxruntime.so milik sherpa-onnx.
 ORT_VERSION="${ORT_VERSION:-1.30.0}"
 AAR="$WORK/onnxruntime-android-$ORT_VERSION.aar"
 [ -f "$AAR" ] || curl -fL -o "$AAR" "https://repo1.maven.org/maven2/com/microsoft/onnxruntime/onnxruntime-android/$ORT_VERSION/onnxruntime-android-$ORT_VERSION.aar"
+PATCHELF="${PATCHELF:-$(command -v patchelf || true)}"
+if [ -z "$PATCHELF" ]; then
+  python3 -m venv "$WORK/patchelf-venv" && "$WORK/patchelf-venv/bin/pip" install -q patchelf
+  PATCHELF="$WORK/patchelf-venv/bin/patchelf"
+fi
 for ABI in arm64-v8a x86_64; do
-  unzip -o -q -j "$AAR" "jni/$ABI/libonnxruntime.so" -d "android/app/src/main/jniLibs/$ABI"
+  DEST="android/app/src/main/jniLibs/$ABI"
+  rm -f "$DEST/libonnxruntime.so"
+  unzip -o -q -j "$AAR" "jni/$ABI/libonnxruntime.so" -d "$WORK/ort-$ABI"
+  cp "$WORK/ort-$ABI/libonnxruntime.so" "$DEST/libonnxruntime_meira.so"
+  "$PATCHELF" --set-soname libonnxruntime_meira.so "$DEST/libonnxruntime_meira.so"
 done
 echo "selesai: android/app/src/main/jniLibs"

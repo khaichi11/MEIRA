@@ -305,7 +305,7 @@ class Meira {
   Future<Intent> _intent(String text) async {
     final rule = ruleIntent(text);
     // pertanyaan dapur atau pertanyaan tentang sifat bahan dijawab sebagai obrolan, bukan rekomendasi resep
-    if (rule.action == 'rekomendasi' && chatQuestion(text, knowledge)) return rule..action = 'obrolan';
+    if (rule.action == 'rekomendasi' && (Guardrails.smallTalk(text) || chatQuestion(text, knowledge))) return rule..action = 'obrolan';
     final plain = rule.action == 'rekomendasi' && rule.maxMinutes == null && rule.tags.isEmpty && rule.exclude.isEmpty && rule.include.isEmpty;
     if (!useLlmIntent || brain == null || !plain || text.split(' ').length < 4) return rule;
     final llm = await brain!
@@ -616,7 +616,13 @@ class Meira {
       for (final n in knowledge?.search(text, k: 2) ?? const <(Note, double, int)>[])
         if (asked.isEmpty || mentions('${n.$1.title} ${n.$1.body}').any(asked.contains)) n,
     ];
-    final strong = notes.where((n) => n.$3 >= 2 || n.$2 >= Guardrails.ragThreshold).toList();
+    // Catatan disalin apa adanya hanya bila meliput sebagian besar kata pertanyaan ("berapa lama merebus telur").
+    // Catatan yang hanya berbagi satu dua kata, misalnya soal menyimpan pisang untuk pertanyaan beda pisang ambon dan
+    // kepok, tidak dipakai sebagai jawaban; model menjawab sendiri dengan catatan yang cukup dekat sebagai rujukan.
+    final terms = knowledge?.termCount(text) ?? 0;
+    double cover((Note, double, int) n) => terms == 0 ? 0 : n.$3 / terms;
+    final strong = notes.where((n) => (n.$3 >= 2 || n.$2 >= Guardrails.ragThreshold) && cover(n) >= .6).toList();
+    final related = notes.where((n) => cover(n) >= .5).toList();
     // pengganti bahan yang tidak ada di resep terpilih juga dijawab dari catatan ("kalau tidak ada mentega, pakai apa?")
     final offRecipe = task == 'substitusi' && !(cur?.recipe.items.any((i) => i.key == resolve(extra['ingredient'] ?? '')) ?? false);
     if ((task == 'obrolan' || offRecipe) && strong.isNotEmpty) {
@@ -624,6 +630,10 @@ class Meira {
       yield TokenEvent(answer);
       await _remember(s, text, answer, source);
       yield DoneEvent(answer, source);
+      return;
+    }
+    if (task == 'obrolan' && brain != null) {
+      yield* _chat(s, text, related);
       return;
     }
     var prompt = context(s, task, extra);
@@ -646,9 +656,7 @@ class Meira {
     }
     var source = 'llm';
     if (full.trim().isNotEmpty) full = Guardrails.checkOutput(fixRefs(full, s.detections));
-    // kalimat terakhir yang terpotong batas token dibuang agar jawaban tidak berhenti di tengah kata
-    final end = full.lastIndexOf(RegExp(r'[.!?](\s|$)'));
-    if (end > 0 && !RegExp(r'[.!?]\s*$').hasMatch(full)) full = full.substring(0, end + 1);
+    full = completeSentences(full);
     // penjelasan berputar atau kosong: pakai catatan dapur yang relevan bila ada
     if ((full.trim().isEmpty || Guardrails.isCircular(full)) && notes.isNotEmpty) {
       full = notes.first.$1.body;
@@ -659,6 +667,47 @@ class Meira {
       source = 'templat';
     }
     await _remember(s, text.isEmpty ? '(foto baru)' : text, full, source);
+    yield DoneEvent(full, source);
+  }
+
+  /// Obrolan bebas: sapaan, ucapan terima kasih, dan pertanyaan pengetahuan dapur. Model 0,8B diberi perintah pendek dan
+  /// konteks seperlunya, karena perintah resep yang panjang membuatnya melantur, menjelaskan rencananya sendiri, dan
+  /// mengarang resep. Catatan dapur yang relevan disertakan sebagai rujukan (RAG), bukan disalin mentah.
+  Stream<MeiraEvent> _chat(Session s, String text, List<(Note, double, int)> notes) async* {
+    final facts = [
+      if (s.detections.isNotEmpty) 'Bahan di foto pengguna: ${grouped(s.detections).map((g) => g.label).join(', ')}.',
+      if (s.currentMatch != null) 'Resep yang sedang dibahas: ${s.currentMatch!.recipe.name}.',
+      for (final n in notes.take(2)) 'Catatan dapur "${n.$1.title}": ${n.$1.body}',
+    ];
+    final name = userName?.trim() ?? '';
+    final system = name.isEmpty ? promptChatSystem : '$promptChatSystem Nama pengguna: $name.';
+    final user = facts.isEmpty ? text : '${facts.join('\n')}\n\nPertanyaan: $text';
+    var full = '';
+    try {
+      await for (final piece in brain!.stream(
+        [
+          {'role': 'system', 'content': system},
+          ...s.memory.window(),
+          {'role': 'user', 'content': user},
+        ],
+        maxTokens: 200,
+        sampling: chatSampling,
+      )) {
+        full += piece;
+        yield TokenEvent(piece);
+      }
+    } catch (e) {
+      full = '';
+    }
+    full = completeSentences(Guardrails.checkOutput(full));
+    var source = 'llm';
+    if (full.isEmpty) {
+      full = notes.isNotEmpty
+          ? notes.first.$1.body
+          : 'Maaf, saya belum bisa menjawab itu. Silakan tanyakan hal lain seputar bahan, resep, atau cara memasak.';
+      source = notes.isNotEmpty ? 'catatan' : 'templat';
+    }
+    await _remember(s, text, full, source);
     yield DoneEvent(full, source);
   }
 
@@ -875,6 +924,22 @@ final _ref = RegExp(r'\s*\(?\s*(?:#|nomor\s+|no\.\s*)(\d+)(?:\s*(?:,|dan|-|–)\
 
 /// Pertahankan rujukan nomor (#n) hanya bila nama bahan nomor itu memang disebut tepat sebelumnya,
 /// lalu bersihkan label konteks yang bocor dan tanda pisah panjang.
+/// Perintah sistem untuk obrolan bebas; sengaja pendek agar model kecil fokus menjawab.
+const promptChatSystem =
+    'Anda adalah MEIRA, asisten dapur yang ramah dan sopan. Jawab dalam bahasa Indonesia yang wajar, langsung ke inti, '
+    'paling banyak tiga kalimat. Untuk sapaan atau ucapan terima kasih, balas dengan hangat dalam satu kalimat lalu '
+    'tawarkan bantuan memasak. Untuk pertanyaan tentang bahan atau teknik memasak, jelaskan faktanya dengan konkret; '
+    'bila tidak yakin, katakan terus terang. Jangan membuat resep, daftar bahan, atau langkah kecuali diminta, dan '
+    'jangan menjelaskan apa yang akan Anda lakukan.';
+
+/// Buang kalimat terakhir yang terpotong batas token agar jawaban tidak berhenti di tengah kata.
+String completeSentences(String text) {
+  final t = text.trim();
+  if (t.isEmpty || RegExp(r'[.!?]["”)]?$').hasMatch(t)) return t;
+  final end = t.lastIndexOf(RegExp(r'[.!?](\s|$)'));
+  return end > 0 ? t.substring(0, end + 1) : t;
+}
+
 String fixRefs(String text, List<Detection> detections) {
   final byNum = {for (final d in detections) d.number: d};
   bool ok(int n, String before) {

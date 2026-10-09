@@ -35,6 +35,18 @@ class Guardrails {
   );
 
   /// Kata yang menandakan percakapan masih seputar dapur dan makanan.
+  /// Nama hidangan, jajanan, dan istilah kuliner Indonesia yang sering ditanyakan, supaya pertanyaan seperti "apa bedanya
+  /// rendang dan kalio" tidak ditolak hanya karena hidangannya belum ada di buku resep.
+  static final _food = RegExp(
+    r'\b(hidangan|kuliner|lauk|jajanan|kudapan|kue|camilan|dessert|snack|gizi|nutrisi|kalori|protein|vitamin|serat|'
+    r'rendang|kalio|soto|sate|bakso|gado|rawon|opor|semur|gulai|pecel|lontong|ketupat|martabak|seblak|cireng|cilok|batagor|'
+    r'siomay|pempek|karedok|urap|sop|sup|uduk|kuning|bubur|kolak|klepon|onde|lemper|risoles|pastel|lumpia|kerupuk|rempeyek|'
+    r'perkedel|bakwan|puding|agar|jus|kopi|teh|sambal|saus|kecap|rica|balado|oseng|sangrai|ungkep|presto|marinasi|fermentasi|'
+    r'kecambah|tauge|singkong|ubi|jagung|kentang|tomat|cabai|cabe|bawang|jahe|kunyit|lengkuas|serai|kemiri|ketumbar|merica|'
+    r'pisang|apel|jeruk|mangga|pepaya|semangka|melon|nanas|anggur|durian|rambutan|alpukat|kelapa|beras|ketan|terigu|mentega)\b',
+    caseSensitive: false,
+  );
+
   static final _kitchen = RegExp(
     r'\b(masak|memasak|resep|bahan|bumbu|goreng|rebus|tumis|panggang|kukus|bakar|makan|makanan|minuman|minum|sarapan|camilan|'
     r'dapur|kulkas|simpan|menyimpan|segar|matang|potong|iris|cincang|blender|wajan|panci|teflon|oven|kompor|porsi|menit|'
@@ -43,7 +55,14 @@ class Guardrails {
     caseSensitive: false,
   );
 
-  static final _smallTalk = RegExp(r'\b(terima kasih|makasih|halo|hai|selamat (pagi|siang|sore|malam)|oke|baik)\b', caseSensitive: false);
+  static final _smallTalk = RegExp(
+    r'\b(terima kasih|makasih|halo|hai|hi|hello|assalamualaikum|selamat (pagi|siang|sore|malam)|oke|baik|sampai jumpa|dadah|'
+    r'kamu siapa|siapa kamu|kamu bisa apa|bisa (bantu|membantu) apa|apa (saja|aja) yang bisa (kamu|anda))\b',
+    caseSensitive: false,
+  );
+
+  /// Sapaan, ucapan terima kasih, atau pertanyaan tentang kemampuan MEIRA: dijawab sebagai obrolan, bukan resep.
+  static bool smallTalk(String text) => _smallTalk.hasMatch(text) && mentions(text).isEmpty;
 
   /// Periksa pesan pengguna sebelum diteruskan ke model. [knownIngredient] = pesan menyebut bahan yang dikenal.
   /// [ragScore] = skor BM25 tertinggi dari buku resep atau catatan dapur; kecocokan lemah (kata umum) tidak dihitung.
@@ -75,7 +94,7 @@ class Guardrails {
         'Saya dapat membantu memilih resep secara umum, misalnya yang rendah gula atau tidak pedas.',
       );
     }
-    if (!knownIngredient && ragScore < ragThreshold && !_kitchen.hasMatch(t) && !_smallTalk.hasMatch(t)) {
+    if (!knownIngredient && ragScore < ragThreshold && !_kitchen.hasMatch(t) && !_food.hasMatch(t) && !_smallTalk.hasMatch(t)) {
       return const GuardResult(
         GuardVerdict.offTopic,
         'Saya MEIRA, asisten khusus dapur, sehingga hanya dapat membantu soal bahan, resep, dan cara memasak. '

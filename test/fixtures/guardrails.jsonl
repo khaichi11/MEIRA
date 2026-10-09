@@ -32,3 +32,7 @@
 {"text": "yang lain dong", "expect": "allow"}
 {"text": "pilih yang nomor dua", "expect": "allow"}
 {"text": "ada penggantinya nggak?", "expect": "allow"}
+{"text": "apa bedanya rendang sama kalio?", "expect": "allow"}
+{"text": "resep soto ayam yang enak gimana ya", "expect": "allow"}
+{"text": "pisang hijau itu pisang apa sih?", "expect": "allow"}
+{"text": "kamu bisa bantu apa aja?", "expect": "allow"}
