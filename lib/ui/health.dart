@@ -159,6 +159,7 @@ class HealthScreen extends StatelessWidget {
                 onPressed: () {
                   if (s.busy) return;
                   s.newConversation();
+                  s.setChatMode('gizi');
                   openChat(context, s);
                   s.send(text: q);
                 },

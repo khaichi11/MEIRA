@@ -149,6 +149,29 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         leading: IconButton(tooltip: 'Kembali', icon: const Icon(Icons.arrow_back_rounded), onPressed: () => Navigator.pop(context)),
         title: Text(title),
+        // satu asisten dengan dua fokus: resep (bahan, masakan) atau gizi (catatan makan, berat, puasa, label kemasan)
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(46),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: SegmentedButton<String>(
+              segments: const [
+                ButtonSegment(value: 'resep', label: Text('Resep'), icon: Icon(Icons.restaurant_rounded, size: 18)),
+                ButtonSegment(value: 'gizi', label: Text('Gizi'), icon: Icon(Icons.eco_rounded, size: 18)),
+              ],
+              selected: {s.chatMode},
+              showSelectedIcon: false,
+              style: ButtonStyle(
+                visualDensity: VisualDensity.compact,
+                textStyle: WidgetStatePropertyAll(inter(13.5, weight: FontWeight.w600)),
+                backgroundColor: WidgetStateProperty.resolveWith((st) => st.contains(WidgetState.selected) ? C.accentTint : C.surface),
+                foregroundColor: WidgetStateProperty.resolveWith((st) => st.contains(WidgetState.selected) ? C.accentDeep : C.secondary),
+                side: const WidgetStatePropertyAll(BorderSide(color: C.separator)),
+              ),
+              onSelectionChanged: (v) => s.setChatMode(v.first),
+            ),
+          ),
+        ),
         actions: [
           // tombol hentikan suara dan menu foto ada di bilah atas, jadi tetap terjangkau setelah percakapan panjang
           if (s.voice == VoiceState.speaking)
@@ -414,9 +437,19 @@ class _ChatScreenState extends State<ChatScreen> {
   );
 
   Widget _suggestions(AppState s) {
-    if (s.session == null || s.busy || s.voice != VoiceState.idle) return const SizedBox.shrink();
+    if (s.busy || s.voice != VoiceState.idle) return const SizedBox.shrink();
+    if (s.session == null && s.chatMode != 'gizi') return const SizedBox.shrink();
     final dish = s.sceneMode == 'hidangan';
-    final items = dish
+    final items = s.chatMode == 'gizi' && s.currentMatch == null && s.session?.label == null
+        ? const [
+            ('Makanan saya hari ini', 'Hari ini saya makan apa saja? Masih aman?'),
+            ('Boleh makan sekarang?', 'Boleh makan sekarang?'),
+            ('Kebutuhan harian saya', 'Berapa kebutuhan kalori saya?'),
+            ('Progres berat', 'Gimana progres berat saya?'),
+          ]
+        : s.session?.label != null
+        ? const [('Kalau dimakan semua?', 'Kalau saya makan semuanya gimana?'), ('Porsi yang pas', 'Sebaiknya berapa sajian?')]
+        : dish
         ? const [('Bahannya apa saja?', 'Bahannya apa saja?'), ('Cara membuat', 'Bagaimana cara membuatnya?')]
         : s.currentMatch != null
         ? const [
@@ -510,6 +543,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ? 'Mendengarkan…'
                                 : transcribing
                                 ? 'Menulis ucapan Anda…'
+                                : s.chatMode == 'gizi'
+                                ? 'Tanya soal gizi atau catat makanan'
                                 : 'Tanya soal resep atau bahan',
                             filled: false,
                             contentPadding: const EdgeInsets.fromLTRB(16, 12, 8, 12),

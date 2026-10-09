@@ -183,6 +183,7 @@ class Meira {
   bool readPackages; // baca tulisan kemasan (mi instan, minyak, kecap, santan, ...)
   DailyNeeds? needs; // kebutuhan gizi harian dari kalkulator tubuh, bila pengguna mengisinya
   AppData? appData; // data fitur yang bisa dibaca dan diubah lewat obrolan
+  String chatMode = 'resep'; // pada mode gizi, pertanyaan umum dijawab sebagai soal gizi, bukan saran resep
   /// Potongan foto asli beresolusi lebih tinggi untuk OCR kedua di sekitar label gizi (diisi AppState per foto).
   Future<VisionInput?> Function(List<double> box)? zoom;
   bool healthMode; // "enak dan sehat": resep ringan didahulukan dan jawaban resep diberi satu saran agar lebih ringan
@@ -576,6 +577,9 @@ class Meira {
     }
     final it = text.isNotEmpty ? await _intent(text) : Intent(imageDataUrl != null && s.mode == 'hidangan' ? 'hidangan' : 'rekomendasi');
     if (imageDataUrl != null && s.mode == 'hidangan' && it.action == 'rekomendasi') it.action = 'hidangan';
+    if (chatMode == 'gizi' && it.action == 'rekomendasi' && !RegExp(r'\b(resep|masak|bikin|cara membuat)\b').hasMatch(text.toLowerCase())) {
+      it.action = 'obrolan';
+    }
     // pertanyaan gizi ("mi instan masih cocok untuk saya?", "berapa kalori nasi goreng?") dijawab dari fakta gizi,
     // bukan dengan rekomendasi resep
     if (it.action == 'rekomendasi' && _nutritionQuestion.hasMatch(text.toLowerCase())) it.action = 'obrolan';

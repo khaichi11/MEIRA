@@ -91,6 +91,14 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
   bool readPackages = true;
   bool healthyMode = false; // "enak dan sehat"
   bool tourDone = true; // tur singkat fitur sudah dilihat atau dilewati
+  String chatMode = 'resep'; // resep atau gizi: obrolan yang sama dengan fokus berbeda
+
+  void setChatMode(String v) {
+    chatMode = v;
+    meira?.chatMode = v;
+    notifyListeners();
+  }
+
   @override
   String? healthGoal; // turun, jaga, atau seimbang; null bila program Gizi Seimbang belum dimulai
   @override

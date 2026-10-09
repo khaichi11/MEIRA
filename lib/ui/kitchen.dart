@@ -49,6 +49,7 @@ class _KitchenScreenState extends State<KitchenScreen> {
   void _ask(AppState s, {String? say}) {
     if (s.busy) return;
     s.newConversation();
+    s.setChatMode('resep');
     openChat(context, s, focus: say == null, onCorrect: widget.onCorrect);
     if (say != null) s.send(text: say);
   }
