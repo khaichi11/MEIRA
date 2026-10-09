@@ -166,7 +166,17 @@ class KnowledgeBase {
 
   /// Judul catatan berbagi kata isi dengan pertanyaan, misalnya "tempe" pada catatan "Tempe terasa pahit". Kata umum
   /// seperti "beda" atau "buah" tidak dihitung, agar soal kue cubit tidak dijawab dengan catatan tentang tepung.
-  bool titleShares(Note n, String query) => _tokens(n.title).toSet().difference(_titleGeneric).intersection(_tokens(query).toSet()).isNotEmpty;
+  bool titleShares(Note n, String query) {
+    final q = _tokens(query).toSet();
+    // judul atau kata kunci catatan ("Mengungkep" berkata kunci "ungkep") berbagi kata isi dengan pertanyaan; kata kunci
+    // saja cukup untuk pertanyaan pendek ("apa itu ungkep?")
+    return _tokens(n.title).toSet().difference(_titleGeneric).intersection(q).isNotEmpty ||
+        (q.length <= 2 && _tokens(n.keywords).toSet().difference(_titleGeneric).intersection(q).isNotEmpty);
+  }
+
+  /// Ada catatan yang topiknya jelas cocok dengan pertanyaan; dipakai pengaman topik agar istilah dapur seperti
+  /// "adonan" tidak dianggap di luar topik.
+  bool covers(String query) => search(query, k: 1, minScore: 0).any((n) => titleShares(n.$1, query));
 
   List<(Note, double, int)> search(String query, {int k = 2, double minScore = 1.5}) {
     final q = _tokens(query).toSet();

@@ -174,8 +174,49 @@ Recipe? findRecipe(List<Recipe> recipes, String query) {
       best = r;
     }
   }
-  return bestHit >= 2 ? best : null;
+  if (bestHit >= 2) return best;
+  // satu kata yang khas cukup ("resep rendang" untuk Rendang Daging), asal tidak umum seperti "goreng" atau "sayur" dan
+  // hanya dipakai oleh sedikit resep; yang namanya terpendek dipilih
+  for (final w in words.where((w) => w.length >= 4 && !_commonDishWords.contains(w))) {
+    final hits = recipes.where((r) => RegExp('\\b$w\\b').hasMatch(r.name.toLowerCase())).toList();
+    if (hits.isNotEmpty && hits.length <= 3) {
+      hits.sort((a, b) => a.name.length.compareTo(b.name.length));
+      return hits.first;
+    }
+  }
+  return null;
 }
+
+const _commonDishWords = {
+  'resep',
+  'cara',
+  'bikin',
+  'buat',
+  'membuat',
+  'masak',
+  'goreng',
+  'rebus',
+  'kukus',
+  'bakar',
+  'tumis',
+  'sayur',
+  'saus',
+  'kuah',
+  'telur',
+  'ayam',
+  'daging',
+  'ikan',
+  'nasi',
+  'roti',
+  'susu',
+  'segar',
+  'pedas',
+  'manis',
+  'dong',
+  'yang',
+  'enak',
+  'sehat',
+};
 
 /// Hasil pemahaman permintaan pengguna.
 class Intent {

@@ -159,27 +159,41 @@ const _help =
     'Tentu, saya siap membantu. Saya bisa mencarikan resep dari foto bahan, menjelaskan cara memasak, menjawab pertanyaan '
     'tentang makanan dan gizi, serta mencatat makan, berat badan, dan jadwal puasa Anda. Mau mulai dari mana?';
 
-/// Balasan untuk perintah fitur, atau null bila pesan ini bukan perintah fitur.
-ToolReply? appTool(String text, AppData d) {
+/// Perkenalan ("saya khai") dan permintaan bantuan tanpa topik ("bantu saya"). Bekerja juga tanpa data fitur; nama
+/// hanya disimpan bila [d] ada.
+ToolReply? greetingTool(String text, AppData? d) {
   final t = text.toLowerCase().trim();
-
   // perkenalan: "saya khai", "nama saya khai", "panggil aku khai"
   final intro = RegExp(
     r'^(?:halo,? |hai,? )?(?:nama (?:saya|aku|ku)|panggil (?:saya|aku)|saya|aku)\s+([a-z][a-z\x27-]{1,19})(?:\s+(?:ya|yah|kok|nih))?[.!]*$',
   ).firstMatch(t);
-  if (intro != null && !_notName.contains(intro[1]) && findFood(intro[1]!, d.foods) == null) {
+  if (intro != null && !_notName.contains(intro[1]) && (d == null || findFood(intro[1]!, d.foods) == null)) {
     final name = intro[1]![0].toUpperCase() + intro[1]!.substring(1);
     return ToolReply(
-      'Halo, $name! Senang berkenalan. ${name == d.userName ? '' : 'Mulai sekarang saya panggil Anda $name. '}'
+      'Halo, $name! Senang berkenalan. ${name == d?.userName ? '' : 'Mulai sekarang saya panggil Anda $name. '}'
       'Saya bisa mencarikan resep dari foto bahan, menjawab pertanyaan makanan dan gizi, atau mencatat makan dan berat badan Anda.',
       actions: const ['resep', 'gizi'],
-      effect: name == d.userName ? null : () => d.setName(name),
+      effect: name == d?.userName
+          ? null
+          : d == null
+          ? null
+          : () => d.setName(name),
     );
   }
   // minta bantuan tanpa topik: "bantu saya", "tolong", "bisa bantu?"
   if (RegExp(r'^(?:tolong|tolongin|bantu|bantuin|bisa bantu|minta tolong|minta bantuan)(?: saya| aku| dong| ya| nih| min)*[?!.]*$').hasMatch(t)) {
     return const ToolReply(_help, actions: ['resep', 'gizi', 'tur']);
   }
+
+  return null;
+}
+
+/// Balasan untuk perintah fitur, atau null bila pesan ini bukan perintah fitur.
+ToolReply? appTool(String text, AppData d) {
+  final t = text.toLowerCase().trim();
+
+  final greet = greetingTool(t, d);
+  if (greet != null) return greet;
 
   // buka fitur
   if (_open.hasMatch(t)) {

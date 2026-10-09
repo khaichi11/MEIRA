@@ -32,6 +32,23 @@ tip: Pisang yang kulitnya mulai berbintik cokelat paling manis untuk smoothie.
 alat: blender, pisau, talenan, gelas
 ganti: milk = yoghurt encer atau susu kedelai; honey = gula pasir
 
+## jus-mangga | Jus Mangga Segar | 5 | 2 | mudah
+tag: minuman, segar, manis, tanpa-kompor, vegetarian
+desc: Jus kental dari mangga matang tanpa perlu banyak gula.
+bahan:
+- mango* | 2 buah matang
+- milk? | 100 ml
+- water | 150 ml
+- sugar? | 1 sdm
+- ice? | secukupnya
+langkah:
+1. Kupas mangga dan ambil dagingnya.
+2. Blender mangga dengan air, susu, dan gula sampai halus.
+3. Tuang ke gelas berisi es batu.
+tip: Cicipi dulu sebelum menambah gula; mangga harum manis biasanya sudah cukup manis.
+alat: blender, pisau, talenan, gelas
+ganti: milk = yoghurt
+
 ## es-buah-segar | Es Buah Segar | 10 | 4 | mudah
 tag: minuman, segar, manis, tanpa-kompor, vegetarian
 desc: Potongan buah dingin dalam kuah manis, cocok untuk siang hari.
@@ -52,6 +69,47 @@ tip: Simpan buah di kulkas dulu supaya es tidak cepat mencair.
 alat: pisau, talenan, mangkuk, sendok
 ganti: cantaloupe = pepaya; watermelon = melon hijau
 
+## rujak-buah | Rujak Buah Sambal Gula Merah | 15 | 3 | mudah
+tag: camilan, segar, pedas, tanpa-kompor, vegetarian
+desc: Buah renyah dengan sambal gula merah pedas manis.
+bahan:
+- pineapple* | 1/4 buah
+- mango* | 1 buah mengkal
+- cucumber* | 1 buah
+- apple? | 1 buah
+- palm_sugar | 75 g
+- chili* | 3 buah cabai rawit
+- peanut? | 2 sdm, sangrai
+- salt | sejumput
+langkah:
+1. Potong semua buah memanjang.
+2. Ulek cabai, garam, dan kacang tanah.
+3. Tambahkan gula merah dan sedikit air, ulek sampai kental.
+4. Sajikan buah dengan sambal di samping.
+tip: Mangga yang masih agak muda memberi rasa asam yang pas untuk rujak.
+alat: pisau, talenan, ulekan, mangkuk
+ganti: palm_sugar = gula pasir dan sedikit kecap manis
+
+## salad-buah-yoghurt | Salad Buah Yoghurt | 10 | 2 | mudah
+tag: sarapan, segar, sehat, manis, anak, tanpa-kompor, vegetarian
+desc: Buah potong dengan saus yoghurt madu, ringan tapi mengenyangkan.
+bahan:
+- apple* | 1 buah
+- grape* | 1 genggam
+- strawberry* | 6 buah
+- pear? | 1 buah
+- yogurt* | 150 g
+- honey? | 1 sdm
+- cheese? | 2 sdm, parut
+langkah:
+1. Potong apel dan pir dadu, belah anggur dan stroberi.
+2. Campur yoghurt dengan madu.
+3. Aduk buah dengan saus yoghurt, taburi keju parut bila suka.
+4. Dinginkan sebentar lalu sajikan.
+tip: Rendam potongan apel di air garam sebentar agar tidak cepat kecokelatan.
+alat: pisau, talenan, mangkuk
+ganti: yogurt = mayones dicampur susu kental manis; grape = melon
+
 ## es-jeruk-peras | Es Jeruk Peras | 5 | 2 | mudah
 tag: minuman, segar, tanpa-kompor, vegetarian, hemat
 desc: Jeruk peras murni, segar dan kaya vitamin C.
@@ -67,6 +125,22 @@ langkah:
 tip: Gulingkan jeruk di meja sambil ditekan sebelum dibelah agar airnya lebih banyak keluar.
 alat: pisau, talenan, gelas, sendok
 ganti: orange = jeruk bali atau lemon dengan tambahan gula
+
+## lemon-madu-hangat | Lemon Madu Hangat | 5 | 1 | mudah
+tag: minuman, sehat, vegetarian
+desc: Minuman hangat penenang tenggorokan.
+bahan:
+- lemon* | 1/2 buah
+- honey* | 1-2 sdm
+- ginger? | 1 ruas, memarkan
+- water | 250 ml air panas
+langkah:
+1. Seduh jahe dengan air panas selama 3 menit.
+2. Peras lemon ke dalam gelas.
+3. Tambahkan madu setelah air agak turun suhunya, aduk.
+tip: Jangan masukkan madu ke air mendidih agar aromanya tidak hilang.
+alat: panci kecil, gelas, pisau, talenan
+ganti: lemon = jeruk nipis
 
 ## pisang-goreng | Pisang Goreng Tepung | 20 | 3 | mudah
 tag: camilan, manis, anak, vegetarian, hemat
@@ -235,6 +309,25 @@ langkah:
 tip: Api kecil membuat telur dadar tebal matang sampai tengah tanpa gosong.
 alat: wajan, spatula, mangkuk, garpu
 
+## orak-arik-telur-tomat | Orak-arik Telur Tomat | 10 | 2 | mudah
+tag: sarapan, hemat, vegetarian
+desc: Telur lembut dengan tomat asam manis, cepat dan cocok dengan nasi.
+bahan:
+- egg* | 3 butir
+- tomato* | 2 buah
+- spring_onion? | 1 batang
+- garlic | 2 siung
+- sugar | 1/2 sdt
+- salt | secukupnya
+- cooking_oil | 1 sdm
+langkah:
+1. Kocok telur dengan sedikit garam, orak-arik setengah matang lalu angkat.
+2. Tumis bawang putih sampai harum, masukkan potongan tomat.
+3. Masak tomat sampai layu dan berair, beri gula dan garam.
+4. Masukkan kembali telur, aduk sebentar, taburi daun bawang.
+tip: Jangan masak telur terlalu lama di langkah pertama supaya tetap lembut.
+alat: wajan, spatula, mangkuk, pisau
+
 ## telur-ceplok-kecap | Telur Ceplok Kecap | 10 | 2 | mudah
 tag: hemat, anak, vegetarian
 desc: Telur mata sapi bersiram kecap manis gurih.
@@ -303,6 +396,41 @@ langkah:
 tip: Tambahkan sedikit mayones atau yoghurt ke telur tumbuk agar lebih lembut.
 alat: panci, mangkuk, pisau, talenan
 
+## sandwich-sayur-keju | Sandwich Sayur Keju Tanpa Masak | 5 | 1 | mudah
+tag: sarapan, segar, tanpa-kompor, vegetarian
+desc: Roti isi sayur segar dan keju, tidak perlu kompor sama sekali.
+bahan:
+- bread* | 2 lembar
+- cheese* | 2 lembar
+- tomato* | 1 buah
+- cucumber* | 1/2 buah
+- lettuce? | 1 lembar
+- pepper | sejumput
+langkah:
+1. Iris tipis tomat dan mentimun.
+2. Susun keju, selada, tomat, dan mentimun di atas roti.
+3. Taburi merica, tutup dengan roti, lalu potong.
+alat: pisau, talenan, piring
+
+## salad-telur-kentang | Salad Kentang Telur | 25 | 3 | mudah
+tag: sarapan, vegetarian
+desc: Kentang rebus dan telur dengan saus yoghurt, mengenyangkan.
+bahan:
+- potato* | 3 buah
+- egg* | 2 butir
+- carrot? | 1 batang
+- cucumber? | 1/2 buah
+- yogurt? | 3 sdm
+- salt | secukupnya
+- pepper | secukupnya
+langkah:
+1. Rebus kentang dan wortel yang sudah dipotong dadu sampai empuk.
+2. Rebus telur 10 menit, kupas dan potong.
+3. Campur semua bahan dengan yoghurt, garam, dan merica.
+4. Dinginkan sebelum disajikan.
+alat: panci, mangkuk, pisau, talenan
+ganti: yogurt = mayones
+
 ## omelet-jamur-keju | Omelet Jamur Keju | 15 | 1 | mudah
 tag: sarapan, vegetarian
 desc: Omelet lembut berisi tumisan jamur dan keju leleh.
@@ -320,6 +448,50 @@ langkah:
 3. Tuang telur ke teflon, masak api kecil.
 4. Saat permukaan hampir set, isi dengan jamur dan keju, lipat dua.
 alat: teflon, spatula, mangkuk, pisau
+
+## telur-masak-tomat-paprika | Telur Masak Tomat Paprika (Shakshuka) | 20 | 2 | sedang
+tag: sarapan, pedas, vegetarian
+desc: Telur dimasak langsung di atas saus tomat paprika yang kental.
+bahan:
+- egg* | 3 butir
+- tomato* | 4 buah
+- bell_pepper* | 1 buah
+- onion | 1/2 buah
+- garlic | 2 siung
+- chili? | 1 buah
+- salt | secukupnya
+- cooking_oil | 1 sdm
+langkah:
+1. Tumis bawang bombay, bawang putih, dan paprika sampai layu.
+2. Masukkan tomat cincang dan cabai, masak sampai mengental.
+3. Buat lubang di saus, pecahkan telur di tiap lubang.
+4. Tutup wajan, masak 5-7 menit sampai putih telur matang.
+tip: Sajikan dengan roti untuk mencocol sausnya.
+alat: wajan, spatula, pisau, talenan
+
+## sayur-sop | Sayur Sop Rumahan | 30 | 4 | mudah
+tag: berkuah, sehat, anak, hemat
+desc: Sup bening hangat penuh sayur, cocok untuk semua umur.
+bahan:
+- carrot* | 2 batang
+- potato* | 2 buah
+- cabbage* | 1/4 buah
+- spring_onion? | 1 batang
+- celery? | 1 batang
+- chicken? | 200 g atau ganti bakso
+- garlic | 3 siung
+- shallot | 3 siung
+- salt | secukupnya
+- pepper | 1/2 sdt
+- water | 1,2 liter
+langkah:
+1. Rebus ayam atau bakso dalam air sampai keluar kaldu.
+2. Tumis bawang merah dan bawang putih, masukkan ke kuah.
+3. Masukkan kentang dan wortel, masak sampai setengah empuk.
+4. Tambahkan kol, daun bawang, dan seledri, bumbui garam dan merica.
+tip: Masukkan sayur dari yang paling keras agar semua matang bersamaan.
+alat: panci, sendok sayur, pisau, talenan
+ganti: chicken = bakso, sosis, atau tanpa daging; cabbage = sawi
 
 ## tumis-brokoli-wortel | Tumis Brokoli Wortel | 15 | 3 | mudah
 tag: sehat, vegetarian
@@ -366,6 +538,66 @@ langkah:
 alat: wajan, spatula, pisau, talenan
 ganti: shrimp = ayam iris; meatball = sosis
 
+## tumis-kangkung | Tumis Kangkung Bawang | 10 | 2 | mudah
+tag: hemat, vegetarian
+desc: Kangkung cepat matang dengan bumbu bawang sederhana.
+bahan:
+- water_spinach* | 1 ikat
+- garlic | 3 siung
+- shallot | 3 siung
+- chili? | 3 buah
+- oyster_sauce? | 1 sdm
+- salt | secukupnya
+- cooking_oil | 1 sdm
+langkah:
+1. Petik kangkung, cuci bersih, tiriskan.
+2. Tumis bawang merah, bawang putih, dan cabai sampai harum.
+3. Masukkan kangkung dengan api besar, aduk cepat.
+4. Bumbui saus tiram dan garam, angkat begitu layu.
+tip: Masak dengan api besar dan sebentar supaya kangkung tetap hijau.
+alat: wajan, spatula, pisau, talenan
+ganti: water_spinach = bayam atau sawi
+
+## perkedel-kentang | Perkedel Kentang | 40 | 4 | sedang
+tag: camilan, anak, hemat, vegetarian
+desc: Kentang tumbuk berbumbu, digoreng dengan balutan telur.
+bahan:
+- potato* | 4 buah
+- egg* | 1 butir
+- spring_onion? | 1 batang
+- celery? | 1 batang
+- shallot | 4 siung, goreng
+- salt | 1 sdt
+- pepper | 1/2 sdt
+- cooking_oil | untuk menggoreng
+langkah:
+1. Goreng atau kukus kentang, lalu haluskan selagi panas.
+2. Campur dengan bawang goreng, daun bawang, seledri, garam, dan merica.
+3. Bentuk bulat pipih.
+4. Celup ke kocokan telur dan goreng sampai kecokelatan.
+tip: Kentang yang digoreng dulu menghasilkan perkedel lebih padat dan tidak mudah hancur.
+alat: panci, wajan, spatula, garpu, mangkuk
+
+## kentang-balado | Kentang Balado | 35 | 3 | sedang
+tag: pedas, vegetarian
+desc: Kentang goreng dibalut sambal merah pedas manis.
+bahan:
+- potato* | 4 buah
+- chili* | 8 buah cabai merah
+- tomato* | 1 buah
+- shallot | 5 siung
+- garlic | 2 siung
+- sugar | 1 sdt
+- salt | 1 sdt
+- cooking_oil | untuk menggoreng
+langkah:
+1. Potong dadu kentang, goreng sampai matang dan agak kering.
+2. Haluskan cabai, tomat, bawang merah, dan bawang putih.
+3. Tumis bumbu halus sampai matang dan minyaknya keluar.
+4. Bumbui gula dan garam, masukkan kentang dan aduk rata.
+alat: wajan, spatula, ulekan, pisau, talenan
+ganti: potato = telur rebus atau tempe
+
 ## sup-krim-jamur | Sup Krim Jamur | 25 | 3 | sedang
 tag: berkuah, vegetarian
 desc: Sup kental lembut dengan aroma jamur dan mentega.
@@ -403,6 +635,61 @@ langkah:
 4. Goreng di minyak panas sampai kering dan renyah.
 alat: wajan, spatula, mangkuk, saringan
 
+## oseng-zukini-wortel | Oseng Zukini Wortel | 15 | 2 | mudah
+tag: sehat, vegetarian
+desc: Tumisan zukini manis gurih yang cepat matang.
+bahan:
+- zucchini* | 1 buah
+- carrot? | 1 batang
+- garlic | 2 siung
+- shallot | 3 siung
+- chili? | 2 buah
+- salt | secukupnya
+- cooking_oil | 1 sdm
+langkah:
+1. Potong korek api zukini dan wortel.
+2. Tumis bawang dan cabai sampai harum.
+3. Masukkan wortel, lalu zukini; aduk sampai layu.
+4. Bumbui garam, angkat.
+alat: wajan, spatula, pisau, talenan
+ganti: zucchini = labu siam
+
+## acar-timun-wortel | Acar Timun Wortel | 15 | 4 | mudah
+tag: segar, tanpa-kompor, vegetarian, hemat
+desc: Acar asam manis pendamping nasi goreng atau gorengan.
+bahan:
+- cucumber* | 2 buah
+- carrot* | 1 batang
+- shallot? | 5 siung utuh
+- chili? | 5 buah cabai rawit utuh
+- lime | 1 buah
+- sugar | 2 sdm
+- salt | 1/2 sdt
+- water | 100 ml
+langkah:
+1. Potong dadu kecil mentimun dan wortel.
+2. Larutkan gula, garam, dan perasan jeruk nipis di air.
+3. Masukkan sayur, bawang merah, dan cabai rawit.
+4. Diamkan 10 menit agar bumbu meresap.
+alat: panci kecil, toples, pisau, talenan
+
+## sambal-tomat | Sambal Tomat | 15 | 4 | mudah
+tag: pedas, vegetarian, hemat
+desc: Sambal goreng tomat yang cocok untuk lauk apa saja.
+bahan:
+- tomato* | 2 buah
+- chili* | 10 buah
+- shallot | 5 siung
+- garlic | 2 siung
+- sugar | 1 sdt
+- salt | 1 sdt
+- cooking_oil | 3 sdm
+langkah:
+1. Goreng cabai, tomat, bawang merah, dan bawang putih sampai layu.
+2. Ulek kasar dengan garam dan gula.
+3. Tumis kembali sebentar dengan minyak sisa gorengan.
+alat: wajan, ulekan, spatula, pisau
+
 ## sup-labu-kuning | Sup Labu Kuning | 30 | 3 | mudah
 tag: berkuah, sehat, anak, vegetarian
 desc: Sup oranye lembut dan manis alami.
@@ -422,6 +709,24 @@ langkah:
 4. Tambahkan susu, bumbui garam dan merica, didihkan sebentar.
 alat: panci, blender, pisau, talenan
 ganti: milk = santan; pumpkin = wortel
+
+## oseng-paprika-jamur | Oseng Paprika Jamur | 15 | 2 | mudah
+tag: sehat, vegetarian
+desc: Tumisan warna-warni dengan saus tiram.
+bahan:
+- bell_pepper* | 1 buah
+- mushroom* | 150 g
+- onion? | 1/2 buah
+- garlic | 2 siung
+- oyster_sauce? | 1 sdm
+- salt | secukupnya
+- cooking_oil | 1 sdm
+langkah:
+1. Potong paprika dan jamur.
+2. Tumis bawang putih dan bawang bombay.
+3. Masukkan jamur, lalu paprika; aduk dengan api besar.
+4. Bumbui saus tiram dan garam.
+alat: wajan, spatula, pisau, talenan
 
 ## sup-lobak | Sup Lobak Bakso | 30 | 3 | mudah
 tag: berkuah, hemat
@@ -443,6 +748,24 @@ langkah:
 alat: panci, sendok sayur, pisau, talenan
 ganti: meatball = ayam suwir
 
+## tumis-asparagus-udang | Tumis Asparagus Udang | 15 | 2 | mudah
+tag: sehat
+desc: Tumisan cepat dengan rasa manis udang dan renyah asparagus.
+bahan:
+- asparagus* | 1 ikat
+- shrimp* | 150 g
+- garlic | 3 siung
+- oyster_sauce? | 1 sdm
+- salt | secukupnya
+- cooking_oil | 1 sdm
+langkah:
+1. Potong asparagus 4 cm, buang pangkal yang keras.
+2. Tumis bawang putih, masukkan udang sampai berubah warna.
+3. Masukkan asparagus, aduk dengan api besar.
+4. Bumbui saus tiram dan garam.
+alat: wajan, spatula, pisau, talenan
+ganti: asparagus = buncis; shrimp = jamur untuk versi vegetarian
+
 ## tumis-kol-telur | Tumis Kol Telur | 15 | 2 | mudah
 tag: hemat
 desc: Kol manis dengan orak-arik telur, lauk sederhana yang mengenyangkan.
@@ -460,6 +783,147 @@ langkah:
 3. Masukkan kol, aduk sampai layu.
 4. Bumbui garam.
 alat: wajan, spatula, pisau, talenan
+
+## sayur-asem | Sayur Asem | 40 | 4 | sedang
+tag: berkuah, segar, sehat, vegetarian
+desc: Sayur berkuah asam segar khas rumahan.
+bahan:
+- squash* | 1 buah labu siam
+- corn* | 1 buah
+- long_bean? | 5 batang
+- peanut? | 2 sdm
+- tomato? | 1 buah
+- chili? | 2 buah
+- shallot | 4 siung
+- palm_sugar | 1 sdm
+- salt | 1 sdt
+- water | 1,2 liter
+langkah:
+1. Haluskan bawang merah dan cabai, rebus bersama air.
+2. Masukkan jagung dan kacang tanah, masak 10 menit.
+3. Tambahkan labu siam, kacang panjang, dan tomat.
+4. Bumbui gula merah dan garam; beri asam jawa bila ada.
+tip: Asam jawa memberi rasa asam khas; tomat matang bisa menggantikannya.
+alat: panci, sendok sayur, pisau, talenan
+
+## sup-kundur | Sup Kundur Bening | 25 | 3 | mudah
+tag: berkuah, sehat, hemat
+desc: Sup ringan dan menyegarkan dengan kundur yang lembut.
+bahan:
+- winter_melon* | 400 g
+- carrot? | 1 batang
+- meatball? | 8 butir
+- garlic | 3 siung
+- salt | secukupnya
+- pepper | secukupnya
+- water | 1 liter
+langkah:
+1. Kupas kundur, buang bijinya, potong dadu.
+2. Tumis bawang putih, tuang air dan didihkan.
+3. Masukkan kundur, wortel, dan bakso; masak sampai kundur bening.
+4. Bumbui garam dan merica.
+alat: panci, sendok sayur, pisau, talenan
+ganti: winter_melon = labu siam
+
+## gado-gado | Gado-gado Rumahan | 40 | 3 | sedang
+tag: sehat, vegetarian
+desc: Sayur rebus dengan saus kacang gurih manis.
+bahan:
+- cabbage* | 1/4 buah
+- potato* | 2 buah
+- egg* | 2 butir
+- peanut | 150 g kacang goreng atau 4 sdm selai kacang
+- bean_sprout? | 1 genggam
+- long_bean? | 5 batang
+- tofu? | 2 potong
+- tempeh? | 1 papan kecil
+- cucumber? | 1 buah
+- palm_sugar | 30 g
+- chili? | 2 buah
+- lime? | 1/2 buah
+- garlic | 1 siung
+- salt | secukupnya
+langkah:
+1. Rebus kentang, telur, kol, tauge, dan kacang panjang sampai matang.
+2. Goreng tahu dan tempe.
+3. Haluskan kacang, gula merah, cabai, bawang putih, garam, dan air hangat sampai kental; beri perasan jeruk nipis.
+4. Tata sayur, kentang, telur, tahu, tempe, dan mentimun, siram saus kacang.
+alat: panci, ulekan, piring, pisau, talenan
+
+## artichoke-kukus | Artichoke Kukus Saus Mentega Lemon | 40 | 2 | sedang
+tag: sehat, vegetarian
+desc: Artichoke kukus dicocol mentega leleh berperasa lemon.
+bahan:
+- artichoke* | 2 buah
+- butter* | 3 sdm
+- lemon* | 1 buah
+- garlic | 1 siung
+- salt | sejumput
+langkah:
+1. Potong ujung artichoke dan gosok bekas potongan dengan lemon.
+2. Kukus 30-40 menit sampai daun mudah dicabut.
+3. Lelehkan mentega dengan bawang putih cincang, perasan lemon, dan garam.
+4. Cabut daun satu per satu, cocol ke saus, gigit bagian pangkalnya.
+alat: kukusan, pisau, talenan, mangkuk
+
+## salad-sayur-segar | Salad Sayur Segar | 10 | 2 | mudah
+tag: segar, sehat, tanpa-kompor, vegetarian
+desc: Salad renyah dengan saus jeruk madu.
+bahan:
+- cucumber* | 1 buah
+- tomato* | 2 buah
+- lettuce? | 4 lembar
+- carrot? | 1 batang, serut
+- cheese? | 2 sdm, parut
+- lemon? | 1/2 buah
+- honey? | 1 sdt
+- salt | sejumput
+- pepper | sejumput
+langkah:
+1. Potong mentimun dan tomat, sobek selada.
+2. Campur perasan lemon, madu, garam, dan merica untuk saus.
+3. Aduk sayur dengan saus tepat sebelum disajikan, taburi keju.
+alat: pisau, talenan, mangkuk
+ganti: lemon = jeruk nipis
+
+## pasta-aglio-olio | Pasta Aglio Olio | 20 | 2 | mudah
+tag: pedas
+desc: Pasta minyak bawang putih yang sederhana tapi harum.
+bahan:
+- pasta* | 200 g spaghetti
+- garlic* | 6 siung
+- chili? | 3 buah atau cabai kering
+- shrimp? | 100 g
+- cheese? | 2 sdm parut
+- cooking_oil | 4 sdm (lebih baik minyak zaitun)
+- salt | secukupnya
+langkah:
+1. Rebus pasta dalam air bergaram sampai al dente, simpan sedikit air rebusannya.
+2. Panaskan minyak dengan api kecil, tumis irisan bawang putih dan cabai sampai keemasan.
+3. Masukkan udang bila ada, masak sampai matang.
+4. Masukkan pasta dan sedikit air rebusan, aduk cepat; taburi keju.
+tip: Api kecil penting agar bawang putih tidak pahit.
+alat: panci, wajan, spatula, talenan, pisau
+
+## pasta-saus-tomat | Pasta Saus Tomat Segar | 25 | 2 | mudah
+tag: anak, vegetarian
+desc: Pasta dengan saus dari tomat segar, tanpa saus botolan.
+bahan:
+- pasta* | 200 g
+- tomato* | 5 buah
+- onion | 1/2 buah
+- garlic | 3 siung
+- mushroom? | 100 g
+- cheese? | 3 sdm parut
+- sugar | 1 sdt
+- salt | secukupnya
+- cooking_oil | 2 sdm
+langkah:
+1. Rebus pasta sampai al dente.
+2. Tumis bawang bombay dan bawang putih, masukkan jamur.
+3. Masukkan tomat cincang, gula, dan garam; masak sampai menjadi saus kental.
+4. Aduk pasta dengan saus, taburi keju.
+alat: panci, wajan, spatula, talenan, pisau
 
 ## makaroni-keju | Makaroni Keju Teflon | 20 | 2 | mudah
 tag: anak, vegetarian
@@ -479,6 +943,123 @@ langkah:
 4. Campur makaroni dengan saus, bumbui garam dan merica.
 alat: panci, sendok kayu, parutan
 
+## nasi-goreng-telur | Nasi Goreng Telur | 15 | 2 | mudah
+tag: sarapan, hemat
+desc: Nasi goreng kecap rumahan dengan telur orak-arik.
+bahan:
+- rice* | 2 piring nasi dingin
+- egg* | 2 butir
+- shallot | 4 siung
+- garlic | 2 siung
+- sweet_soy_sauce? | 2 sdm
+- chili? | 2 buah
+- spring_onion? | 1 batang
+- salt | secukupnya
+- cooking_oil | 2 sdm
+langkah:
+1. Haluskan atau iris bawang merah, bawang putih, dan cabai.
+2. Tumis bumbu, sisihkan ke pinggir, orak-arik telur.
+3. Masukkan nasi, aduk rata dengan api besar.
+4. Tambahkan kecap dan garam, taburi daun bawang.
+tip: Nasi sisa semalam membuat nasi goreng tidak lembek.
+alat: wajan, spatula, mangkuk, pisau
+ganti: egg = sosis atau bakso
+
+## mie-goreng-telur-sayur | Mie Goreng Telur Sayur | 15 | 2 | mudah
+tag: hemat
+desc: Mie goreng sederhana dengan sayur dan telur.
+bahan:
+- noodle* | 2 bungkus/keping
+- egg* | 2 butir
+- cabbage? | 2 lembar
+- carrot? | 1/2 batang
+- mustard_greens? | 1 ikat kecil
+- garlic | 2 siung
+- shallot | 3 siung
+- sweet_soy_sauce? | 2 sdm
+- salt | secukupnya
+- cooking_oil | 2 sdm
+langkah:
+1. Rebus mie setengah matang, tiriskan.
+2. Tumis bawang, masukkan telur dan orak-arik.
+3. Masukkan sayuran, aduk sampai layu.
+4. Masukkan mie dan kecap, aduk rata.
+alat: panci, wajan, spatula, pisau, talenan
+
+## mie-kuah-telur | Mie Kuah Telur Sawi | 10 | 1 | mudah
+tag: berkuah, hemat
+desc: Semangkuk mie hangat, cepat untuk malam hari.
+bahan:
+- noodle* | 1 bungkus/keping
+- egg* | 1 butir
+- mustard_greens? | 2 batang
+- tomato? | 1/2 buah
+- spring_onion? | 1 batang
+- garlic | 1 siung
+- water | 400 ml
+langkah:
+1. Didihkan air dengan bawang putih geprek.
+2. Masukkan mie dan sawi.
+3. Pecahkan telur ke dalam kuah, jangan diaduk sampai setengah matang.
+4. Tambahkan tomat dan daun bawang, bumbui sesuai selera.
+alat: panci, sendok sayur, mangkuk
+
+## kentang-goreng | Kentang Goreng Rumahan | 30 | 2 | mudah
+tag: camilan, anak, vegetarian, hemat
+desc: Kentang goreng renyah buatan sendiri.
+bahan:
+- potato* | 3 buah
+- salt | secukupnya
+- cooking_oil | untuk menggoreng
+langkah:
+1. Potong kentang memanjang, rendam di air dingin 10 menit, keringkan.
+2. Goreng di minyak sedang sampai matang tapi belum cokelat, angkat.
+3. Goreng lagi di minyak panas sampai renyah keemasan.
+4. Taburi garam.
+tip: Penggorengan dua kali adalah kunci renyah.
+alat: wajan, spatula, saringan, pisau, talenan
+
+## udang-goreng-mentega | Udang Goreng Mentega | 20 | 2 | sedang
+tag: anak
+desc: Udang goreng dengan saus mentega kecap yang harum.
+bahan:
+- shrimp* | 250 g
+- butter* | 2 sdm
+- garlic | 3 siung
+- onion? | 1/2 buah
+- sweet_soy_sauce? | 2 sdm
+- lime? | 1/2 buah
+- salt | secukupnya
+- cooking_oil | untuk menggoreng
+langkah:
+1. Lumuri udang dengan perasan jeruk nipis dan garam, goreng sebentar.
+2. Lelehkan mentega, tumis bawang putih dan bawang bombay.
+3. Tambahkan kecap dan sedikit air.
+4. Masukkan udang, aduk sampai saus melapisi udang.
+alat: wajan, spatula, mangkuk
+
+## udang-saus-padang | Udang Saus Padang | 25 | 2 | sedang
+tag: pedas
+desc: Udang dalam saus merah pedas manis.
+bahan:
+- shrimp* | 250 g
+- tomato* | 2 buah
+- chili* | 5 buah
+- bell_pepper? | 1/2 buah
+- onion? | 1/2 buah
+- garlic | 3 siung
+- shallot | 4 siung
+- sugar | 1 sdt
+- salt | secukupnya
+- cooking_oil | 2 sdm
+langkah:
+1. Haluskan cabai, bawang merah, bawang putih, dan satu tomat.
+2. Tumis bumbu halus dan bawang bombay sampai harum.
+3. Masukkan udang, paprika, dan tomat potong.
+4. Bumbui gula dan garam, masak sampai udang matang dan saus mengental.
+alat: wajan, spatula, blender, pisau, talenan
+ganti: shrimp = ayam atau tahu
+
 ## kepiting-saus-tiram | Kepiting Saus Tiram | 30 | 2 | sulit
 tag: berkuah
 desc: Kepiting dimasak dalam saus tiram jahe.
@@ -496,6 +1077,101 @@ langkah:
 2. Tumis bawang putih dan jahe sampai harum.
 3. Masukkan saus tiram, gula, dan air.
 4. Masukkan kepiting, aduk sampai saus meresap, taburi daun bawang.
+alat: wajan, spatula, pisau, talenan
+
+## salad-jeruk-bali-udang | Salad Jeruk Bali Udang | 20 | 2 | sedang
+tag: segar, pedas
+desc: Salad asam manis pedas dengan bulir jeruk bali.
+bahan:
+- grapefruit* | 1/2 buah
+- shrimp* | 150 g, rebus
+- cucumber? | 1/2 buah
+- chili? | 2 buah
+- lime? | 1 buah
+- peanut? | 2 sdm sangrai
+- sugar | 1 sdt
+- salt | sejumput
+langkah:
+1. Kupas jeruk bali, ambil bulirnya.
+2. Rebus udang 2-3 menit, tiriskan.
+3. Campur perasan jeruk nipis, cabai iris, gula, dan garam untuk saus.
+4. Aduk jeruk bali, udang, dan mentimun dengan saus, taburi kacang.
+alat: panci, pisau, talenan, mangkuk
+
+## tempe-orek | Tempe Orek Kecap | 20 | 3 | mudah
+tag: hemat, vegetarian
+desc: Tempe goreng kering berbalut kecap manis pedas.
+bahan:
+- tempeh* | 1 papan
+- sweet_soy_sauce | 3 sdm
+- chili? | 3 buah
+- shallot | 4 siung
+- garlic | 2 siung
+- salt | secukupnya
+- cooking_oil | untuk menggoreng
+langkah:
+1. Potong korek api tempe, goreng sampai kering.
+2. Tumis bawang dan cabai iris.
+3. Masukkan kecap dan sedikit garam, masukkan tempe.
+4. Aduk sampai kecap mengering dan melapisi tempe.
+alat: wajan, spatula, pisau, talenan
+
+## tahu-telur | Tahu Telur | 25 | 2 | sedang
+tag: vegetarian, hemat
+desc: Dadar tahu telur dengan siraman kecap kacang.
+bahan:
+- tofu* | 2 potong
+- egg* | 3 butir
+- bean_sprout? | 1 genggam
+- peanut? | 3 sdm
+- sweet_soy_sauce? | 2 sdm
+- garlic | 1 siung
+- salt | secukupnya
+- cooking_oil | 3 sdm
+langkah:
+1. Potong dadu tahu, campur dengan kocokan telur dan garam.
+2. Goreng adonan dalam teflon seperti dadar tebal.
+3. Haluskan kacang dan bawang putih, campur kecap dan air hangat.
+4. Sajikan dadar dengan tauge rebus dan siraman saus kacang.
+alat: wajan, spatula, mangkuk, pisau
+
+## ayam-kecap | Ayam Kecap | 35 | 3 | sedang
+tag: anak
+desc: Ayam manis gurih dengan kuah kecap kental.
+bahan:
+- chicken* | 400 g
+- sweet_soy_sauce | 4 sdm
+- onion? | 1 buah
+- tomato? | 1 buah
+- garlic | 3 siung
+- shallot | 4 siung
+- pepper | 1/2 sdt
+- salt | secukupnya
+- water | 200 ml
+- cooking_oil | 2 sdm
+langkah:
+1. Goreng ayam setengah matang.
+2. Tumis bawang merah, bawang putih, dan bawang bombay.
+3. Masukkan ayam, kecap, merica, garam, dan air.
+4. Masak sampai kuah menyusut, tambahkan tomat di akhir.
+alat: wajan, spatula, pisau, talenan
+
+## cah-sawi-bakso | Cah Sawi Bakso | 15 | 2 | mudah
+tag: hemat
+desc: Sawi hijau ditumis bersama bakso.
+bahan:
+- mustard_greens* | 1 ikat
+- meatball* | 8 butir
+- garlic | 3 siung
+- oyster_sauce? | 1 sdm
+- salt | secukupnya
+- water | 50 ml
+- cooking_oil | 1 sdm
+langkah:
+1. Potong sawi dan belah bakso.
+2. Tumis bawang putih, masukkan bakso.
+3. Masukkan batang sawi dulu, lalu daunnya dan air.
+4. Bumbui saus tiram dan garam.
 alat: wajan, spatula, pisau, talenan
 
 ## puding-roti | Puding Roti Kukus | 40 | 4 | sedang
@@ -529,6 +1205,20 @@ langkah:
 3. Tambahkan irisan buah tin dan siram madu.
 alat: oven, pisau, talenan, piring
 
+## smoothie-persik-yoghurt | Smoothie Persik Yoghurt | 5 | 1 | mudah
+tag: minuman, sehat, tanpa-kompor, vegetarian
+desc: Smoothie lembut dengan rasa persik.
+bahan:
+- peach* | 2 buah
+- yogurt* | 150 g
+- honey? | 1 sdm
+- ice? | 3 kotak
+langkah:
+1. Buang biji persik dan potong dagingnya.
+2. Blender bersama yoghurt, madu, dan es.
+3. Tuang ke gelas dan sajikan segera.
+alat: blender, pisau, talenan, gelas
+
 ## melon-susu | Es Melon Susu | 5 | 2 | mudah
 tag: minuman, manis, segar, tanpa-kompor, vegetarian
 desc: Melon serut dingin dengan susu.
@@ -542,6 +1232,21 @@ langkah:
 2. Masukkan ke gelas dengan es batu.
 3. Tuang susu yang sudah dicampur gula.
 alat: pisau, talenan, mangkuk, sendok
+
+## jus-nanas-timun | Jus Nanas Timun | 5 | 2 | mudah
+tag: minuman, segar, sehat, tanpa-kompor, vegetarian
+desc: Jus hijau kekuningan yang segar.
+bahan:
+- pineapple* | 1/4 buah
+- cucumber* | 1 buah
+- lime? | 1/2 buah
+- honey? | 1 sdm
+- water | 150 ml
+langkah:
+1. Potong nanas dan mentimun.
+2. Blender dengan air sampai halus, saring bila suka.
+3. Tambahkan perasan jeruk nipis dan madu.
+alat: blender, pisau, talenan, gelas
 
 ## salad-delima-pir | Salad Pir Delima | 10 | 2 | mudah
 tag: segar, sehat, tanpa-kompor, vegetarian
@@ -572,6 +1277,229 @@ langkah:
 3. Bekukan minimal 2 jam di freezer.
 alat: mangkuk, wadah tertutup, freezer
 
+## kentang-telur-balado | Telur Kentang Balado | 35 | 3 | sedang
+tag: pedas
+desc: Telur rebus dan kentang goreng dalam sambal balado.
+bahan:
+- egg* | 4 butir
+- potato* | 2 buah
+- chili* | 8 buah
+- tomato? | 1 buah
+- shallot | 5 siung
+- garlic | 2 siung
+- sugar | 1 sdt
+- salt | 1 sdt
+- cooking_oil | untuk menggoreng
+langkah:
+1. Rebus telur, kupas, lalu goreng sebentar sampai kulitnya berkerut.
+2. Goreng kentang dadu sampai matang.
+3. Haluskan cabai, tomat, dan bawang; tumis sampai matang.
+4. Bumbui gula dan garam, masukkan telur dan kentang.
+alat: panci, wajan, spatula, ulekan, pisau
+
+## nasi-uduk-sederhana | Nasi Uduk Sederhana | 40 | 4 | sedang
+tag: sarapan, hemat
+desc: Nasi gurih santan beraroma serai dan daun salam yang cocok untuk sarapan.
+bahan:
+- rice* | 3 gelas beras
+- coconut_milk | 400 ml
+- bay_leaf | 2 lembar
+- lemongrass | 1 batang digeprek
+- shallot? | 3 siung
+- salt | 1 sdt
+langkah:
+1. Cuci beras sampai air cucian jernih, tiriskan.
+2. Campur beras, santan, air secukupnya, garam, serai, dan daun salam dalam panci.
+3. Masak sambil diaduk sesekali sampai air terserap, api dikecilkan.
+4. Kukus atau tutup rapat 15 menit sampai nasi pulen.
+5. Gembur-gemburkan nasi dengan garpu sebelum disajikan.
+tip: Aduk santan terus saat mendidih agar tidak pecah.
+alat: panci, sendok kayu, garpu, talenan, pisau
+ganti: coconut_milk = susu cair ditambah sedikit minyak; bay_leaf = daun jeruk
+
+## nasi-goreng-kampung | Nasi Goreng Kampung | 20 | 2 | mudah
+tag: sarapan, pedas, hemat
+desc: Nasi goreng pedas dengan cabai, bawang, dan tauge yang sederhana.
+bahan:
+- rice* | 3 piring nasi dingin
+- chili* | 5 buah
+- bean_sprout? | 1 genggam
+- egg? | 1 butir
+- shallot | 4 siung
+- garlic | 2 siung
+- sweet_soy_sauce | 2 sdm
+- salt | 1/2 sdt
+- cooking_oil | 3 sdm
+langkah:
+1. Haluskan cabai, bawang merah, dan bawang putih.
+2. Tumis bumbu halus dengan minyak sampai harum.
+3. Masukkan telur, orak-arik sampai setengah matang.
+4. Tambahkan nasi, kecap, dan garam, aduk rata dengan api besar.
+5. Masukkan tauge, aduk sebentar lalu angkat.
+tip: Nasi dingin semalam membuat nasi goreng tidak lembek.
+alat: wajan, spatula, ulekan, pisau, talenan
+
+## nasi-goreng-sosis | Nasi Goreng Sosis | 15 | 2 | mudah
+tag: sarapan, anak
+desc: Nasi goreng manis gurih dengan irisan sosis kesukaan anak.
+bahan:
+- rice* | 3 piring nasi dingin
+- sausage* | 3 buah
+- egg | 1 butir
+- garlic | 2 siung
+- spring_onion? | 1 batang
+- sweet_soy_sauce | 1 sdm
+- salt | 1/2 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Iris sosis tipis, cincang bawang putih.
+2. Tumis bawang putih dan sosis sampai sosis agak kecokelatan.
+3. Geser ke tepi, orak-arik telur di sisi lain wajan.
+4. Masukkan nasi, kecap, dan garam, aduk rata.
+5. Taburi irisan daun bawang lalu sajikan.
+alat: wajan, spatula, pisau, talenan
+
+## nasi-tim-ayam | Nasi Tim Ayam | 45 | 2 | sedang
+tag: sehat, anak, berkuah
+desc: Nasi lembut dengan ayam dan jamur yang dikukus, ramah untuk perut.
+bahan:
+- rice* | 1 gelas beras
+- chicken* | 150 g
+- mushroom | 3 buah
+- ginger | 1 ruas
+- spring_onion? | 1 batang
+- carrot? | 1/2 buah
+- salt | 1/2 sdt
+- water | 400 ml
+langkah:
+1. Potong dadu kecil ayam, jamur, dan wortel.
+2. Rebus beras dengan air sampai setengah matang menjadi bubur kental.
+3. Campur ayam, jamur, wortel, jahe geprek, dan garam ke dalam mangkuk tahan panas.
+4. Tuang bubur setengah matang, kukus 25 menit.
+5. Taburi irisan daun bawang.
+tip: Potong ayam sangat kecil agar cepat matang dan mudah dikunyah.
+alat: panci, kukusan, mangkuk, pisau, talenan
+
+## bubur-ayam | Bubur Ayam | 50 | 4 | sedang
+tag: sarapan, berkuah
+desc: Bubur nasi gurih dengan suwiran ayam dan taburan daun bawang.
+bahan:
+- rice* | 1 gelas beras
+- chicken* | 250 g
+- spring_onion | 2 batang
+- celery? | 1 batang
+- ginger | 1 ruas
+- sweet_soy_sauce? | 1 sdm
+- salt | 1 sdt
+- water | 1,5 liter
+langkah:
+1. Rebus ayam dengan jahe dan sedikit garam sampai empuk, angkat dan suwir.
+2. Masukkan beras ke kaldu, masak dengan api kecil sambil sering diaduk.
+3. Terus masak 30 menit sampai butiran nasi pecah dan bubur kental.
+4. Koreksi garam lalu sajikan dengan suwiran ayam.
+5. Taburi daun bawang, seledri, dan kecap.
+tip: Aduk dari dasar panci agar bubur tidak gosong.
+alat: panci, sendok kayu, pisau, talenan, mangkuk
+
+## nasi-kuning-sederhana | Nasi Kuning Sederhana | 40 | 4 | sedang
+tag: hemat
+desc: Nasi wangi berwarna kuning dari kunyit dan santan.
+bahan:
+- rice* | 3 gelas beras
+- turmeric | 1 ruas, dihaluskan
+- coconut_milk | 400 ml
+- lemongrass | 1 batang digeprek
+- bay_leaf | 2 lembar
+- salt | 1 sdt
+langkah:
+1. Cuci beras lalu tiriskan.
+2. Rebus santan bersama kunyit halus, serai, daun salam, dan garam sampai mendidih.
+3. Masukkan beras, aduk sampai cairan terserap.
+4. Kukus 20 menit sampai pulen.
+5. Aduk perlahan dan sajikan hangat.
+tip: Saring air kunyit agar warna nasi rata dan tidak berbutir.
+alat: panci, kukusan, sendok kayu, saringan
+ganti: turmeric = kunyit bubuk 1 sdt
+
+## nasi-gila | Nasi Gila | 25 | 2 | sedang
+tag: pedas
+desc: Nasi goreng pedas berisi sosis, bakso, dan telur.
+bahan:
+- rice* | 3 piring nasi dingin
+- sausage* | 2 buah
+- meatball* | 4 butir
+- egg | 2 butir
+- chili | 5 buah
+- garlic | 3 siung
+- shallot | 3 siung
+- sweet_soy_sauce | 2 sdm
+- cooking_oil | 3 sdm
+langkah:
+1. Haluskan cabai, bawang putih, dan bawang merah.
+2. Tumis bumbu sampai harum, masukkan sosis dan bakso yang diiris.
+3. Masukkan telur, orak-arik, lalu tambahkan nasi.
+4. Bumbui kecap, aduk rata dengan api besar sampai wangi.
+tip: Tambah cabai sesuai selera pedas.
+alat: wajan, spatula, ulekan, pisau, talenan
+
+## mie-goreng-jawa | Mie Goreng Jawa | 25 | 2 | sedang
+tag: pedas
+desc: Mie goreng berbumbu kecap manis dengan sawi dan telur.
+bahan:
+- noodle* | 2 bungkus
+- mustard_greens* | 3 batang
+- egg | 1 butir
+- shallot | 3 siung
+- garlic | 2 siung
+- sweet_soy_sauce | 2 sdm
+- chili? | 2 buah
+- cooking_oil | 3 sdm
+langkah:
+1. Rebus mie sebentar sampai lunak, tiriskan.
+2. Tumis bawang merah, bawang putih, dan cabai iris sampai harum.
+3. Masukkan telur, orak-arik, lalu sawi iris.
+4. Masukkan mie dan kecap, aduk cepat dengan api besar.
+5. Angkat saat sawi masih sedikit renyah.
+alat: panci, wajan, spatula, saringan, pisau, talenan
+
+## mie-rebus-telur | Mie Rebus Telur | 15 | 1 | mudah
+tag: berkuah, hemat
+desc: Mie berkuah hangat dengan telur dan sawi untuk malam hari.
+bahan:
+- noodle* | 1 bungkus
+- egg* | 1 butir
+- mustard_greens | 2 batang
+- garlic | 1 siung
+- spring_onion? | 1 batang
+- salt | 1/2 sdt
+- water | 400 ml
+langkah:
+1. Didihkan air bersama bawang putih geprek dan garam.
+2. Masukkan mie, masak 2 menit.
+3. Pecahkan telur ke dalam kuah, tambahkan sawi.
+4. Masak 1 menit lagi sampai telur setengah matang, taburi daun bawang.
+alat: panci, sendok sayur, mangkuk
+
+## telur-balado | Telur Balado | 25 | 3 | mudah
+tag: pedas, hemat
+desc: Telur rebus goreng dalam sambal cabai merah yang pedas manis.
+bahan:
+- egg* | 4 butir
+- chili* | 8 buah
+- tomato | 1 buah
+- shallot | 4 siung
+- garlic | 2 siung
+- sugar | 1 sdt
+- salt | 1/2 sdt
+- cooking_oil | 4 sdm
+langkah:
+1. Rebus telur 10 menit, kupas.
+2. Goreng telur sebentar sampai permukaannya berkerut.
+3. Haluskan cabai, tomat, bawang merah, dan bawang putih.
+4. Tumis sambal sampai matang dan minyak keluar, bumbui gula dan garam.
+5. Masukkan telur, aduk sampai terbalut sambal.
+alat: panci, wajan, spatula, ulekan, pisau
+
 ## telur-dadar-padang | Telur Dadar Padang | 20 | 2 | sedang
 tag: sarapan
 desc: Dadar tebal dengan cincangan bawang dan cabai, renyah di pinggir.
@@ -591,6 +1519,181 @@ langkah:
 5. Angkat, tiriskan, lalu potong-potong.
 tip: Wajan kecil membuat dadar tebal dan tidak mudah patah.
 alat: wajan, spatula, mangkuk, garpu, pisau, talenan
+
+## telur-gulung-sosis | Telur Gulung Sosis | 15 | 2 | mudah
+tag: sarapan, anak, camilan
+desc: Dadar tipis yang digulung dengan sosis di dalamnya.
+bahan:
+- egg* | 3 butir
+- sausage* | 3 buah
+- milk? | 2 sdm
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Kocok telur dengan susu dan garam.
+2. Panaskan teflon dengan sedikit minyak, tuang sedikit telur tipis.
+3. Letakkan sosis di tepi, gulung sebelum telur benar-benar kering.
+4. Tuang lagi adonan, gulung ulang sampai habis.
+5. Potong-potong setelah agak dingin.
+alat: teflon, spatula, mangkuk, garpu, pisau, talenan
+
+## sup-telur-tomat | Sup Telur Tomat | 15 | 2 | mudah
+tag: berkuah, sehat, hemat
+desc: Sup bening asam segar dengan pita telur lembut.
+bahan:
+- egg* | 2 butir
+- tomato* | 2 buah
+- spring_onion | 1 batang
+- garlic | 1 siung
+- salt | 1/2 sdt
+- pepper | 1/4 sdt
+- water | 500 ml
+langkah:
+1. Tumis bawang putih cincang sebentar, masukkan tomat potong.
+2. Tuang air, didihkan sampai tomat lunak.
+3. Bumbui garam dan merica.
+4. Tuang telur kocok perlahan sambil diaduk membentuk pita.
+5. Taburi daun bawang, matikan api.
+alat: panci, sendok sayur, mangkuk, garpu, pisau, talenan
+
+## tahu-crispy | Tahu Crispy | 20 | 3 | mudah
+tag: camilan, hemat, vegetarian
+desc: Tahu goreng berbalut tepung renyah, enak dengan sambal.
+bahan:
+- tofu* | 6 potong
+- flour | 5 sdm
+- garlic | 2 siung
+- salt | 1/2 sdt
+- pepper | 1/4 sdt
+- water | 5 sdm
+- cooking_oil | secukupnya
+langkah:
+1. Potong tahu, lumuri bawang putih halus, garam, dan merica.
+2. Campur tepung dengan air dan sedikit garam jadi adonan kental.
+3. Panaskan minyak banyak di wajan.
+4. Celup tahu ke adonan lalu goreng sampai keemasan dan renyah.
+5. Tiriskan di kertas dapur.
+tip: Minyak harus benar-benar panas agar tepung tidak menyerap minyak.
+alat: wajan, spatula, mangkuk, pisau, talenan, saringan
+
+## tahu-bacem | Tahu Bacem | 40 | 3 | sedang
+tag: hemat, vegetarian
+desc: Tahu dimasak lama dalam gula merah dan kecap sampai meresap.
+bahan:
+- tofu* | 8 potong
+- palm_sugar | 3 sdm
+- sweet_soy_sauce | 3 sdm
+- bay_leaf | 2 lembar
+- shallot | 3 siung
+- garlic | 2 siung
+- salt | 1/2 sdt
+- water | 400 ml
+langkah:
+1. Haluskan bawang merah dan bawang putih.
+2. Rebus air dengan bumbu halus, gula merah, kecap, daun salam, dan garam.
+3. Masukkan tahu, masak dengan api kecil sampai air menyusut dan meresap.
+4. Goreng atau panggang sebentar di teflon sampai tepinya cokelat.
+tip: Rendam tahu dalam bumbu semalam bila ingin lebih meresap.
+alat: panci, teflon, spatula, ulekan, pisau, talenan
+
+## tempe-bacem | Tempe Bacem | 40 | 3 | sedang
+tag: hemat, vegetarian
+desc: Tempe manis gurih berwarna cokelat tua khas Jawa.
+bahan:
+- tempeh* | 1 papan
+- palm_sugar | 3 sdm
+- sweet_soy_sauce | 2 sdm
+- bay_leaf | 2 lembar
+- shallot | 3 siung
+- garlic | 2 siung
+- salt | 1/2 sdt
+- water | 400 ml
+langkah:
+1. Potong tempe menjadi 8 bagian.
+2. Haluskan bawang merah dan bawang putih.
+3. Rebus air dengan bumbu, gula merah, kecap, daun salam, dan garam.
+4. Masukkan tempe, masak dengan api kecil sampai air menyusut.
+5. Goreng sebentar atau panggang di teflon sampai bagian luar agak kering.
+alat: panci, teflon, spatula, ulekan, pisau, talenan
+
+## tempe-mendoan | Tempe Mendoan | 20 | 3 | mudah
+tag: camilan, hemat, vegetarian
+desc: Tempe tipis berselimut tepung berbumbu, digoreng setengah matang.
+bahan:
+- tempeh* | 1 papan
+- flour | 6 sdm
+- spring_onion | 2 batang
+- garlic | 2 siung
+- salt | 1/2 sdt
+- water | 6 sdm
+- cooking_oil | secukupnya
+langkah:
+1. Iris tempe tipis lebar.
+2. Campur tepung, air, bawang putih halus, garam, dan irisan daun bawang.
+3. Celup tempe ke adonan sampai terbalut rata.
+4. Goreng dengan minyak panas sebentar saja sampai tepung matang dan tempe masih lemas.
+5. Angkat dan sajikan dengan cabai rawit.
+tip: Jangan digoreng terlalu lama, ciri mendoan adalah teksturnya yang lemas.
+alat: wajan, spatula, mangkuk, pisau, talenan
+
+## tahu-isi-sayur | Tahu Isi Sayur | 30 | 3 | sedang
+tag: camilan, vegetarian
+desc: Tahu goreng kosong yang diisi tumisan wortel dan tauge.
+bahan:
+- tofu* | 6 potong
+- carrot* | 1 buah
+- bean_sprout | 1 genggam
+- flour | 4 sdm
+- garlic | 2 siung
+- salt | 1/2 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Goreng tahu sebentar, belah bagian tengah membentuk kantong.
+2. Tumis bawang putih, wortel parut, dan tauge sampai layu, bumbui garam.
+3. Isi tahu dengan tumisan.
+4. Campur tepung dengan air jadi adonan, celup tahu isi.
+5. Goreng sampai kering dan keemasan.
+alat: wajan, spatula, parutan, pisau, talenan, mangkuk
+
+## sambal-goreng-tempe-kentang | Sambal Goreng Tempe Kentang | 35 | 4 | sedang
+tag: pedas, hemat
+desc: Tempe dan kentang kering dalam bumbu cabai merah manis pedas.
+bahan:
+- tempeh* | 1 papan
+- potato* | 2 buah
+- chili | 8 buah
+- shallot | 5 siung
+- garlic | 2 siung
+- palm_sugar | 1 sdm
+- bay_leaf | 2 lembar
+- salt | 1 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Potong dadu kecil tempe dan kentang, goreng sampai kering lalu tiriskan.
+2. Haluskan cabai, bawang merah, dan bawang putih.
+3. Tumis bumbu dengan daun salam sampai harum dan berminyak.
+4. Tambahkan gula merah dan garam.
+5. Masukkan tempe dan kentang, aduk sampai bumbu merata.
+alat: wajan, spatula, ulekan, pisau, talenan, saringan
+
+## oseng-tempe-kacang-panjang | Oseng Tempe Kacang Panjang | 20 | 3 | mudah
+tag: hemat, pedas
+desc: Oseng sederhana dengan kecap dan cabai iris.
+bahan:
+- tempeh* | 1/2 papan
+- long_bean* | 150 g
+- shallot | 3 siung
+- garlic | 2 siung
+- chili? | 3 buah
+- sweet_soy_sauce | 2 sdm
+- cooking_oil | 2 sdm
+langkah:
+1. Potong dadu tempe dan goreng sebentar sampai agak kering.
+2. Potong kacang panjang sepanjang 3 cm.
+3. Tumis bawang merah, bawang putih, dan cabai sampai harum.
+4. Masukkan kacang panjang, masak 3 menit, lalu tempe dan kecap.
+5. Aduk sampai bumbu meresap.
+alat: wajan, spatula, pisau, talenan
 
 ## sayur-lodeh | Sayur Lodeh | 40 | 4 | sedang
 tag: berkuah, vegetarian
@@ -616,6 +1719,167 @@ langkah:
 5. Masak sampai sayur empuk, koreksi garam.
 tip: Jangan ditutup rapat setelah santan masuk agar tidak pecah.
 alat: panci, ulekan, sendok sayur, pisau, talenan
+
+## sayur-bening-bayam-jagung | Sayur Bening Bayam Jagung | 20 | 3 | mudah
+tag: berkuah, sehat, hemat, vegetarian
+desc: Sayur bening ringan dengan jagung manis yang menyegarkan.
+bahan:
+- spinach* | 1 ikat
+- corn* | 1 buah
+- shallot | 3 siung
+- garlic | 2 siung
+- salt | 1 sdt
+- sugar | 1/2 sdt
+- water | 800 ml
+langkah:
+1. Pipil jagung atau potong-potong bersama bonggolnya.
+2. Didihkan air bersama bawang merah dan bawang putih iris.
+3. Masukkan jagung, masak 10 menit sampai empuk.
+4. Bumbui garam dan gula.
+5. Masukkan bayam, masak 1 menit saja lalu angkat.
+tip: Bayam masuk terakhir agar warnanya tetap hijau.
+alat: panci, sendok sayur, pisau, talenan
+
+## tumis-buncis-wortel | Tumis Buncis Wortel | 15 | 2 | mudah
+tag: sehat, hemat, vegetarian
+desc: Tumisan sayur renyah dengan bumbu bawang sederhana.
+bahan:
+- green_bean* | 150 g
+- carrot* | 1 buah
+- garlic | 2 siung
+- shallot | 2 siung
+- oyster_sauce? | 1 sdm
+- salt | 1/2 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Potong buncis dan iris wortel korek api.
+2. Tumis bawang merah dan bawang putih sampai harum.
+3. Masukkan wortel, masak 2 menit, lalu buncis.
+4. Bumbui garam, saus tiram, dan sedikit air.
+5. Masak sebentar sampai sayur matang tapi tetap renyah.
+alat: wajan, spatula, pisau, talenan
+
+## cah-sawi-bawang-putih | Cah Sawi Bawang Putih | 10 | 2 | mudah
+tag: sehat, hemat, vegetarian
+desc: Sawi hijau tumis cepat dengan bawang putih yang harum.
+bahan:
+- mustard_greens* | 1 ikat
+- garlic* | 4 siung
+- oyster_sauce? | 1 sdm
+- salt | 1/4 sdt
+- pepper | sedikit
+- cooking_oil | 1 sdm
+langkah:
+1. Potong sawi sepanjang 5 cm, cincang bawang putih.
+2. Tumis bawang putih dengan minyak sampai harum.
+3. Masukkan batang sawi, masak 1 menit, lalu daun.
+4. Bumbui saus tiram, garam, dan merica.
+5. Angkat segera agar sawi tetap renyah.
+alat: wajan, spatula, pisau, talenan
+
+## terong-balado | Terong Balado | 25 | 3 | mudah
+tag: pedas, hemat, vegetarian
+desc: Terong goreng dengan sambal merah yang pedas manis.
+bahan:
+- eggplant* | 2 buah
+- chili* | 8 buah
+- tomato | 1 buah
+- shallot | 4 siung
+- garlic | 2 siung
+- sugar | 1 sdt
+- salt | 1/2 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Potong terong, goreng sampai kecokelatan dan lunak.
+2. Haluskan cabai, tomat, bawang merah, dan bawang putih.
+3. Tumis sambal sampai matang dan harum.
+4. Bumbui gula dan garam.
+5. Masukkan terong, aduk perlahan sampai terbalut.
+alat: wajan, spatula, ulekan, pisau, talenan
+
+## urap-sayur | Urap Sayur | 30 | 3 | sedang
+tag: sehat, vegetarian
+desc: Sayuran rebus dengan kelapa parut berbumbu.
+bahan:
+- coconut* | 1/2 butir parut
+- spinach* | 1 ikat
+- bean_sprout | 1 genggam
+- long_bean | 100 g
+- chili | 3 buah
+- garlic | 2 siung
+- palm_sugar | 1 sdt
+- salt | 1 sdt
+- bay_leaf | 1 lembar
+langkah:
+1. Rebus bayam, tauge, dan kacang panjang sebentar, tiriskan.
+2. Haluskan cabai, bawang putih, gula merah, dan garam.
+3. Campur bumbu dengan kelapa parut dan daun salam.
+4. Kukus kelapa berbumbu 10 menit.
+5. Aduk sayur dengan kelapa kukus sebelum disajikan.
+alat: panci, kukusan, ulekan, saringan, mangkuk
+
+## pecel-sayur | Pecel Sayur | 30 | 3 | sedang
+tag: sehat, vegetarian, pedas
+desc: Sayur rebus disiram saus kacang pedas manis.
+bahan:
+- peanut | 100 g
+- spinach* | 1 ikat
+- bean_sprout | 1 genggam
+- long_bean | 100 g
+- chili | 4 buah
+- garlic | 2 siung
+- palm_sugar | 1 sdm
+- lime | 1/2 buah
+- salt | 1/2 sdt
+langkah:
+1. Sangrai kacang tanah sampai harum.
+2. Haluskan kacang bersama cabai, bawang putih, gula merah, dan garam.
+3. Encerkan dengan air hangat dan peras jeruk nipis.
+4. Rebus bayam, tauge, dan kacang panjang sebentar.
+5. Tata sayur dan siram dengan sambal kacang.
+alat: panci, wajan, ulekan, saringan, piring
+
+## karedok | Karedok | 20 | 2 | mudah
+tag: segar, sehat, vegetarian, tanpa-kompor
+desc: Sayur mentah dengan sambal kacang kencur ala Sunda yang disederhanakan.
+bahan:
+- cucumber* | 1 buah
+- peanut | 3 sdm kacang sangrai
+- cabbage | 100 g
+- long_bean | 50 g
+- bean_sprout? | 1 genggam
+- chili | 3 buah
+- garlic | 1 siung
+- palm_sugar | 1 sdm
+- lime | 1/2 buah
+- salt | 1/2 sdt
+langkah:
+1. Iris mentimun, kol, dan kacang panjang halus.
+2. Ulek kacang, cabai, bawang putih, gula merah, dan garam.
+3. Tambahkan air dan perasan jeruk nipis sampai saus kental.
+4. Campur sayur dengan saus sebelum dimakan.
+tip: Campur saus saat akan makan agar sayur tetap renyah.
+alat: ulekan, pisau, talenan, mangkuk
+
+## sup-jagung-telur | Sup Jagung Telur | 20 | 3 | mudah
+tag: berkuah, anak, hemat, sarapan
+desc: Sup kental manis dari jagung manis dengan pita telur.
+bahan:
+- corn* | 2 buah
+- egg* | 2 butir
+- spring_onion | 1 batang
+- garlic | 2 siung
+- flour | 1 sdm
+- salt | 1 sdt
+- pepper | 1/4 sdt
+- water | 600 ml
+langkah:
+1. Serut jagung dari bonggolnya.
+2. Tumis bawang putih sampai harum, masukkan jagung dan air.
+3. Didihkan 10 menit, kentalkan dengan tepung yang dilarutkan air.
+4. Bumbui garam dan merica.
+5. Tuang telur kocok sambil diaduk, taburi daun bawang.
+alat: panci, sendok kayu, mangkuk, pisau, talenan
 
 ## tumis-jamur-tiram | Tumis Jamur Tiram | 15 | 2 | mudah
 tag: sehat, hemat, vegetarian
@@ -656,6 +1920,358 @@ langkah:
 5. Masak dengan api besar singkat sampai layu tapi renyah.
 alat: wajan, spatula, pisau, talenan
 
+## sup-sayur-bakso | Sup Sayur Bakso | 25 | 4 | mudah
+tag: berkuah, anak
+desc: Kuah bening hangat dengan bakso, wortel, dan kentang.
+bahan:
+- meatball* | 8 butir
+- carrot* | 1 buah
+- potato | 1 buah
+- cabbage? | 100 g
+- celery | 1 batang
+- garlic | 2 siung
+- salt | 1 sdt
+- pepper | 1/4 sdt
+- water | 1 liter
+langkah:
+1. Potong wortel dan kentang dadu, belah bakso.
+2. Tumis bawang putih cincang di panci sampai harum.
+3. Tuang air, masukkan wortel dan kentang, didihkan 10 menit.
+4. Masukkan bakso dan kol, masak 5 menit.
+5. Bumbui garam dan merica, taburi seledri.
+alat: panci, sendok sayur, pisau, talenan
+
+## ayam-goreng-bawang-putih | Ayam Goreng Bawang Putih | 40 | 3 | sedang
+tag: hemat
+desc: Ayam goreng berbumbu bawang putih yang gurih dan wangi.
+bahan:
+- chicken* | 500 g
+- garlic* | 6 siung
+- salt | 1 sdt
+- pepper | 1/2 sdt
+- sugar | 1/2 sdt
+- water | 300 ml
+- cooking_oil | untuk menggoreng
+langkah:
+1. Haluskan bawang putih bersama garam, merica, dan gula.
+2. Lumuri ayam dengan bumbu, diamkan 15 menit.
+3. Rebus ayam bersama bumbu dan air sampai air menyusut.
+4. Goreng dalam minyak panas sampai kulit kecokelatan.
+5. Tiriskan dan sajikan hangat.
+tip: Direbus dulu agar bumbu meresap dan ayam matang sampai ke tulang.
+alat: panci, wajan, spatula, ulekan, saringan
+
+## ayam-bakar-kecap-teflon | Ayam Bakar Kecap Teflon | 40 | 3 | sedang
+tag: hemat
+desc: Ayam bakar manis gurih yang dimasak di teflon tanpa arang.
+bahan:
+- chicken* | 500 g
+- sweet_soy_sauce | 4 sdm
+- garlic | 4 siung
+- shallot | 3 siung
+- lime | 1/2 buah
+- salt | 1 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Haluskan bawang putih dan bawang merah, campur dengan kecap, garam, dan air jeruk nipis.
+2. Lumuri ayam, diamkan 30 menit.
+3. Panaskan teflon dengan sedikit minyak.
+4. Panggang ayam dengan api kecil dan ditutup, balik setiap 5 menit sambil olesi sisa bumbu.
+5. Angkat saat matang dan bagian luar mengilap.
+tip: Api kecil mencegah kecap gosong sebelum ayam matang.
+alat: teflon, penutup, kuas, ulekan, mangkuk, pisau
+
+## ayam-rica-rica | Ayam Rica-Rica | 40 | 4 | sedang
+tag: pedas
+desc: Ayam tumis pedas dengan cabai, jahe, dan daun jeruk ala Manado.
+bahan:
+- chicken* | 500 g
+- chili* | 15 buah
+- shallot | 6 siung
+- garlic | 3 siung
+- ginger | 2 ruas
+- lemongrass | 1 batang
+- tomato | 1 buah
+- lime | 1/2 buah
+- salt | 1 sdt
+- cooking_oil | 3 sdm
+langkah:
+1. Potong ayam, lumuri air jeruk nipis dan garam.
+2. Haluskan cabai, bawang merah, bawang putih, dan jahe.
+3. Tumis bumbu halus bersama serai geprek sampai harum.
+4. Masukkan ayam, aduk sampai berubah warna, tambahkan tomat dan sedikit air.
+5. Masak tertutup sampai ayam empuk dan air menyusut.
+alat: wajan, spatula, ulekan, pisau, talenan
+
+## sop-ayam-bening | Sop Ayam Bening | 40 | 4 | mudah
+tag: berkuah, sehat
+desc: Sup ayam bening dengan sayuran yang ringan dan menghangatkan.
+bahan:
+- chicken* | 300 g
+- carrot* | 2 buah
+- potato | 1 buah
+- celery | 2 batang
+- spring_onion | 1 batang
+- garlic | 3 siung
+- ginger | 1 ruas
+- salt | 1 sdt
+- pepper | 1/2 sdt
+- water | 1,5 liter
+langkah:
+1. Rebus ayam dengan jahe dan sedikit garam sampai kaldu keluar.
+2. Tumis bawang putih sebentar lalu masukkan ke kaldu.
+3. Masukkan wortel dan kentang, masak sampai empuk.
+4. Bumbui garam dan merica.
+5. Taburi seledri dan daun bawang sebelum disajikan.
+tip: Buang busa di permukaan agar kuah tetap bening.
+alat: panci, sendok sayur, pisau, talenan
+
+## opor-ayam | Opor Ayam | 50 | 4 | sedang
+tag: berkuah
+desc: Ayam masak santan putih dengan rempah halus, hidangan hari raya.
+bahan:
+- chicken* | 600 g
+- coconut_milk | 500 ml
+- shallot | 6 siung
+- garlic | 4 siung
+- candlenut | 4 butir
+- ginger | 2 ruas
+- lemongrass | 1 batang
+- bay_leaf | 3 lembar
+- salt | 1 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Haluskan bawang merah, bawang putih, kemiri, dan jahe.
+2. Tumis bumbu dengan serai dan daun salam sampai harum.
+3. Masukkan ayam, aduk sampai berubah warna.
+4. Tuang santan dan sedikit air, masak dengan api kecil sambil sesekali diaduk.
+5. Masak sampai ayam empuk dan kuah mengental, bumbui garam.
+tip: Aduk pelan agar santan tidak pecah.
+alat: panci, wajan, ulekan, sendok kayu, pisau, talenan
+
+## semur-daging-kentang | Semur Daging Kentang | 90 | 5 | sedang
+tag: berkuah
+desc: Daging dan kentang empuk dalam kuah kecap manis hangat.
+bahan:
+- beef* | 500 g
+- potato* | 3 buah
+- sweet_soy_sauce | 5 sdm
+- shallot | 5 siung
+- garlic | 3 siung
+- cinnamon | 1 batang
+- bay_leaf | 2 lembar
+- pepper | 1/2 sdt
+- salt | 1 sdt
+- water | 800 ml
+langkah:
+1. Rebus daging dengan air sampai setengah empuk.
+2. Tumis bawang merah dan bawang putih iris bersama kayu manis dan daun salam.
+3. Masukkan ke panci daging beserta kecap, merica, dan garam.
+4. Masak dengan api kecil sampai daging hampir empuk.
+5. Masukkan kentang belah, masak sampai empuk dan kuah menyusut.
+alat: panci, wajan, sendok kayu, pisau, talenan
+
+## rendang-daging | Rendang Daging | 150 | 6 | sulit
+tag: pedas
+desc: Daging dimasak lama dengan santan dan rempah sampai kering dan hitam.
+bahan:
+- beef* | 700 g
+- coconut_milk | 800 ml
+- chili | 12 buah
+- shallot | 8 siung
+- garlic | 5 siung
+- ginger | 2 ruas
+- turmeric | 1 ruas
+- candlenut | 4 butir
+- lemongrass | 2 batang
+- bay_leaf | 3 lembar
+- salt | 1,5 sdt
+langkah:
+1. Haluskan cabai, bawang merah, bawang putih, jahe, kunyit, dan kemiri.
+2. Campur bumbu halus, serai geprek, daun salam, daging potong, dan santan dalam wajan besar.
+3. Masak dengan api sedang sambil sering diaduk sampai mendidih.
+4. Kecilkan api, masak terus sekitar 2 jam sampai santan menyusut dan berminyak.
+5. Aduk terus di akhir sampai bumbu kering dan warna kecokelatan gelap.
+tip: Sabar mengaduk di akhir supaya tidak gosong.
+alat: wajan, spatula, ulekan, pisau, talenan
+
+## bakso-kuah-sawi | Bakso Kuah Sawi | 20 | 2 | mudah
+tag: berkuah, anak
+desc: Kuah bening gurih dengan bakso dan sawi hijau.
+bahan:
+- meatball* | 10 butir
+- mustard_greens* | 3 batang
+- garlic | 2 siung
+- celery? | 1 batang
+- spring_onion? | 1 batang
+- salt | 1 sdt
+- pepper | 1/4 sdt
+- water | 700 ml
+langkah:
+1. Tumis bawang putih cincang di panci sampai harum.
+2. Tuang air, didihkan, masukkan bakso.
+3. Bumbui garam dan merica.
+4. Masukkan sawi, masak 1 menit.
+5. Taburi seledri dan daun bawang.
+alat: panci, sendok sayur, pisau, talenan
+
+## ikan-goreng-jeruk-nipis | Ikan Goreng Jeruk Nipis | 25 | 2 | mudah
+tag: hemat
+desc: Ikan goreng renyah dengan perasan jeruk nipis dan bumbu bawang.
+bahan:
+- fish* | 2 ekor kecil
+- lime* | 2 buah
+- garlic | 3 siung
+- salt | 1 sdt
+- turmeric? | 1/2 ruas
+- cooking_oil | untuk menggoreng
+langkah:
+1. Bersihkan ikan, lumuri perasan jeruk nipis dan garam, diamkan 10 menit.
+2. Haluskan bawang putih dan kunyit, oleskan ke ikan.
+3. Panaskan minyak banyak di wajan.
+4. Goreng ikan sampai kedua sisi keemasan dan renyah.
+5. Sajikan dengan irisan jeruk nipis.
+tip: Keringkan ikan agar minyak tidak memercik.
+alat: wajan, spatula, ulekan, pisau, talenan
+
+## ikan-bakar-kecap-teflon | Ikan Bakar Kecap Teflon | 30 | 2 | mudah
+tag: hemat
+desc: Ikan bakar manis gurih tanpa arang.
+bahan:
+- fish* | 2 ekor kecil
+- sweet_soy_sauce | 3 sdm
+- garlic | 3 siung
+- shallot | 3 siung
+- lime | 1/2 buah
+- salt | 1/2 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Lumuri ikan dengan air jeruk nipis dan garam.
+2. Haluskan bawang putih dan bawang merah, campur dengan kecap.
+3. Panaskan teflon dengan minyak.
+4. Panggang ikan tertutup dengan api kecil sambil dioles bumbu, balik setelah 5 menit.
+5. Masak sampai matang dan bumbu mengering.
+alat: teflon, penutup, kuas, ulekan, pisau, talenan
+
+## ikan-asam-manis-nanas | Ikan Asam Manis Nanas | 30 | 3 | sedang
+tag: segar
+desc: Ikan goreng disiram saus asam manis dengan potongan nanas.
+bahan:
+- fish* | 400 g fillet
+- pineapple* | 1/4 buah
+- tomato | 1 buah
+- bell_pepper? | 1/2 buah
+- garlic | 2 siung
+- vinegar | 1 sdm
+- sugar | 2 sdm
+- salt | 1 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Lumuri ikan dengan garam, goreng sampai kuning keemasan.
+2. Tumis bawang putih, lalu masukkan tomat, paprika, dan nanas.
+3. Tambahkan cuka, gula, garam, dan sedikit air.
+4. Masak 3 menit sampai saus agak kental.
+5. Siram saus ke atas ikan.
+alat: wajan, spatula, pisau, talenan
+
+## udang-balado | Udang Balado | 25 | 3 | mudah
+tag: pedas
+desc: Udang goreng cepat dengan sambal balado merah.
+bahan:
+- shrimp* | 300 g
+- chili* | 10 buah
+- tomato | 1 buah
+- shallot | 4 siung
+- garlic | 2 siung
+- sugar | 1 sdt
+- salt | 1 sdt
+- cooking_oil | 3 sdm
+langkah:
+1. Bersihkan udang, lumuri sedikit garam.
+2. Haluskan cabai, tomat, bawang merah, dan bawang putih.
+3. Tumis sambal sampai harum dan matang.
+4. Masukkan udang, aduk sampai berwarna merah muda.
+5. Bumbui gula dan garam, angkat saat bumbu meresap.
+tip: Jangan masak udang terlalu lama agar tidak alot.
+alat: wajan, spatula, ulekan, pisau, talenan
+
+## udang-asam-manis | Udang Asam Manis | 20 | 2 | mudah
+tag: segar, anak
+desc: Udang berbalut saus tomat asam manis.
+bahan:
+- shrimp* | 250 g
+- tomato* | 2 buah
+- bell_pepper? | 1/2 buah
+- garlic | 2 siung
+- vinegar | 1 sdm
+- sugar | 2 sdm
+- salt | 1/2 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Haluskan satu tomat, potong sisanya.
+2. Tumis bawang putih, masukkan udang sampai berubah warna.
+3. Tuang tomat halus, cuka, gula, dan garam.
+4. Masukkan tomat potong dan paprika, masak 3 menit.
+alat: wajan, spatula, blender, pisau, talenan
+
+## kepiting-saus-padang | Kepiting Saus Padang | 35 | 3 | sedang
+tag: pedas
+desc: Kepiting dengan saus cabai kental yang pedas manis.
+bahan:
+- crab* | 2 ekor
+- chili* | 10 buah
+- tomato | 2 buah
+- shallot | 5 siung
+- garlic | 3 siung
+- ginger | 1 ruas
+- sugar | 1 sdm
+- salt | 1 sdt
+- cooking_oil | 3 sdm
+langkah:
+1. Bersihkan kepiting, potong menjadi beberapa bagian.
+2. Haluskan cabai, tomat, bawang merah, bawang putih, dan jahe.
+3. Tumis bumbu halus sampai harum dan matang.
+4. Masukkan kepiting, aduk sampai merah.
+5. Tambahkan sedikit air, gula, dan garam, masak tertutup 10 menit sampai matang.
+alat: wajan, penutup, spatula, ulekan, pisau, talenan
+
+## sosis-bakar-saus | Sosis Bakar Saus | 15 | 2 | mudah
+tag: camilan, anak
+desc: Sosis panggang dengan saus tomat pedas manis buatan sendiri.
+bahan:
+- sausage* | 4 buah
+- tomato | 1 buah
+- chili? | 2 buah
+- garlic | 1 siung
+- sugar | 1 sdt
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Tumis bawang putih, tomat potong, dan cabai sampai lunak, bumbui gula dan garam.
+2. Haluskan menjadi saus.
+3. Panggang sosis di teflon dengan sedikit minyak sampai kecokelatan.
+4. Sajikan dengan saus.
+alat: teflon, wajan, spatula, blender, pisau, talenan
+
+## bakwan-jagung | Bakwan Jagung | 20 | 4 | mudah
+tag: camilan, hemat, anak, vegetarian
+desc: Gorengan jagung manis berbumbu bawang yang renyah.
+bahan:
+- corn* | 2 buah
+- flour | 6 sdm
+- spring_onion | 1 batang
+- garlic | 2 siung
+- egg? | 1 butir
+- salt | 1 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Serut jagung dari bonggolnya.
+2. Campur jagung, tepung, telur, bawang putih halus, daun bawang, dan garam.
+3. Tambahkan sedikit air, aduk sampai adonan kental.
+4. Goreng satu sendok adonan demi satu dalam minyak panas sampai keemasan.
+5. Tiriskan.
+alat: wajan, spatula, mangkuk, pisau, talenan, saringan
+
 ## bakwan-sayur | Bakwan Sayur | 25 | 4 | mudah
 tag: camilan, hemat, vegetarian
 desc: Gorengan kol, wortel, dan tauge dalam adonan tepung.
@@ -675,6 +2291,23 @@ langkah:
 4. Goreng satu sendok adonan sampai keemasan dan renyah.
 alat: wajan, spatula, mangkuk, pisau, talenan, saringan
 
+## jus-alpukat-cokelat | Jus Alpukat Cokelat | 5 | 2 | mudah
+tag: minuman, manis, tanpa-kompor, vegetarian
+desc: Jus alpukat kental dengan saus cokelat.
+bahan:
+- avocado* | 1 buah matang
+- chocolate | 2 sdm
+- milk | 200 ml
+- ice? | 4 kotak
+- sugar? | 1 sdm
+langkah:
+1. Belah alpukat, ambil daging buahnya.
+2. Masukkan alpukat, susu, gula, dan es batu ke blender.
+3. Blender sampai halus.
+4. Tuang ke gelas, beri cokelat leleh di dasar dan atasnya.
+alat: blender, pisau, sendok, gelas
+ganti: chocolate = bubuk kakao dan sedikit gula
+
 ## jus-wortel-apel | Jus Wortel Apel | 10 | 2 | mudah
 tag: minuman, sehat, segar, tanpa-kompor, vegetarian
 desc: Jus manis alami kaya warna dari wortel dan apel.
@@ -690,6 +2323,56 @@ langkah:
 3. Blender bersama air dan perasan lemon.
 4. Saring bila ingin lebih halus, sajikan dingin.
 alat: blender, pisau, talenan, saringan, gelas
+
+## jus-tomat-madu | Jus Tomat Madu | 5 | 2 | mudah
+tag: minuman, segar, sehat, tanpa-kompor, vegetarian
+desc: Jus tomat segar yang dimaniskan madu.
+bahan:
+- tomato* | 3 buah
+- honey* | 2 sdm
+- lemon? | 1/2 buah
+- water | 150 ml
+- ice? | 4 kotak
+langkah:
+1. Cuci dan potong tomat.
+2. Blender bersama madu, air, dan perasan lemon.
+3. Tambah es batu, sajikan segera.
+alat: blender, pisau, talenan, gelas
+
+## jus-pepaya-jeruk | Jus Pepaya Jeruk | 10 | 2 | mudah
+tag: minuman, segar, sehat, tanpa-kompor, vegetarian
+desc: Jus pepaya manis dengan sentuhan segar jeruk.
+bahan:
+- papaya* | 200 g
+- orange* | 2 buah
+- honey? | 1 sdt
+- ice? | 4 kotak
+langkah:
+1. Kupas pepaya, buang bijinya, potong dadu.
+2. Peras jeruk, saring bijinya.
+3. Blender pepaya dengan air jeruk dan es batu.
+4. Tuang segera ke gelas.
+alat: blender, pisau, talenan, gelas
+
+## asinan-buah | Asinan Buah | 20 | 3 | mudah
+tag: segar, pedas, vegetarian, tanpa-kompor
+desc: Buah segar dalam kuah asam manis pedas.
+bahan:
+- pineapple* | 1/4 buah
+- cucumber* | 1 buah
+- papaya | 150 g
+- chili | 3 buah
+- palm_sugar | 3 sdm
+- vinegar | 2 sdm
+- peanut? | 2 sdm
+- salt | 1/2 sdt
+langkah:
+1. Potong nanas, mentimun, dan pepaya.
+2. Haluskan cabai, gula merah, cuka, dan garam, tambah air sampai kuah encer.
+3. Tuang kuah ke buah, dinginkan dulu di kulkas.
+4. Taburi kacang tanah sebelum disajikan.
+tip: Buah yang agak mengkal tetap renyah dalam kuah asam.
+alat: ulekan, pisau, talenan, mangkuk
 
 ## pisang-epe-gula-merah | Pisang Epe Gula Merah | 20 | 2 | mudah
 tag: camilan, manis, vegetarian
@@ -723,6 +2406,56 @@ langkah:
 3. Panaskan teflon dengan sedikit mentega.
 4. Panggang dengan api kecil, balik sampai kedua sisi kecokelatan.
 alat: teflon, spatula, mangkuk, pisau, talenan
+
+## kolak-ubi | Kolak Ubi | 30 | 4 | mudah
+tag: manis, berkuah, vegetarian
+desc: Ubi jalar dalam kuah santan gula merah.
+bahan:
+- sweet_potato* | 3 buah
+- coconut_milk | 400 ml
+- palm_sugar | 100 g
+- cinnamon? | 1 batang
+- salt | 1 sejumput
+- water | 400 ml
+langkah:
+1. Kupas ubi, potong dadu.
+2. Rebus air dengan gula merah dan kayu manis sampai larut.
+3. Masukkan ubi, masak sampai hampir empuk.
+4. Tuang santan dan garam, aduk perlahan sampai matang.
+alat: panci, sendok kayu, pisau, talenan
+
+## bubur-kacang-hijau | Bubur Kacang Hijau | 60 | 4 | mudah
+tag: manis, sarapan, vegetarian
+desc: Bubur kacang hijau lembut dengan gula merah dan santan.
+bahan:
+- mung_bean* | 200 g
+- coconut_milk | 200 ml
+- palm_sugar | 100 g
+- ginger | 1 ruas
+- salt | 1 sejumput
+- water | 1 liter
+langkah:
+1. Cuci kacang hijau, rendam 1 jam bila sempat.
+2. Rebus dengan air dan jahe geprek sampai kacang pecah dan empuk.
+3. Masukkan gula merah dan garam.
+4. Tuang santan, aduk dan angkat sebelum mendidih keras.
+alat: panci, sendok kayu, pisau
+
+## es-teler-sederhana | Es Teler Sederhana | 15 | 2 | mudah
+tag: minuman, manis, segar, tanpa-kompor, vegetarian
+desc: Es buah dengan alpukat, kelapa, dan nangka dalam kuah susu.
+bahan:
+- avocado* | 1 buah
+- coconut* | 1/2 butir muda
+- milk* | 200 ml
+- ice | 1 mangkuk
+- sugar | 2 sdm
+langkah:
+1. Kerok daging kelapa muda, potong alpukat.
+2. Larutkan gula dalam susu.
+3. Tata buah di mangkuk.
+4. Tuang susu manis dan beri es batu.
+alat: pisau, sendok, mangkuk, talenan
 
 ## pancake-pisang | Pancake Pisang | 20 | 2 | mudah
 tag: sarapan, manis, anak, vegetarian
@@ -787,6 +2520,52 @@ langkah:
 3. Saring bila ingin lebih halus.
 alat: blender, pisau, talenan, saringan, gelas
 
+## infused-water-lemon-timun | Infused Water Lemon Timun | 5 | 4 | mudah
+tag: minuman, segar, sehat, tanpa-kompor, vegetarian
+desc: Air minum beraroma lemon, timun, dan mint.
+bahan:
+- lemon* | 1 buah
+- cucumber* | 1/2 buah
+- mint? | 6 lembar
+- ice? | secukupnya
+- water | 1 liter
+langkah:
+1. Iris tipis lemon dan mentimun.
+2. Masukkan ke teko bersama daun mint.
+3. Tuang air dingin, diamkan di kulkas 1 jam.
+4. Sajikan dingin.
+alat: teko, pisau, talenan
+
+## wedang-jahe-serai | Wedang Jahe Serai | 15 | 3 | mudah
+tag: minuman, sehat, vegetarian
+desc: Minuman hangat jahe dan serai yang menenangkan.
+bahan:
+- ginger* | 2 ruas
+- lemongrass | 2 batang
+- palm_sugar | 2 sdm
+- cinnamon? | 1 batang
+- water | 600 ml
+langkah:
+1. Geprek jahe dan serai.
+2. Rebus bersama kayu manis di air sampai mendidih dan harum, sekitar 10 menit.
+3. Masukkan gula merah sampai larut.
+4. Saring dan sajikan hangat.
+alat: panci, saringan, gelas, pisau
+
+## susu-jahe-hangat | Susu Jahe Hangat | 10 | 1 | mudah
+tag: minuman, sehat, vegetarian
+desc: Susu hangat beraroma jahe untuk malam yang dingin.
+bahan:
+- milk* | 250 ml
+- ginger* | 1 ruas
+- honey | 1 sdt
+langkah:
+1. Geprek jahe.
+2. Panaskan susu bersama jahe dengan api kecil jangan sampai mendidih kencang.
+3. Diamkan 3 menit supaya aroma keluar.
+4. Saring, tambahkan madu.
+alat: panci kecil, saringan, gelas
+
 ## spaghetti-carbonara-rumahan | Spaghetti Carbonara Rumahan | 25 | 2 | sedang
 tag: sarapan
 desc: Spaghetti dengan saus telur dan keju yang creamy tanpa krim.
@@ -806,6 +2585,26 @@ langkah:
 5. Tambahkan air rebusan bila perlu agar saus licin.
 tip: Matikan api sebelum menuang telur agar tidak menggumpal.
 alat: panci, wajan, spatula, parutan, mangkuk
+
+## spaghetti-bolognese | Spaghetti Bolognese | 35 | 3 | mudah
+tag: anak
+desc: Spaghetti dengan saus daging dan tomat.
+bahan:
+- pasta* | 250 g spaghetti
+- beef* | 200 g giling
+- tomato* | 3 buah
+- onion | 1 buah
+- garlic | 3 siung
+- sugar | 1 sdt
+- salt | 1 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Rebus spaghetti sampai al dente, tiriskan.
+2. Tumis bawang bombay dan bawang putih sampai harum.
+3. Masukkan daging, masak sampai berubah warna.
+4. Tambahkan tomat cincang, gula, garam, dan sedikit air, masak 15 menit.
+5. Sajikan saus di atas spaghetti.
+alat: panci, wajan, spatula, pisau, talenan, saringan
 
 ## makaroni-schotel-kukus | Makaroni Schotel Kukus | 40 | 4 | sedang
 tag: anak
@@ -827,6 +2626,129 @@ langkah:
 5. Taburi sisa keju, kukus lagi 3 menit.
 alat: panci, kukusan, loyang, mangkuk, parutan
 
+## pizza-roti-tawar-teflon | Pizza Roti Tawar Teflon | 15 | 2 | mudah
+tag: camilan, anak
+desc: Pizza mini dari roti tawar yang dipanggang di teflon.
+bahan:
+- bread* | 4 lembar
+- cheese* | 60 g
+- tomato* | 2 buah
+- sausage? | 2 buah
+- bell_pepper? | 1/4 buah
+- sugar | 1/2 sdt
+- salt | 1/4 sdt
+- butter | 1 sdt
+langkah:
+1. Cincang tomat lalu masak sebentar dengan gula dan garam jadi saus.
+2. Olesi roti dengan saus, beri sosis, paprika, dan keju parut.
+3. Panaskan teflon dengan mentega.
+4. Letakkan roti, tutup, masak api kecil sampai keju meleleh dan dasar renyah.
+alat: teflon, penutup, spatula, parutan, pisau, talenan
+
+## bruschetta-tomat | Bruschetta Tomat | 10 | 2 | mudah
+tag: camilan, segar, vegetarian
+desc: Roti panggang renyah dengan topping tomat dan bawang putih.
+bahan:
+- bread* | 4 iris
+- tomato* | 2 buah
+- garlic | 1 siung
+- mint? | 4 lembar
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Cincang tomat, campur dengan garam, minyak, dan daun mint cincang.
+2. Panggang roti di teflon sampai renyah.
+3. Gosok roti panas dengan bawang putih.
+4. Letakkan campuran tomat dan sajikan segera.
+alat: teflon, spatula, pisau, talenan, mangkuk
+
+## sup-tomat | Sup Tomat | 25 | 3 | mudah
+tag: berkuah, sehat, vegetarian
+desc: Sup tomat halus beraroma bawang.
+bahan:
+- tomato* | 5 buah
+- onion | 1/2 buah
+- garlic | 2 siung
+- butter | 1 sdm
+- sugar | 1/2 sdt
+- salt | 1 sdt
+- pepper | 1/4 sdt
+- water | 400 ml
+langkah:
+1. Tumis bawang bombay dan bawang putih dengan mentega.
+2. Masukkan tomat potong dan air, masak 15 menit sampai lunak.
+3. Haluskan dengan blender.
+4. Panaskan lagi, bumbui gula, garam, dan merica.
+alat: panci, blender, sendok kayu, pisau, talenan
+
+## ratatouille-sederhana | Ratatouille Sederhana | 35 | 3 | sedang
+tag: sehat, vegetarian
+desc: Rebusan sayur panggang ala Prancis dari terong, zukini, dan tomat.
+bahan:
+- zucchini* | 1 buah
+- eggplant* | 1 buah
+- tomato* | 3 buah
+- bell_pepper | 1/2 buah
+- onion | 1/2 buah
+- garlic | 2 siung
+- salt | 1 sdt
+- cooking_oil | 3 sdm
+langkah:
+1. Potong semua sayur dadu sama besar.
+2. Tumis bawang bombay dan bawang putih.
+3. Masukkan terong dan paprika, masak 5 menit.
+4. Masukkan zukini dan tomat, tutup dan masak api kecil 15 menit.
+5. Bumbui garam dan masak sampai sayur empuk.
+alat: wajan, penutup, spatula, pisau, talenan
+
+## kentang-tumbuk-mentega | Kentang Tumbuk Mentega | 30 | 3 | mudah
+tag: anak, vegetarian
+desc: Kentang lembut dilumatkan dengan mentega dan susu.
+bahan:
+- potato* | 3 buah
+- butter* | 2 sdm
+- milk | 100 ml
+- salt | 1/2 sdt
+- pepper | 1/4 sdt
+langkah:
+1. Kupas kentang, potong dadu, rebus sampai sangat empuk.
+2. Tiriskan dan lumatkan selagi panas.
+3. Tambahkan mentega dan susu hangat sedikit demi sedikit.
+4. Bumbui garam dan merica, aduk sampai halus.
+alat: panci, saringan, garpu, pisau, talenan
+
+## kentang-panggang-keju | Kentang Panggang Keju | 50 | 3 | mudah
+tag: camilan, vegetarian
+desc: Kentang panggang renyah dengan keju meleleh.
+bahan:
+- potato* | 4 buah
+- cheese* | 60 g
+- butter | 1 sdm
+- salt | 1/2 sdt
+- pepper | 1/4 sdt
+langkah:
+1. Panaskan oven 200 derajat Celsius.
+2. Belah kentang, olesi mentega, garam, dan merica.
+3. Panggang 35 menit sampai empuk dan kecokelatan.
+4. Taburi keju parut, panggang lagi 5 menit.
+alat: oven, loyang, parutan, pisau, talenan
+
+## salad-caprese | Salad Caprese | 10 | 2 | mudah
+tag: segar, vegetarian, tanpa-kompor
+desc: Tomat dan keju dengan daun mint dan minyak.
+bahan:
+- tomato* | 3 buah
+- cheese* | 100 g
+- mint | 6 lembar
+- cooking_oil | 1 sdm
+- salt | 1/4 sdt
+- pepper | sedikit
+langkah:
+1. Iris tomat dan keju tipis.
+2. Tata bergantian di piring.
+3. Sisipkan daun mint, tuang minyak, taburi garam dan merica.
+alat: pisau, talenan, piring
+
 ## coleslaw-yoghurt | Coleslaw Yoghurt | 15 | 3 | mudah
 tag: segar, sehat, vegetarian, tanpa-kompor
 desc: Salad kol dan wortel dengan saus yoghurt ringan.
@@ -844,6 +2766,23 @@ langkah:
 3. Aduk sayur dengan saus.
 4. Dinginkan 15 menit sebelum disajikan.
 alat: pisau, talenan, parutan, mangkuk
+
+## asparagus-panggang-mentega | Asparagus Panggang Mentega | 15 | 2 | mudah
+tag: sehat, vegetarian
+desc: Asparagus panggang cepat dengan mentega dan bawang putih.
+bahan:
+- asparagus* | 1 ikat
+- butter* | 1 sdm
+- garlic | 2 siung
+- lemon? | 1/2 buah
+- salt | 1/4 sdt
+- pepper | sedikit
+langkah:
+1. Patahkan ujung keras asparagus.
+2. Leleh mentega di teflon, tumis bawang putih sebentar.
+3. Masukkan asparagus, masak 5 menit sambil dibalik sampai agak kecokelatan.
+4. Bumbui garam, merica, dan perasan lemon.
+alat: teflon, spatula, pisau, talenan
 
 ## acar-lobak-wortel | Acar Lobak Wortel | 20 | 4 | mudah
 tag: segar, sehat, vegetarian
@@ -863,6 +2802,23 @@ langkah:
 4. Simpan di kulkas minimal 1 jam.
 alat: panci kecil, toples, pisau, talenan
 
+## salad-jeruk-mentimun | Salad Jeruk Mentimun | 10 | 2 | mudah
+tag: segar, sehat, vegetarian, tanpa-kompor
+desc: Jeruk dan mentimun dengan perasan lemon.
+bahan:
+- orange* | 2 buah
+- cucumber* | 1 buah
+- lemon | 1/2 buah
+- honey? | 1 sdt
+- mint? | 4 lembar
+- salt | 1 sejumput
+langkah:
+1. Kupas jeruk dan potong per segmen.
+2. Iris tipis mentimun.
+3. Campur dengan perasan lemon, madu, dan garam.
+4. Taburi daun mint, dinginkan sebentar.
+alat: pisau, talenan, mangkuk
+
 ## selai-stroberi | Selai Stroberi | 30 | 6 | mudah
 tag: manis, vegetarian
 desc: Selai stroberi dengan rasa asam manis alami.
@@ -878,6 +2834,37 @@ langkah:
 5. Dinginkan, simpan dalam toples bersih.
 tip: Selai akan lebih kental setelah dingin.
 alat: panci, sendok kayu, toples, pisau, talenan
+
+## kompot-pir-jahe | Kompot Pir Jahe | 25 | 3 | mudah
+tag: manis, minuman, vegetarian
+desc: Pir rebus dalam sirup jahe hangat.
+bahan:
+- pear* | 3 buah
+- ginger* | 1 ruas
+- sugar | 3 sdm
+- cinnamon? | 1 batang
+- water | 400 ml
+langkah:
+1. Kupas pir, potong 4 bagian.
+2. Rebus air, gula, jahe geprek, dan kayu manis.
+3. Masukkan pir, masak api kecil 15 menit sampai empuk.
+4. Sajikan hangat atau dingin.
+alat: panci, sendok kayu, pisau, talenan
+
+## persik-panggang-madu-yoghurt | Persik Panggang Madu Yoghurt | 20 | 2 | mudah
+tag: manis, sehat, vegetarian
+desc: Persik hangat dengan yoghurt dingin dan madu.
+bahan:
+- peach* | 2 buah
+- yogurt* | 100 g
+- honey | 2 sdm
+- butter? | 1 sdt
+langkah:
+1. Belah persik, buang bijinya.
+2. Panggang di teflon dengan mentega, sisi potong menghadap bawah, 5 menit.
+3. Balik, olesi madu, masak 3 menit.
+4. Sajikan dengan yoghurt.
+alat: teflon, spatula, pisau, talenan
 
 ## smoothie-melon-kelapa | Smoothie Melon Kelapa | 10 | 2 | mudah
 tag: minuman, segar, manis, tanpa-kompor, vegetarian
@@ -910,6 +2897,64 @@ langkah:
 4. Siram madu dan perasan lemon.
 alat: pisau, talenan, piring
 
+## es-kundur-gula-merah | Es Kundur Gula Merah | 40 | 4 | mudah
+tag: minuman, manis, segar, vegetarian
+desc: Kundur dalam sirup gula merah dingin.
+bahan:
+- winter_melon* | 300 g
+- palm_sugar | 100 g
+- ice | 1 mangkuk
+- water | 600 ml
+langkah:
+1. Kupas kundur, potong dadu kecil.
+2. Rebus gula merah dengan air sampai larut, saring.
+3. Masukkan kundur, masak sampai bening dan empuk.
+4. Dinginkan, tuang ke gelas dengan es batu.
+alat: panci, saringan, pisau, talenan, gelas
+
+## sayur-labu-siam-santan-udang | Sayur Labu Siam Santan Udang | 30 | 4 | sedang
+tag: berkuah
+desc: Labu siam dengan udang dalam kuah santan bumbu kuning.
+bahan:
+- squash* | 2 buah
+- shrimp* | 150 g
+- coconut_milk | 300 ml
+- shallot | 4 siung
+- garlic | 2 siung
+- turmeric | 1 ruas
+- lemongrass | 1 batang
+- salt | 1 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Haluskan bawang merah, bawang putih, dan kunyit.
+2. Tumis bumbu dengan serai sampai harum.
+3. Masukkan udang sampai berubah warna.
+4. Masukkan labu siam potong, air sedikit, masak 5 menit.
+5. Tuang santan, masak api kecil sampai labu empuk, bumbui garam.
+alat: panci, wajan, ulekan, pisau, talenan, sendok sayur
+
+## sup-kepiting-jagung | Sup Kepiting Jagung | 30 | 3 | sedang
+tag: berkuah
+desc: Sup kental jagung dengan daging kepiting dan telur.
+bahan:
+- crab* | 1 ekor atau 150 g daging
+- corn* | 2 buah
+- egg | 1 butir
+- ginger | 1 ruas
+- garlic | 2 siung
+- spring_onion | 1 batang
+- flour | 1 sdm
+- salt | 1 sdt
+- pepper | 1/4 sdt
+- water | 700 ml
+langkah:
+1. Rebus kepiting sampai matang, ambil dagingnya.
+2. Tumis bawang putih dan jahe, tuang air dan jagung serut.
+3. Didihkan 10 menit, kentalkan dengan larutan tepung.
+4. Masukkan daging kepiting, bumbui garam dan merica.
+5. Tuang telur kocok perlahan, taburi daun bawang.
+alat: panci, wajan, sendok kayu, mangkuk, pisau, talenan
+
 ## roti-goreng-isi-telur | Roti Goreng Isi Telur | 15 | 2 | mudah
 tag: sarapan, camilan, anak
 desc: Roti tawar berisi telur orak-arik yang digoreng.
@@ -939,6 +2984,57 @@ langkah:
 2. Blender bersama es batu.
 3. Saring agar tidak ada ampas biji bila perlu.
 alat: blender, pisau, talenan, saringan, gelas
+
+## smoothie-mangga-yoghurt | Smoothie Mangga Yoghurt | 5 | 1 | mudah
+tag: minuman, sarapan, segar, manis, tanpa-kompor, vegetarian
+desc: Smoothie mangga kental dengan yoghurt.
+bahan:
+- mango* | 1 buah matang
+- yogurt* | 150 g
+- honey? | 1 sdt
+- ice? | 4 kotak
+langkah:
+1. Kupas mangga, ambil dagingnya.
+2. Masukkan ke blender bersama yoghurt dan es batu.
+3. Blender sampai halus.
+alat: blender, pisau, gelas
+
+## tumis-zukini-jamur | Tumis Zukini Jamur | 15 | 2 | mudah
+tag: sehat, vegetarian
+desc: Zukini dan jamur tumis cepat dengan bawang putih.
+bahan:
+- zucchini* | 1 buah
+- mushroom* | 150 g
+- garlic | 3 siung
+- oyster_sauce | 1 sdm
+- salt | 1/4 sdt
+- pepper | sedikit
+- cooking_oil | 2 sdm
+langkah:
+1. Iris zukini setengah bulan dan jamur tebal.
+2. Tumis bawang putih sampai harum.
+3. Masukkan jamur, masak sampai airnya keluar, lalu zukini.
+4. Bumbui saus tiram, garam, dan merica, angkat saat zukini masih agak renyah.
+alat: wajan, spatula, pisau, talenan
+
+## sup-kentang-wortel-krim | Sup Kentang Wortel Krim | 35 | 4 | mudah
+tag: berkuah, anak, vegetarian
+desc: Sup kental halus dari kentang dan wortel dengan susu.
+bahan:
+- potato* | 2 buah
+- carrot* | 2 buah
+- milk | 300 ml
+- onion | 1/2 buah
+- butter | 1 sdm
+- salt | 1 sdt
+- pepper | 1/4 sdt
+- water | 400 ml
+langkah:
+1. Potong kentang dan wortel dadu.
+2. Tumis bawang bombay dengan mentega, tambahkan sayur dan air.
+3. Rebus sampai sangat empuk, haluskan dengan blender.
+4. Panaskan lagi dengan susu, bumbui garam dan merica.
+alat: panci, blender, sendok kayu, pisau, talenan
 
 ## semangka-mint-segar | Semangka Mint Segar | 5 | 2 | mudah
 tag: minuman, segar, manis, tanpa-kompor, vegetarian
@@ -1017,6 +3113,83 @@ langkah:
 4. Taburi delima, siram madu dan lemon.
 alat: pisau, talenan, mangkuk, piring
 
+## es-jeruk-bali-madu | Es Jeruk Bali Madu | 10 | 2 | mudah
+tag: minuman, segar, tanpa-kompor, vegetarian
+desc: Minuman jeruk bali yang sedikit pahit dengan madu.
+bahan:
+- grapefruit* | 1 buah
+- honey* | 2 sdm
+- ice | 5 kotak
+- water | 150 ml
+langkah:
+1. Kupas jeruk bali, ambil buah tanpa kulit putihnya.
+2. Peras atau blender sebentar dengan air.
+3. Campur madu, tuang ke gelas dengan es batu.
+alat: pisau, talenan, gelas, sendok
+
+## salad-jeruk-bali-alpukat | Salad Jeruk Bali Alpukat | 10 | 2 | mudah
+tag: segar, sehat, vegetarian, tanpa-kompor
+desc: Jeruk bali dan alpukat yang saling mengimbangi rasa.
+bahan:
+- grapefruit* | 1 buah
+- avocado* | 1 buah
+- lettuce | 4 lembar
+- lemon | 1/2 buah
+- honey? | 1 sdt
+- salt | 1 sejumput
+langkah:
+1. Kupas jeruk bali dan potong segmen.
+2. Potong alpukat.
+3. Tata bersama selada di piring.
+4. Siram campuran lemon, madu, dan garam.
+alat: pisau, talenan, mangkuk, piring
+
+## buah-tin-panggang-madu | Buah Tin Panggang Madu | 15 | 2 | mudah
+tag: manis, vegetarian
+desc: Buah tin hangat dengan madu dan keju.
+bahan:
+- fig* | 6 buah
+- honey* | 2 sdm
+- cheese? | 40 g
+- butter | 1 sdt
+langkah:
+1. Belah buah tin menjadi dua.
+2. Panggang di teflon dengan mentega 3 menit tiap sisi.
+3. Siram madu, taburi keju.
+alat: teflon, spatula, pisau, talenan
+
+## tumis-brokoli-bawang-putih | Tumis Brokoli Bawang Putih | 12 | 2 | mudah
+tag: sehat, vegetarian
+desc: Brokoli tumis cepat dengan bawang putih.
+bahan:
+- broccoli* | 1 buah
+- garlic* | 4 siung
+- oyster_sauce | 1 sdm
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Potong brokoli kuntum kecil, rebus 1 menit lalu tiriskan.
+2. Tumis bawang putih cincang.
+3. Masukkan brokoli, saus tiram, dan garam.
+4. Masak 2 menit.
+alat: panci, wajan, spatula, saringan, pisau, talenan
+
+## paprika-isi-telur | Paprika Isi Telur | 25 | 2 | mudah
+tag: sarapan, sehat
+desc: Paprika panggang berisi telur dan keju.
+bahan:
+- bell_pepper* | 2 buah
+- egg* | 2 butir
+- cheese | 30 g
+- salt | 1/4 sdt
+- pepper | sedikit
+langkah:
+1. Panaskan oven 180 derajat Celsius, potong paprika bagian atasnya dan buang bijinya.
+2. Pecahkan telur ke dalam tiap paprika.
+3. Bumbui garam dan merica, taburi keju.
+4. Panggang 15 sampai 20 menit sampai telur matang.
+alat: oven, loyang, parutan, pisau, talenan
+
 ## bubur-labu-kuning | Bubur Labu Kuning | 30 | 3 | mudah
 tag: sarapan, anak, vegetarian, manis
 desc: Bubur lembut labu kuning dengan santan.
@@ -1032,6 +3205,21 @@ langkah:
 3. Masukkan gula merah dan garam.
 4. Tuang santan, masak sebentar sambil diaduk.
 alat: panci, sendok kayu, garpu, pisau, talenan
+
+## kundur-sirup-jahe | Kundur Sirup Jahe | 30 | 3 | mudah
+tag: minuman, manis, vegetarian
+desc: Kundur rebus dalam sirup jahe yang hangat.
+bahan:
+- winter_melon* | 300 g
+- ginger* | 1 ruas
+- sugar | 3 sdm
+- water | 500 ml
+langkah:
+1. Kupas kundur, potong dadu.
+2. Rebus air dengan gula dan jahe geprek.
+3. Masukkan kundur, masak sampai bening.
+4. Sajikan hangat atau dingin.
+alat: panci, pisau, talenan, sendok kayu
 
 ## lobak-tumis-telur | Lobak Tumis Telur | 15 | 2 | mudah
 tag: hemat
@@ -1050,6 +3238,22 @@ langkah:
 4. Bumbui garam, taburi daun bawang.
 alat: wajan, spatula, parutan, pisau, talenan
 
+## asparagus-telur-orak-arik | Asparagus Telur Orak-Arik | 12 | 2 | mudah
+tag: sarapan, sehat
+desc: Asparagus renyah dengan telur lembut.
+bahan:
+- asparagus* | 1 ikat
+- egg* | 3 butir
+- butter | 1 sdt
+- salt | 1/4 sdt
+- pepper | sedikit
+langkah:
+1. Potong asparagus 3 cm.
+2. Tumis dengan mentega 3 menit.
+3. Kocok telur dengan garam dan merica, tuang ke wajan.
+4. Aduk sampai matang lembut.
+alat: wajan, spatula, mangkuk, garpu, pisau, talenan
+
 ## artichoke-panggang-keju | Artichoke Panggang Keju | 40 | 2 | sedang
 tag: sehat, vegetarian
 desc: Artichoke dikukus lalu dipanggang dengan keju dan bawang putih.
@@ -1067,3 +3271,1003 @@ langkah:
 4. Sisipkan campuran dan keju di antara kelopak.
 5. Panggang 8 menit sampai keju meleleh.
 alat: kukusan, oven, loyang, parutan, pisau, talenan
+
+## salad-artichoke-tomat | Salad Artichoke Tomat | 20 | 2 | mudah
+tag: segar, sehat, vegetarian
+desc: Hati artichoke rebus dengan tomat dan selada.
+bahan:
+- artichoke* | 2 buah
+- tomato* | 2 buah
+- lettuce | 4 lembar
+- lemon | 1/2 buah
+- cooking_oil | 1 sdm
+- salt | 1/4 sdt
+langkah:
+1. Rebus artichoke 20 menit sampai empuk, ambil hatinya, iris.
+2. Potong tomat dan sobek selada.
+3. Campur semua di mangkuk.
+4. Siram perasan lemon, minyak, dan garam.
+alat: panci, pisau, talenan, mangkuk
+
+## es-durian | Es Durian | 10 | 2 | mudah
+tag: minuman, manis, segar, tanpa-kompor, vegetarian
+desc: Daging durian dengan santan dingin dan susu, disajikan dengan es serut.
+bahan:
+- durian* | 200 g daging buah
+- coconut_milk | 150 ml
+- milk | 100 ml
+- sugar? | 1 sdm
+- ice | 1 mangkuk
+langkah:
+1. Pisahkan daging durian dari bijinya.
+2. Aduk santan, susu, dan gula sampai gula larut.
+3. Tata es di gelas, beri daging durian di atasnya.
+4. Siram dengan campuran santan dan susu, sajikan segera.
+tip: Pakai santan yang sudah direbus lalu didinginkan agar tidak cepat basi.
+alat: mangkuk, sendok, gelas
+
+## jus-buah-naga | Jus Buah Naga | 5 | 2 | mudah
+tag: minuman, sarapan, segar, tanpa-kompor, vegetarian
+desc: Jus buah naga yang berwarna cerah, cukup diblender dengan susu atau air.
+bahan:
+- dragon_fruit* | 1 buah
+- milk? | 150 ml
+- honey? | 1 sdm
+- ice | 4 kotak
+- water | 100 ml
+langkah:
+1. Belah buah naga, kerok dagingnya.
+2. Masukkan daging buah, air, susu, dan madu ke blender.
+3. Blender sampai halus, tambahkan es batu, lalu tuang ke gelas.
+tip: Buah naga berdaging merah membuat warna jus lebih pekat.
+alat: blender, pisau, sendok, gelas
+
+## salad-buah-naga-yoghurt | Salad Buah Naga Yoghurt | 10 | 2 | mudah
+tag: sarapan, camilan, segar, tanpa-kompor, vegetarian
+desc: Potongan buah naga dengan yoghurt dan madu.
+bahan:
+- dragon_fruit* | 1 buah
+- yogurt* | 200 g
+- kiwi? | 1 buah
+- blueberry? | 50 g
+- honey | 1 sdm
+langkah:
+1. Potong dadu buah naga dan kiwi.
+2. Tuang yoghurt ke mangkuk.
+3. Tata buah di atasnya, siram madu.
+alat: pisau, talenan, mangkuk
+
+## es-rambutan-kelapa | Es Rambutan Kelapa | 15 | 2 | mudah
+tag: minuman, manis, segar, tanpa-kompor, vegetarian
+desc: Rambutan kupas dengan kelapa muda dan air gula dingin.
+bahan:
+- rambutan* | 10 buah
+- coconut | 1/2 butir muda
+- sugar | 2 sdm
+- water | 300 ml
+- ice | 1 mangkuk
+langkah:
+1. Kupas rambutan dan buang bijinya.
+2. Kerok daging kelapa muda.
+3. Larutkan gula dalam air.
+4. Tata rambutan, kelapa, dan es di gelas, lalu tuang air gula.
+alat: pisau, sendok, gelas
+
+## es-leci-mint | Es Leci Mint | 10 | 2 | mudah
+tag: minuman, segar, tanpa-kompor, vegetarian
+desc: Minuman leci dengan jeruk nipis dan daun mint.
+bahan:
+- lychee* | 12 buah
+- mint | 6 lembar
+- lime | 1 buah
+- sugar | 1 sdm
+- water | 300 ml
+- ice | 1 mangkuk
+langkah:
+1. Kupas leci dan buang bijinya.
+2. Remas daun mint bersama gula di gelas.
+3. Masukkan leci, perasan jeruk nipis, air, dan es batu, lalu aduk.
+alat: pisau, gelas, sendok
+
+## es-kelengkeng | Es Kelengkeng | 10 | 2 | mudah
+tag: minuman, manis, segar, tanpa-kompor, vegetarian
+desc: Kelengkeng segar dalam air gula dingin.
+bahan:
+- longan* | 20 buah
+- sugar | 2 sdm
+- lime? | 1/2 buah
+- water | 300 ml
+- ice | 1 mangkuk
+langkah:
+1. Kupas kelengkeng dan buang bijinya.
+2. Larutkan gula dalam air, beri perasan jeruk nipis.
+3. Masukkan kelengkeng dan es batu ke gelas, tuang air gula.
+alat: pisau, gelas, sendok
+
+## rujak-serut-jambu-air | Rujak Jambu Air | 15 | 2 | mudah
+tag: camilan, pedas, segar, tanpa-kompor, vegetarian
+desc: Jambu air dengan sambal gula merah dan asam jawa.
+bahan:
+- rose_apple* | 6 buah
+- mango? | 1 buah muda
+- palm_sugar | 50 g
+- tamarind | 1 sdt
+- chili | 2 buah
+- salt | 1/4 sdt
+langkah:
+1. Potong jambu air dan mangga.
+2. Ulek cabai, gula merah, asam jawa, dan garam sampai halus.
+3. Tambahkan sedikit air bila sambal terlalu kental.
+4. Sajikan buah dengan sambal.
+alat: pisau, talenan, cobek
+
+## jus-jambu-biji | Jus Jambu Biji | 10 | 2 | mudah
+tag: minuman, segar, tanpa-kompor, vegetarian
+desc: Jus jambu biji merah yang kental.
+bahan:
+- guava* | 2 buah
+- sugar | 2 sdm
+- water | 250 ml
+- ice | 4 kotak
+langkah:
+1. Cuci jambu, potong-potong.
+2. Blender bersama air dan gula sampai halus.
+3. Saring bila ingin bebas biji, lalu tambahkan es batu.
+alat: blender, pisau, saringan, gelas
+
+## jus-sirsak | Jus Sirsak | 10 | 2 | mudah
+tag: minuman, segar, tanpa-kompor, vegetarian
+desc: Jus sirsak asam manis yang menyegarkan.
+bahan:
+- soursop* | 300 g daging buah
+- milk? | 100 ml
+- sugar | 2 sdm
+- water | 200 ml
+- ice | 4 kotak
+langkah:
+1. Buang biji sirsak.
+2. Blender daging buah dengan air, susu, dan gula.
+3. Tambahkan es batu dan sajikan.
+alat: blender, sendok, gelas
+
+## salad-manggis-leci | Salad Manggis Leci | 10 | 2 | mudah
+tag: camilan, segar, tanpa-kompor, vegetarian
+desc: Daging buah manggis dan leci dengan yoghurt.
+bahan:
+- mangosteen* | 6 buah
+- lychee? | 6 buah
+- yogurt | 150 g
+- honey? | 1 sdt
+langkah:
+1. Belah kulit manggis dengan menekannya, ambil daging buahnya.
+2. Kupas leci dan buang bijinya.
+3. Tata buah di mangkuk, beri yoghurt dan madu.
+alat: pisau, mangkuk, sendok
+
+## kolak-nangka-ubi | Kolak Nangka Ubi | 30 | 4 | mudah
+tag: manis, berkuah, vegetarian
+desc: Kolak ubi dengan potongan nangka dan santan gula merah.
+bahan:
+- jackfruit* | 150 g
+- sweet_potato | 2 buah
+- coconut_milk | 400 ml
+- palm_sugar | 100 g
+- pandan? | 2 lembar
+- salt | 1/4 sdt
+langkah:
+1. Kupas ubi, potong dadu. Potong nangka memanjang.
+2. Rebus ubi dengan gula merah dan pandan dalam 300 ml air sampai empuk.
+3. Masukkan santan, nangka, dan garam.
+4. Masak sambil diaduk sampai mendidih, lalu angkat.
+alat: panci, pisau, talenan, sendok sayur
+
+## asinan-salak | Asinan Salak | 20 | 4 | mudah
+tag: camilan, segar, pedas, vegetarian
+desc: Salak dalam kuah cuka manis pedas.
+bahan:
+- salak* | 10 buah
+- chili | 3 buah
+- sugar | 100 g
+- vinegar | 2 sdm
+- salt | 1 sdt
+- water | 400 ml
+langkah:
+1. Kupas salak, belah dua, buang bijinya.
+2. Rebus air, gula, garam, dan cabai sampai gula larut, lalu dinginkan.
+3. Tambahkan cuka ke kuah.
+4. Rendam salak dalam kuah di kulkas minimal 2 jam.
+alat: panci, pisau, toples
+
+## jus-belimbing-madu | Jus Belimbing Madu | 5 | 2 | mudah
+tag: minuman, segar, tanpa-kompor, vegetarian
+desc: Jus belimbing manis dengan madu.
+bahan:
+- starfruit* | 2 buah
+- honey | 2 sdm
+- water | 250 ml
+- ice | 4 kotak
+langkah:
+1. Potong belimbing, buang bagian tepinya yang keras.
+2. Blender bersama air dan madu sampai halus.
+3. Saring, lalu tambahkan es batu.
+alat: blender, pisau, saringan, gelas
+
+## salad-buah-duku-melon | Salad Duku Melon | 10 | 2 | mudah
+tag: camilan, segar, tanpa-kompor, vegetarian
+desc: Duku kupas dan melon dengan yoghurt madu.
+bahan:
+- langsat* | 15 buah
+- cantaloupe? | 1/4 buah
+- yogurt | 150 g
+- honey | 1 sdm
+langkah:
+1. Kupas duku dan buang bijinya.
+2. Potong dadu melon.
+3. Campur buah, beri yoghurt dan madu.
+alat: pisau, talenan, mangkuk
+
+## jus-sawo-susu | Jus Sawo Susu | 5 | 2 | mudah
+tag: minuman, manis, tanpa-kompor, vegetarian
+desc: Jus sawo matang yang manis dengan susu.
+bahan:
+- sapodilla* | 3 buah
+- milk* | 200 ml
+- ice | 4 kotak
+langkah:
+1. Kupas sawo dan buang bijinya.
+2. Blender bersama susu sampai halus.
+3. Tambahkan es batu dan sajikan.
+alat: blender, pisau, gelas
+
+## tumis-pepaya-muda | Tumis Pepaya Muda | 25 | 3 | mudah
+tag: hemat, vegetarian
+desc: Pepaya muda serut yang ditumis dengan bawang dan cabai.
+bahan:
+- papaya* | 1/2 buah muda
+- shallot | 4 siung
+- garlic | 2 siung
+- chili | 3 buah
+- bay_leaf? | 2 lembar
+- salt | 1/2 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Kupas pepaya muda, serut tipis, remas dengan sedikit garam, lalu bilas.
+2. Tumis bawang merah, bawang putih, cabai, dan daun salam sampai harum.
+3. Masukkan pepaya dan 50 ml air, masak sampai layu.
+4. Bumbui garam dan angkat.
+alat: wajan, spatula, parutan, pisau
+
+## es-markisa | Es Markisa | 10 | 2 | mudah
+tag: minuman, segar, tanpa-kompor, vegetarian
+desc: Minuman markisa asam manis dengan bijinya.
+bahan:
+- passion_fruit* | 4 buah
+- sugar | 3 sdm
+- water | 400 ml
+- ice | 1 mangkuk
+langkah:
+1. Belah markisa, kerok isinya ke wadah.
+2. Larutkan gula dalam air.
+3. Campur isi markisa dengan air gula, tambahkan es batu.
+alat: pisau, sendok, gelas
+
+## smoothie-kiwi-pisang | Smoothie Kiwi Pisang | 5 | 1 | mudah
+tag: minuman, sarapan, segar, tanpa-kompor, vegetarian
+desc: Smoothie hijau dari kiwi dan pisang.
+bahan:
+- kiwi* | 2 buah
+- banana* | 1 buah
+- yogurt | 100 g
+- honey? | 1 sdt
+langkah:
+1. Kupas kiwi dan pisang, potong-potong.
+2. Blender bersama yoghurt dan madu sampai halus.
+alat: blender, pisau, gelas
+
+## parfait-bluberi | Parfait Yoghurt Bluberi | 10 | 2 | mudah
+tag: sarapan, camilan, manis, tanpa-kompor, vegetarian
+desc: Lapisan yoghurt, oat, dan bluberi.
+bahan:
+- blueberry* | 100 g
+- yogurt* | 200 g
+- oats | 4 sdm
+- honey | 1 sdm
+langkah:
+1. Cuci bluberi dan tiriskan.
+2. Susun yoghurt, oat, dan bluberi berlapis di gelas.
+3. Siram madu di bagian atas.
+alat: gelas, sendok
+
+## overnight-oats-ceri | Overnight Oats Ceri | 10 | 1 | mudah
+tag: sarapan, manis, tanpa-kompor, vegetarian
+desc: Oat rendam susu semalam dengan ceri.
+bahan:
+- cherry* | 10 buah
+- oats* | 50 g
+- milk | 150 ml
+- honey? | 1 sdt
+langkah:
+1. Belah ceri dan buang bijinya.
+2. Campur oat, susu, dan madu di wadah bertutup.
+3. Beri ceri di atasnya, simpan di kulkas semalam.
+alat: wadah bertutup, pisau, sendok
+
+## susu-kurma | Susu Kurma | 5 | 2 | mudah
+tag: minuman, sarapan, manis, tanpa-kompor, vegetarian
+desc: Susu kental manis alami dari kurma yang diblender.
+bahan:
+- date* | 6 buah
+- milk* | 300 ml
+- ice? | 4 kotak
+langkah:
+1. Buang biji kurma.
+2. Blender kurma bersama susu sampai halus.
+3. Sajikan dingin atau hangat.
+alat: blender, pisau, gelas
+
+## wedang-asam-jawa | Wedang Asam Jawa | 15 | 2 | mudah
+tag: minuman, segar, vegetarian
+desc: Minuman asam jawa dan gula merah yang hangat.
+bahan:
+- tamarind* | 30 g
+- palm_sugar | 60 g
+- water | 500 ml
+- ginger? | 2 cm
+- salt | sejumput
+langkah:
+1. Rebus air bersama asam jawa, gula merah, jahe, dan garam.
+2. Masak 10 menit sampai gula larut.
+3. Saring dan sajikan hangat atau dingin.
+alat: panci, saringan, gelas
+
+## sup-sawi-putih-tahu | Sup Sawi Putih Tahu | 20 | 3 | mudah
+tag: berkuah, hemat, sehat, vegetarian
+desc: Sup bening sawi putih dan tahu.
+bahan:
+- napa_cabbage* | 1/2 bonggol
+- tofu* | 2 potong
+- garlic | 3 siung
+- carrot? | 1 buah
+- salt | 1 sdt
+- pepper | 1/4 sdt
+- water | 800 ml
+langkah:
+1. Potong sawi putih, tahu, dan wortel.
+2. Tumis bawang putih sampai harum, tuang air dan didihkan.
+3. Masukkan wortel, lalu tahu dan sawi putih.
+4. Bumbui garam dan merica, masak sampai sawi layu.
+alat: panci, pisau, talenan, sendok sayur
+
+## cah-pakcoy-bawang-putih | Cah Pakcoy Bawang Putih | 10 | 2 | mudah
+tag: hemat, sehat, vegetarian
+desc: Pakcoy yang ditumis cepat dengan bawang putih dan saus tiram.
+bahan:
+- bok_choy* | 3 bonggol
+- garlic | 4 siung
+- oyster_sauce | 1 sdm
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Belah pakcoy menjadi dua, cuci bersih.
+2. Tumis bawang putih cincang sampai kecokelatan.
+3. Masukkan pakcoy, saus tiram, garam, dan 2 sdm air.
+4. Aduk cepat dengan api besar sampai layu.
+alat: wajan, spatula, pisau
+
+## tumis-pare-telur | Tumis Pare Telur | 20 | 2 | mudah
+tag: hemat, pedas
+desc: Pare iris tipis yang ditumis dengan telur orak-arik.
+bahan:
+- bitter_melon* | 1 buah
+- egg* | 2 butir
+- shallot | 3 siung
+- garlic | 2 siung
+- chili | 2 buah
+- salt | 1 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Iris tipis pare, remas dengan garam, diamkan 10 menit, lalu bilas untuk mengurangi pahit.
+2. Tumis bawang merah, bawang putih, dan cabai sampai harum.
+3. Masukkan telur, orak-arik sebentar.
+4. Masukkan pare, aduk sampai layu, lalu angkat.
+alat: wajan, spatula, pisau, talenan
+
+## sayur-labu-siam-santan | Sayur Labu Siam Santan | 30 | 4 | mudah
+tag: berkuah, hemat, vegetarian
+desc: Labu siam dalam kuah santan yang gurih.
+bahan:
+- chayote* | 2 buah
+- coconut_milk | 300 ml
+- shallot | 4 siung
+- garlic | 2 siung
+- chili? | 2 buah
+- bay_leaf | 2 lembar
+- galangal | 2 cm
+- salt | 1 sdt
+langkah:
+1. Kupas labu siam, potong korek api, remas dengan garam lalu bilas.
+2. Tumis irisan bawang merah, bawang putih, cabai, daun salam, dan lengkuas.
+3. Tuang santan dan 200 ml air, didihkan sambil diaduk.
+4. Masukkan labu siam, masak sampai empuk, bumbui garam.
+alat: panci, pisau, talenan, sendok sayur
+
+## talas-goreng | Talas Goreng | 30 | 3 | mudah
+tag: camilan, hemat, vegetarian
+desc: Talas kukus yang digoreng sampai renyah.
+bahan:
+- taro* | 500 g
+- garlic | 2 siung
+- salt | 1 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Kupas talas memakai sarung tangan, potong tebal, cuci bersih.
+2. Kukus 15 menit sampai setengah empuk.
+3. Lumuri bawang putih halus dan garam.
+4. Goreng sampai kecokelatan dan renyah.
+tip: Getah talas bisa membuat kulit gatal, jadi gunakan sarung tangan.
+alat: kukusan, wajan, pisau, sarung tangan
+
+## tumis-okra | Tumis Okra Bawang Putih | 15 | 2 | mudah
+tag: hemat, sehat, vegetarian
+desc: Okra yang ditumis singkat dengan bawang putih.
+bahan:
+- okra* | 200 g
+- garlic | 3 siung
+- chili? | 1 buah
+- oyster_sauce? | 1 sdm
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Cuci okra, keringkan, lalu potong serong.
+2. Tumis bawang putih dan cabai sampai harum.
+3. Masukkan okra, aduk dengan api besar sekitar 4 menit.
+4. Bumbui saus tiram dan garam.
+alat: wajan, spatula, pisau
+
+## sambal-goreng-petai-udang | Sambal Goreng Petai Udang | 25 | 3 | sedang
+tag: pedas
+desc: Udang dan petai dalam sambal merah.
+bahan:
+- petai* | 2 papan
+- shrimp* | 250 g
+- chili | 8 buah
+- shallot | 6 siung
+- garlic | 3 siung
+- tomato | 1 buah
+- sugar | 1 sdt
+- salt | 1 sdt
+- cooking_oil | 3 sdm
+langkah:
+1. Kupas petai dan belah dua. Kupas udang.
+2. Haluskan cabai, bawang merah, bawang putih, dan tomat.
+3. Tumis bumbu halus sampai matang dan berminyak.
+4. Masukkan udang, masak sampai berubah warna.
+5. Masukkan petai, bumbui gula dan garam, aduk 2 menit.
+alat: wajan, spatula, blender, pisau
+
+## semur-jengkol | Semur Jengkol | 90 | 4 | sedang
+tag: berkuah
+desc: Jengkol empuk dalam kuah kecap manis berempah.
+bahan:
+- jengkol* | 300 g
+- sweet_soy_sauce | 4 sdm
+- shallot | 6 siung
+- garlic | 3 siung
+- candlenut | 3 butir
+- galangal | 2 cm
+- bay_leaf | 2 lembar
+- salt | 1 sdt
+langkah:
+1. Rendam jengkol semalam, lalu rebus 30 menit dan buang airnya. Ulangi sekali lagi.
+2. Kupas kulit ari jengkol, geprek sampai pipih.
+3. Haluskan bawang merah, bawang putih, dan kemiri, lalu tumis bersama lengkuas dan daun salam.
+4. Masukkan jengkol, kecap, garam, dan 400 ml air.
+5. Masak dengan api kecil sampai kuah mengental.
+tip: Perebusan berulang mengurangi bau dan membuat jengkol empuk.
+alat: panci, wajan, ulekan, pisau
+
+## telur-dadar-kemangi | Telur Dadar Kemangi | 10 | 2 | mudah
+tag: sarapan, hemat, vegetarian
+desc: Telur dadar harum dengan daun kemangi.
+bahan:
+- egg* | 3 butir
+- basil* | 1 genggam
+- shallot | 2 siung
+- chili? | 1 buah
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Petik daun kemangi, iris bawang merah dan cabai.
+2. Kocok telur dengan garam, campur kemangi, bawang, dan cabai.
+3. Goreng di wajan berminyak sampai kedua sisinya matang.
+alat: wajan, spatula, mangkuk
+
+## gulai-daun-singkong | Gulai Daun Singkong | 40 | 4 | sedang
+tag: berkuah, pedas, vegetarian
+desc: Daun singkong rebus dalam kuah santan kuning.
+bahan:
+- cassava_leaves* | 1 ikat
+- coconut_milk | 500 ml
+- shallot | 6 siung
+- garlic | 3 siung
+- chili | 4 buah
+- turmeric | 2 cm
+- ginger | 2 cm
+- lemongrass | 1 batang
+- salt | 1 sdt
+langkah:
+1. Petik daun singkong, rebus 15 menit sampai empuk, peras, lalu potong kasar.
+2. Haluskan bawang merah, bawang putih, cabai, kunyit, dan jahe.
+3. Tumis bumbu dengan serai sampai harum.
+4. Tuang santan, didihkan sambil diaduk.
+5. Masukkan daun singkong dan garam, masak 5 menit.
+alat: panci, wajan, ulekan, pisau
+
+## sup-kacang-polong-wortel | Sup Kacang Polong Wortel | 25 | 3 | mudah
+tag: berkuah, sehat, anak, vegetarian
+desc: Sup bening kacang polong dan wortel.
+bahan:
+- pea* | 150 g
+- carrot* | 2 buah
+- potato? | 1 buah
+- garlic | 3 siung
+- celery? | 1 batang
+- salt | 1 sdt
+- water | 800 ml
+langkah:
+1. Potong dadu wortel dan kentang.
+2. Tumis bawang putih, tuang air, lalu didihkan.
+3. Masukkan wortel dan kentang, masak 10 menit.
+4. Masukkan kacang polong dan seledri, bumbui garam, masak 5 menit.
+alat: panci, pisau, talenan
+
+## wedang-rempah | Wedang Rempah | 20 | 2 | mudah
+tag: minuman, vegetarian
+desc: Minuman hangat jahe dengan kayu manis, cengkeh, dan serai.
+bahan:
+- ginger* | 5 cm
+- cinnamon | 1 batang
+- clove | 4 butir
+- lemongrass | 1 batang
+- star_anise? | 1 buah
+- palm_sugar | 50 g
+- water | 600 ml
+langkah:
+1. Bakar jahe sebentar, lalu geprek. Geprek serai.
+2. Rebus air bersama semua rempah dan gula merah.
+3. Kecilkan api, masak 15 menit.
+4. Saring dan sajikan hangat.
+alat: panci, saringan, gelas
+
+## cumi-tumis-cabai-hijau | Cumi Tumis Cabai | 20 | 3 | sedang
+tag: pedas
+desc: Cumi yang ditumis cepat dengan cabai dan bawang.
+bahan:
+- squid* | 300 g
+- chili | 6 buah
+- shallot | 5 siung
+- garlic | 3 siung
+- tomato? | 1 buah
+- sweet_soy_sauce? | 1 sdm
+- salt | 1/2 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Bersihkan cumi, buang tinta dan tulang rawannya, potong cincin.
+2. Iris cabai, bawang merah, dan bawang putih.
+3. Tumis bumbu sampai harum, masukkan cumi.
+4. Masak dengan api besar sekitar 3 menit, bumbui garam dan kecap.
+tip: Masak cumi sebentar saja agar tidak alot.
+alat: wajan, spatula, pisau, talenan
+
+## kerang-rebus-serai | Kerang Rebus Serai | 20 | 3 | mudah
+tag: berkuah
+desc: Kerang yang direbus dengan serai dan jahe, disajikan dengan sambal.
+bahan:
+- clam* | 500 g
+- lemongrass | 2 batang
+- ginger | 3 cm
+- kaffir_lime_leaf | 3 lembar
+- salt | 1 sdt
+- water | 1 liter
+langkah:
+1. Rendam kerang dalam air garam 30 menit, lalu sikat cangkangnya.
+2. Didihkan air bersama serai, jahe, dan daun jeruk.
+3. Masukkan kerang, rebus sampai cangkangnya terbuka.
+4. Buang kerang yang tidak terbuka.
+alat: panci, sikat, saringan
+
+## sambal-kacang | Sambal Kacang | 20 | 4 | mudah
+tag: pedas, vegetarian
+desc: Sambal kacang tanah untuk gado-gado, pecel, atau sate.
+bahan:
+- peanut* | 200 g
+- chili | 4 buah
+- garlic | 2 siung
+- palm_sugar | 50 g
+- kaffir_lime_leaf? | 2 lembar
+- salt | 1 sdt
+- water | 200 ml
+langkah:
+1. Sangrai atau goreng kacang tanah sampai matang, lalu kupas kulit arinya.
+2. Haluskan kacang bersama cabai, bawang putih, gula merah, dan garam.
+3. Masak dengan air dan daun jeruk sampai mengental.
+alat: wajan, blender, spatula
+
+## kacang-mete-madu | Kacang Mete Panggang Madu | 20 | 4 | mudah
+tag: camilan, manis, vegetarian
+desc: Kacang mete yang dipanggang dengan madu.
+bahan:
+- cashew* | 200 g
+- honey | 2 sdm
+- salt | sejumput
+- cinnamon? | 1/4 sdt
+langkah:
+1. Sangrai kacang mete di teflon dengan api kecil sampai kekuningan.
+2. Tuang madu, garam, dan kayu manis, aduk sampai rata.
+3. Dinginkan di piring datar agar tidak lengket.
+alat: teflon, spatula, piring
+
+## susu-almond-kurma | Susu Almond Kurma | 10 | 2 | mudah
+tag: minuman, sarapan, manis, tanpa-kompor, vegetarian
+desc: Susu almond rumahan yang dimaniskan kurma.
+bahan:
+- almond* | 100 g
+- date | 4 buah
+- water | 500 ml
+langkah:
+1. Rendam almond dalam air minimal 8 jam, lalu tiriskan.
+2. Blender almond, kurma tanpa biji, dan air sampai halus.
+3. Saring dengan kain atau saringan halus.
+alat: blender, saringan, kain saring
+
+## susu-cokelat-hangat | Susu Cokelat Hangat | 10 | 2 | mudah
+tag: minuman, manis, anak, vegetarian
+desc: Susu hangat dengan cokelat batang yang dilelehkan.
+bahan:
+- chocolate* | 60 g
+- milk* | 400 ml
+- sugar? | 1 sdm
+langkah:
+1. Potong kecil cokelat.
+2. Panaskan susu dengan api kecil, jangan sampai mendidih.
+3. Masukkan cokelat dan gula, aduk sampai larut.
+alat: panci, pisau, gelas
+
+## singkong-goreng-bawang | Singkong Goreng Bawang | 40 | 4 | mudah
+tag: camilan, hemat, vegetarian
+desc: Singkong rebus berbumbu bawang yang digoreng renyah.
+bahan:
+- cassava* | 500 g
+- garlic | 4 siung
+- salt | 1 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Kupas singkong, potong, cuci bersih.
+2. Rebus dengan bawang putih halus dan garam sampai merekah.
+3. Tiriskan, lalu goreng sampai kecokelatan.
+tip: Singkong yang direbus sampai merekah menjadi renyah di luar dan lembut di dalam.
+alat: panci, wajan, pisau
+
+## tumis-tauge-tahu | Tumis Tauge Tahu | 15 | 2 | mudah
+tag: hemat, vegetarian
+desc: Tauge dan tahu yang ditumis cepat.
+bahan:
+- bean_sprout* | 200 g
+- tofu* | 2 potong
+- garlic | 3 siung
+- shallot | 2 siung
+- oyster_sauce? | 1 sdm
+- salt | 1/4 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Potong dadu tahu, goreng sebentar.
+2. Tumis bawang merah dan bawang putih sampai harum.
+3. Masukkan tahu dan tauge, bumbui saus tiram dan garam.
+4. Aduk dengan api besar sekitar 1 menit agar tauge tetap renyah.
+alat: wajan, spatula, pisau
+
+## rujak-bengkuang-kedondong | Rujak Bengkuang Kedondong | 15 | 3 | mudah
+tag: camilan, pedas, segar, tanpa-kompor, vegetarian
+desc: Bengkuang dan kedondong dengan sambal gula merah.
+bahan:
+- jicama* | 1 buah
+- ambarella? | 3 buah
+- cucumber? | 1 buah
+- palm_sugar | 60 g
+- tamarind | 1 sdt
+- chili | 2 buah
+- salt | 1/4 sdt
+langkah:
+1. Kupas bengkuang dan kedondong, potong memanjang.
+2. Ulek cabai, gula merah, asam jawa, dan garam sampai halus.
+3. Sajikan buah dengan sambal.
+alat: pisau, talenan, cobek
+
+## jus-kedondong | Jus Kedondong | 10 | 2 | mudah
+tag: minuman, segar, tanpa-kompor, vegetarian
+desc: Jus kedondong asam segar.
+bahan:
+- ambarella* | 4 buah
+- sugar | 2 sdm
+- water | 300 ml
+- ice | 4 kotak
+langkah:
+1. Kupas kedondong, iris dagingnya dan buang bijinya yang berserat.
+2. Blender bersama air dan gula sampai halus.
+3. Saring, lalu tambahkan es batu.
+alat: blender, pisau, saringan, gelas
+
+## sukun-goreng | Sukun Goreng | 30 | 4 | mudah
+tag: camilan, hemat, vegetarian
+desc: Irisan sukun yang direndam air garam lalu digoreng.
+bahan:
+- breadfruit* | 1/2 buah
+- garlic | 2 siung
+- salt | 1 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Kupas sukun, buang bagian tengahnya, potong tebal.
+2. Rendam dalam air garam dan bawang putih halus selama 10 menit.
+3. Tiriskan dan goreng sampai kuning kecokelatan.
+alat: wajan, pisau, talenan
+
+## sayur-asem-melinjo | Sayur Asem Melinjo | 40 | 5 | mudah
+tag: berkuah, segar, hemat, vegetarian
+desc: Sayur asem dengan melinjo, labu siam, kacang panjang, dan jagung.
+bahan:
+- melinjo* | 1 genggam
+- chayote | 1 buah
+- long_bean | 1 ikat kecil
+- corn | 1 buah
+- peanut? | 50 g
+- tamarind | 2 sdm
+- palm_sugar | 30 g
+- shallot | 4 siung
+- garlic | 2 siung
+- galangal | 2 cm
+- bay_leaf | 2 lembar
+- salt | 1 sdt
+langkah:
+1. Potong labu siam, kacang panjang, dan jagung.
+2. Haluskan bawang merah dan bawang putih.
+3. Rebus 1,5 liter air dengan bumbu halus, lengkuas, dan daun salam.
+4. Masukkan jagung, melinjo, dan kacang tanah, masak 10 menit.
+5. Masukkan labu siam dan kacang panjang, lalu asam jawa, gula merah, dan garam.
+6. Masak sampai sayur empuk.
+alat: panci, pisau, talenan, ulekan
+
+## sambal-teri-kacang | Teri Kacang Balado | 25 | 4 | mudah
+tag: pedas
+desc: Ikan teri dan kacang tanah goreng dengan sambal merah.
+bahan:
+- anchovy* | 100 g
+- peanut | 100 g
+- chili | 8 buah
+- shallot | 5 siung
+- garlic | 2 siung
+- sugar | 1 sdt
+- salt | 1/4 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Cuci teri, tiriskan, lalu goreng sampai kering.
+2. Goreng kacang tanah sampai matang.
+3. Haluskan cabai, bawang merah, dan bawang putih, lalu tumis sampai matang.
+4. Bumbui gula dan garam, masukkan teri dan kacang, aduk rata.
+alat: wajan, spatula, blender
+
+## telur-puyuh-balado | Telur Puyuh Balado | 30 | 3 | mudah
+tag: pedas
+desc: Telur puyuh rebus dalam sambal balado.
+bahan:
+- quail_egg* | 20 butir
+- chili | 8 buah
+- shallot | 5 siung
+- garlic | 2 siung
+- tomato | 1 buah
+- sugar | 1 sdt
+- salt | 1/2 sdt
+- cooking_oil | 3 sdm
+langkah:
+1. Rebus telur puyuh 5 menit, rendam air dingin, lalu kupas.
+2. Haluskan cabai, bawang merah, bawang putih, dan tomat.
+3. Tumis bumbu sampai matang dan berminyak.
+4. Masukkan telur, bumbui gula dan garam, aduk rata.
+alat: panci, wajan, blender, spatula
+
+## gulai-kambing | Gulai Kambing | 120 | 5 | sulit
+tag: berkuah, pedas
+desc: Daging kambing dalam kuah santan berempah.
+bahan:
+- goat_meat* | 500 g
+- coconut_milk | 600 ml
+- shallot | 8 siung
+- garlic | 4 siung
+- chili | 5 buah
+- candlenut | 4 butir
+- turmeric | 3 cm
+- ginger | 3 cm
+- lemongrass | 2 batang
+- cinnamon | 1 batang
+- clove | 3 butir
+- kaffir_lime_leaf | 4 lembar
+- salt | 2 sdt
+langkah:
+1. Rebus daging kambing 10 menit, buang airnya, lalu potong-potong.
+2. Haluskan bawang merah, bawang putih, cabai, kemiri, kunyit, dan jahe.
+3. Tumis bumbu halus bersama serai, kayu manis, cengkeh, dan daun jeruk sampai harum.
+4. Masukkan daging dan 800 ml air, masak dengan api kecil sampai empuk.
+5. Tuang santan dan garam, masak sambil diaduk sampai kuah sedikit mengental.
+tip: Perebusan awal mengurangi bau prengus daging kambing.
+alat: panci, wajan, blender, pisau
+
+## tumis-kecipir | Tumis Kecipir | 15 | 2 | mudah
+tag: hemat, vegetarian
+desc: Kecipir iris yang ditumis dengan bawang dan cabai.
+bahan:
+- winged_bean* | 200 g
+- shallot | 3 siung
+- garlic | 2 siung
+- chili? | 2 buah
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Iris serong kecipir.
+2. Tumis bawang merah, bawang putih, dan cabai sampai harum.
+3. Masukkan kecipir dan 2 sdm air, aduk sampai layu.
+4. Bumbui garam, lalu angkat.
+alat: wajan, spatula, pisau
+
+## tumis-daun-pepaya-teri | Tumis Daun Pepaya Teri | 30 | 3 | sedang
+tag: pedas, hemat
+desc: Daun pepaya rebus yang ditumis dengan teri dan cabai.
+bahan:
+- papaya_leaves* | 1 ikat
+- anchovy | 50 g
+- shallot | 4 siung
+- garlic | 2 siung
+- chili | 4 buah
+- salt | 1/2 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Remas daun pepaya dengan garam, rebus 15 menit, lalu peras dan potong.
+2. Goreng teri sampai kering.
+3. Tumis bawang merah, bawang putih, dan cabai.
+4. Masukkan daun pepaya dan teri, bumbui garam, aduk rata.
+tip: Meremas dengan garam dan merebus daun pepaya mengurangi rasa pahitnya.
+alat: panci, wajan, spatula, pisau
+
+## sayur-jantung-pisang | Sayur Jantung Pisang Santan | 40 | 4 | sedang
+tag: berkuah, vegetarian
+desc: Jantung pisang dalam kuah santan kuning.
+bahan:
+- banana_blossom* | 1 buah
+- coconut_milk | 400 ml
+- shallot | 5 siung
+- garlic | 2 siung
+- turmeric | 2 cm
+- galangal | 2 cm
+- bay_leaf | 2 lembar
+- salt | 1 sdt
+langkah:
+1. Buang kelopak luar jantung pisang, iris tipis bagian dalamnya, rebus 15 menit, lalu tiriskan.
+2. Haluskan bawang merah, bawang putih, dan kunyit.
+3. Tumis bumbu dengan lengkuas dan daun salam.
+4. Tuang santan dan 200 ml air, didihkan, lalu masukkan jantung pisang dan garam.
+alat: panci, wajan, pisau, ulekan
+
+## sayur-rebung | Sayur Rebung Santan | 45 | 4 | sedang
+tag: berkuah, vegetarian
+desc: Rebung muda dalam kuah santan.
+bahan:
+- bamboo_shoot* | 300 g
+- coconut_milk | 400 ml
+- shallot | 5 siung
+- garlic | 2 siung
+- chili? | 3 buah
+- galangal | 2 cm
+- bay_leaf | 2 lembar
+- salt | 1 sdt
+langkah:
+1. Iris tipis rebung, rebus 20 menit, buang airnya.
+2. Haluskan bawang merah, bawang putih, dan cabai.
+3. Tumis bumbu dengan lengkuas dan daun salam.
+4. Tuang santan dan 200 ml air, masukkan rebung, masak sampai mendidih.
+tip: Rebung harus direbus dan airnya dibuang sebelum dimasak agar tidak pahit.
+alat: panci, wajan, pisau, ulekan
+
+## tumis-jamur-kuping | Tumis Jamur Kuping Telur | 15 | 2 | mudah
+tag: hemat, vegetarian
+desc: Jamur kuping kenyal yang ditumis dengan telur.
+bahan:
+- wood_ear* | 50 g kering
+- egg | 2 butir
+- garlic | 3 siung
+- spring_onion | 1 batang
+- oyster_sauce? | 1 sdm
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Rendam jamur kuping dalam air hangat 15 menit sampai mengembang, lalu potong.
+2. Tumis bawang putih, masukkan telur dan orak-arik.
+3. Masukkan jamur, saus tiram, garam, dan daun bawang, aduk 2 menit.
+alat: wajan, spatula, mangkuk
+
+## jus-bit-apel | Jus Bit Apel | 10 | 2 | mudah
+tag: minuman, sehat, tanpa-kompor, vegetarian
+desc: Jus bit merah dengan apel.
+bahan:
+- beetroot* | 1 buah
+- apple* | 1 buah
+- lemon? | 1/2 buah
+- water | 250 ml
+langkah:
+1. Kupas bit, potong kecil. Potong apel.
+2. Blender bersama air dan perasan lemon.
+3. Saring dan sajikan dingin.
+alat: blender, pisau, saringan, gelas
+
+## sup-kacang-merah | Sup Kacang Merah | 90 | 4 | sedang
+tag: berkuah
+desc: Sup kacang merah dengan daging sapi dan wortel.
+bahan:
+- kidney_bean* | 200 g
+- beef | 250 g
+- carrot | 1 buah
+- potato? | 1 buah
+- garlic | 3 siung
+- shallot | 3 siung
+- nutmeg? | 1/4 sdt
+- pepper | 1/4 sdt
+- salt | 1 sdt
+langkah:
+1. Rendam kacang merah semalam, lalu rebus 45 menit sampai empuk.
+2. Rebus daging sapi dalam 1,5 liter air sampai empuk.
+3. Tumis bawang merah dan bawang putih, masukkan ke kuah daging.
+4. Masukkan kacang merah, wortel, dan kentang, bumbui pala, merica, dan garam.
+5. Masak sampai sayur empuk.
+alat: panci, wajan, pisau
+
+## susu-kedelai | Susu Kedelai | 60 | 4 | sedang
+tag: minuman, vegetarian
+desc: Susu kedelai rumahan dengan daun pandan.
+bahan:
+- soybean* | 200 g
+- pandan? | 2 lembar
+- sugar | 4 sdm
+- water | 1,5 liter
+langkah:
+1. Rendam kedelai semalam, lalu kupas kulit arinya.
+2. Blender dengan sebagian air, lalu saring dengan kain.
+3. Rebus sarinya dengan sisa air, pandan, dan gula sambil diaduk sampai mendidih.
+4. Kecilkan api, masak 15 menit lagi agar matang sempurna.
+alat: blender, panci, kain saring
+
+## cah-selada-air | Cah Selada Air Bawang Putih | 10 | 2 | mudah
+tag: hemat, sehat, vegetarian
+desc: Selada air yang ditumis cepat dengan bawang putih.
+bahan:
+- watercress* | 2 ikat
+- garlic | 4 siung
+- oyster_sauce? | 1 sdm
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Petik selada air, cuci bersih.
+2. Tumis bawang putih sampai harum.
+3. Masukkan selada air dan saus tiram, aduk cepat sampai layu.
+alat: wajan, spatula, pisau
+
+## tumis-kale-bawang | Tumis Kale Bawang Putih | 10 | 2 | mudah
+tag: sehat, vegetarian
+desc: Daun kale yang ditumis dengan bawang putih dan sedikit cabai.
+bahan:
+- kale* | 1 ikat
+- garlic | 3 siung
+- chili? | 1 buah
+- salt | 1/4 sdt
+- cooking_oil | 1 sdm
+langkah:
+1. Buang tulang daun kale, sobek kecil-kecil.
+2. Tumis bawang putih dan cabai.
+3. Masukkan kale dan 2 sdm air, aduk sampai layu, bumbui garam.
+alat: wajan, spatula, pisau

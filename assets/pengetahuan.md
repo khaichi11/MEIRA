@@ -446,3 +446,59 @@ Puasa berselang mengatur jendela makan harian, misalnya pola 16:8 berarti makan 
 ## Membaca label gizi kemasan
 kunci: label gizi kemasan informasi nilai gizi foto takaran saji sajian per kemasan nugget mi instan
 Foto bagian "Informasi Nilai Gizi" di kemasan, dan MEIRA membaca takaran saji, jumlah sajian per kemasan, energi, lemak, gula, dan garam. Jawabannya menghitung satu sajian dan satu kemasan penuh dibandingkan kebutuhan harian Anda, beserta saran porsi. Bila ada angka yang terbaca keliru, ketik angka yang benar.
+
+## Adonan
+kunci: adonan apa itu adonan roti kue gorengan pempek bakwan tepung
+Adonan adalah campuran tepung dengan bahan cair dan bahan lain sebelum dimasak, dan jenisnya bergantung pada masakannya. Adonan roti dan donat diuleni sampai kalis lalu didiamkan agar mengembang karena ragi; adonan kue bolu dikocok sampai mengembang; adonan gorengan seperti bakwan dan pisang goreng lebih encer agar melapisi bahan; adonan pempek dan cilok dari tepung tapioka bertekstur kenyal. Bila Anda menyebut masakannya, saya bisa menjelaskan adonan yang dimaksud.
+
+## Menguleni sampai kalis
+kunci: uleni kalis adonan roti tidak lengket elastis
+Menguleni berarti menekan, melipat, dan meregangkan adonan berulang kali. Adonan disebut kalis bila sudah tidak lengket di tangan, licin, dan elastis; untuk roti, adonan yang kalis bisa diregangkan tipis tanpa langsung sobek.
+
+## Mengungkep
+kunci: ungkep diungkep ayam bumbu meresap sebelum digoreng
+Mengungkep adalah memasak bahan, biasanya ayam, tahu, atau tempe, bersama bumbu dan sedikit air dengan api kecil sampai airnya menyusut dan bumbu meresap. Setelah diungkep, bahan bisa langsung disantap, digoreng, atau dibakar.
+
+## Menumis
+kunci: tumis menumis tumisan harum bumbu minyak sedikit
+Menumis adalah memasak bahan dengan sedikit minyak di atas api sedang sampai besar sambil terus diaduk. Bumbu seperti bawang ditumis lebih dulu sampai harum, baru bahan utama dimasukkan.
+
+## Menyangrai
+kunci: sangrai menyangrai tanpa minyak kacang kelapa kemiri wangi
+Menyangrai adalah memanaskan bahan di wajan tanpa minyak sambil diaduk sampai kering, kecokelatan, dan harum, misalnya kacang, kelapa parut, kemiri, atau ketumbar.
+
+## Blansir
+kunci: blansir blanching rebus sebentar air es sayur tetap hijau
+Blansir adalah merebus bahan sebentar di air mendidih, lalu segera merendamnya di air es. Cara ini membuat sayur tetap hijau dan renyah, dan memudahkan mengupas tomat.
+
+## Marinasi
+kunci: marinasi marinade rendam bumbu daging ayam ikan meresap
+Marinasi adalah merendam daging, ayam, atau ikan dalam bumbu selama beberapa waktu sebelum dimasak agar rasanya meresap. Ikan cukup 15 sampai 30 menit; ayam dan daging bisa lebih lama, dan sebaiknya disimpan di kulkas selama direndam.
+
+## Kaldu
+kunci: kaldu kaldu ayam kaldu sapi rebusan tulang sup kuah
+Kaldu adalah air rebusan tulang, daging, atau sayur yang dimasak lama dengan api kecil sampai rasanya gurih. Kaldu menjadi dasar sup, soto, dan kuah, dan buih di permukaannya sebaiknya dibuang agar kuahnya jernih.
+
+## Bumbu halus
+kunci: bumbu halus ulek blender bawang cabai kemiri bumbu dasar
+Bumbu halus adalah campuran bumbu seperti bawang merah, bawang putih, cabai, kemiri, dan kunyit yang diulek atau diblender sampai halus. Bumbu halus ditumis sampai matang dan berminyak agar tidak langu.
+
+## Santan kental dan santan encer
+kunci: santan kental santan encer perasan pertama kedua pecah
+Santan kental adalah perasan pertama kelapa parut dengan sedikit air, sedangkan santan encer adalah perasan berikutnya dengan air lebih banyak. Santan encer dipakai untuk merebus lebih dulu, dan santan kental dimasukkan menjelang akhir sambil diaduk agar tidak pecah.
+
+## Mengukus
+kunci: kukus mengukus dandang uap bolu kue ikan
+Mengukus adalah memasak dengan uap air panas di dandang atau panci kukus. Air harus sudah mendidih sebelum bahan dimasukkan, dan tutup kukusan bisa dilapisi kain agar uap air tidak menetes ke kue.
+
+## Bacem
+kunci: bacem dibacem tempe tahu gula merah manis
+Bacem adalah cara memasak tempe, tahu, atau ayam dengan bumbu gula merah, ketumbar, dan lengkuas sampai airnya habis, sehingga rasanya manis gurih dan warnanya kecokelatan. Setelah dibacem, bahan biasanya digoreng sebentar.
+
+## Pepes
+kunci: pepes dipepes daun pisang bungkus kukus bakar ikan tahu
+Pepes adalah bahan seperti ikan, tahu, atau jamur yang dibumbui, dibungkus daun pisang, lalu dikukus atau dibakar. Daun pisang membuat aromanya khas dan bumbunya tidak keluar.
+
+## Api kecil, sedang, dan besar
+kunci: api kecil api sedang api besar kompor gosong matang merata
+Api kecil dipakai untuk merebus lama, mengungkep, dan memasak santan agar tidak pecah. Api sedang untuk menggoreng dan menumis sehari-hari. Api besar untuk menumis cepat seperti cah sayur dan mendidihkan air. Bila bagian luar cepat gosong tetapi dalamnya belum matang, kecilkan api.

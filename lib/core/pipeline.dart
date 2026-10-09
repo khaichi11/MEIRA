@@ -545,7 +545,7 @@ class Meira {
     }
 
     // perintah fitur: catat berat atau makanan, isi data tubuh, tanya IMT, progres, jejak masak, atau buka fitur
-    final tool = imageDataUrl == null && text.isNotEmpty && appData != null ? appTool(text, appData!) : null;
+    final tool = imageDataUrl == null && text.isNotEmpty ? (appData != null ? appTool(text, appData!) : greetingTool(text, null)) : null;
     if (tool != null) {
       await tool.effect?.call();
       yield TokenEvent(tool.text);
@@ -566,7 +566,9 @@ class Meira {
     if (text.isNotEmpty && imageDataUrl == null) {
       // dalam sesi yang sudah punya foto atau resep, permintaan lanjutan seperti "aku mau yang cepat" tetap soal dapur
       final inContext = s.imageDataUrl != null || s.current != null;
-      final guard = Guardrails.checkInput(text, knownIngredient: inContext || Guardrails.kitchenRequest(text), ragScore: ragScore(text));
+      // istilah yang ada di catatan dapur atau basis pengetahuan ("adonan", "ungkep", "klepon") juga soal dapur
+      final known = knowledge != null && (knowledge!.covers(text) || knowledge!.link(text).isNotEmpty);
+      final guard = Guardrails.checkInput(text, knownIngredient: inContext || known || Guardrails.kitchenRequest(text), ragScore: ragScore(text));
       if (!guard.allowed) {
         yield TokenEvent(guard.reply);
         if (guard.verdict == GuardVerdict.offTopic) yield ActionsEvent(const ['resep', 'gizi', 'tur']);
@@ -593,6 +595,23 @@ class Meira {
         (knowledge?.link(text).isNotEmpty ?? false)) {
       it.action = 'obrolan';
     }
+    // "resep rendang" atau "cara bikin soto ayam" tanpa foto: resep yang disebut namanya dipakai langsung; bila tidak
+    // ada di buku resep, MEIRA berterus terang lalu menjelaskan hidangannya dari basis pengetahuan
+    var noRecipe = '';
+    if (imageDataUrl == null && s.currentMatch == null && s.have().isEmpty && (it.action == 'rekomendasi' || it.action == 'detail')) {
+      final named = findRecipe(recipes, text);
+      if (named != null) {
+        s.candidates = rank([named], const {}, Prefs(), k: 1);
+        if (s.candidates.isEmpty) s.candidates = [Match(named, 0, [], [])];
+        s.current = named.id;
+        if (!s.shown.contains(named.id)) s.shown.add(named.id);
+      } else if (RegExp(r'\b(resep|cara (bikin|buat|membuat|masak))\b').hasMatch(text.toLowerCase()) && (knowledge?.link(text).isNotEmpty ?? false)) {
+        final dish = knowledge!.link(text).first.title;
+        final similar = retriever.search(text, k: 2).map((h) => h.recipe.name).toList();
+        noRecipe = 'Resep ${dish.toLowerCase()} belum ada di buku resep MEIRA.${similar.isEmpty ? '' : ' Yang mirip: ${similar.join(' atau ')}.'}';
+        it.action = 'obrolan';
+      }
+    }
     // "kue cubit dibuat dari apa?" tanpa foto, atau menyebut makanan yang ada di basis pengetahuan, adalah pertanyaan
     // pengetahuan, bukan permintaan menebak hidangan di foto
     if (it.action == 'hidangan' && imageDataUrl == null && (s.imageDataUrl == null || (knowledge?.link(text).isNotEmpty ?? false))) {
@@ -602,7 +621,7 @@ class Meira {
     final added = it.include.difference(s.have());
     _applyPrefs(s, it);
     var task = it.action;
-    final extra = <String, String>{if (added.isNotEmpty) 'added': added.map(displayName).join(', ')};
+    final extra = <String, String>{if (added.isNotEmpty) 'added': added.map(displayName).join(', '), if (noRecipe.isNotEmpty) 'norecipe': noRecipe};
 
     if (it.action == 'cek') {
       yield* _check(s, text, it);
@@ -674,7 +693,9 @@ class Meira {
         if (s.currentMatch == null) _rerank(s, skipShown: false);
         if (it.action == 'substitusi') extra['ingredient'] = it.ingredient ?? 'bahan tersebut';
       case 'rekomendasi' || 'hidangan':
-        _rerank(s, skipShown: false, query: text);
+        // resep yang baru saja dipilih dari namanya ("resep rendang") tidak diganti hasil pencarian
+        final picked = imageDataUrl == null && s.currentMatch != null && findRecipe(recipes, text)?.id == s.current;
+        if (!picked) _rerank(s, skipShown: false, query: text);
       default:
         if (s.candidates.isEmpty && (s.imageDataUrl != null || s.prefs.include.isNotEmpty)) _rerank(s, skipShown: false);
     }
@@ -783,7 +804,7 @@ class Meira {
     final aboutPhoto = s.imageDataUrl != null && linked.isEmpty && RegExp(r'\b(ini|itu|foto|gambar)\b').hasMatch(text.toLowerCase());
     final strong = aboutPhoto
         ? <(Note, double, int)>[]
-        : notes.where((n) => (n.$3 >= 2 || n.$2 >= Guardrails.ragThreshold) && cover(n) >= .6 && titled(n)).toList();
+        : notes.where((n) => (n.$3 >= 2 || n.$2 >= Guardrails.ragThreshold || terms == 1) && cover(n) >= .6 && titled(n)).toList();
     final related = aboutPhoto ? <(Note, double, int)>[] : notes.where((n) => titled(n) && cover(n) >= .3).toList();
     // pengganti bahan yang tidak ada di resep terpilih juga dijawab dari catatan ("kalau tidak ada mentega, pakai apa?")
     final offRecipe = task == 'substitusi' && !(cur?.recipe.items.any((i) => i.key == resolve(extra['ingredient'] ?? '')) ?? false);
@@ -810,7 +831,7 @@ class Meira {
         // catatan makan hari ini ikut sebagai fakta saat pertanyaannya tentang diri pengguna
         if (appData != null && _personal.hasMatch(text.toLowerCase())) ?intakeFact(appData!),
       ];
-      yield* _chat(s, text, facts, photo: aboutPhoto || linked.isEmpty);
+      yield* _chat(s, text, facts, photo: aboutPhoto || linked.isEmpty, prefix: extra['norecipe'] ?? '');
       return;
     }
     var prompt = context(s, task, extra);
@@ -850,7 +871,7 @@ class Meira {
   /// Obrolan bebas: sapaan, ucapan terima kasih, dan pertanyaan pengetahuan dapur. Model 0,8B diberi perintah pendek dan
   /// konteks seperlunya, karena perintah resep yang panjang membuatnya melantur, menjelaskan rencananya sendiri, dan
   /// mengarang resep. Catatan dapur yang relevan disertakan sebagai rujukan (RAG), bukan disalin mentah.
-  Stream<MeiraEvent> _chat(Session s, String text, List<String> facts, {bool photo = true}) async* {
+  Stream<MeiraEvent> _chat(Session s, String text, List<String> facts, {bool photo = true, String prefix = ''}) async* {
     // pertanyaan fakta tanpa sumber tidak diserahkan ke model kecil, karena ia akan mengarang dengan yakin
     if (facts.isEmpty && !Guardrails.smallTalk(text) && ingredientQuestion(text)) {
       const answer =
@@ -872,6 +893,7 @@ class Meira {
     final name = userName?.trim() ?? '';
     final system = name.isEmpty ? promptChatSystem : '$promptChatSystem Nama pengguna: $name.';
     final user = context.isEmpty ? text : 'FAKTA:\n${context.join('\n')}\n\nPertanyaan: $text';
+    if (prefix.isNotEmpty) yield TokenEvent('$prefix ');
     var full = '';
     try {
       await for (final piece in brain!.stream(
@@ -892,6 +914,7 @@ class Meira {
       // aliran terputus atau terlalu lama diam: pakai kalimat utuh yang sudah diterima
     }
     full = completeSentences(Guardrails.checkOutput(full));
+    if (prefix.isNotEmpty) full = '$prefix $full'.trim();
     var source = 'llm';
     if (full.isEmpty) {
       full = 'Maaf, saya belum bisa menjawab itu. Silakan tanyakan hal lain seputar bahan, resep, atau cara memasak.';
