@@ -97,8 +97,8 @@ class Guardrails {
     if (!knownIngredient && ragScore < ragThreshold && !_kitchen.hasMatch(t) && !_food.hasMatch(t) && !_smallTalk.hasMatch(t)) {
       return const GuardResult(
         GuardVerdict.offTopic,
-        'Saya MEIRA, asisten khusus dapur, sehingga hanya dapat membantu soal bahan, resep, dan cara memasak. '
-        'Silakan kirim foto bahan atau tanyakan resep yang Anda inginkan.',
+        'Hmm, yang itu di luar keahlian saya. Saya paling bisa membantu soal masakan dan gizi, misalnya mencari resep dari '
+        'foto bahan, menjawab pertanyaan tentang makanan, atau mencatat makan dan berat badan Anda. Mau coba yang mana?',
       );
     }
     return const GuardResult(GuardVerdict.allow);

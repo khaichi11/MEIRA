@@ -569,6 +569,7 @@ class Meira {
       final guard = Guardrails.checkInput(text, knownIngredient: inContext || Guardrails.kitchenRequest(text), ragScore: ragScore(text));
       if (!guard.allowed) {
         yield TokenEvent(guard.reply);
+        if (guard.verdict == GuardVerdict.offTopic) yield ActionsEvent(const ['resep', 'gizi', 'tur']);
         await _remember(s, text, guard.reply, 'pengaman');
         yield DoneEvent(guard.reply, 'pengaman');
         await _persist(s);

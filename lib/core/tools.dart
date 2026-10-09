@@ -25,6 +25,8 @@ abstract class AppData {
   FastingPlan? get fasting;
   Future<bool> setFasting(FastingPlan? plan);
   List<IntakeEntry> get intakeToday;
+  String? get userName;
+  Future<void> setName(String name);
   Future<void> logWeight(double kg);
   Future<void> setBody(BodyProfile b);
   Future<void> logIntake(IntakeEntry e);
@@ -92,9 +94,92 @@ final _open = RegExp(r'\b(buka|lihat|tampilkan|pergi ke|ke)\b');
 
 double? _parse(String? v) => v == null ? null : double.tryParse(v.replaceAll(',', '.'));
 
+/// Kata setelah "saya" yang bukan nama ("saya lapar", "saya diet").
+const _notName = {
+  'lapar',
+  'haus',
+  'bingung',
+  'diet',
+  'sakit',
+  'capek',
+  'lelah',
+  'mau',
+  'ingin',
+  'pengen',
+  'suka',
+  'punya',
+  'sedang',
+  'lagi',
+  'sudah',
+  'udah',
+  'belum',
+  'bisa',
+  'tidak',
+  'nggak',
+  'gak',
+  'ga',
+  'baru',
+  'masih',
+  'obesitas',
+  'vegetarian',
+  'alergi',
+  'hamil',
+  'puasa',
+  'masak',
+  'makan',
+  'minum',
+  'butuh',
+  'perlu',
+  'tanya',
+  'cari',
+  'senang',
+  'sedih',
+  'kenyang',
+  'ngantuk',
+  'pusing',
+  'gemuk',
+  'kurus',
+  'sehat',
+  'siap',
+  'disini',
+  'di',
+  'dari',
+  'juga',
+  'aja',
+  'saja',
+  'dan',
+  'yang',
+  'ini',
+  'itu',
+  'kok',
+  'mah',
+};
+
+const _help =
+    'Tentu, saya siap membantu. Saya bisa mencarikan resep dari foto bahan, menjelaskan cara memasak, menjawab pertanyaan '
+    'tentang makanan dan gizi, serta mencatat makan, berat badan, dan jadwal puasa Anda. Mau mulai dari mana?';
+
 /// Balasan untuk perintah fitur, atau null bila pesan ini bukan perintah fitur.
 ToolReply? appTool(String text, AppData d) {
-  final t = text.toLowerCase();
+  final t = text.toLowerCase().trim();
+
+  // perkenalan: "saya khai", "nama saya khai", "panggil aku khai"
+  final intro = RegExp(
+    r'^(?:halo,? |hai,? )?(?:nama (?:saya|aku|ku)|panggil (?:saya|aku)|saya|aku)\s+([a-z][a-z\x27-]{1,19})(?:\s+(?:ya|yah|kok|nih))?[.!]*$',
+  ).firstMatch(t);
+  if (intro != null && !_notName.contains(intro[1]) && findFood(intro[1]!, d.foods) == null) {
+    final name = intro[1]![0].toUpperCase() + intro[1]!.substring(1);
+    return ToolReply(
+      'Halo, $name! Senang berkenalan. ${name == d.userName ? '' : 'Mulai sekarang saya panggil Anda $name. '}'
+      'Saya bisa mencarikan resep dari foto bahan, menjawab pertanyaan makanan dan gizi, atau mencatat makan dan berat badan Anda.',
+      actions: const ['resep', 'gizi'],
+      effect: name == d.userName ? null : () => d.setName(name),
+    );
+  }
+  // minta bantuan tanpa topik: "bantu saya", "tolong", "bisa bantu?"
+  if (RegExp(r'^(?:tolong|tolongin|bantu|bantuin|bisa bantu|minta tolong|minta bantuan)(?: saya| aku| dong| ya| nih| min)*[?!.]*$').hasMatch(t)) {
+    return const ToolReply(_help, actions: ['resep', 'gizi', 'tur']);
+  }
 
   // buka fitur
   if (_open.hasMatch(t)) {

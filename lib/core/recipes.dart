@@ -208,7 +208,7 @@ Intent ruleIntent(String text) {
   var action = 'rekomendasi';
   if (_has(t, r'\b(terima kasih|makasih|trims|thanks|halo|hai|oke|sip|mantap)\b')) action = 'obrolan';
   if (_has(t, _know)) action = 'obrolan'; // pertanyaan pengetahuan dapur, dijawab dari catatan dapur
-  if (_has(t, r'\b(lain|ganti|yang beda|alternatif|selain itu|nggak suka|gak suka|bosen|bosan|skip)\b')) action = 'ganti';
+  if (_has(t, r'\b(lain|ganti|yang beda|alternatif|selain itu|(?:nggak|ngga|gak|ga|gk|enggak|kurang) suka|bosen|bosan|skip)\b')) action = 'ganti';
   if (_has(t, r'\b(pilih|yang nomor|nomor (\d|satu|dua|tiga)|yang (pertama|kedua|ketiga)|ambil yang)\b')) action = 'pilih';
   if (_has(
     t,
@@ -258,7 +258,7 @@ Intent ruleIntent(String text) {
   if (t.contains('pedas') && !pedasNegated) it.tags.add('pedas');
 
   for (final mm in RegExp(
-    r'(?:jangan|tanpa|nggak mau|gak mau|tidak mau|nggak suka|gak suka|tidak suka|alergi)\s+([a-z ,]{3,40}?)(?=[.!?]| dong| ya| deh| aja| saja| $)',
+    r'(?:jangan|tanpa|(?:nggak|ngga|gak|ga|gk|enggak|tidak|kurang|ogah) (?:mau|suka|makan)|benci|alergi)\s+([a-z ,]{3,40}?)(?=[.!?]| dong| ya| deh| aja| saja| sih| $)',
   ).allMatches(t)) {
     it.exclude.addAll(mentions(mm.group(1)!));
   }

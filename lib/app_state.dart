@@ -87,7 +87,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
   String answerStyle = 'ringkas';
   bool thorough = false;
   String? voiceName;
+  @override
   String? userName; // nama panggilan, disimpan di perangkat
+
+  @override
+  Future<void> setName(String name) => setPref('user_name', name);
   bool readPackages = true;
   bool healthyMode = false; // "enak dan sehat"
   bool tourDone = true; // tur singkat fitur sudah dilihat atau dilewati

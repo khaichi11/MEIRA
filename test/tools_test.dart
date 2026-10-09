@@ -10,6 +10,10 @@ import 'package:meira/vision/ocr.dart';
 /// Data palsu untuk menguji perintah fitur di obrolan tanpa aplikasi.
 class FakeData implements AppData {
   @override
+  String? userName;
+  @override
+  Future<void> setName(String name) async => userName = name;
+  @override
   BodyProfile? body;
   @override
   String? healthGoal;
@@ -146,5 +150,19 @@ void main() {
     expect(a, contains('Bila satu kemasan (4 sajian) dihabiskan sekaligus, energinya sekitar 520 kkal'));
     expect(a, contains('sebaiknya cukup 2 sajian'));
     expect(a, contains('tekanan darah tinggi'));
+  });
+
+  test('obrolan santai: perkenalan, minta bantuan, dan tidak suka bahan', () async {
+    final d = FakeData();
+    final r = await run('saya khai', d);
+    expect(r!.text, startsWith('Halo, Khai!'));
+    expect(d.userName, 'Khai');
+    expect(await run('saya lapar', d), isNull);
+    expect(await run('aku diet', d), isNull);
+    expect((await run('bantu saya', d))!.actions, contains('gizi'));
+    final it = ruleIntent('aku ga suka semangka');
+    expect(it.exclude, contains('watermelon'));
+    expect(it.include, isNot(contains('watermelon')));
+    expect(ruleIntent('gk suka tomat dong').exclude, contains('tomato'));
   });
 }
