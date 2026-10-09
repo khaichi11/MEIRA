@@ -5,6 +5,9 @@ import '../app_state.dart';
 import '../theme.dart';
 import 'chat.dart';
 import 'illustrations.dart';
+import '../core/fasting.dart';
+import '../core/intake.dart';
+import '../core/tools.dart';
 import 'cook_grid.dart';
 import 'health.dart';
 import 'recipe_book.dart';
@@ -226,44 +229,76 @@ class _KitchenScreenState extends State<KitchenScreen> {
   );
 
   /// Program hidup sehat: ajakan memulai, atau rencana makan hari ini bila program sudah berjalan.
-  Widget _health(AppState s) => Container(
-    padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
-    decoration: BoxDecoration(color: C.herbTint, borderRadius: BorderRadius.circular(22)),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
+  Widget _health(AppState s) {
+    final t = Targets.of(s.needs);
+    final eaten = s.intakeToday.fold(const Nutrients(), (a, e) => a + e.nutrients);
+    final f = s.fasting;
+    final st = f == null ? null : fastingState(f, DateTime.now());
+    Widget pill(IconData icon, String text, Color color) => Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+        decoration: BoxDecoration(color: C.surface, borderRadius: BorderRadius.circular(14)),
+        child: Row(
           children: [
-            const Icon(Icons.eco_rounded, color: C.herb),
-            const SizedBox(width: 8),
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 6),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(programName, style: T.headline),
-                  if (s.healthGoal != null) Text(goalTitle(s.healthGoal), style: T.footnote),
-                ],
+              child: Text(
+                text,
+                style: inter(12.5, weight: FontWeight.w600),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            TextButton(onPressed: () => openHealth(context), child: Text(s.healthGoal == null ? 'Mulai' : 'Lihat')),
           ],
         ),
-        if (s.healthGoal == null)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Text(
-              'Rencana makan harian dari resep yang lebih ringan, mengikuti pedoman gizi seimbang Kementerian Kesehatan.',
-              style: T.subhead,
+      ),
+    );
+    return Pressable(
+      child: Material(
+        color: C.herbTint,
+        borderRadius: BorderRadius.circular(22),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(22),
+          onTap: () => openHealth(context),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.eco_rounded, color: C.herb),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(programName, style: T.headline)),
+                    const Icon(Icons.chevron_right_rounded, color: C.secondary),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    pill(Icons.local_fire_department_outlined, '${eaten.energy.round()}/${t.energy.round()} kkal', C.accent),
+                    const SizedBox(width: 8),
+                    s.needs == null
+                        ? pill(Icons.monitor_weight_outlined, 'Isi data tubuh', C.violet)
+                        : pill(Icons.monitor_weight_outlined, 'IMT ${fmt(s.needs!.bmi)}', C.violet),
+                    const SizedBox(width: 8),
+                    pill(
+                      Icons.schedule_rounded,
+                      st == null ? 'Puasa: mati' : (st.eating ? 'Waktu makan' : 'Puasa ${untilText(st.next, DateTime.now())}'),
+                      C.blue,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                const TasteToggle(),
+              ],
             ),
-          )
-        else ...[
-          const SizedBox(height: 4),
-          const DailyPlan(compact: true),
-        ],
-        const Padding(padding: EdgeInsets.only(bottom: 10), child: TasteToggle()),
-      ],
-    ),
-  );
+          ),
+        ),
+      ),
+    );
+  }
 
   /// Pintasan ke buku resep lengkap; daftar resep tidak lagi memenuhi beranda.
   Widget _book(AppState s) => Container(

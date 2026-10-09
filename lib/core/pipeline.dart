@@ -22,6 +22,7 @@ import 'grounding.dart';
 import 'health.dart';
 import 'history.dart';
 import 'recipes.dart';
+import 'tools.dart';
 import 'vocab.dart';
 
 sealed class MeiraEvent {}
@@ -60,6 +61,12 @@ class DoneEvent extends MeiraEvent {
   DoneEvent(this.text, this.source);
   final String text;
   final String source; // llm | templat | periksa
+}
+
+/// Tombol aksi di bawah jawaban, misalnya membuka Gizi Seimbang (kunci rute dari tools.dart).
+class ActionsEvent extends MeiraEvent {
+  ActionsEvent(this.routes);
+  final List<String> routes;
 }
 
 class ErrorEvent extends MeiraEvent {
@@ -155,6 +162,7 @@ class Meira {
     this.thorough = false,
     this.healthMode = false,
     this.needs,
+    this.appData,
     this.rewriteNotes = false,
     this.vision,
   });
@@ -171,6 +179,7 @@ class Meira {
   bool parallelVision; // false di HP: deteksi dulu agar penanda cepat tampil, baru kenali hidangan
   bool readPackages; // baca tulisan kemasan (mi instan, minyak, kecap, santan, ...)
   DailyNeeds? needs; // kebutuhan gizi harian dari kalkulator tubuh, bila pengguna mengisinya
+  AppData? appData; // data fitur yang bisa dibaca dan diubah lewat obrolan
   bool healthMode; // "enak dan sehat": resep ringan didahulukan dan jawaban resep diberi satu saran agar lebih ringan
   bool thorough; // deteksi teliti: foto asli + cermin digabung, recall lebih tinggi, waktu sekitar 2x
   late final RecipeRetriever retriever = RecipeRetriever(recipes);
@@ -476,6 +485,17 @@ class Meira {
       }
     }
 
+    // perintah fitur: catat berat atau makanan, isi data tubuh, tanya IMT, progres, jejak masak, atau buka fitur
+    final tool = imageDataUrl == null && text.isNotEmpty && appData != null ? appTool(text, appData!) : null;
+    if (tool != null) {
+      await tool.effect?.call();
+      yield TokenEvent(tool.text);
+      if (tool.actions.isNotEmpty) yield ActionsEvent(tool.actions);
+      await _remember(s, text, tool.text, 'fitur');
+      yield DoneEvent(tool.text, 'fitur');
+      await _persist(s);
+      return;
+    }
     // koreksi pengguna atas isi foto ("ini buah naga", "bukan kepiting, tapi buah naga")
     final fixed = imageDataUrl == null && s.imageDataUrl != null ? correction(text) : null;
     // hanya nama makanan yang dikenal (kosakata atau basis pengetahuan); "ini enak" bukan koreksi
@@ -724,6 +744,8 @@ class Meira {
         if (needs != null)
           for (final f in linked.where((f) => f.nutrition)) ?compareWithNeeds(f.title, f.text, needs!),
         if (needs != null && _personal.hasMatch(text.toLowerCase())) needs!.factLine,
+        // catatan makan hari ini ikut sebagai fakta saat pertanyaannya tentang diri pengguna
+        if (appData != null && _personal.hasMatch(text.toLowerCase())) ?intakeFact(appData!),
       ];
       yield* _chat(s, text, facts, photo: aboutPhoto || linked.isEmpty);
       return;

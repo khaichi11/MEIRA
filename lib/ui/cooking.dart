@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../app_state.dart';
 import '../core/recipes.dart';
+import '../runtime/reminders.dart';
 import '../theme.dart';
 import 'widgets.dart';
 
@@ -38,6 +39,7 @@ class _CookingScreenState extends State<CookingScreen> {
   void dispose() {
     _state?.stopSpeaking();
     _timer?.cancel();
+    if (_end != null) Reminders.instance.cancelCookTimer();
     _pages.dispose();
     super.dispose();
   }
@@ -54,19 +56,69 @@ class _CookingScreenState extends State<CookingScreen> {
     _pages.animateToPage(i, duration: const Duration(milliseconds: 280), curve: Curves.easeOut);
   }
 
+  DateTime? _end; // waktu habis pengatur waktu; dihitung dari jam, jadi tetap benar saat aplikasi sempat di latar belakang
+
+  /// Pengatur waktu hanya berjalan setelah pengguna mengetuknya atau mengucapkan "mulai"; saat habis, ponsel bergetar dan
+  /// muncul pemberitahuan. Suara "waktu habis" hanya dibacakan bila jawaban suara aktif.
   void _startTimer(int minutes) {
     _timer?.cancel();
-    setState(() => _left = minutes * 60);
+    final end = DateTime.now().add(Duration(minutes: minutes));
+    final step = _step;
+    setState(() {
+      _end = end;
+      _left = minutes * 60;
+    });
+    Reminders.instance.cookTimer(end, '${r.name}: langkah ${step + 1} selesai.');
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (_left <= 1) {
+      final left = _end == null ? 0 : _end!.difference(DateTime.now()).inSeconds;
+      if (left <= 0) {
         t.cancel();
-        setState(() => _left = 0);
+        setState(() {
+          _left = 0;
+          _end = null;
+        });
         HapticFeedback.heavyImpact();
-        Scope.of(context).speak('Waktu habis untuk langkah ${_step + 1}.');
+        final s = Scope.of(context);
+        if (s.speakAnswers) s.speak('Waktu habis untuk langkah ${step + 1}.');
         return;
       }
-      setState(() => _left--);
+      setState(() => _left = left);
     });
+  }
+
+  void _stopTimer() {
+    _timer?.cancel();
+    Reminders.instance.cancelCookTimer();
+    setState(() {
+      _left = 0;
+      _end = null;
+    });
+  }
+
+  /// Perintah suara (hanya saat tombol mikrofon ditekan): mulai, berhenti, lanjut, kembali, bacakan, selesai.
+  Future<void> _voice(AppState s) async {
+    final (text, error) = await s.toggleCommand();
+    if (!mounted) return;
+    if (error != null) {
+      toast(context, error);
+      return;
+    }
+    if (text == null) return; // baru mulai mendengar
+    final t = text.toLowerCase();
+    final minutes = _minutes(r.steps[_step]);
+    if (RegExp(r'\b(berhenti|stop|batal)\b').hasMatch(t)) {
+      _stopTimer();
+    } else if (RegExp(r'\b(mulai|start|timer|hitung)\b').hasMatch(t) && minutes != null) {
+      _startTimer(minutes);
+    } else if (RegExp(r'\b(lanjut|berikutnya|selanjutnya|next)\b').hasMatch(t)) {
+      _go(_step + 1);
+    } else if (RegExp(r'\b(kembali|sebelumnya|mundur)\b').hasMatch(t)) {
+      _go(_step - 1);
+    } else if (RegExp(r'\b(bacakan|ulangi|baca)\b').hasMatch(t)) {
+      s.speak('Langkah ${_step + 1}. ${r.steps[_step]}');
+    } else {
+      toast(context, 'Coba ucapkan: mulai, berhenti, lanjut, kembali, atau bacakan');
+    }
   }
 
   @override
@@ -123,9 +175,17 @@ class _CookingScreenState extends State<CookingScreen> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 14),
                 child: _left > 0
-                    ? Text(
-                        '${(_left ~/ 60).toString().padLeft(2, '0')}:${(_left % 60).toString().padLeft(2, '0')}',
-                        style: poppins(40, weight: FontWeight.w600, color: C.accent),
+                    ? GestureDetector(
+                        onTap: _stopTimer,
+                        child: Column(
+                          children: [
+                            Text(
+                              '${(_left ~/ 60).toString().padLeft(2, '0')}:${(_left % 60).toString().padLeft(2, '0')}',
+                              style: poppins(40, weight: FontWeight.w600, color: C.accent),
+                            ),
+                            Text('Ketuk untuk berhenti', style: T.caption),
+                          ],
+                        ),
                       )
                     : FilledButton.tonalIcon(
                         onPressed: () => _startTimer(minutes),
@@ -149,6 +209,13 @@ class _CookingScreenState extends State<CookingScreen> {
                     tooltip: s.voice == VoiceState.speaking ? 'Hentikan suara' : 'Bacakan langkah',
                     onPressed: () => s.voice == VoiceState.speaking ? s.stopSpeaking() : s.speak('Langkah ${_step + 1}. $step'),
                     icon: Icon(s.voice == VoiceState.speaking ? Icons.stop_rounded : Icons.volume_up_rounded),
+                  ),
+                  const SizedBox(width: 10),
+                  IconButton.filledTonal(
+                    tooltip: 'Perintah suara: mulai, berhenti, lanjut, kembali, bacakan',
+                    onPressed: s.voice == VoiceState.transcribing ? null : () => _voice(s),
+                    icon: Icon(s.voice == VoiceState.listening ? Icons.stop_circle_rounded : Icons.mic_none_rounded),
+                    style: s.voice == VoiceState.listening ? IconButton.styleFrom(backgroundColor: C.clay, foregroundColor: Colors.white) : null,
                   ),
                   const SizedBox(width: 10),
                   Expanded(

@@ -10,7 +10,8 @@ import 'cooking_loader.dart';
 import 'widgets.dart';
 
 /// Pembuka dan perkenalan dalam satu gerakan:
-/// 0. "Halo!" muncul huruf demi huruf di layar putih, lalu lingkaran hijau melebar dari tengah menutupnya;
+/// 0. "Halo!" muncul huruf demi huruf di layar putih disusul "Selamat datang di MEIRA", lalu lingkaran hijau melebar dari
+///    tengah menutupnya; model mulai dimuat pada saat itu;
 /// 1. layar hijau tiba-tiba berlubang di tengah, wajan muncul di lubang itu, lalu lubang melebar sampai layar putih;
 /// 2. saat nama panggilan diminta, wajan turun keluar layar dan kotak hijau turun dari atas membawa sapaan;
 /// 3. setelah nama diisi, lembar putih naik menutup kotak hijau dan Dapur langsung tampil.
@@ -28,7 +29,7 @@ const _green = LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomC
 class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStateMixin {
   static const _corner = 28.0;
   static const _hole = 96.0; // jari-jari lubang pertama sebelum melebar
-  static const _haloSec = 1.7, _enterSec = 2.0, _formSec = .95, _exitSec = .8; // lama tiap tahap
+  static const _haloSec = 2.4, _enterSec = 2.0, _formSec = .95, _exitSec = .8; // lama tiap tahap
 
   late final Ticker _ticker = createTicker(_tick);
   Duration _last = Duration.zero;
@@ -66,6 +67,11 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
     if (_h < 1) {
       _h = math.min(1, _h + dt / _haloSec);
       moving = true;
+      // model mulai dimuat begitu sapaan selesai, jadi pemuatan berjalan bersamaan dengan gerakan wajan
+      if (_h == 1) {
+        final s = Scope.of(context);
+        if (!s.bootStarted) s.boot();
+      }
     } else if (_e < 1) {
       _e = math.min(1, _e + dt / _enterSec);
       moving = true;
@@ -261,8 +267,9 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
   /// sementara lingkaran hijau melebar dari tengah sampai menutup layar, tepat seperti bingkai pertama tahap 1.
   List<Widget> _halo(Size size, Offset center, double far) {
     const letters = 'Halo!';
-    final out = _ease(Curves.easeInCubic, _seg(_h, .6, .82));
-    final grow = _ease(Curves.easeInOutCubic, _seg(_h, .62, 1));
+    final out = _ease(Curves.easeInCubic, _seg(_h, .68, .86));
+    final grow = _ease(Curves.easeInOutCubic, _seg(_h, .7, 1));
+    final welcome = _ease(Curves.easeOutCubic, _seg(_h, .34, .52));
     return [
       Positioned(
         left: 0,
@@ -278,7 +285,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                 for (var i = 0; i < letters.length; i++)
                   Builder(
                     builder: (_) {
-                      final t = _seg(_h, .04 + i * .07, .3 + i * .07);
+                      final t = _seg(_h, .03 + i * .05, .22 + i * .05);
                       final up = _ease(Curves.easeOutBack, t);
                       return Opacity(
                         opacity: _ease(Curves.easeOut, t),
@@ -296,6 +303,22 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                     },
                   ),
               ],
+            ),
+          ),
+        ),
+      ),
+      Positioned(
+        left: 0,
+        right: 0,
+        top: center.dy + 34,
+        child: Opacity(
+          opacity: welcome * (1 - out),
+          child: Transform.translate(
+            offset: Offset(0, 14 * (1 - welcome)),
+            child: Text(
+              'Selamat datang di MEIRA',
+              textAlign: TextAlign.center,
+              style: inter(17, weight: FontWeight.w600, color: C.secondary),
             ),
           ),
         ),

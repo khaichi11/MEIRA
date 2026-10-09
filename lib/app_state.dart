@@ -12,15 +12,19 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/body.dart';
+import 'core/fasting.dart';
 import 'core/grounding.dart';
 import 'core/health.dart';
 import 'core/history.dart';
+import 'core/intake.dart';
 import 'core/pipeline.dart';
 import 'core/recipes.dart';
+import 'core/tools.dart';
 import 'core/vocab.dart';
 import 'llm/knowledge.dart';
 import 'runtime/device.dart';
 import 'runtime/llama.dart';
+import 'runtime/reminders.dart';
 import 'runtime/models.dart';
 import 'runtime/speech.dart';
 import 'vision/vision.dart';
@@ -37,6 +41,7 @@ class Message {
   String text;
   final Uint8List? photo;
   String? source;
+  List<String> actions = const []; // tombol aksi di bawah jawaban (rute fitur)
   bool streaming;
   final bool animate; // jawaban baru dimunculkan bertahap seperti diketik; jawaban dari riwayat langsung utuh
   int shown = 0; // jumlah huruf yang sudah tampil saat animasi mengetik
@@ -48,10 +53,11 @@ class BootStep {
   bool done = false;
 }
 
-class AppState extends ChangeNotifier with WidgetsBindingObserver {
+class AppState extends ChangeNotifier with WidgetsBindingObserver implements AppData {
   // ------------------------------------------------------------- komponen
   late Models models;
   late History history;
+  @override
   List<Recipe> recipes = [];
   KnowledgeBase? knowledge;
   LlamaServer? _brainServer;
@@ -85,12 +91,16 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   bool readPackages = true;
   bool healthyMode = false; // "enak dan sehat"
   bool tourDone = true; // tur singkat fitur sudah dilihat atau dilewati
+  @override
   String? healthGoal; // turun, jaga, atau seimbang; null bila program Gizi Seimbang belum dimulai
+  @override
   BodyProfile? body; // tinggi, berat, usia, jenis kelamin, dan aktivitas; hanya disimpan di ponsel
 
   /// Kebutuhan gizi harian dari kalkulator tubuh, menyesuaikan tujuan program.
+  @override
   DailyNeeds? get needs => body == null ? null : needsFor(body!, goal: healthGoal);
 
+  @override
   Future<void> setBody(BodyProfile? b) async {
     body = b;
     final p = await SharedPreferences.getInstance();
@@ -109,6 +119,91 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
 
   static DateTime _day(DateTime t) => DateTime(t.year, t.month, t.day);
 
+  // ------------------------------------------------------------- puasa berselang
+  @override
+  FastingPlan? fasting;
+
+  @override
+  Future<bool> setFasting(FastingPlan? plan) async {
+    fasting = plan;
+    final p = await SharedPreferences.getInstance();
+    if (plan == null) {
+      await p.remove('fasting');
+    } else {
+      await p.setString('fasting', plan.encode());
+    }
+    notifyListeners();
+    try {
+      return await Reminders.instance.schedule(plan);
+    } catch (_) {
+      return false; // notifikasi gagal tidak boleh membatalkan jadwal
+    }
+  }
+
+  // ------------------------------------------------------------- catatan berat dan makan
+  @override
+  final List<(DateTime, double)> weights = [];
+  final List<IntakeEntry> intake = [];
+
+  @override
+  int get cookedTotal => cooks.length;
+
+  @override
+  List<IntakeEntry> get intakeToday {
+    final d = _day(DateTime.now());
+    return [
+      for (final e in intake)
+        if (_day(e.time) == d) e,
+    ];
+  }
+
+  /// Makanan yang bisa dicatat: fakta gizi USDA di basis pengetahuan (disusun sekali setelah basis pengetahuan dimuat).
+  List<Food>? _foods;
+  @override
+  List<Food> get foods => knowledge == null
+      ? const []
+      : _foods ??= [
+          for (final f in knowledge!.facts)
+            if (f.nutrition)
+              if (Nutrients.parse(f.text) case final n?) Food(f.names.first, f.names, n),
+        ];
+
+  @override
+  Future<void> logWeight(double kg) async {
+    weights.add((DateTime.now(), kg));
+    final p = await SharedPreferences.getInstance();
+    await p.setStringList('weight_log', [for (final (t, w) in weights) '${t.toIso8601String()}|$w']);
+    notifyListeners();
+  }
+
+  @override
+  Future<void> logIntake(IntakeEntry e) async {
+    intake.add(e);
+    await _saveIntake();
+  }
+
+  @override
+  Future<void> removeLastIntake() async {
+    final today = intakeToday;
+    if (today.isEmpty) return;
+    intake.remove(today.last);
+    await _saveIntake();
+  }
+
+  Future<void> removeIntake(IntakeEntry e) async {
+    intake.remove(e);
+    await _saveIntake();
+  }
+
+  Future<void> _saveIntake() async {
+    // catatan makan disimpan 60 hari terakhir saja
+    final from = DateTime.now().subtract(const Duration(days: 60));
+    intake.removeWhere((e) => e.time.isBefore(from));
+    final p = await SharedPreferences.getInstance();
+    await p.setStringList('intake_log', [for (final e in intake) jsonEncode(e.toJson())]);
+    notifyListeners();
+  }
+
   /// Jumlah masakan per hari, untuk kotak-kotak jejak masak.
   Map<DateTime, int> get cookDays {
     final out = <DateTime, int>{};
@@ -119,6 +214,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   /// Hari berturut-turut memasak sampai hari ini (atau sampai kemarin, bila hari ini belum memasak).
+  @override
   int get streak {
     final days = cookDays;
     var d = _day(DateTime.now());
@@ -131,6 +227,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     return n;
   }
 
+  @override
   int get bestStreak {
     final days = cookDays.keys.toList()..sort();
     var best = 0, run = 0;
@@ -207,6 +304,18 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       healthyMode = p.getBool('healthy_mode') ?? false;
       tourDone = p.getBool('tour_done') ?? false;
       healthGoal = p.getString('health_goal');
+      weights
+        ..clear()
+        ..addAll([
+          for (final line in p.getStringList('weight_log') ?? const <String>[])
+            if ((DateTime.tryParse(line.split('|').first), double.tryParse(line.split('|').last)) case (final t?, final w?)) (t, w),
+        ]);
+      intake
+        ..clear()
+        ..addAll([
+          for (final line in p.getStringList('intake_log') ?? const <String>[]) IntakeEntry.fromJson(jsonDecode(line) as Map<String, dynamic>),
+        ]);
+      fasting = FastingPlan.decode(p.getString('fasting'));
       if (p.getString('body') case final raw?) {
         final j = jsonDecode(raw) as Map<String, dynamic>;
         body = BodyProfile(
@@ -254,6 +363,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
         thorough: thorough,
         healthMode: healthyMode,
         needs: needs,
+        appData: this,
         readPackages: readPackages,
         knowledge: knowledge,
       )..userName = userName;
@@ -503,6 +613,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
               ..streaming = false
               ..source = source;
             if (speakAnswers || spoken) unawaited(speak(text));
+          case ActionsEvent(:final routes):
+            answer ??= (Message(Role.meira, '', animate: true)..let(messages.add));
+            answer.actions = routes;
           case ErrorEvent(:final text):
             messages.add(Message(Role.error, text));
         }
@@ -643,6 +756,32 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
     voice = VoiceState.listening;
     notifyListeners();
     return null;
+  }
+
+  /// Perintah suara di mode memasak: ketuk sekali untuk mendengar, ketuk lagi untuk selesai. Mengembalikan (teks, galat);
+  /// teksnya tidak dikirim ke obrolan. Suara hanya dipakai bila pengguna menekan tombol mikrofon.
+  Future<(String?, String?)> toggleCommand() async {
+    final sp = speech;
+    if (sp == null || !sp.paths.hasAsr) return (null, 'Model suara belum terpasang');
+    if (voice == VoiceState.listening) {
+      voice = VoiceState.transcribing;
+      notifyListeners();
+      try {
+        final text = await sp.stopAndTranscribe();
+        return (text, text == null || text.isEmpty ? 'Suara kurang jelas' : null);
+      } catch (e) {
+        return (null, 'Suara tidak terbaca');
+      } finally {
+        voice = VoiceState.idle;
+        notifyListeners();
+      }
+    }
+    await stopSpeaking();
+    if (!await sp.hasPermission()) return (null, 'Izin mikrofon ditolak');
+    await sp.startListening();
+    voice = VoiceState.listening;
+    notifyListeners();
+    return (null, null);
   }
 
   Future<String?> _finishListening() async {

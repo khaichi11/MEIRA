@@ -4,9 +4,11 @@ import 'package:image_picker/image_picker.dart';
 
 import '../app_state.dart';
 import '../theme.dart';
+import '../core/tools.dart';
 import 'cooking_loader.dart';
 import 'photo.dart';
 import 'recipe.dart';
+import 'routes.dart';
 import 'widgets.dart';
 
 /// Buka layar percakapan di atas beranda (tanpa bilah navigasi, dengan tombol kembali).
@@ -355,7 +357,21 @@ class _ChatScreenState extends State<ChatScreen> {
             padding: const EdgeInsets.only(top: 14, right: 24),
             child: m.streaming && m.text.isEmpty
                 ? const TypingDots()
-                : TypingText(key: ObjectKey(m), message: m, onNumber: (n) => s.highlight(n == null ? [] : [n]), onGrow: _followBottom),
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TypingText(key: ObjectKey(m), message: m, onNumber: (n) => s.highlight(n == null ? [] : [n]), onGrow: _followBottom),
+                      // tombol aksi: jawaban yang menyangkut fitur bisa langsung membuka fiturnya
+                      if (m.actions.isNotEmpty && !m.streaming)
+                        FadeIn(
+                          delay: const Duration(milliseconds: 250),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Wrap(spacing: 8, runSpacing: 8, children: [for (final r in m.actions) _action(r)]),
+                          ),
+                        ),
+                    ],
+                  ),
           ),
           Role.status => Padding(
             padding: const EdgeInsets.only(top: 10),
@@ -374,6 +390,28 @@ class _ChatScreenState extends State<ChatScreen> {
         },
       ),
   ];
+
+  Widget _action(String route) => Pressable(
+    child: ActionChip(
+      avatar: Icon(
+        switch (route) {
+          'gizi' => Icons.eco_rounded,
+          'tubuh' => Icons.monitor_weight_outlined,
+          'resep' => Icons.menu_book_rounded,
+          'puasa' => Icons.schedule_rounded,
+          _ => Icons.arrow_forward_rounded,
+        },
+        size: 18,
+        color: C.accentDeep,
+      ),
+      label: Text(routeLabels[route] ?? route),
+      labelStyle: inter(13.5, weight: FontWeight.w600, color: C.accentDeep),
+      backgroundColor: C.accentTint,
+      side: BorderSide.none,
+      shape: const StadiumBorder(),
+      onPressed: () => openRoute(context, route),
+    ),
+  );
 
   Widget _suggestions(AppState s) {
     if (s.session == null || s.busy || s.voice != VoiceState.idle) return const SizedBox.shrink();
