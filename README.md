@@ -46,7 +46,7 @@ The ingredient marker is still being improved; current results and known weaknes
 |---|---|
 | App | Flutter 3.41, Dart 3.11, Material 3, Inter and Poppins fonts |
 | On-device inference | ONNX Runtime 1.30 over FFI for the detector and OCR, llama.cpp `llama-server` for the language model, sherpa-onnx for Whisper |
-| Retrieval | BM25 over the recipe book and kitchen notes, plus name lookup over 3,404 Wikidata (CC0) and USDA (public domain) food facts |
+| Retrieval | BM25 over the recipe book and kitchen notes, plus name lookup over 4,085 Wikidata (CC0) and USDA (public domain) food facts |
 | Storage | SQLite (sqflite) and shared_preferences |
 | Platform | Android 9 or newer; voice through the phone's TTS engine (flutter_tts) |
 | Tooling | flutter test, dart format, ffmpeg and Pillow for the demo images |

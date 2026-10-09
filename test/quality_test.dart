@@ -215,4 +215,15 @@ void main() {
       isTrue,
     );
   });
+
+  test('koreksi isi foto dikenali, pertanyaan dan tambahan bahan tidak', () {
+    expect(correction('ini buah naga'), 'buah naga');
+    expect(correction('gambar yang saya berikan adalah buah naga'), 'buah naga');
+    expect(correction('bukan kepiting, tapi buah naga'), 'buah naga');
+    expect(correction('foto ini sebenarnya buah naga kok'), 'buah naga');
+    expect(correction('itu telur'), 'telur');
+    expect(correction('ini buah apa?'), isNull);
+    expect(correction('ini ada telur juga'), isNull);
+    expect(correction('ini telur dan tomat'), isNull);
+  });
 }

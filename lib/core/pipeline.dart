@@ -469,6 +469,14 @@ class Meira {
       }
     }
 
+    // koreksi pengguna atas isi foto ("ini buah naga", "bukan kepiting, tapi buah naga")
+    final fixed = imageDataUrl == null && s.imageDataUrl != null ? correction(text) : null;
+    // hanya nama makanan yang dikenal (kosakata atau basis pengetahuan); "ini enak" bukan koreksi
+    if (fixed != null && (mentions(fixed).isNotEmpty || knowledge?.named(fixed) != null)) {
+      yield* _correct(s, text, fixed);
+      await _persist(s);
+      return;
+    }
     if (text.isNotEmpty && imageDataUrl == null) {
       // dalam sesi yang sudah punya foto atau resep, permintaan lanjutan seperti "aku mau yang cepat" tetap soal dapur
       final inContext = s.imageDataUrl != null || s.current != null;
@@ -483,6 +491,15 @@ class Meira {
     }
     final it = text.isNotEmpty ? await _intent(text) : Intent(imageDataUrl != null && s.mode == 'hidangan' ? 'hidangan' : 'rekomendasi');
     if (imageDataUrl != null && s.mode == 'hidangan' && it.action == 'rekomendasi') it.action = 'hidangan';
+    // "buah naga bisa dibuat apa?": makanan yang tidak ada di kosakata maupun nama resep dijawab dari fakta, bukan
+    // dengan resep acak yang kebetulan berbagi kata
+    if (it.action == 'rekomendasi' &&
+        it.include.isEmpty &&
+        mentions(text).isEmpty &&
+        findRecipe(recipes, text) == null &&
+        (knowledge?.link(text).isNotEmpty ?? false)) {
+      it.action = 'obrolan';
+    }
     // "kue cubit dibuat dari apa?" tanpa foto, atau menyebut makanan yang ada di basis pengetahuan, adalah pertanyaan
     // pengetahuan, bukan permintaan menebak hidangan di foto
     if (it.action == 'hidangan' && imageDataUrl == null && (s.imageDataUrl == null || (knowledge?.link(text).isNotEmpty ?? false))) {
@@ -624,6 +641,7 @@ class Meira {
       var core = greet(s, template(s, task, extra));
       if (extra['added'] != null) core = 'Baik, ${extra['added']} saya catat. $core';
       if (extra['guess'] != null) core = '${extra['guess']} $core';
+      if (extra['fixed'] != null) core = '${extra['fixed']} $core';
       var source = 'templat';
       if (answerStyle == 'natural' && brain != null && task != 'detail') {
         // gaya natural: model menulis ulang jawaban buku resep menjadi kalimat lisan; hasilnya dipakai hanya bila semua
@@ -685,7 +703,7 @@ class Meira {
     if (task == 'obrolan' && brain != null) {
       // RAG: catatan dapur yang cukup dekat ditambah fakta Wikidata dan USDA untuk makanan yang disebut namanya
       final facts = [for (final n in related.take(2)) 'Catatan dapur "${n.$1.title}": ${n.$1.body}', for (final f in linked) f.text];
-      yield* _chat(s, text, facts);
+      yield* _chat(s, text, facts, photo: aboutPhoto || linked.isEmpty);
       return;
     }
     var prompt = context(s, task, extra);
@@ -725,7 +743,7 @@ class Meira {
   /// Obrolan bebas: sapaan, ucapan terima kasih, dan pertanyaan pengetahuan dapur. Model 0,8B diberi perintah pendek dan
   /// konteks seperlunya, karena perintah resep yang panjang membuatnya melantur, menjelaskan rencananya sendiri, dan
   /// mengarang resep. Catatan dapur yang relevan disertakan sebagai rujukan (RAG), bukan disalin mentah.
-  Stream<MeiraEvent> _chat(Session s, String text, List<String> facts) async* {
+  Stream<MeiraEvent> _chat(Session s, String text, List<String> facts, {bool photo = true}) async* {
     // pertanyaan fakta tanpa sumber tidak diserahkan ke model kecil, karena ia akan mengarang dengan yakin
     if (facts.isEmpty && !Guardrails.smallTalk(text) && ingredientQuestion(text)) {
       const answer =
@@ -736,10 +754,12 @@ class Meira {
       yield DoneEvent(answer, 'pengaman');
       return;
     }
+    // isi foto dan resep yang sedang dibahas hanya disertakan bila pertanyaannya tentang foto; untuk "beda kepiting
+    // dan udang" baris itu ikut diulang model dan membuat jawaban panjang
     final context = [
-      if (s.detections.isNotEmpty) 'Bahan di foto pengguna: ${grouped(s.detections).map((g) => g.label).join(', ')}.',
-      if (s.guess != null) 'Foto pengguna tampaknya berisi ${s.guess} (dugaan model penglihatan).',
-      if (s.currentMatch != null) 'Resep yang sedang dibahas: ${s.currentMatch!.recipe.name}.',
+      if (photo && s.detections.isNotEmpty) 'Bahan di foto pengguna: ${grouped(s.detections).map((g) => g.label).join(', ')}.',
+      if (photo && s.guess != null) 'Foto pengguna tampaknya berisi ${s.guess} (dugaan model penglihatan).',
+      if (photo && s.currentMatch != null) 'Resep yang sedang dibahas: ${s.currentMatch!.recipe.name}.',
       ...facts,
     ];
     final name = userName?.trim() ?? '';
@@ -761,8 +781,8 @@ class Meira {
         full += piece;
         yield TokenEvent(piece);
       }
-    } catch (e) {
-      full = '';
+    } catch (_) {
+      // aliran terputus atau terlalu lama diam: pakai kalimat utuh yang sudah diterima
     }
     full = completeSentences(Guardrails.checkOutput(full));
     var source = 'llm';
@@ -815,10 +835,54 @@ class Meira {
         extra: brain!.chatAdapter,
       );
       final line = out.trim().replaceAll(RegExp(r'[—–]'), ',');
-      return naturalMatches(core, line, recipes.map((r) => r.name)) ? line : null;
+      if (!naturalMatches(core, line, recipes.map((r) => r.name))) return null;
+      // makanan dari permintaan pengguna yang tidak ada di jawaban buku resep ("Kepiting Saus Tiram cocok untuk buah
+      // naga") ditolak
+      final foods = {for (final f in knowledge?.link(core, max: 12) ?? const <Fact>[]) f.title};
+      return (knowledge?.link(line, max: 12) ?? const <Fact>[]).every((f) => foods.contains(f.title)) ? line : null;
     } catch (_) {
       return null;
     }
+  }
+
+  /// Koreksi pengguna atas isi foto. Bila foto hanya punya satu kelompok penanda, penanda itu diganti namanya; bila
+  /// lebih, bahan yang disebut dicatat sebagai bahan milik pengguna. Bahan yang ada di buku resep langsung dipakai
+  /// untuk mencari resep; makanan lain (misalnya buah naga) dijelaskan dari basis pengetahuan.
+  Stream<MeiraEvent> _correct(Session s, String text, String name) async* {
+    // nama persis dari kosakata saja; pencocokan kabur bisa mengubah "buah naga" menjadi bahan lain
+    final keys = mentions(name);
+    final key = keys.length == 1 ? keys.first : null;
+    final label = key != null ? displayName(key) : (knowledge?.named(name)?.title.toLowerCase() ?? name);
+    final groups = grouped(s.detections).where((g) => g.label != label).toList();
+    var note = 'Baik, ini $label.';
+    if (key != null && s.detections.any((d) => d.key == key)) {
+      note = 'Baik, $label memang sudah saya tandai.';
+    } else if (groups.length == 1) {
+      final wrong = groups.first;
+      s.detections = [
+        for (final d in s.detections)
+          wrong.numbers.contains(d.number)
+              ? Detection(key: key, label: label, rawLabel: label, box: d.box, number: d.number, group: d.group, packaged: d.packaged)
+              : d,
+      ];
+      note = 'Baik, ini $label. Penanda ${wrong.numbers.map((n) => '#$n').join(', ')} sudah saya ubah dari ${wrong.label}.';
+    } else if (key != null) {
+      s.prefs.include.add(key);
+      note = 'Baik, $label saya catat sebagai bahan Anda.';
+    }
+    s.guess = key == null ? label : null;
+    yield DetectionsEvent(s.detections, null);
+    if (key == null) {
+      s
+        ..candidates = []
+        ..current = null;
+      yield RecipesEvent();
+      yield* _guessed(s, text, label, fixed: note);
+      return;
+    }
+    _rerank(s, skipShown: false);
+    yield RecipesEvent();
+    yield* _answer(s, text, 'rekomendasi', {'fixed': note});
   }
 
   /// Nama bahan utama menurut model penglihatan, dalam bahasa Indonesia bila dikenal ("dragon fruit" menjadi buah
@@ -834,7 +898,7 @@ class Meira {
 
   /// Foto bahan yang tidak dikenali detektor tetapi dikenali model penglihatan, misalnya buah naga: sebut dugaannya,
   /// jelaskan singkat dari basis pengetahuan, lalu minta bahan lain untuk mencari resep.
-  Stream<MeiraEvent> _guessed(Session s, String text, String name, {String? marked}) async* {
+  Stream<MeiraEvent> _guessed(Session s, String text, String name, {String? marked, String? fixed}) async* {
     final fact = knowledge?.named(name);
     final facts = [
       for (final n in knowledge?.search(name, k: 1) ?? const <(Note, double, int)>[])
@@ -859,13 +923,19 @@ class Meira {
       } catch (_) {}
     }
     final answer = [
-      marked == null
-          ? 'Tampaknya ini $name. Bahan ini belum bisa ditandai oleh detektor, jadi namanya masih dugaan model penglihatan.'
-          : 'Saya belum yakin dengan foto ini. Detektor menandai $marked, tetapi model penglihatan menduga ini $name.',
+      if (fixed != null)
+        fixed
+      else if (marked == null)
+        'Tampaknya ini $name. Bahan ini belum bisa ditandai oleh detektor, jadi namanya masih dugaan model penglihatan.'
+      else
+        'Saya belum yakin dengan foto ini. Detektor menandai $marked, tetapi model penglihatan menduga ini $name.',
       if (about.isNotEmpty) about,
-      marked == null
-          ? 'Bila ingin saran resep, sebutkan bahan lain yang Anda miliki, misalnya "ada susu dan madu".'
-          : 'Bila penanda detektor benar, minta saja saran resep dan saya carikan dari bahan itu.',
+      if (fixed != null)
+        'Buku resep MEIRA belum punya resep dengan $name. Bila ingin saran resep, sebutkan bahan lain yang Anda miliki.'
+      else if (marked == null)
+        'Bila ingin saran resep, sebutkan bahan lain yang Anda miliki, misalnya "ada susu dan madu".'
+      else
+        'Bila penanda detektor benar, minta saja saran resep dan saya carikan dari bahan itu. Bila salah, ketik misalnya "ini $name".',
     ].join(' ');
     yield TokenEvent(answer);
     await _remember(s, text.isEmpty ? '(foto baru)' : text, answer, about.isEmpty ? 'templat' : 'llm');
@@ -1143,4 +1213,25 @@ bool _statusKept(String core, String rewrite) {
     if (found.isEmpty || !found.any(_alt.hasMatch)) return false;
   }
   return true;
+}
+
+final _fixPhrase = RegExp(
+  r'^(?:bukan\s+[\w -]+?\s*(?:tapi|tetapi|melainkan)\s+)?(?:(?:yang\s+)?(?:ini|itu)|gambar(?:nya)?|foto(?:nya)?)(?:\s+(?:ini|itu))?'
+  r'(?:\s+yang\s+(?:saya|aku|ku)\s*(?:berikan|kirim|kasih|foto|unggah))?(?:\s+(?:adalah|ialah|merupakan|tuh|sebenarnya|sebetulnya|sih))*'
+  r'\s+(.+?)(?:\s+(?:kok|lho|loh|ya|kan|dong|sih|bukan|tau))*$',
+);
+final _fixBut = RegExp(r'^bukan\s+[\w -]+?\s*(?:tapi|tetapi|melainkan)\s+(?:ini\s+|itu\s+)?(.+)$');
+final _question = RegExp(r'\?|\b(apa|apakah|bagaimana|gimana|berapa|mana|siapa|kenapa|mengapa|bisa|boleh|cara|resep|bedanya|beda)\b');
+
+/// Nama makanan dari koreksi pengguna atas isi foto ("ini buah naga", "gambar yang saya berikan adalah buah naga",
+/// "bukan kepiting, tapi buah naga"), atau null bila kalimatnya bukan koreksi. Pertanyaan seperti "ini buah apa?"
+/// bukan koreksi.
+String? correction(String text) {
+  final t = text.toLowerCase().replaceAll(RegExp(r'[^\w\s-]'), ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
+  // "ini ada telur juga" atau "ini telur dan tomat" menambah bahan, bukan mengoreksi penanda
+  if (t.isEmpty || _question.hasMatch(text.toLowerCase()) || RegExp(r'\b(ada|juga|punya|tambah|masih|dan|sama)\b').hasMatch(t)) return null;
+  final m = _fixBut.firstMatch(t) ?? _fixPhrase.firstMatch(t);
+  final name = m?[1]?.trim();
+  if (name == null || name.isEmpty || name.split(' ').length > 4) return null;
+  return name;
 }

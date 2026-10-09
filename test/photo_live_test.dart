@@ -53,6 +53,8 @@ void main() {
         ),
         brain: server.client,
         useLlmIntent: false,
+        // MEIRA_NO_SCENE=1 meniru ponsel yang tidak sempat menjalankan model penglihatan
+        brainHasVision: Platform.environment['MEIRA_NO_SCENE'] != '1',
         answerStyle: Platform.environment['MEIRA_STYLE'] ?? 'ringkas',
         parallelVision: false,
         knowledge: KnowledgeBase.parse(
