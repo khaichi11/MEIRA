@@ -26,13 +26,16 @@ stored on the phone. Ask follow-up questions by typing or speaking.
 
 ## Models
 
-| Role | Model | Runtime | Size |
-|---|---|---|---:|
-| Ingredient markers | D-FINE small, trained by MEIRA | ONNX Runtime | 42 MB, inside the APK |
-| Package reader | PP-OCRv5 mobile | ONNX Runtime | 13 MB, inside the APK |
-| Conversation and finished dishes | Qwen3.5-0.8B instruct | llama.cpp | 0.7 GB, downloaded once |
-| Speech to text | Whisper small int8 | sherpa-onnx | 0.4 GB, downloaded once |
-| Voice | the phone's TTS engine | Android | |
+| Role | Model | Source | Runtime | Size |
+|---|---|---|---|---:|
+| Ingredient markers | D-FINE small | trained for MEIRA in MEIRA-Before | ONNX Runtime | 42 MB, inside the APK |
+| Package reader | PP-OCRv5 mobile | PaddleOCR, used as released | ONNX Runtime | 13 MB, inside the APK |
+| Conversation and finished dishes | Qwen3.5-0.8B instruct | [unsloth/Qwen3.5-0.8B-GGUF](https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF), used as released | llama.cpp | 0.7 GB, downloaded once |
+| Speech to text | Whisper small int8 | [csukuangfj/sherpa-onnx-whisper-small](https://huggingface.co/csukuangfj/sherpa-onnx-whisper-small), used as released | sherpa-onnx | 0.4 GB, downloaded once |
+| Voice | the phone's TTS engine | Android | Android | |
+
+The downloaded models come from these public Hugging Face repositories, not from a MEIRA account. The full APK built
+with `tool/build_full_apk.sh` carries the same files, so nothing needs to be downloaded.
 
 The ingredient marker is still being improved; current results and known weaknesses are in the
 [MEIRA-Before evaluation](https://github.com/khaichi11/MEIRA-Before/blob/main/docs/en/evaluation.md).
@@ -49,7 +52,9 @@ The ingredient marker is still being improved; current results and known weaknes
 | Tooling | flutter test, dart format, ffmpeg and Pillow for the demo images |
 
 Only the ingredient detector is fine-tuned for this app (D-FINE small, 60 epochs on 3,842 photos, 90 classes). The
-other models are used as released. Training runs, including the LoRA experiments on Qwen3.5, are listed in
+other models are used as released. The LoRA experiments on Qwen3.5, the VLM eyes and the brain candidate, are
+research runs that the app does not ship: the detector proved more accurate and faster than the eyes, and the app shows
+kitchen notes verbatim, so the released instruct model is enough for the remaining answers. All runs are listed in
 [MEIRA-Before](https://github.com/khaichi11/MEIRA-Before#fine-tuned-models).
 
 ## Requirements

@@ -27,13 +27,16 @@ ponsel. Pertanyaan lanjutan bisa diketik atau diucapkan.
 
 ## Model
 
-| Peran | Model | Runtime | Ukuran |
-|---|---|---|---:|
-| Penanda bahan | D-FINE small, dilatih MEIRA | ONNX Runtime | 42 MB, di dalam APK |
-| Pembaca kemasan | PP-OCRv5 mobile | ONNX Runtime | 13 MB, di dalam APK |
-| Percakapan dan makanan jadi | Qwen3.5-0.8B instruct | llama.cpp | 0,7 GB, diunduh sekali |
-| Ucapan menjadi teks | Whisper small int8 | sherpa-onnx | 0,4 GB, diunduh sekali |
-| Suara | mesin TTS ponsel | Android | |
+| Peran | Model | Sumber | Runtime | Ukuran |
+|---|---|---|---|---:|
+| Penanda bahan | D-FINE small | dilatih untuk MEIRA di MEIRA-Before | ONNX Runtime | 42 MB, di dalam APK |
+| Pembaca kemasan | PP-OCRv5 mobile | PaddleOCR, dipakai apa adanya | ONNX Runtime | 13 MB, di dalam APK |
+| Percakapan dan makanan jadi | Qwen3.5-0.8B instruct | [unsloth/Qwen3.5-0.8B-GGUF](https://huggingface.co/unsloth/Qwen3.5-0.8B-GGUF), dipakai apa adanya | llama.cpp | 0,7 GB, diunduh sekali |
+| Ucapan menjadi teks | Whisper small int8 | [csukuangfj/sherpa-onnx-whisper-small](https://huggingface.co/csukuangfj/sherpa-onnx-whisper-small), dipakai apa adanya | sherpa-onnx | 0,4 GB, diunduh sekali |
+| Suara | mesin TTS ponsel | Android | Android | |
+
+Model yang diunduh berasal dari repositori Hugging Face publik di atas, bukan dari akun MEIRA. APK lengkap yang dibuat
+dengan `tool/build_full_apk.sh` membawa berkas yang sama, sehingga tidak ada yang perlu diunduh.
 
 Penanda bahan masih terus diperbaiki; hasil terkini dan kekurangannya ada di
 [evaluasi MEIRA-Before](https://github.com/khaichi11/MEIRA-Before/blob/main/docs/id/evaluasi.md).
@@ -50,8 +53,10 @@ Penanda bahan masih terus diperbaiki; hasil terkini dan kekurangannya ada di
 | Perkakas | flutter test, dart format, ffmpeg dan Pillow untuk gambar demo |
 
 Hanya detektor bahan yang di-fine-tune untuk aplikasi ini (D-FINE small, 60 epoch pada 3.842 foto, 90 kelas). Model
-lain dipakai apa adanya. Daftar latihan, termasuk eksperimen LoRA pada Qwen3.5, ada di
-[MEIRA-Before](https://github.com/khaichi11/MEIRA-Before/blob/main/README.id.md#model-hasil-fine-tune).
+lain dipakai apa adanya. Eksperimen LoRA pada Qwen3.5, yaitu mata VLM dan kandidat otak, merupakan latihan riset yang
+tidak dikirim bersama aplikasi: detektor terbukti lebih akurat dan lebih cepat daripada mata VLM, sedangkan catatan
+dapur ditampilkan apa adanya sehingga model instruct asli sudah cukup untuk jawaban lainnya. Daftar seluruh latihan ada
+di [MEIRA-Before](https://github.com/khaichi11/MEIRA-Before/blob/main/README.id.md#model-hasil-fine-tune).
 
 ## Kebutuhan
 

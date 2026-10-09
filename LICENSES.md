@@ -20,10 +20,10 @@ redistribution; photos under CC BY-SA were removed. Per-photo credits are in the
 
 ### Models downloaded during setup
 
-| Model | Role | License |
-|---|---|---|
-| Qwen3.5-0.8B instruct, GGUF | conversation and finished dishes | Apache-2.0 |
-| Whisper small int8, sherpa-onnx export | speech to text | MIT |
+| Model | Role | Source | License |
+|---|---|---|---|
+| Qwen3.5-0.8B instruct, GGUF | conversation and finished dishes | `unsloth/Qwen3.5-0.8B-GGUF` on Hugging Face | Apache-2.0 |
+| Whisper small int8, sherpa-onnx export | speech to text | `csukuangfj/sherpa-onnx-whisper-small` on Hugging Face | MIT |
 
 ### Libraries
 
@@ -62,10 +62,10 @@ ulang; foto berlisensi CC BY-SA sudah dibuang. Atribusi setiap foto ada di repo
 
 ### Model yang diunduh saat penyiapan
 
-| Model | Peran | Lisensi |
-|---|---|---|
-| Qwen3.5-0.8B instruct, GGUF | percakapan dan makanan jadi | Apache-2.0 |
-| Whisper small int8, ekspor sherpa-onnx | ucapan menjadi teks | MIT |
+| Model | Peran | Sumber | Lisensi |
+|---|---|---|---|
+| Qwen3.5-0.8B instruct, GGUF | percakapan dan makanan jadi | `unsloth/Qwen3.5-0.8B-GGUF` di Hugging Face | Apache-2.0 |
+| Whisper small int8, ekspor sherpa-onnx | ucapan menjadi teks | `csukuangfj/sherpa-onnx-whisper-small` di Hugging Face | MIT |
 
 ### Pustaka
 
