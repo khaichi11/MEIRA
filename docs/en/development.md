@@ -68,6 +68,7 @@ MEIRA_LIVE=1 MEIRA_HOME=~/MEIRA flutter test test/answer_eval_test.dart
 | `pipeline_live_test.dart` | a full turn with the real models | no, needs `MEIRA_LIVE=1` and the models |
 | `chat_live_test.dart` | chat with the knowledge base; `MEIRA_LORA` loads the adapter, `MEIRA_TEST_ASK` replaces the questions (separated by `\|`) | no, needs `MEIRA_LIVE=1` and the model |
 | `photo_live_test.dart` | an ingredient photo outside the detector's classes, such as dragon fruit, with the real detector and vision model | no, needs `MEIRA_LIVE=1`, `MEIRA_TEST_PHOTO`, and `MEIRA_ORT_LIB` |
+| `screens_render_test.dart` | renders the home and Gizi Seimbang screens to PNG files in `MEIRA_SHOTS` for review | no, needs `MEIRA_SHOTS` |
 
 The vision test needs an ONNX Runtime library for your laptop, for example from the Python `onnxruntime` package.
 No test plays any sound.

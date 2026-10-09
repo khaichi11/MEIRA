@@ -43,11 +43,13 @@ assets/pengetahuan_luas.jsonl  food facts for chat (Wikidata CC0 and USDA, publi
 
 | Screen | Contents |
 |---|---|
-| Opening | the green screen opens a small round hole, a cooking pan pops up inside it, and the hole widens until the screen is white while the models load |
+| Opening | "Halo!" appears letter by letter on a white screen, a green circle grows to cover it, then the green screen opens a small round hole, a cooking pan pops up inside it, and the hole widens until the screen is white while the models load |
 | Nickname | the pan fades out and a green header slides down with the greeting; asked once and stored only on the phone. After the name is entered, the white sheet slides up into the home screen |
-| Kitchen (home) | greeting, ask field, camera and gallery buttons, filterable recipe book |
+| Kitchen (home) | greeting, ask field, camera and gallery buttons, a daily grid of cooked recipes, a Gizi Seimbang card with an "Enak" or "Enak & sehat" choice, and a shortcut to the recipe book; a small bouncing arrow shows that the screen scrolls |
+| Recipe book | every recipe, with search by name or ingredient and filters (healthy, quick, breakfast, no stove, drinks, soups) |
+| Gizi Seimbang | a goal (towards an ideal weight, keeping weight, eating more balanced meals), today's meal plan with a swap button per slot, the last seven days of cooking, and the Ministry of Health's Isi Piringku plate and daily sugar, salt, and fat limits |
 | Chat | marked photo, recipe cards, answers, suggested questions, ask field; no bottom bar, with a back button |
-| Recipe | ingredients with availability, steps, cooking mode with timers |
+| Recipe | ingredients with availability, steps, cooking mode with timers, a read-aloud button that also stops the voice, and an "I cooked this" mark |
 | History, Dataset, Settings | tabs in the bottom bar |
 
 ![App screens](../img/tampilan.jpg)
@@ -74,7 +76,11 @@ assets/pengetahuan_luas.jsonl  food facts for chat (Wikidata CC0 and USDA, publi
    dragon fruit, the vision model's guess is translated through the English names in the knowledge base and given
    as a guess with a short description. When the guess is an ingredient in the recipe book, it is used to find
    recipes.
-8. **Memory.** Older turns are summarized once they pass 700 tokens.
+8. **Gizi Seimbang.** With "Enak & sehat" chosen, or when a request mentions healthy food, diets, or weight, lighter
+   recipes rank first (`core/health.dart`: more vegetables and fruit, lean protein, steamed or boiled) and recipe
+   answers get one tip to make them lighter. Words about body weight in model answers are replaced with respectful
+   terms, and medical conditions are still referred to a doctor or dietitian.
+9. **Memory.** Older turns are summarized once they pass 700 tokens.
 
 ## Motion
 
@@ -92,5 +98,5 @@ each frame step, so a slow first launch pauses the motion instead of skipping it
 
 ## Data and privacy
 
-All data stays in the app folder: history, photos, settings, nickname, and models. The internet is only used to
+All data stays in the app folder: history, photos, settings, nickname, cooking log, Gizi Seimbang goal, and models. The internet is only used to
 download models during setup, and that step can be skipped by installing models from files.

@@ -71,6 +71,7 @@ MEIRA_LIVE=1 MEIRA_HOME=~/MEIRA flutter test test/answer_eval_test.dart
 | `pipeline_live_test.dart` | satu giliran lengkap dengan model sungguhan | tidak, perlu `MEIRA_LIVE=1` dan modelnya |
 | `chat_live_test.dart` | obrolan dengan basis pengetahuan; `MEIRA_LORA` memasang adaptor, `MEIRA_TEST_ASK` mengganti pertanyaan (dipisah `\|`) | tidak, perlu `MEIRA_LIVE=1` dan modelnya |
 | `photo_live_test.dart` | foto bahan di luar kelas detektor, misalnya buah naga, dengan detektor dan model penglihatan sungguhan | tidak, perlu `MEIRA_LIVE=1`, `MEIRA_TEST_PHOTO`, dan `MEIRA_ORT_LIB` |
+| `screens_render_test.dart` | menggambar beranda dan layar Gizi Seimbang ke PNG di folder `MEIRA_SHOTS` untuk diperiksa | tidak, perlu `MEIRA_SHOTS` |
 
 Uji penglihatan memerlukan pustaka ONNX Runtime untuk laptop, misalnya dari paket Python `onnxruntime`. Tidak ada uji
 yang memutar suara.

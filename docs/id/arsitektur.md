@@ -43,11 +43,13 @@ assets/pengetahuan_luas.jsonl  fakta makanan untuk obrolan (Wikidata CC0 dan USD
 
 | Layar | Isi |
 |---|---|
-| Pembuka | layar hijau membuka lubang bundar kecil, wajan muncul di dalamnya, lalu lubang melebar hingga layar putih selama model dimuat |
+| Pembuka | "Halo!" muncul huruf demi huruf di layar putih, lingkaran hijau melebar menutupnya, lalu layar hijau membuka lubang bundar kecil, wajan muncul di dalamnya, dan lubang melebar hingga layar putih selama model dimuat |
 | Nama panggilan | wajan memudar dan kotak hijau turun dari atas membawa sapaan; ditanyakan sekali dan hanya disimpan di ponsel. Setelah nama diisi, lembar putih naik dan beranda langsung tampil |
-| Dapur (beranda) | sapaan, kolom tanya, tombol kamera dan galeri, buku resep dengan saringan |
+| Dapur (beranda) | sapaan, kolom tanya, tombol kamera dan galeri, jejak masak berbentuk kotak-kotak harian, kartu Gizi Seimbang dengan pilihan "Enak" atau "Enak & sehat", dan pintasan buku resep; panah kecil yang naik turun menandakan beranda bisa digulir |
+| Buku resep | semua resep dengan pencarian nama atau bahan dan saringan (sehat, cepat, sarapan, tanpa kompor, minuman, berkuah) |
+| Gizi Seimbang | tujuan (menuju berat badan ideal, menjaga berat badan, makan lebih seimbang), rencana makan hari ini yang bisa diganti per slot, capaian tujuh hari terakhir, serta pedoman Isi Piringku dan batas gula, garam, dan lemak dari Kementerian Kesehatan |
 | Percakapan | foto berpenanda, kartu resep, jawaban, saran pertanyaan, kolom tanya; tanpa bilah navigasi, dengan tombol kembali |
-| Resep | bahan dengan tanda tersedia, langkah, mode memasak dengan pengatur waktu |
+| Resep | bahan dengan tanda tersedia, langkah, mode memasak dengan pengatur waktu, tombol bacakan yang sekaligus menjadi tombol hentikan suara, dan tanda "Sudah saya masak" |
 | Riwayat, Dataset, Pengaturan | tab di bilah navigasi bawah |
 
 ![Layar aplikasi](../img/tampilan.jpg)
@@ -72,7 +74,11 @@ assets/pengetahuan_luas.jsonl  fakta makanan untuk obrolan (Wikidata CC0 dan USD
 7. **Bahan di luar kelas detektor.** Bila detektor tidak mengenali bahan, misalnya buah naga, tebakan model
    penglihatan diterjemahkan lewat nama Inggris di basis pengetahuan lalu disebut sebagai dugaan beserta
    keterangannya. Bila tebakan itu bahan di buku resep, bahan tersebut dipakai untuk mencari resep.
-8. **Memori.** Giliran lama diringkas bila melewati 700 token.
+8. **Gizi Seimbang.** Pada pilihan "Enak & sehat", atau bila permintaan menyebut sehat, diet, atau berat badan,
+   resep yang lebih ringan didahulukan (`core/health.dart`: banyak sayur dan buah, lauk rendah lemak, dikukus atau
+   direbus) dan jawaban resep diberi satu saran agar lebih ringan. Sebutan tentang berat badan dalam jawaban model
+   diganti dengan istilah yang sopan, dan kondisi medis tetap diarahkan ke dokter atau ahli gizi.
+9. **Memori.** Giliran lama diringkas bila melewati 700 token.
 
 ## Gerak
 
@@ -91,5 +97,5 @@ berhenti sejenak lalu berlanjut, bukan melompat ke akhir.
 
 ## Data dan privasi
 
-Semua data tersimpan di folder aplikasi: riwayat, foto, pengaturan, nama panggilan, dan model. Internet hanya
+Semua data tersimpan di folder aplikasi: riwayat, foto, pengaturan, nama panggilan, jejak masak, tujuan Gizi Seimbang, dan model. Internet hanya
 dipakai untuk mengunduh model saat penyiapan, dan langkah itu bisa dilewati dengan memasang model dari berkas.
