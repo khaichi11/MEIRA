@@ -372,7 +372,7 @@ class BodyCard extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 6),
                 child: Text(
                   'IMT  ·  ${n.category}',
-                  style: inter(14, weight: FontWeight.w600, color: _tone(n.bmi)),
+                  style: inter(14, weight: FontWeight.w600, color: C.secondary),
                 ),
               ),
             ],
