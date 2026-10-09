@@ -1,7 +1,7 @@
 name: meira
 description: "MEIRA - Multimodal Edge Intelligence for Recipe Assistance. Asisten dapur yang berjalan lokal."
 publish_to: 'none'
-version: 0.2.1+3
+version: 0.2.2+4
 
 environment:
   sdk: ^3.11.0
@@ -33,6 +33,7 @@ flutter:
   assets:
     - assets/resep.md
     - assets/pengetahuan.md
+    - assets/pengetahuan_luas.jsonl
     - assets/models/
   fonts:
     - family: Poppins
