@@ -2,9 +2,10 @@
 
 # MEIRA
 
-Multimodal Edge Intelligence for Recipe Assistance: asisten dapur luring untuk Android. Potret bahan di dapur
-Anda, lalu MEIRA memberi nomor pada setiap bahan, membaca tulisan kemasan, dan menyarankan resep dari buku resep di
-ponsel. Pertanyaan lanjutan bisa diketik atau diucapkan.
+Multimodal Edge Intelligence for Recipe Assistance: asisten dapur dan gizi luring untuk Android. Potret bahan di
+dapur Anda, lalu MEIRA memberi nomor pada setiap bahan, membaca tulisan kemasan, dan menyarankan resep dari buku resep
+di ponsel. MEIRA juga menyimpan catatan makan, berat badan, dan jadwal puasa Anda, dan menjawab lewat ketikan atau
+suara.
 
 [English](README.md)
 
@@ -14,15 +15,21 @@ ponsel. Pertanyaan lanjutan bisa diketik atau diucapkan.
 
 ## Fitur
 
-- Setiap bahan di foto mendapat penanda bernomor sendiri. Nomor yang keliru bisa diketuk untuk dibetulkan.
-- Tulisan kemasan seperti mi instan, minyak goreng, dan kecap manis dibaca dengan OCR.
-- Bahan bisa ditambah dari foto kedua atau lewat ketikan, misalnya "ada telur juga".
-- Beranda memuat buku resep dengan saringan cepat, sarapan, tanpa kompor, minuman, dan berkuah.
-- Pertanyaan bisa diketik atau diucapkan. Mode memasak menampilkan langkah satu per satu, lengkap dengan pengatur
-  waktu bila resepnya memerlukan.
-- Resep dan langkah diambil dari buku resep, sedangkan pertanyaan dapur dijawab dari catatan tulisan tangan.
-- Permintaan berbahaya atau di luar topik ditolak dengan singkat dan sopan.
-- Riwayat tersimpan di ponsel dengan batas ukuran, dan MEIRA menyapa Anda dengan nama panggilan.
+- Setiap bahan di foto mendapat penanda bernomor sendiri. Bila ada yang keliru, ketik nama yang benar, misalnya
+  "ini buah naga".
+- Tulisan kemasan seperti mi instan dan kecap manis dibaca dengan OCR. Foto bagian Informasi Nilai Gizi memberi nilai
+  per sajian dan per kemasan, saran porsi, dan perbandingannya dengan kebutuhan harian Anda.
+- Pertanyaan tentang makanan, misalnya beda rendang dan kalio, dijawab dari catatan dapur, Wikidata, dan USDA, dan
+  MEIRA berterus terang bila belum punya informasi pasti.
+- Gizi Seimbang: kalkulator tubuh (IMT, berat badan ideal, kebutuhan dan batas harian), catatan makan, progres berat,
+  puasa berselang dengan pengingat, dan rencana makan dari resep yang lebih ringan.
+- Asisten memakai fitur itu langsung: "berat saya 70 kg", "tadi pagi saya makan nasi goreng", atau "boleh makan
+  sekarang?" dicatat atau dijawab dari data Anda sendiri, disertai tombol untuk membuka fiturnya.
+- Jejak masak di beranda terisi setiap hari Anda menyelesaikan resep.
+- Mode memasak menampilkan langkah satu per satu; pengatur waktu dimulai dengan ketukan atau perintah suara dan
+  memberi pemberitahuan saat selesai.
+- Buku resep berisi lebih dari 230 resep dengan pencarian dan saringan, dan pilihan "Enak & sehat" mendahulukan resep
+  yang lebih ringan.
 - Setelah model diunduh, aplikasi tidak memerlukan internet dan tidak ada data yang keluar dari ponsel.
 
 ## Model

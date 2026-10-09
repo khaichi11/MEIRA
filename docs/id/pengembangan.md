@@ -72,6 +72,8 @@ MEIRA_LIVE=1 MEIRA_HOME=~/MEIRA flutter test test/answer_eval_test.dart
 | `chat_live_test.dart` | obrolan dengan basis pengetahuan; `MEIRA_LORA` memasang adaptor, `MEIRA_TEST_ASK` mengganti pertanyaan (dipisah `\|`) | tidak, perlu `MEIRA_LIVE=1` dan modelnya |
 | `photo_live_test.dart` | foto bahan di luar kelas detektor, misalnya buah naga, dengan detektor dan model penglihatan sungguhan | tidak, perlu `MEIRA_LIVE=1`, `MEIRA_TEST_PHOTO`, dan `MEIRA_ORT_LIB` |
 | `screens_render_test.dart` | menggambar beranda dan layar Gizi Seimbang ke PNG di folder `MEIRA_SHOTS` untuk diperiksa | tidak, perlu `MEIRA_SHOTS` |
+| `tools_test.dart` | perintah fitur di obrolan (data tubuh, berat, catatan makan, puasa, membuka fitur) dan pembacaan label gizi | ya |
+| `ocr_live_test.dart` | OCR kemasan dan label gizi pada foto sungguhan, termasuk pembacaan ulang yang diperbesar | tidak, perlu `MEIRA_ORT_LIB` dan `MEIRA_TEST_PHOTOS` |
 
 Uji penglihatan memerlukan pustaka ONNX Runtime untuk laptop, misalnya dari paket Python `onnxruntime`. Tidak ada uji
 yang memutar suara.

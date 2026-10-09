@@ -2,9 +2,10 @@
 
 # MEIRA
 
-Multimodal Edge Intelligence for Recipe Assistance: an offline kitchen assistant for Android. Take a photo of
-your ingredients, and MEIRA puts a number on each one, reads package labels, and suggests recipes from a recipe book
-stored on the phone. Ask follow-up questions by typing or speaking.
+Multimodal Edge Intelligence for Recipe Assistance: an offline kitchen and nutrition assistant for Android. Take a
+photo of your ingredients, and MEIRA puts a number on each one, reads package labels, and suggests recipes from a
+recipe book stored on the phone. It also keeps your meal log, weight, and fasting schedule, and answers questions by
+text or voice.
 
 [Bahasa Indonesia](README.id.md)
 
@@ -14,14 +15,20 @@ stored on the phone. Ask follow-up questions by typing or speaking.
 
 ## Features
 
-- Every ingredient in the photo gets its own numbered marker. Tap a wrong number to fix it.
-- Package text, such as instant noodles, cooking oil, or sweet soy sauce, is read with OCR.
-- Ingredients can be added from a second photo or by typing, for example "ada telur juga" (there is egg too).
-- The home screen holds the recipe book, with filters for quick meals, breakfast, no-stove dishes, drinks, and soups.
-- Questions can be typed or spoken. Cooking mode shows one step at a time, with a timer where the recipe needs one.
-- Recipes and steps come from the recipe book, and kitchen questions are answered from hand-written notes.
-- Harmful or off-topic requests get a short, polite refusal.
-- History stays on the phone with size limits, and MEIRA greets you by your nickname.
+- Every ingredient in the photo gets its own numbered marker. If a marker is wrong, type the right name, for
+  example "ini buah naga" (this is dragon fruit).
+- Package text, such as instant noodles or sweet soy sauce, is read with OCR. A photo of the nutrition panel gives
+  the values per serving and per pack, a suggested portion, and how they compare with your daily targets.
+- Food questions, such as how rendang and kalio differ, are answered from kitchen notes, Wikidata, and USDA facts,
+  and MEIRA says so when it has no reliable information.
+- Gizi Seimbang: a body calculator (BMI, ideal weight, daily energy and limits), a meal log, weight progress,
+  intermittent fasting with reminders, and a daily plan of lighter recipes.
+- The assistant uses these features directly: "berat saya 70 kg", "tadi pagi saya makan nasi goreng", or "boleh
+  makan sekarang?" are logged or answered from your own data, with a button that opens the feature.
+- A cooking grid on the home screen fills in every day you finish a recipe.
+- Cooking mode shows one step at a time; timers start on tap or by voice command and notify you when done.
+- The recipe book has over 230 recipes with search and filters, and an "Enak & sehat" choice ranks lighter recipes
+  first.
 - Once the models are downloaded, nothing needs the internet and no data leaves the phone.
 
 ## Models

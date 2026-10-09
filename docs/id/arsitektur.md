@@ -47,8 +47,8 @@ assets/pengetahuan_luas.jsonl  fakta makanan untuk obrolan (Wikidata CC0 dan USD
 | Nama panggilan | wajan memudar dan kotak hijau turun dari atas membawa sapaan; ditanyakan sekali dan hanya disimpan di ponsel. Setelah nama diisi, lembar putih naik dan beranda langsung tampil |
 | Dapur (beranda) | sapaan, kolom tanya, tombol kamera dan galeri, jejak masak berbentuk kotak-kotak harian, kartu Gizi Seimbang dengan pilihan "Enak" atau "Enak & sehat", dan pintasan buku resep; panah kecil yang naik turun menandakan beranda bisa digulir |
 | Buku resep | semua resep dengan pencarian nama atau bahan dan saringan (sehat, cepat, sarapan, tanpa kompor, minuman, berkuah) |
-| Gizi Seimbang | tujuan (menuju berat badan ideal, menjaga berat badan, makan lebih seimbang), rencana makan hari ini yang bisa diganti per slot, capaian tujuh hari terakhir, serta pedoman Isi Piringku dan batas gula, garam, dan lemak dari Kementerian Kesehatan |
-| Percakapan | foto berpenanda, kartu resep, jawaban, saran pertanyaan, kolom tanya; tanpa bilah navigasi, dengan tombol kembali |
+| Gizi Seimbang | ringkasan hari ini (energi, protein, gula, lemak, garam terhadap kebutuhan), catatan makan per waktu makan, kalkulator tubuh (IMT, berat badan ideal, kebutuhan harian), grafik progres berat, puasa berselang dengan pengingat, rencana makan hari ini, dan tujuan; sumber data dan rumus ada di layar info |
+| Percakapan | pilihan fokus Resep atau Gizi, foto berpenanda, kartu resep, jawaban dengan tombol aksi ke fitur, saran pertanyaan, kolom tanya, dan tombol hentikan suara |
 | Resep | bahan dengan tanda tersedia, langkah, mode memasak dengan pengatur waktu, tombol bacakan yang sekaligus menjadi tombol hentikan suara, dan tanda "Sudah saya masak" |
 | Riwayat, Dataset, Pengaturan | tab di bilah navigasi bawah |
 
@@ -78,7 +78,15 @@ assets/pengetahuan_luas.jsonl  fakta makanan untuk obrolan (Wikidata CC0 dan USD
    resep yang lebih ringan didahulukan (`core/health.dart`: banyak sayur dan buah, lauk rendah lemak, dikukus atau
    direbus) dan jawaban resep diberi satu saran agar lebih ringan. Sebutan tentang berat badan dalam jawaban model
    diganti dengan istilah yang sopan, dan kondisi medis tetap diarahkan ke dokter atau ahli gizi.
-9. **Memori.** Giliran lama diringkas bila melewati 700 token.
+9. **Perintah fitur.** `core/tools.dart` menangani pesan yang membaca atau mengubah data fitur: mencatat berat,
+   makanan, data tubuh, atau jadwal puasa, serta menjawab IMT, kebutuhan harian, progres, jejak masak, "boleh makan
+   sekarang?", dan saran menu waktu makan berikutnya. Angkanya dihitung dari data pengguna, dan jawabannya membawa
+   tombol untuk membuka fitur terkait.
+10. **Label gizi.** Setiap foto dibaca OCR; bila ada panel Informasi Nilai Gizi, potongan di sekitar judulnya dibaca
+    ulang dengan resolusi lebih tinggi (`core/label.dart`). Jawabannya memuat nilai per sajian dan per kemasan
+    dibandingkan kebutuhan harian, saran porsi, dan catatan umum bila garam, gula, atau lemaknya tinggi. Angka yang
+    terbaca keliru bisa dibetulkan lewat obrolan.
+11. **Memori.** Giliran lama diringkas bila melewati 700 token.
 
 ## Gerak
 

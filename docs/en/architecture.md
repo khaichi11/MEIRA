@@ -47,8 +47,8 @@ assets/pengetahuan_luas.jsonl  food facts for chat (Wikidata CC0 and USDA, publi
 | Nickname | the pan fades out and a green header slides down with the greeting; asked once and stored only on the phone. After the name is entered, the white sheet slides up into the home screen |
 | Kitchen (home) | greeting, ask field, camera and gallery buttons, a daily grid of cooked recipes, a Gizi Seimbang card with an "Enak" or "Enak & sehat" choice, and a shortcut to the recipe book; a small bouncing arrow shows that the screen scrolls |
 | Recipe book | every recipe, with search by name or ingredient and filters (healthy, quick, breakfast, no stove, drinks, soups) |
-| Gizi Seimbang | a goal (towards an ideal weight, keeping weight, eating more balanced meals), today's meal plan with a swap button per slot, the last seven days of cooking, and the Ministry of Health's Isi Piringku plate and daily sugar, salt, and fat limits |
-| Chat | marked photo, recipe cards, answers, suggested questions, ask field; no bottom bar, with a back button |
+| Gizi Seimbang | today's summary (energy, protein, sugar, fat, and salt against targets), a meal log per meal, a body calculator (BMI, ideal weight, daily needs), a weight chart, intermittent fasting with reminders, today's meal plan, and goals; sources and formulas are on an info screen |
+| Chat | a Resep or Gizi focus switch, the marked photo, recipe card, answers with buttons that open features, suggested questions, the input field, and a stop-voice button |
 | Recipe | ingredients with availability, steps, cooking mode with timers, a read-aloud button that also stops the voice, and an "I cooked this" mark |
 | History, Dataset, Settings | tabs in the bottom bar |
 
@@ -80,7 +80,15 @@ assets/pengetahuan_luas.jsonl  food facts for chat (Wikidata CC0 and USDA, publi
    recipes rank first (`core/health.dart`: more vegetables and fruit, lean protein, steamed or boiled) and recipe
    answers get one tip to make them lighter. Words about body weight in model answers are replaced with respectful
    terms, and medical conditions are still referred to a doctor or dietitian.
-9. **Memory.** Older turns are summarized once they pass 700 tokens.
+9. **Feature commands.** `core/tools.dart` handles messages that read or change feature data: logging weight,
+   meals, body data, or a fasting plan, and answering BMI, daily needs, progress, the cooking streak, "can I eat
+   now?", and a suggestion for the next meal. Figures come from the user's own data, and answers carry a button that
+   opens the feature.
+10. **Nutrition labels.** Every photo goes through OCR; when a nutrition panel is found, the area around its title is
+    read again at a higher resolution (`core/label.dart`). The answer gives values per serving and per pack against
+    daily targets, a suggested portion, and general notes when salt, sugar, or fat is high. Misread figures can be
+    corrected in chat.
+11. **Memory.** Older turns are summarized once they pass 700 tokens.
 
 ## Motion
 
