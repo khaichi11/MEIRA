@@ -128,7 +128,7 @@ NutritionLabel? nutritionLabel(List<TextLine> lines) {
   final sodium = _grab(t, [
     '(?:garam|natrium|sodium)[^0-9\\n]{0,30}$_num\\s*mg',
     '(?:garam|natrium|sodium)[^0-9\\n]{0,30}$_num\\s*m\\b',
-    '$_num\\s*mg?\\b[^\\n]{0,12}\\n?[^\\n]{0,4}(?:garam|natrium|sodium)',
+    '$_num\\s*mg?\\b[^\\n]{0,12}\\n?[^\\n]{0,12}(?:garam|natrium|sodium)',
   ]);
   if ([fat, protein, carbs, sugar, sodium].where((v) => v != null).length < 2) return null;
   final servingMatch =
