@@ -1,7 +1,7 @@
 name: meira
 description: "MEIRA - Multimodal Edge Intelligence for Recipe Assistance. Asisten dapur yang berjalan lokal."
 publish_to: 'none'
-version: 0.2.4+6
+version: 0.3.0+7
 
 environment:
   sdk: ^3.11.0

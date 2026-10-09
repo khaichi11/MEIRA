@@ -212,7 +212,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 children: [
                   Text('MEIRA', style: poppins(18, weight: FontWeight.w600, spacing: 1)),
                   Text('Multimodal Edge Intelligence for Recipe Assistance', style: T.footnote),
-                  Text('Versi 0.2.4', style: T.caption),
+                  Text('Versi 0.3.0', style: T.caption),
                 ],
               ),
             ),
