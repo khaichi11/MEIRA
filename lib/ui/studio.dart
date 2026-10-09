@@ -84,7 +84,7 @@ class StudioScreenState extends State<StudioScreen> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.only(bottom: 120),
+      padding: EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom + 16),
       children: [
         LargeTitle(
           'Dataset',

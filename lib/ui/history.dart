@@ -53,7 +53,7 @@ class HistoryScreenState extends State<HistoryScreen> {
       groups.putIfAbsent(_group(e.updated), () => []).add(e);
     }
     return ListView(
-      padding: const EdgeInsets.only(bottom: 120),
+      padding: EdgeInsets.only(bottom: MediaQuery.paddingOf(context).bottom + 16),
       children: [
         const LargeTitle('Riwayat'),
         Padding(

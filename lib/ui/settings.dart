@@ -41,7 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final s = Scope.of(context);
     final u = _usage;
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 120),
+      padding: EdgeInsets.fromLTRB(16, 0, 16, MediaQuery.paddingOf(context).bottom + 16),
       children: [
         const Padding(padding: EdgeInsets.only(left: 4), child: LargeTitle('Pengaturan')),
         const SizedBox(height: 8),

@@ -87,7 +87,8 @@ class _KitchenScreenState extends State<KitchenScreen> {
         Positioned(
           left: 0,
           right: 0,
-          bottom: 8,
+          // di atas bilah navigasi yang mengambang dan bilah gestur ponsel (keduanya masuk ke padding bawah)
+          bottom: MediaQuery.paddingOf(context).bottom + 10,
           child: IgnorePointer(
             ignoring: _scrolled,
             child: AnimatedOpacity(
