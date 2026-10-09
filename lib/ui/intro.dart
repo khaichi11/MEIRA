@@ -10,8 +10,8 @@ import 'cooking_loader.dart';
 import 'widgets.dart';
 
 /// Pembuka dan perkenalan dalam satu gerakan:
-/// 0. "Halo!" muncul huruf demi huruf di layar putih disusul "Selamat datang di MEIRA", lalu lingkaran hijau melebar dari
-///    tengah menutupnya; model mulai dimuat pada saat itu;
+/// 0. di layar hijau, "Halo!" muncul huruf demi huruf disusul "Selamat datang di MEIRA", lalu keduanya memudar; model
+///    mulai dimuat pada saat itu;
 /// 1. layar hijau tiba-tiba berlubang di tengah, wajan muncul di lubang itu, lalu lubang melebar sampai layar putih;
 /// 2. saat nama panggilan diminta, wajan turun keluar layar dan kotak hijau turun dari atas membawa sapaan;
 /// 3. setelah nama diisi, lembar putih naik menutup kotak hijau dan Dapur langsung tampil.
@@ -159,7 +159,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
     final formOut = _seg(x, 0, .3);
     final paper = Color.lerp(Colors.white, C.bg, named ? rise : _seg(x, .3, 1))!;
 
-    final topGreen = _h == 1 && hole < math.sqrt(math.pow(size.width / 2, 2) + math.pow(center.dy, 2));
+    final topGreen = _h < 1 || hole < math.sqrt(math.pow(size.width / 2, 2) + math.pow(center.dy, 2));
     final failed = s.phase == Phase.failed;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -176,7 +176,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
               child: Opacity(opacity: .01, child: Column(children: [const CookingLoader(size: 190), _status(s)])),
             ),
           // lubang di tengah hijau: lingkaran berwarna latar yang membesar (lebih ringan digambar daripada path berlubang)
-          if (_h < 1) ..._halo(size, center, far),
+          if (_h < 1) ..._halo(center),
           if (_h == 1 && hole < far) ...[
             const Positioned.fill(
               child: DecoratedBox(decoration: BoxDecoration(gradient: _green)),
@@ -266,12 +266,15 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
 
   /// Tahap 0: setiap huruf "Halo!" naik dan memantul kecil secara berurutan, berhenti sejenak, lalu mengecil dan memudar
   /// sementara lingkaran hijau melebar dari tengah sampai menutup layar, tepat seperti bingkai pertama tahap 1.
-  List<Widget> _halo(Size size, Offset center, double far) {
+  List<Widget> _halo(Offset center) {
     const letters = 'Halo!';
-    final out = _ease(Curves.easeInCubic, _seg(_h, .68, .86));
-    final grow = _ease(Curves.easeInOutCubic, _seg(_h, .7, 1));
+    final out = _ease(Curves.easeInCubic, _seg(_h, .72, .94));
     final welcome = _ease(Curves.easeOutCubic, _seg(_h, .34, .52));
     return [
+      // latar hijau yang sama dengan tahap 1, jadi saat sapaan memudar lubang langsung terbuka tanpa jeda
+      const Positioned.fill(
+        child: DecoratedBox(decoration: BoxDecoration(gradient: _green)),
+      ),
       Positioned(
         left: 0,
         right: 0,
@@ -279,7 +282,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
         child: Opacity(
           opacity: 1 - out,
           child: Transform.scale(
-            scale: 1 - .18 * out,
+            scale: 1 + .08 * out,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -296,7 +299,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
                             scale: .7 + .3 * up,
                             child: Text(
                               letters[i],
-                              style: poppins(52, weight: FontWeight.w700, color: C.accentDeep, height: 1.1),
+                              style: poppins(52, weight: FontWeight.w700, color: Colors.white, height: 1.1),
                             ),
                           ),
                         ),
@@ -319,18 +322,11 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
             child: Text(
               'Selamat datang di MEIRA',
               textAlign: TextAlign.center,
-              style: inter(17, weight: FontWeight.w600, color: C.secondary),
+              style: inter(17, weight: FontWeight.w600, color: Colors.white.withValues(alpha: .9)),
             ),
           ),
         ),
       ),
-      if (grow > 0)
-        Positioned.fromRect(
-          rect: Rect.fromCircle(center: center, radius: far * grow),
-          child: const DecoratedBox(
-            decoration: BoxDecoration(gradient: _green, shape: BoxShape.circle),
-          ),
-        ),
     ];
   }
 

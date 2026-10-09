@@ -231,7 +231,6 @@ class _KitchenScreenState extends State<KitchenScreen> {
 
   /// Program hidup sehat: ajakan memulai, atau rencana makan hari ini bila program sudah berjalan.
   Widget _health(AppState s) {
-    final t = Targets.of(s.needs);
     final eaten = s.intakeToday.fold(const Nutrients(), (a, e) => a + e.nutrients);
     final f = s.fasting;
     final st = f == null ? null : fastingState(f, DateTime.now());
