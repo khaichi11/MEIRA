@@ -5,8 +5,9 @@
 ///   17 sampai 18,4 berat badan kurang, 18,5 sampai 25 normal, 25,1 sampai 27 berat badan berlebih, di atas 27 obesitas.
 /// - Berat badan ideal rumus Broca yang dipakai Kementerian Kesehatan: (tinggi - 100) dikurangi 10% untuk laki-laki dan
 ///   15% untuk perempuan; tanpa pengurangan bila tinggi laki-laki di bawah 160 cm atau perempuan di bawah 150 cm.
-/// - Energi: rumus Mifflin-St Jeor dikali faktor aktivitas. Tujuan menuju berat badan ideal mengurangi 500 kkal, tetapi
-///   tidak di bawah 1.200 kkal (perempuan) atau 1.500 kkal (laki-laki).
+/// - Energi: rumus Mifflin-St Jeor dikali faktor aktivitas. Tujuan menuju berat badan ideal mengurangi 500 kkal bila IMT
+///   di atas 25, tetapi tidak di bawah 1.200 kkal (perempuan) atau 1.500 kkal (laki-laki) dan tidak pernah lebih dari
+///   kebutuhan semula; bila IMT di bawah 18,5, energi ditambah 300 kkal supaya berat naik bertahap.
 /// - Pembagian energi Pedoman Gizi Seimbang: protein 15%, lemak 25%, karbohidrat 60%. Gula paling banyak 10% energi
 ///   dan tidak lebih dari 50 g; lemak tidak lebih dari 67 g; garam 5 g (Permenkes No. 30 Tahun 2013).
 /// Semua angka adalah perkiraan untuk orang dewasa sehat, bukan pengganti saran dokter atau ahli gizi.
@@ -74,7 +75,8 @@ DailyNeeds needsFor(BodyProfile p, {String? goal}) {
   final broca = (p.heightCm - 100) * (1 - reduce);
   final bmr = 10 * p.weightKg + 6.25 * p.heightCm - 5 * p.age + (p.male ? 5 : -161);
   var energy = bmr * (BodyProfile.activities[p.activity]?.$3 ?? 1.375);
-  if (goal == 'turun' && bmi > 25) energy = math.max(energy - 500, p.male ? 1500 : 1200);
+  if (goal == 'turun' && bmi > 25) energy = math.max(energy - 500, math.min(energy, p.male ? 1500.0 : 1200.0));
+  if (goal == 'turun' && bmi < 18.5) energy += 300;
   final fat = math.min(energy * .25 / 9, 67);
   final sugar = math.min(energy * .10 / 4, 50);
   return DailyNeeds(

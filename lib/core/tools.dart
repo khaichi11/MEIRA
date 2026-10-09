@@ -53,7 +53,10 @@ final _ate = RegExp(
   r'\b(tadi|barusan|sudah|udah|habis|baru saja|catat|saya makan|aku makan|saya minum|aku minum|sarapan saya|sarapanku|'
   r'makan siang saya|makan malam saya|nyemil|ngemil)\b',
 );
-final _notLog = RegExp(r'\b(resep|cara|bikin|membuat|masak apa|mau makan|ingin makan|boleh|cocok|sehat|apakah|berapa kalori)\b');
+final _notLog = RegExp(
+  r'\b(resep|cara|bikin|membuat|masak|memasak|mau makan|ingin makan|boleh|cocok|sehat|apakah|berapa kalori|stok|punya)\b|'
+  r'\b(tidak|tak|nggak|ngga|gak|ga|enggak|belum|jangan)\s+(makan|minum|sarapan|ngemil|nyemil)\b',
+);
 
 /// Rute fitur yang bisa dibuka dari tombol aksi di obrolan.
 const routeLabels = {
@@ -212,13 +215,21 @@ ToolReply? appTool(String text, AppData d) {
   }
 
   // data tubuh lengkap atau sebagian: "tinggi 165 cm, berat 80 kg, umur 30, laki-laki"
-  final h = _parse(_height.firstMatch(t)?.group(1) ?? _height.firstMatch(t)?.group(2));
+  // angka di luar rentang wajar diabaikan ("potong 2 cm", "berat ayamnya 1 kg"), bukan dianggap data tubuh
+  final hRaw = _parse(_height.firstMatch(t)?.group(1) ?? _height.firstMatch(t)?.group(2));
+  final h = hRaw != null && hRaw >= 100 && hRaw <= 230 ? hRaw : null;
   final a = _age.firstMatch(t);
-  final age = int.tryParse(a?.group(1) ?? a?.group(2) ?? '');
-  final w = _parse(_weight.firstMatch(t)?.group(1) ?? (h != null || age != null ? _weightLoose.firstMatch(t)?.group(1) : null));
+  final ageRaw = int.tryParse(a?.group(1) ?? a?.group(2) ?? '');
+  final wRaw = _parse(_weight.firstMatch(t)?.group(1) ?? (h != null || ageRaw != null ? _weightLoose.firstMatch(t)?.group(1) : null));
+  final w = wRaw != null && wRaw >= 25 && wRaw <= 300 ? wRaw : null;
   final male = _male.hasMatch(t) ? true : (_female.hasMatch(t) ? false : null);
-  if (h != null && (h < 100 || h > 230)) return null;
-  if (w != null && (w < 25 || w > 300)) return null;
+  if (ageRaw != null && ageRaw < 18 && (h != null || w != null)) {
+    return const ToolReply(
+      'Kalkulator ini untuk orang dewasa, 18 tahun ke atas. Status gizi anak dan remaja dinilai dengan IMT menurut umur, '
+      'jadi sebaiknya tanyakan ke tenaga kesehatan atau posyandu.',
+    );
+  }
+  final age = ageRaw != null && ageRaw >= 18 && ageRaw <= 100 ? ageRaw : null;
   if (h != null || age != null) {
     final b = d.body;
     final height = h ?? b?.heightCm, weight = w ?? b?.weightKg, years = age ?? b?.age, isMale = male ?? b?.male;
@@ -263,11 +274,16 @@ ToolReply? appTool(String text, AppData d) {
   }
 
   // "boleh makan sekarang?" saat jadwal puasa aktif dijawab dari jadwalnya
-  if (d.fasting != null && RegExp(r'\b(boleh makan|sudah boleh makan|waktunya makan|bisa makan sekarang)\b').hasMatch(t)) {
+  // hanya pertanyaan soal waktu; "boleh makan durian?" adalah pertanyaan tentang makanannya
+  if (d.fasting != null &&
+      RegExp(
+        r'\b((boleh|bisa) makan (sekarang|belum)|(sudah|udah) (boleh|bisa) makan|kapan (saya |aku )?(boleh|bisa) makan|waktunya makan)\b|\bboleh makan\s*(\?|$)',
+      ).hasMatch(t) &&
+      findFood(t, d.foods) == null) {
     final f = d.fasting!, st = fastingState(f, DateTime.now());
     return ToolReply(
       st.eating
-          ? 'Boleh, sekarang masih waktu makan sampai pukul ${clock(f.endMinute)}.'
+          ? 'Boleh, sekarang masih waktu makan pola ${f.name} sampai pukul ${clock(f.endMinute)}.'
           : 'Menurut jadwal ${f.name}, sebaiknya tunggu sampai pukul ${clock(f.startMinute)}, ${untilText(st.next, DateTime.now())} lagi. '
                 'Bila merasa pusing atau lemas, makanlah; jadwal bisa digeser kapan saja.',
       actions: const ['puasa'],
@@ -275,7 +291,11 @@ ToolReply? appTool(String text, AppData d) {
   }
 
   // puasa berselang: atur, matikan, atau tanya status
-  if (RegExp(r'\b(puasa berselang|intermittent fasting|puasa)\b').hasMatch(t) &&
+  // "puasa" saja bisa berarti puasa Ramadan ("lagi puasa, masak apa buat nanti?"), jadi perlu kata pengatur atau status
+  if (RegExp(
+        r'\b(puasa berselang|intermittent fasting|jadwal puasa|puasa (12|14|16|18)\b|pola puasa)|'
+        r'\b(atur|aktifkan|matikan|hentikan|nonaktifkan|status|sisa)\b.*\bpuasa\b|\bpuasa\b.*\b(berapa (jam|lama) lagi|kapan selesai|sisa)\b',
+      ).hasMatch(t) &&
       !RegExp(r'\b(ramadan|ramadhan|sahur|buka puasa|takjil)\b').hasMatch(t)) {
     final plan = RegExp(r'\b(12|14|16|18)\s*[:/]\s*(12|10|8|6)\b').firstMatch(t);
     final hours = plan == null ? int.tryParse(RegExp(r'\b(12|14|16|18) jam\b').firstMatch(t)?[1] ?? '') : int.parse(plan[1]!);
@@ -283,8 +303,11 @@ ToolReply? appTool(String text, AppData d) {
       return ToolReply('Puasa berselang dimatikan dan pengingatnya dihapus.', effect: () => d.setFasting(null));
     }
     if (hours != null && FastingPlan.options.contains(hours)) {
-      final at = RegExp(r'\bjam (\d{1,2})(?:[.:](\d{2}))?').firstMatch(t);
-      final start = at == null ? 12 * 60 : (int.parse(at[1]!) % 24) * 60 + int.parse(at[2] ?? '0');
+      final at = RegExp(r'\bjam (\d{1,2})(?:[.:](\d{2}))?(?: (pagi|siang|sore|malam))?').firstMatch(t);
+      var hour = at == null ? 12 : int.parse(at[1]!) % 24;
+      // "jam 1 siang" pukul 13, "jam 7 malam" pukul 19
+      if (hour < 12 && (at?[3] == 'sore' || at?[3] == 'malam' || (at?[3] == 'siang' && hour < 6))) hour += 12;
+      final start = hour * 60 + int.parse(at?[2] ?? '0');
       final p = FastingPlan(hours, start);
       return ToolReply(
         'Puasa berselang ${p.name} diatur: makan pukul ${clock(p.startMinute)} sampai ${clock(p.endMinute)}, puasa di luar jam itu. '
@@ -312,17 +335,34 @@ ToolReply? appTool(String text, AppData d) {
 
   // catat makanan: "tadi pagi saya makan mi instan 1 bungkus"
   if (_ate.hasMatch(t) && !_notLog.hasMatch(t) && !t.contains('?')) {
-    final food = findFood(t, d.foods);
-    if (food != null) {
-      final (grams, portion) = gramsFrom(t, food);
-      final slot = slotFor(t, DateTime.now());
-      final entry = IntakeEntry(DateTime.now(), slot, food.name, grams, food.per100.scale(grams / 100));
-      final total = [...d.intakeToday, entry].fold(const Nutrients(), (a, e) => a + e.nutrients);
+    final meal = parseMeal(t, d.foods);
+    if (meal.isNotEmpty) {
+      // catatan makan hanya untuk hari ini, supaya ringkasan harian tidak tercampur hari lain
+      if (RegExp(r'\b(kemarin|kemaren|lusa|minggu lalu)\b').hasMatch(t)) {
+        return const ToolReply(
+          'Catatan makan hanya untuk hari ini, jadi makanan kemarin tidak saya masukkan. Ceritakan yang Anda makan hari ini, '
+          'misalnya "tadi siang saya makan nasi dan ayam goreng".',
+          actions: ['gizi'],
+        );
+      }
+      final now = DateTime.now();
+      final slot = slotFor(t, now);
+      final entries = [for (final (food, grams, _) in meal) IntakeEntry(now, slot, food.name, grams, food.per100.scale(grams / 100))];
+      final total = [...d.intakeToday, ...entries].fold(const Nutrients(), (a, e) => a + e.nutrients);
+      final items = [for (final (i, (food, _, portion)) in meal.indexed) '${food.name} $portion (${entries[i].nutrients.energy.round()} kkal)'];
+      // jadwal puasa hanya saran: makanan tetap dicatat, tetapi pengguna diberi tahu bila di luar jendela makan
+      final f = d.fasting;
+      final outside = f != null && !fastingState(f, now).eating
+          ? ' Waktu ini di luar jendela makan ${clock(f.startMinute)} sampai ${clock(f.endMinute)}; tidak apa-apa, jadwal bisa digeser bila perlu.'
+          : '';
       return ToolReply(
-        'Dicatat untuk ${slot.toLowerCase()}: ${food.name} $portion, sekitar ${entry.nutrients.energy.round()} kkal. '
-        '${daySummary(total, Targets.of(d.needs))}',
+        'Dicatat untuk ${slot.toLowerCase()}: ${_join(items)}. ${daySummary(total, Targets.of(d.needs))}$outside',
         actions: const ['gizi'],
-        effect: () => d.logIntake(entry),
+        effect: () async {
+          for (final e in entries) {
+            await d.logIntake(e);
+          }
+        },
       );
     }
   }
@@ -331,9 +371,12 @@ ToolReply? appTool(String text, AppData d) {
     final last = d.intakeToday.last;
     return ToolReply('Catatan ${last.food} untuk ${last.slot.toLowerCase()} sudah dihapus.', effect: d.removeLastIntake);
   }
-  final askEaten =
-      RegExp(r'\b(makan|makanan)\b').hasMatch(t) && RegExp(r'\b(hari ini|tadi)\b').hasMatch(t) && RegExp(r'\b(apa saja|apa aja)\b').hasMatch(t);
-  if ((askEaten || RegExp(r'\b(masih aman|kelebihan|sudah lebih|melebihi)\b').hasMatch(t)) && _mine.hasMatch(t)) {
+  // "hari ini saya makan apa saja?", "sudah berapa kalori hari ini?"; pertanyaan kalori satu makanan dijawab dari fakta gizi
+  final aboutToday = RegExp(r'\b(hari ini|tadi)\b').hasMatch(t);
+  final askEaten = aboutToday && _mine.hasMatch(t) && RegExp(r'\b(makan|makanan)\b').hasMatch(t) && RegExp(r'\b(apa saja|apa aja)\b').hasMatch(t);
+  final askTotal =
+      aboutToday && RegExp(r'\b(kalori|energi|asupan)\b').hasMatch(t) && RegExp(r'\b(berapa|total)\b').hasMatch(t) && findFood(t, d.foods) == null;
+  if (askEaten || askTotal || (RegExp(r'\b(masih aman|kelebihan|sudah lebih|melebihi)\b').hasMatch(t) && _mine.hasMatch(t))) {
     final today = d.intakeToday;
     if (today.isEmpty) {
       return const ToolReply('Belum ada catatan makan hari ini. Ketik misalnya "tadi pagi saya makan nasi goreng 1 piring".', actions: ['gizi']);

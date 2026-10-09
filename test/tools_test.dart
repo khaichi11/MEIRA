@@ -95,6 +95,72 @@ void main() {
     expect(await run('resep mi instan yang enak apa?', d), isNull);
   });
 
+  test('beberapa makanan dalam satu pesan, masing-masing dengan porsinya', () async {
+    final d = FakeData();
+    final r = await run('tadi siang saya makan nasi 2 piring dan mi instan 1 bungkus', d);
+    expect([for (final e in d.eaten) (e.food, e.grams)], [('nasi', 300.0), ('mi instan', 85.0)]);
+    expect(r!.text, contains('nasi 2 piring'));
+    expect(r.text, contains('mi instan 1 bungkus'));
+    // jumlah sebelum nama, bentuk "se-", dan jumlah yang diapit dua makanan
+    expect(
+      [for (final (f, g, _) in parseMeal('2 piring nasi dan sebungkus mi instan', d.foods)) (f.name, g)],
+      [('nasi', 300.0), ('mi instan', 85.0)],
+    );
+    expect([for (final (f, g, _) in parseMeal('nasi 1 piring mi instan 2 bungkus', d.foods)) (f.name, g)], [('nasi', 150.0), ('mi instan', 170.0)]);
+    expect([for (final (f, g, _) in parseMeal('mi instan 1,5 bungkus', d.foods)) g], [127.5]);
+  });
+
+  test('pesan yang bukan catatan makan tidak dicatat', () async {
+    final d = FakeData();
+    await run('tadi saya tidak makan nasi', d);
+    await run('tadi saya masak nasi', d);
+    expect(d.eaten, isEmpty);
+    final r = await run('kemarin saya makan mi instan', d);
+    expect(r!.text, contains('hanya untuk hari ini'));
+    expect(d.eaten, isEmpty);
+  });
+
+  test('hari tanpa catatan dan energi berlebih', () async {
+    final d = FakeData();
+    expect((await run('sudah berapa kalori hari ini?', d))!.text, contains('Belum ada catatan makan'));
+    expect((await run('hari ini saya makan apa saja?', d))!.text, contains('Belum ada catatan makan'));
+    final r = await run('tadi saya makan mi instan 600 gram', d);
+    expect(r!.text, contains('sudah melewati kebutuhan harian'));
+  });
+
+  test('makan di luar jendela puasa tetap dicatat dengan catatan', () async {
+    final now = DateTime.now();
+    final d = FakeData()..fasting = FastingPlan(18, ((now.hour + 3) % 24) * 60);
+    final r = await run('barusan saya makan nasi', d);
+    expect(d.eaten, hasLength(1));
+    expect(r!.text, contains('di luar jendela makan'));
+  });
+
+  test('pertanyaan puasa dibedakan dari pertanyaan makanan dan puasa Ramadan', () async {
+    final d = FakeData()..fasting = const FastingPlan(16, 12 * 60);
+    expect((await run('boleh makan sekarang?', d))!.actions, ['puasa']);
+    expect((await run('boleh makan mi instan?', d))?.actions ?? const [], isNot(contains('puasa')));
+    expect((await run('lagi puasa nih, masak apa ya buat nanti', FakeData()))?.actions ?? const [], isNot(contains('puasa')));
+    await run('atur puasa 16:8 mulai makan jam 1 siang', d);
+    expect(d.fasting!.startMinute, 13 * 60);
+    await run('atur puasa 18:6 mulai makan jam 7 malam', d);
+    expect(d.fasting!.startMinute, 19 * 60);
+  });
+
+  test('data tubuh: usia di bawah 18 dan angka yang bukan ukuran tubuh', () async {
+    final d = FakeData();
+    expect((await run('tinggi 150 cm berat 40 kg umur 15 perempuan', d))!.text, contains('18 tahun ke atas'));
+    expect(d.body, isNull);
+    expect(await run('potong wortel 2 cm', d), isNull);
+  });
+
+  test('kebutuhan energi tidak dinaikkan oleh batas bawah, dan ditambah untuk berat badan kurang', () {
+    const small = BodyProfile(heightCm: 150, weightKg: 60, age: 70, male: true, activity: 'jarang');
+    expect(needsFor(small, goal: 'turun').energy, needsFor(small).energy);
+    const thin = BodyProfile(heightCm: 170, weightKg: 50, age: 25, male: false);
+    expect(needsFor(thin, goal: 'turun').energy - needsFor(thin).energy, 300);
+  });
+
   test('puasa berselang diatur dan ditanya', () async {
     final d = FakeData();
     final r = await run('atur puasa 16:8 mulai makan jam 11', d);

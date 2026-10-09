@@ -162,7 +162,9 @@ String daySummary(Nutrients total, Targets t) {
     if (levelOf(total.fat, t.fat) == Level.near) 'lemak',
     if (levelOf(total.salt, t.salt) == Level.near) 'garam',
   ];
-  final energy = 'Energi hari ini sekitar ${total.energy.round()} dari ${t.energy.round()} kkal.';
+  final energy =
+      'Energi hari ini sekitar ${total.energy.round()} dari ${t.energy.round()} kkal'
+      '${total.energy > t.energy ? ', sudah melewati kebutuhan harian.' : '.'}';
   if (over.isNotEmpty) {
     return '$energy ${_cap(_join(over))} sudah melewati batas harian, jadi sisa hari ini sebaiknya pilih makanan rendah ${_join(over)}.';
   }
@@ -173,22 +175,94 @@ String daySummary(Nutrients total, Targets t) {
 String _cap(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 String _join(List<String> xs) => xs.length <= 1 ? xs.join() : '${xs.sublist(0, xs.length - 1).join(', ')} dan ${xs.last}';
 
-const _numberWords = {'satu': 1.0, 'se': 1.0, 'dua': 2.0, 'tiga': 3.0, 'empat': 4.0, 'setengah': .5, 'separuh': .5};
+const _numberWords = {'satu': 1.0, 'se': 1.0, 'dua': 2.0, 'tiga': 3.0, 'empat': 4.0, 'lima': 5.0, 'setengah': .5, 'separuh': .5};
+const _units = 'bungkus|piring|porsi|mangkuk|potong|butir|buah|gelas|lembar|kaleng|batang|keping|cup|biji';
+
+/// Jumlah yang disebut dalam teks: "200 gram", "2 piring", "setengah gelas", atau bentuk "se-" ("sepiring", "sebutir").
+final _quantity = RegExp('(?:\\b(\\d+(?:[.,]\\d+)?|satu|dua|tiga|empat|lima|setengah|separuh)\\s*(gram|gr|g|ml|$_units)|\\bse($_units))\\b');
+
+typedef _Qty = ({int start, int end, double count, String unit});
+
+List<_Qty> _quantities(String t) => [
+  for (final m in _quantity.allMatches(t))
+    (
+      start: m.start,
+      end: m.end,
+      count: m[3] != null ? 1.0 : (_numberWords[m[1]] ?? double.tryParse(m[1]!.replaceAll(',', '.')) ?? 1),
+      unit: m[2] ?? m[3]!,
+    ),
+];
+
+(Food, double, String) _with(Food f, (double, String) p) => (f, p.$1, p.$2);
+
+(double, String) _portion(Food food, double count, String unit) {
+  if (const {'gram', 'gr', 'g', 'ml'}.contains(unit)) return (count, '${count.round()} g');
+  final (grams, label) = food.portion;
+  final countText = count == .5 ? 'setengah' : (count == count.roundToDouble() ? '${count.round()}' : '$count');
+  return (grams * count, label.contains('100 g') ? '${(grams * count).round()} g' : '$countText $label');
+}
+
+/// Teks yang dirapikan untuk pencocokan nama: huruf kecil, tanda baca menjadi spasi kecuali koma atau titik di antara
+/// angka ("1,5 piring").
+String mealText(String text) =>
+    ' ${text.toLowerCase().replaceAll(RegExp(r'[^a-z0-9.,\s-]'), ' ').replaceAll(RegExp(r'(?<!\d)[.,]|[.,](?!\d)'), ' ').replaceAll(RegExp(r'\s+'), ' ')} ';
+
+/// Semua makanan yang disebut dalam satu pesan beserta porsinya, berurutan seperti dalam teks ("nasi 1 piring dan
+/// 2 butir telur"). Nama terpanjang didahulukan ("ayam goreng" bukan "ayam"). Setiap jumlah diberikan ke makanan yang
+/// berdampingan dengannya; bila jumlah itu diapit dua makanan, satuannya yang menentukan (piring untuk nasi, butir untuk
+/// telur), lalu pola kalimatnya (jumlah sebelum atau sesudah nama makanan).
+List<(Food, double, String)> parseMeal(String text, List<Food> foods) {
+  final t = mealText(text);
+  final names = [
+    for (final f in foods)
+      for (final n in f.names) (n.toLowerCase(), f),
+  ]..sort((a, b) => b.$1.length.compareTo(a.$1.length));
+  final found = <({int start, int end, Food food})>[];
+  for (final (n, f) in names) {
+    for (var i = t.indexOf(' $n '); i >= 0; i = t.indexOf(' $n ', i + 1)) {
+      final start = i + 1, end = i + 1 + n.length;
+      if (found.any((x) => start < x.end && x.start < end)) continue;
+      if (found.any((x) => x.food == f)) break;
+      found.add((start: start, end: end, food: f));
+    }
+  }
+  if (found.isEmpty) return const [];
+  found.sort((a, b) => a.start.compareTo(b.start));
+  if (found.length == 1) {
+    final f = found.single.food;
+    return [_with(f, gramsFrom(text, f))];
+  }
+  final qs = _quantities(t);
+  bool touching(int a, int b) => a <= b && t.substring(a, b).trim().isEmpty;
+  final prefixStyle = qs.any((q) => touching(q.end, found.first.start));
+  final assigned = <Food, _Qty>{};
+  for (final q in qs) {
+    final after = found.where((f) => touching(f.end, q.start)).firstOrNull; // "nasi 2 piring"
+    final before = found.where((f) => touching(q.end, f.start)).firstOrNull; // "2 piring nasi"
+    final options = [?after, ?before].where((f) => !assigned.containsKey(f.food)).toList();
+    if (options.isEmpty) continue;
+    final byUnit = options.where((f) => f.food.portion.$2.contains(q.unit)).toList();
+    final pick = byUnit.length == 1
+        ? byUnit.single
+        : options.length == 1
+        ? options.single
+        : (prefixStyle ? before! : after!);
+    assigned[pick.food] = q;
+  }
+  return [
+    for (final f in found)
+      _with(f.food, switch (assigned[f.food]) {
+        final q? => _portion(f.food, q.count, q.unit),
+        null => _portion(f.food, 1, ''),
+      }),
+  ];
+}
 
 /// Porsi dari teks: gram yang disebut langsung ("200 gram"), atau jumlah satuan ("2 bungkus", "setengah piring") dikali
 /// porsi umum makanan itu. Bila tidak disebut, satu porsi umum.
 (double, String) gramsFrom(String text, Food food) {
-  final t = text.toLowerCase();
-  final g = RegExp(r'(\d+(?:[.,]\d+)?)\s*(?:gram|gr|g|ml)\b').firstMatch(t);
-  if (g != null) {
-    final v = double.parse(g[1]!.replaceAll(',', '.'));
-    return (v, '${v.round()} g');
-  }
-  final (unit, label) = food.portion;
-  final n = RegExp(
-    r'(\d+(?:[.,]\d+)?|satu|dua|tiga|empat|setengah|separuh)\s*(?:bungkus|piring|porsi|mangkuk|potong|butir|buah|gelas|lembar|kaleng|batang|keping|cup|biji)',
-  ).firstMatch(t);
-  final count = n == null ? 1.0 : (_numberWords[n[1]] ?? double.tryParse(n[1]!.replaceAll(',', '.')) ?? 1);
-  final countText = count == .5 ? 'setengah' : (count == count.roundToDouble() ? '${count.round()}' : '$count');
-  return (unit * count, label.contains('100 g') ? '${(unit * count).round()} g' : '$countText $label');
+  final qs = _quantities(mealText(text));
+  final grams = qs.where((q) => const {'gram', 'gr', 'g', 'ml'}.contains(q.unit)).firstOrNull;
+  final q = grams ?? qs.firstOrNull;
+  return q == null ? _portion(food, 1, '') : _portion(food, q.count, q.unit);
 }
