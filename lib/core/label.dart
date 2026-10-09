@@ -185,8 +185,16 @@ String labelAnswer(NutritionLabel l, Targets t, {bool whole = false}) {
   } else if (maxServings < n) {
     final k = maxServings.floor();
     parts.add('Untuk sekali makan, sebaiknya cukup $k sajian${l.serving == null ? '' : ' (sekitar ${(k * l.serving!).round()} ${l.unit})'}.');
+  } else if (l.servings == null) {
+    // jumlah sajian tidak terbaca: tidak boleh menilai satu kemasan, hanya satu sajian
+    parts.add('Satu sajian masih wajar untuk sekali makan bila makanan lain hari ini tidak tinggi gula, lemak, dan garam.');
   } else {
     parts.add('Satu kemasan masih wajar untuk sekali makan bila makanan lain hari ini tidak tinggi gula, lemak, dan garam.');
+  }
+  if (l.servings == null && whole) {
+    parts.add(
+      'Jumlah sajian per kemasan tidak terbaca, jadi angka di atas untuk satu sajian. Ketik misalnya "isinya 20 sajian" agar saya hitung satu kemasan.',
+    );
   }
   final notes = <String>[
     if (l.sodium != null && all.salt > t.salt / 2) 'kelebihan garam yang terus-menerus dapat meningkatkan risiko tekanan darah tinggi',
@@ -214,8 +222,14 @@ String labelAnswer(NutritionLabel l, Targets t, {bool whole = false}) {
     'kalori': 'energi',
   };
   for (final MapEntry(key: word, value: field) in fields.entries) {
-    final m = RegExp('\\b$word(?:nya)?\\b[^0-9]{0,12}$_num\\s*(?:g|mg|kkal|kalori)?').firstMatch(t);
-    if (m != null) return (field, double.parse(m[1]!));
+    final m = RegExp('\\b$word(?:nya)?\\b([^0-9]{0,12})$_num\\s*(g|mg|kkal|kalori)?').firstMatch(t);
+    if (m == null) continue;
+    // "lemak jenuh 2 g" atau "lemak trans" bukan lemak total
+    if (word == 'lemak' && RegExp(r'jenuh|trans').hasMatch(m[1]!)) continue;
+    final v = double.parse(m[2]!);
+    // "garamnya 1 g" berarti gram garam; label menulis natrium dalam miligram (1 g garam sekitar 400 mg natrium)
+    if (word == 'garam' && m[3] != 'mg' && v < 20) return ('natrium', v * 400);
+    return (field, v);
   }
   final servings = RegExp('$_num\\s*(?:sajian|potong|buah|keping|biji|pcs)').firstMatch(t);
   if (servings != null && RegExp(r'\b(isi|isinya|ada|berisi|per kemasan|sebungkus)\b').hasMatch(t)) return ('sajian', double.parse(servings[1]!));

@@ -219,6 +219,14 @@ void main() {
     expect(a, contains('Bila satu kemasan (4 sajian) dihabiskan sekaligus, energinya sekitar 520 kkal'));
     expect(a, contains('sebaiknya cukup 2 sajian'));
     expect(a, contains('tekanan darah tinggi'));
+    // jumlah sajian tidak terbaca: tidak menilai satu kemasan
+    final single = nutritionLabel(lines.where((x) => !x.text.startsWith('Jumlah Sajian')).toList())!;
+    expect(single.servings, isNull);
+    expect(labelAnswer(single, t, whole: true), contains('tidak terbaca'));
+    expect(labelAnswer(single, t), isNot(contains('Satu kemasan masih wajar')));
+    expect(labelCorrection('garamnya 1 g'), ('natrium', 400.0));
+    expect(labelCorrection('natriumnya 290 mg'), ('natrium', 290.0));
+    expect(labelCorrection('lemak jenuhnya 2 g'), isNull);
   });
 
   test('obrolan santai: perkenalan, minta bantuan, dan tidak suka bahan', () async {
