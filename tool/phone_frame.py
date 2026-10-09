@@ -89,7 +89,7 @@ def add_bars(im: Image.Image) -> Image.Image:
     """Tambahkan ruang bilah status di atas dan ruang tipis di bawah untuk tangkapan layar tanpa bilah status.
 
     Bila tepi atas berwarna rata, ruang bilah status diisi warna itu; bila tepinya berupa foto atau beberapa warna,
-    tiap kolom diisi rata-rata warnanya lalu dihaluskan, sehingga warna tepi seolah berlanjut di balik bilah status. Ruang bawah diisi warna
+    ruang itu dibuat putih seperti bilah status terang. Ruang bawah diisi warna
     yang paling banyak di baris terbawah. Baris tepi tidak pernah direntangkan, karena baris yang memotong teks akan
     tampak seperti garis-garis.
     """
@@ -104,12 +104,10 @@ def add_bars(im: Image.Image) -> Image.Image:
 
 
 def _bar(strip: Image.Image, edge: int) -> Image.Image:
-    """Isi ruang tambahan dari pita tepi: warna rata, atau warna rata-rata tiap kolom bila pita itu berupa foto."""
+    """Isi ruang bilah status: warna tepi bila tepinya polos, putih bila tepinya berupa foto atau beberapa warna."""
     if max(ImageStat.Stat(strip).stddev) < 12:
         return Image.new("RGB", strip.size, edge_color(strip.crop((0, edge, strip.width, edge + 1))))
-    # rata-rata tiap kolom lalu dihaluskan ke samping: warna foto berlanjut tanpa garis-garis tegak yang tajam
-    line = strip.resize((strip.width, 1), Image.BOX).filter(ImageFilter.GaussianBlur(4))
-    return line.resize(strip.size, Image.BILINEAR)
+    return Image.new("RGB", strip.size, (255, 255, 255))
 
 
 def edge_color(row: Image.Image) -> tuple[int, int, int]:
