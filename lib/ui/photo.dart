@@ -21,7 +21,14 @@ class PhotoView extends StatefulWidget {
 }
 
 class _PhotoViewState extends State<PhotoView> with SingleTickerProviderStateMixin {
-  late final AnimationController _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat(reverse: true);
+  // dibuat di initState, bukan malas: pengontrol yang baru dibuat di dispose() memicu galat pada elemen yang sudah lepas
+  late final AnimationController _pulse;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat(reverse: true);
+  }
 
   @override
   void dispose() {
@@ -64,7 +71,9 @@ class _PhotoViewState extends State<PhotoView> with SingleTickerProviderStateMix
                   child: IgnorePointer(
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 420),
-                      child: s.scanning || (s.busy && s.detections.isEmpty) ? const _Sweep(key: ValueKey('sapu')) : const SizedBox.expand(),
+                      child: s.scanning || (s.busy && s.detections.isEmpty)
+                          ? const _Sweep(key: ValueKey('sapu'))
+                          : const SizedBox.expand(),
                     ),
                   ),
                 ),
@@ -185,7 +194,8 @@ class SeenList extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      for (final n in g.numbers.take(6)) Padding(padding: const EdgeInsets.only(right: 3), child: NumberBadge(n)),
+                      for (final n in g.numbers.take(6))
+                        Padding(padding: const EdgeInsets.only(right: 3), child: NumberBadge(n)),
                       if (g.numbers.length > 6) Text('…', style: T.footnote),
                       const SizedBox(width: 4),
                       Text(
@@ -200,7 +210,9 @@ class SeenList extends StatelessWidget {
             ),
           ),
         // bahan dari foto tambahan atau dari percakapan, tanpa penanda di foto ini
-        for (final key in (s.session?.prefs.include ?? const <String>{}).where((k) => !s.detections.any((d) => d.key == k)))
+        for (final key in (s.session?.prefs.include ?? const <String>{}).where(
+          (k) => !s.detections.any((d) => d.key == k),
+        ))
           Container(
             padding: const EdgeInsets.fromLTRB(10, 5, 12, 5),
             decoration: BoxDecoration(color: C.herbTint, borderRadius: BorderRadius.circular(20)),
@@ -227,7 +239,8 @@ class _Sweep extends StatefulWidget {
 }
 
 class _SweepState extends State<_Sweep> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1700))..repeat();
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1700))
+    ..repeat();
 
   @override
   void dispose() {
@@ -255,7 +268,11 @@ class _SweepPainter extends CustomPainter {
     final shader = LinearGradient(
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
-      colors: [Colors.white.withValues(alpha: 0), Colors.white.withValues(alpha: .30), Colors.white.withValues(alpha: 0)],
+      colors: [
+        Colors.white.withValues(alpha: 0),
+        Colors.white.withValues(alpha: .30),
+        Colors.white.withValues(alpha: 0),
+      ],
     ).createShader(rect);
     canvas.drawRect(rect, Paint()..shader = shader);
   }
@@ -273,7 +290,8 @@ class _PillsLoading extends StatefulWidget {
 }
 
 class _PillsLoadingState extends State<_PillsLoading> with SingleTickerProviderStateMixin {
-  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))..repeat();
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))
+    ..repeat();
 
   @override
   void dispose() {
