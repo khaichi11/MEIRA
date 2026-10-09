@@ -114,6 +114,7 @@ void main() {
     final d = FakeData();
     await run('tadi saya tidak makan nasi', d);
     await run('tadi saya masak nasi', d);
+    await run('nasi sudah matang', d);
     expect(d.eaten, isEmpty);
     final r = await run('kemarin saya makan mi instan', d);
     expect(r!.text, contains('hanya untuk hari ini'));
@@ -152,6 +153,8 @@ void main() {
     expect((await run('tinggi 150 cm berat 40 kg umur 15 perempuan', d))!.text, contains('18 tahun ke atas'));
     expect(d.body, isNull);
     expect(await run('potong wortel 2 cm', d), isNull);
+    expect(await run('nenek saya 70 tahun suka bubur', d), isNull);
+    expect((await run('umur saya 30 tahun', d))!.actions, ['tubuh']);
   });
 
   test('kebutuhan energi tidak dinaikkan oleh batas bawah, dan ditambah untuk berat badan kurang', () {

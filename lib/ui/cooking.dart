@@ -44,10 +44,13 @@ class _CookingScreenState extends State<CookingScreen> {
     super.dispose();
   }
 
-  /// Menit yang disebut di langkah, mis. "rebus 10 menit" atau "15-20 menit" (diambil yang terkecil).
+  /// Menit yang disebut di langkah, mis. "rebus 10 menit", "15-20 menit" (diambil yang terkecil), "2 jam", atau
+  /// "setengah jam".
   int? _minutes(String step) {
-    final m = RegExp(r'(\d+)(?:\s*(?:-|sampai)\s*\d+)?\s*menit').firstMatch(step);
-    return m == null ? null : int.parse(m.group(1)!);
+    final t = step.toLowerCase();
+    if (RegExp(r'\bsetengah jam\b').hasMatch(t)) return 30;
+    final m = RegExp(r'(\d+)(?:\s*(?:-|sampai)\s*\d+)?\s*(menit|jam)\b(?:\s*(\d+)\s*menit)?').firstMatch(t);
+    return m == null ? null : (m[2] == 'jam' ? int.parse(m[1]!) * 60 + int.parse(m[3] ?? '0') : int.parse(m[1]!));
   }
 
   void _go(int i) {

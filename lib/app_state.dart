@@ -521,6 +521,9 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // tampilan yang bergantung pada tanggal (makan hari ini, jendela makan, jejak masak) diperbarui setelah aplikasi
+    // ditinggal, misalnya semalaman
+    if (state == AppLifecycleState.resumed) notifyListeners();
     if (!releaseInBackground) return;
     if (state == AppLifecycleState.paused) {
       // lepas model dari RAM bila aplikasi ditinggal lebih dari 3 menit
@@ -828,9 +831,16 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
       voice = VoiceState.idle;
       notifyListeners();
       if (text == null || text.isEmpty) {
-        if (handsFree) unawaited(_listenHandsFree());
+        // suara bising tanpa kata: dua kali berturut-turut mengakhiri percakapan suara, supaya Whisper tidak berjalan
+        // terus-menerus di tempat ramai
+        if (handsFree && ++_emptyTurns < 2) {
+          unawaited(_listenHandsFree());
+        } else if (handsFree) {
+          await endVoiceChat();
+        }
         return text == null ? null : 'Suara kurang jelas';
       }
+      _emptyTurns = 0;
       // "berhenti" atau "sudah" mengakhiri percakapan suara
       if (handsFree && RegExp(r'^\W*(berhenti|stop|sudah|udah|selesai|cukup)\W*$', caseSensitive: false).hasMatch(text)) {
         await endVoiceChat();
@@ -868,8 +878,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
     }
   }
 
+  int _emptyTurns = 0;
+
   Future<void> setHandsFree(bool v) async {
     handsFree = v;
+    _emptyTurns = 0;
     speech?.keepLoaded = v;
     if (v) {
       speakAnswers = true;

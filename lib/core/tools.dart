@@ -49,10 +49,11 @@ Food? findFood(String text, List<Food> foods) {
   return best;
 }
 
-final _ate = RegExp(
-  r'\b(tadi|barusan|sudah|udah|habis|baru saja|catat|saya makan|aku makan|saya minum|aku minum|sarapan saya|sarapanku|'
-  r'makan siang saya|makan malam saya|nyemil|ngemil)\b',
-);
+// catatan makan perlu kata kerja makan atau minum dan penanda bahwa itu sudah terjadi atau milik pengguna, supaya "nasi
+// sudah matang" atau "ide sarapan roti" tidak tercatat sebagai makanan
+final _eatVerb = RegExp(r'\b(makan|minum|sarapan|ngemil|nyemil|mengonsumsi|menghabiskan|catat|catatkan)\b');
+final _eatMark = RegExp(r'\b(tadi|barusan|sudah|udah|habis|baru saja|catat|catatkan|saya|aku|gue|gw)\b');
+bool _ate(String t) => _eatVerb.hasMatch(t) && _eatMark.hasMatch(t);
 final _notLog = RegExp(
   r'\b(resep|cara|bikin|membuat|masak|memasak|mau makan|ingin makan|boleh|cocok|sehat|apakah|berapa kalori|stok|punya)\b|'
   r'\b(tidak|tak|nggak|ngga|gak|ga|enggak|belum|jangan)\s+(makan|minum|sarapan|ngemil|nyemil)\b',
@@ -230,7 +231,10 @@ ToolReply? appTool(String text, AppData d) {
     );
   }
   final age = ageRaw != null && ageRaw >= 18 && ageRaw <= 100 ? ageRaw : null;
-  if (h != null || age != null) {
+  // usia saja ("nenek saya 70 tahun suka bubur") bukan data tubuh; perlu tinggi, atau usia bersama berat, jenis kelamin,
+  // atau sebutan "umur saya"
+  final ownAge = a?.group(1) != null && _mine.hasMatch(t);
+  if (h != null || (age != null && (w != null || male != null || ownAge))) {
     final b = d.body;
     final height = h ?? b?.heightCm, weight = w ?? b?.weightKg, years = age ?? b?.age, isMale = male ?? b?.male;
     if (height == null || weight == null || years == null || isMale == null) {
@@ -334,7 +338,7 @@ ToolReply? appTool(String text, AppData d) {
   }
 
   // catat makanan: "tadi pagi saya makan mi instan 1 bungkus"
-  if (_ate.hasMatch(t) && !_notLog.hasMatch(t) && !t.contains('?')) {
+  if (_ate(t) && !_notLog.hasMatch(t) && !t.contains('?')) {
     final meal = parseMeal(t, d.foods);
     if (meal.isNotEmpty) {
       // catatan makan hanya untuk hari ini, supaya ringkasan harian tidak tercampur hari lain
