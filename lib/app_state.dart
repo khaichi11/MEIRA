@@ -128,6 +128,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver {
       readPackages = p.getBool('read_packages') ?? true;
 
       models = await Models.open();
+      if (models.missingRequired().isNotEmpty) await models.installBundled();
       if (models.missingRequired().isNotEmpty) {
         phase = Phase.needsModels;
         notifyListeners();

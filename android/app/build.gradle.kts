@@ -7,6 +7,10 @@ plugins {
 
 android {
     namespace = "id.meira.meira"
+    // model di APK lengkap tidak dikompresi: ukurannya hampir tidak berkurang, dan penyalinan pertama lebih cepat
+    androidResources {
+        noCompress += listOf("gguf", "onnx")
+    }
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

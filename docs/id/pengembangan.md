@@ -88,7 +88,14 @@ ponsel arm64, dan emulator dengan render perangkat lunak bisa tersendat pada bin
 ## Rilis
 
 ```bash
-flutter build apk --release --split-per-abi --target-platform android-arm64
+flutter build apk --release --split-per-abi --target-platform android-arm64   # APK ringan, model diunduh
+tool/build_full_apk.sh                                                         # APK lengkap, semua model di dalamnya
 ```
+
+APK ringan (sekitar 90 MB) mengunduh model bahasa dan Whisper saat penyiapan atau memasangnya dari file. APK lengkap
+(sekitar 1,2 GB) membawa model tersebut sebagai aset tanpa kompresi; saat pertama dibuka, aplikasi menyalinnya ke
+folder model melalui `copyAsset` di `MainActivity.kt`, sehingga cukup satu berkas untuk dipasang. Ponsel kemudian
+memerlukan ruang kosong sekitar 2,5 GB karena APK dan salinan modelnya sama-sama tersimpan. Skrip ini menautkan model
+dari `MEIRA-Before/models/app` hanya selama build, dan `.gitignore` menjaga model agar tidak masuk ke repositori.
 
 Pesan commit mengikuti Conventional Commits, misalnya `feat(chat): ...`, `fix(vision): ...`, atau `docs: ...`.

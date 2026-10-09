@@ -55,7 +55,7 @@ other models are used as released. Training runs, including the LoRA experiments
 ## Requirements
 
 - Android 9 or newer, arm64, at least 6 GB of RAM (8 GB recommended).
-- About 1.2 GB of free space for the downloaded models.
+- About 1.2 GB of free space for the downloaded models, or about 2.5 GB for the full APK that already contains them.
 
 ## Build and test
 

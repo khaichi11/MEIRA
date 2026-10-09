@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
 import 'device.dart';
@@ -55,6 +56,20 @@ class Models {
   static Future<Models> open() async => Models._(await Device.modelsDir());
 
   String path(String name) => '${dir.path}/$name';
+
+  static const _native = MethodChannel('meira/native');
+
+  /// APK lengkap membawa semua model sebagai aset; saat pertama dibuka, model itu disalin ke folder model sehingga
+  /// tidak perlu diunduh atau dipasang dari file. Pada APK ringan aset ini tidak ada dan tidak ada yang disalin.
+  Future<void> installBundled() async {
+    for (final p in allPacks) {
+      for (final f in p.files) {
+        if (File(path(f.name)).existsSync()) continue;
+        final copied = await _native.invokeMethod<bool>('copyAsset', {'asset': 'assets/models/${f.name}', 'target': path(f.name)});
+        if (copied != true) return;
+      }
+    }
+  }
 
   bool installed(ModelPack p) => p.files.every((f) => f.archive ? Directory(path(f.name)).existsSync() : File(path(f.name)).existsSync());
 

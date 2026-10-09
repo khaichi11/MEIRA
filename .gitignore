@@ -47,3 +47,7 @@ app.*.map.json
 # library native hasil tool/build_native.sh
 android/app/src/main/jniLibs/
 .meira-home/
+
+# model bahasa dan Whisper yang dimasukkan sementara oleh tool/build_full_apk.sh
+/assets/models/*.gguf
+/assets/models/whisper-*

@@ -56,7 +56,8 @@ lain dipakai apa adanya. Daftar latihan, termasuk eksperimen LoRA pada Qwen3.5, 
 ## Kebutuhan
 
 - Android 9 atau lebih baru, arm64, RAM minimal 6 GB (disarankan 8 GB).
-- Ruang kosong sekitar 1,2 GB untuk model yang diunduh.
+- Ruang kosong sekitar 1,2 GB untuk model yang diunduh, atau sekitar 2,5 GB untuk APK lengkap yang sudah memuat
+  model.
 
 ## Build dan uji
 

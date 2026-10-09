@@ -86,7 +86,14 @@ on an arm64 phone, and a software-rendered emulator can stutter on the first fra
 ## Release
 
 ```bash
-flutter build apk --release --split-per-abi --target-platform android-arm64
+flutter build apk --release --split-per-abi --target-platform android-arm64   # light APK, models are downloaded
+tool/build_full_apk.sh                                                         # full APK with every model inside
 ```
+
+The light APK (about 90 MB) downloads the language model and Whisper during setup or installs them from files. The
+full APK (about 1.2 GB) carries them as uncompressed assets; on first launch the app copies them into its model folder
+through `copyAsset` in `MainActivity.kt`, so a single file is enough to install. The phone then needs about 2.5 GB of
+free space, because the APK and the copied models both stay on the device. The script links the models from
+`MEIRA-Before/models/app` only for the build, and `.gitignore` keeps them out of the repository.
 
 Commit messages follow Conventional Commits, for example `feat(chat): ...`, `fix(vision): ...`, or `docs: ...`.
