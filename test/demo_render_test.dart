@@ -63,10 +63,7 @@ void main() {
     final history = await tester.runAsync(() => History.open(at: tmp, factory: databaseFactoryFfi));
     final models = Models.at(tmp);
     await tester.runAsync(_fonts);
-    final kb = KnowledgeBase.parse(
-      File('assets/pengetahuan.md').readAsStringSync(),
-      facts: File('assets/pengetahuan_luas.jsonl').readAsStringSync(),
-    );
+    final kb = KnowledgeBase.parse(File('assets/pengetahuan.md').readAsStringSync(), facts: File('assets/pengetahuan_luas.jsonl').readAsStringSync());
     final s = AppState()
       ..recipes = parseRecipes(File('assets/resep.md').readAsStringSync())
       ..knowledge = kb
@@ -89,8 +86,16 @@ void main() {
     for (final (d, w) in [(42, 82.0), (35, 81.4), (28, 80.9), (21, 80.1), (14, 79.6), (7, 79.0), (0, 78.5)]) {
       s.weights.add((now.subtract(Duration(days: d)), w));
     }
-    final foods = {for (final f in s.foods) for (final n in f.names) n: f};
-    for (final (slot, name, grams) in [('Sarapan', 'roti tawar', 60.0), ('Sarapan', 'telur', 55.0), ('Makan siang', 'nasi', 150.0), ('Makan siang', 'ayam goreng', 100.0)]) {
+    final foods = {
+      for (final f in s.foods)
+        for (final n in f.names) n: f,
+    };
+    for (final (slot, name, grams) in [
+      ('Sarapan', 'roti tawar', 60.0),
+      ('Sarapan', 'telur', 55.0),
+      ('Makan siang', 'nasi', 150.0),
+      ('Makan siang', 'ayam goreng', 100.0),
+    ]) {
       final f = foods[name]!;
       s.intake.add(IntakeEntry(DateTime(now.year, now.month, now.day, slot == 'Sarapan' ? 7 : 12), slot, f.name, grams, f.per100.scale(grams / 100)));
     }
@@ -158,10 +163,8 @@ void main() {
         Message(Role.meira, 'Dicatat untuk makan siang. Energi hari ini sekitar 760 dari 1.790 kkal. Gula, lemak, dan garam masih dalam batas aman.')
           ..actions = const ['gizi'],
         Message(Role.user, 'Boleh makan sekarang?'),
-        Message(
-          Role.meira,
-          'Menurut jadwal 16:8, sebaiknya tunggu sampai pukul 12.00. Air putih, teh, atau kopi tanpa gula tetap boleh.',
-        )..actions = const ['puasa'],
+        Message(Role.meira, 'Menurut jadwal 16:8, sebaiknya tunggu sampai pukul 12.00. Air putih, teh, atau kopi tanpa gula tetap boleh.')
+          ..actions = const ['puasa'],
       ]);
     await show(const ChatScreen());
     await run('obrolan', const Duration(milliseconds: 3000));
