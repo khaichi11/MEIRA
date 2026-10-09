@@ -700,6 +700,16 @@ class _ChartPainter extends CustomPainter {
         RRect.fromRectAndRadius(Rect.fromLTRB(0, y(idealMax!), size.width, y(idealMin!)), const Radius.circular(6)),
         Paint()..color = C.herb.withValues(alpha: .10),
       );
+      // keterangan pita supaya tidak terbaca sebagai kotak kosong
+      final label = TextPainter(
+        text: TextSpan(
+          text: 'Rentang ideal ${fmt(idealMin!)}–${fmt(idealMax!)} kg',
+          style: inter(11, weight: FontWeight.w600, color: C.herb),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout(maxWidth: size.width - 16);
+      final top = y(idealMax!), bottom = y(idealMin!);
+      if (bottom - top >= label.height + 4) label.paint(canvas, Offset(8, top + (bottom - top - label.height) / 2));
     }
     if (points.length == 1) {
       canvas.drawCircle(Offset(size.width / 2, y(points.first.$2)), 4.5, Paint()..color = C.blue);
@@ -712,6 +722,23 @@ class _ChartPainter extends CustomPainter {
       path.lineTo(p.dx, p.dy);
     }
     final metric = path.computeMetrics().first;
+    // bidang lembut di bawah garis, ikut tergambar dari kiri
+    final reach = size.width * t;
+    canvas.save();
+    canvas.clipRect(Rect.fromLTWH(0, 0, reach, size.height));
+    canvas.drawPath(
+      Path.from(path)
+        ..lineTo(pts.last.dx, size.height)
+        ..lineTo(pts.first.dx, size.height)
+        ..close(),
+      Paint()
+        ..shader = LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [C.blue.withValues(alpha: .18), C.blue.withValues(alpha: 0)],
+        ).createShader(Offset.zero & size),
+    );
+    canvas.restore();
     canvas.drawPath(
       metric.extractPath(0, metric.length * t),
       Paint()
