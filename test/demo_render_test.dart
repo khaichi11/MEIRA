@@ -112,10 +112,14 @@ void main() {
       });
     }
 
-    Future<void> run(String scene, Duration length, {int step = 100}) async {
-      for (var t = 0; t < length.inMilliseconds; t += step) {
-        await tester.pump(Duration(milliseconds: step));
-        await capture(scene, ms: step);
+    // bingkai digambar setiap 33 ms seperti layar 30 fps (pembuka membatasi lompatan tiap bingkai), dan disimpan setiap
+    // 100 ms untuk GIF
+    Future<void> run(String scene, Duration length) async {
+      for (var t = 0; t < length.inMilliseconds; t += 99) {
+        for (var k = 0; k < 3; k++) {
+          await tester.pump(const Duration(milliseconds: 33));
+        }
+        await capture(scene, ms: 100);
       }
     }
 
@@ -135,7 +139,7 @@ void main() {
 
     // 1. pembuka: Halo, selamat datang, lalu wajan dan layar putih
     await show(IntroScreen(onDone: () {}));
-    await run('pembuka', const Duration(milliseconds: 4600));
+    await run('pembuka', const Duration(milliseconds: 6200));
 
     // 2. beranda, digulir perlahan ke jejak masak dan Gizi Seimbang
     await show(const HomeShell());
