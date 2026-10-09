@@ -37,6 +37,11 @@ Runtime 1.30.0 from Maven. Everything is copied to `android/app/src/main/jniLibs
 
 Copy `meira-det-small.onnx`, `.labels.txt`, and `.json` into `assets/models/` as `meira-det.*`.
 
+The chat LoRA adapter (`meira-chat-lora-f16.gguf`, about 22 MB) is trained in MEIRA-Before and copied into
+`assets/models/`. It is not kept in git; when it is missing at build time, the app still runs with the base model.
+On start-up the adapter is copied to the models folder and loaded into `llama-server` with
+`--lora-init-without-apply`, then switched on per request only for chat and the natural style.
+
 ## Shared data
 
 ```bash
@@ -61,6 +66,8 @@ MEIRA_LIVE=1 MEIRA_HOME=~/MEIRA flutter test test/answer_eval_test.dart
 | `vision_test.dart` | package OCR gives the same lines as the Python version and turns them into markers; the detector finds the labelled ingredient in a test photo | OCR yes; the detector needs MEIRA-Before data |
 | `answer_eval_test.dart` | answers from the real language model, scored for grounding | no, needs `MEIRA_LIVE=1` and the model |
 | `pipeline_live_test.dart` | a full turn with the real models | no, needs `MEIRA_LIVE=1` and the models |
+| `chat_live_test.dart` | chat with the knowledge base; `MEIRA_LORA` loads the adapter, `MEIRA_TEST_ASK` replaces the questions (separated by `\|`) | no, needs `MEIRA_LIVE=1` and the model |
+| `photo_live_test.dart` | an ingredient photo outside the detector's classes, such as dragon fruit, with the real detector and vision model | no, needs `MEIRA_LIVE=1`, `MEIRA_TEST_PHOTO`, and `MEIRA_ORT_LIB` |
 
 The vision test needs an ONNX Runtime library for your laptop, for example from the Python `onnxruntime` package.
 No test plays any sound.
@@ -92,7 +99,7 @@ flutter build apk --release --split-per-abi --target-platform android-arm64   # 
 tool/build_full_apk.sh                                                         # full APK with every model inside
 ```
 
-The light APK (about 90 MB) downloads the language model and Whisper during setup or installs them from files. The
+The light APK (about 120 MB) downloads the language model and Whisper during setup or installs them from files. The
 full APK (about 1.2 GB) carries them as uncompressed assets; on first launch the app copies them into its model folder
 through `copyAsset` in `MainActivity.kt`, so a single file is enough to install. The phone then needs about 2.5 GB of
 free space, because the APK and the copied models both stay on the device. The script links the models from

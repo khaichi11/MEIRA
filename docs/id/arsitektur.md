@@ -27,7 +27,7 @@ lib/
   llm/
     memory.dart        memori percakapan dengan ringkasan
     retriever.dart     pencarian resep BM25
-    knowledge.dart     pencarian catatan dapur BM25
+    knowledge.dart     catatan dapur (BM25) dan fakta makanan Wikidata dan USDA
     chain.dart         rantai jawaban dengan lanjutan otomatis
     guardrails.dart    pemeriksaan masukan dan keluaran
   runtime/
@@ -35,7 +35,8 @@ lib/
     speech.dart        Whisper dan TTS bawaan ponsel
     models.dart        daftar model, unduhan, dan pemasangan dari berkas
   ui/                  pembuka, beranda, layar percakapan, resep, mode memasak, riwayat, dataset, pengaturan
-assets/models/         detektor dan OCR yang dibawa di dalam APK
+assets/models/         detektor, OCR, dan adaptor LoRA obrolan yang dibawa di dalam APK
+assets/pengetahuan_luas.jsonl  fakta makanan untuk obrolan (Wikidata CC0 dan USDA, domain publik)
 ```
 
 ## Layar
@@ -61,13 +62,17 @@ assets/models/         detektor dan OCR yang dibawa di dalam APK
 4. **Pengaman masukan.** `Guardrails.checkInput` menolak upaya mengubah instruksi, permintaan berbahaya,
    pertanyaan medis, dan pesan di luar topik. Permintaan lanjutan seperti "cara membuatnya" selalu diteruskan.
 5. **Pemahaman permintaan.** `ruleIntent` menentukan jenis permintaan dan isiannya.
-6. **Jawaban.** Resep diambil dari buku resep, pertanyaan dapur dari catatan dapur, dan pertanyaan lain dijawab
-   Qwen3.5-0.8B dengan konteks lalu diperiksa. Catatan dipakai hanya bila menyebut bahan yang ditanyakan.
-   Pertanyaan tentang sifat bahan, misalnya beda apel hijau dan apel merah, dijawab sebagai obrolan, bukan dengan
-   rekomendasi resep; tanpa catatan yang cocok, model menjawab dan kalimat yang terpotong dibuang. Bahan yang disebut
-   lewat ketikan diakui di awal jawaban,
-   dan jawaban pertama dibuka dengan nama panggilan pengguna.
-7. **Memori.** Giliran lama diringkas bila melewati 700 token.
+6. **Jawaban.** Resep diambil dari buku resep. Pada gaya natural, Qwen3.5-0.8B menulis ulang jawaban resep menjadi
+   kalimat lisan, dan tulisan ulang itu dipakai hanya bila `naturalMatches` lolos: semua nama resep, nomor penanda,
+   dan angka tetap ada, tidak ada bahan atau angka baru, bahan yang perlu disiapkan tidak berubah menjadi bahan yang
+   sudah ada, dan resep alternatif tetap disebut sebagai alternatif. Pertanyaan tentang makanan, misalnya beda
+   rendang dan kalio, dijawab model dari fakta: catatan dapur yang judulnya cocok, ditambah fakta Wikidata dan USDA
+   untuk setiap makanan yang disebut namanya. Tanpa fakta, MEIRA mengaku belum punya informasi pasti. Bahan yang
+   disebut lewat ketikan diakui di awal jawaban, dan jawaban pertama dibuka dengan nama panggilan pengguna.
+7. **Bahan di luar kelas detektor.** Bila detektor tidak mengenali bahan, misalnya buah naga, tebakan model
+   penglihatan diterjemahkan lewat nama Inggris di basis pengetahuan lalu disebut sebagai dugaan beserta
+   keterangannya. Bila tebakan itu bahan di buku resep, bahan tersebut dipakai untuk mencari resep.
+8. **Memori.** Giliran lama diringkas bila melewati 700 token.
 
 ## Gerak
 

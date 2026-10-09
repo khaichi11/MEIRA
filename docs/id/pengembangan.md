@@ -39,6 +39,11 @@ git.
 
 Salin `meira-det-small.onnx`, `.labels.txt`, dan `.json` ke `assets/models/` dengan nama `meira-det.*`.
 
+Adaptor LoRA obrolan (`meira-chat-lora-f16.gguf`, sekitar 22 MB) dilatih di MEIRA-Before dan disalin ke
+`assets/models/`. Berkas ini tidak disimpan di git; bila tidak ada saat build, aplikasi tetap berjalan dengan model
+dasar. Saat aplikasi dibuka, adaptor disalin ke folder model dan dipasang pada `llama-server` dengan
+`--lora-init-without-apply`, lalu diaktifkan per permintaan hanya untuk obrolan dan gaya natural.
+
 ## Data bersama
 
 ```bash
@@ -64,6 +69,8 @@ MEIRA_LIVE=1 MEIRA_HOME=~/MEIRA flutter test test/answer_eval_test.dart
 | `vision_test.dart` | OCR kemasan menghasilkan baris yang sama dengan versi Python dan mengubahnya menjadi penanda; detektor menemukan bahan berlabel pada foto uji | OCR ya; detektor memerlukan data MEIRA-Before |
 | `answer_eval_test.dart` | jawaban dari model bahasa sungguhan, dinilai keberpijakannya | tidak, perlu `MEIRA_LIVE=1` dan modelnya |
 | `pipeline_live_test.dart` | satu giliran lengkap dengan model sungguhan | tidak, perlu `MEIRA_LIVE=1` dan modelnya |
+| `chat_live_test.dart` | obrolan dengan basis pengetahuan; `MEIRA_LORA` memasang adaptor, `MEIRA_TEST_ASK` mengganti pertanyaan (dipisah `\|`) | tidak, perlu `MEIRA_LIVE=1` dan modelnya |
+| `photo_live_test.dart` | foto bahan di luar kelas detektor, misalnya buah naga, dengan detektor dan model penglihatan sungguhan | tidak, perlu `MEIRA_LIVE=1`, `MEIRA_TEST_PHOTO`, dan `MEIRA_ORT_LIB` |
 
 Uji penglihatan memerlukan pustaka ONNX Runtime untuk laptop, misalnya dari paket Python `onnxruntime`. Tidak ada uji
 yang memutar suara.
@@ -95,7 +102,7 @@ flutter build apk --release --split-per-abi --target-platform android-arm64   # 
 tool/build_full_apk.sh                                                         # APK lengkap, semua model di dalamnya
 ```
 
-APK ringan (sekitar 90 MB) mengunduh model bahasa dan Whisper saat penyiapan atau memasangnya dari file. APK lengkap
+APK ringan (sekitar 120 MB) mengunduh model bahasa dan Whisper saat penyiapan atau memasangnya dari file. APK lengkap
 (sekitar 1,2 GB) membawa model tersebut sebagai aset tanpa kompresi; saat pertama dibuka, aplikasi menyalinnya ke
 folder model melalui `copyAsset` di `MainActivity.kt`, sehingga cukup satu berkas untuk dipasang. Ponsel kemudian
 memerlukan ruang kosong sekitar 2,5 GB karena APK dan salinan modelnya sama-sama tersimpan. Skrip ini menautkan model

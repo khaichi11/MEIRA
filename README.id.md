@@ -47,15 +47,16 @@ Penanda bahan masih terus diperbaiki; hasil terkini dan kekurangannya ada di
 |---|---|
 | Aplikasi | Flutter 3.41, Dart 3.11, Material 3, font Inter dan Poppins |
 | Inferensi di ponsel | ONNX Runtime 1.30 lewat FFI untuk detektor dan OCR, `llama-server` dari llama.cpp untuk model bahasa, sherpa-onnx untuk Whisper |
-| Pencarian | BM25 atas buku resep dan catatan dapur |
+| Pencarian | BM25 atas buku resep dan catatan dapur, ditambah pencarian nama atas 3.404 fakta makanan Wikidata (CC0) dan USDA (domain publik) |
 | Penyimpanan | SQLite (sqflite) dan shared_preferences |
 | Platform | Android 9 atau lebih baru; suara lewat mesin TTS ponsel (flutter_tts) |
 | Perkakas | flutter test, dart format, ffmpeg dan Pillow untuk gambar demo |
 
-Hanya detektor bahan yang di-fine-tune untuk aplikasi ini (D-FINE small, 60 epoch pada 3.842 foto, 90 kelas). Model
-lain dipakai apa adanya. Eksperimen LoRA pada Qwen3.5, yaitu mata VLM dan kandidat otak, merupakan latihan riset yang
-tidak dikirim bersama aplikasi: detektor terbukti lebih akurat dan lebih cepat daripada mata VLM, sedangkan catatan
-dapur ditampilkan apa adanya sehingga model instruct asli sudah cukup untuk jawaban lainnya. Daftar seluruh latihan ada
+Dua model di-fine-tune untuk aplikasi ini: detektor bahan (D-FINE small, 60 epoch pada 3.842 foto, 90 kelas) dan
+adaptor LoRA obrolan sebesar 22 MB untuk Qwen3.5-0.8B instruct yang menjawab pertanyaan makanan hanya dari fakta yang
+diberikan dan menulis ulang jawaban buku resep pada gaya natural. Pada pertanyaan yang disisihkan, adaptor ini
+menaikkan akurasi jawaban berbasis fakta dari 0,72 menjadi 0,98. Model lain dipakai apa adanya. Mata VLM dan kandidat
+otak tetap menjadi latihan riset: detektor terbukti lebih akurat dan lebih cepat daripada mata VLM. Daftar seluruh latihan ada
 di [MEIRA-Before](https://github.com/khaichi11/MEIRA-Before/blob/main/README.id.md#model-hasil-fine-tune).
 
 ## Kebutuhan

@@ -27,7 +27,7 @@ lib/
   llm/
     memory.dart        conversation memory with summaries
     retriever.dart     BM25 recipe search
-    knowledge.dart     BM25 kitchen-note search
+    knowledge.dart     kitchen notes (BM25) and Wikidata and USDA food facts
     chain.dart         answer chain with automatic continuation
     guardrails.dart    input and output checks
   runtime/
@@ -35,7 +35,8 @@ lib/
     speech.dart        Whisper and the phone's TTS
     models.dart        model list, downloads, and installation from files
   ui/                  opening, home, chat screen, recipes, cooking mode, history, dataset, settings
-assets/models/         detector and OCR shipped inside the APK
+assets/models/         detector, OCR, and the chat LoRA adapter shipped inside the APK
+assets/pengetahuan_luas.jsonl  food facts for chat (Wikidata CC0 and USDA, public domain)
 ```
 
 ## Screens
@@ -61,12 +62,19 @@ assets/models/         detector and OCR shipped inside the APK
 4. **Input guard.** `Guardrails.checkInput` refuses prompt injection, harmful requests, medical questions, and
    off-topic messages. Follow-ups such as "how do I make it" always pass.
 5. **Request parsing.** `ruleIntent` picks the request type and its slots.
-6. **Answer.** Recipes come from the recipe book, kitchen questions from the kitchen notes, and anything else is
-   answered by Qwen3.5-0.8B with context and then checked. A note is used only when it mentions the ingredient being
-   asked about. Questions about an ingredient's properties, such as how green and red apples differ, are treated as
-   conversation rather than recipe requests; when no note matches, the model answers and a cut-off last sentence is
-   dropped. Ingredients typed in a message are acknowledged at the start of the answer, and the first answer starts with the user's nickname.
-7. **Memory.** Older turns are summarized once they pass 700 tokens.
+6. **Answer.** Recipes come from the recipe book. In the natural style, Qwen3.5-0.8B rewrites the recipe answer as
+   spoken sentences, and the rewrite is used only when `naturalMatches` passes: every recipe name, marker number,
+   and figure is kept, no ingredient or figure is added, an ingredient that still has to be prepared is not turned
+   into one that is already there, and alternative recipes are still offered as alternatives. Questions about food,
+   such as how rendang and kalio differ, are answered by the model from facts: kitchen notes whose title matches,
+   plus Wikidata and USDA facts for every food named in the question. Without facts, MEIRA says it has no reliable
+   information. Ingredients typed in a message are acknowledged at the start of the answer, and the first answer
+   starts with the user's nickname.
+7. **Ingredients outside the detector's classes.** When the detector does not recognise an ingredient, such as
+   dragon fruit, the vision model's guess is translated through the English names in the knowledge base and given
+   as a guess with a short description. When the guess is an ingredient in the recipe book, it is used to find
+   recipes.
+8. **Memory.** Older turns are summarized once they pass 700 tokens.
 
 ## Motion
 

@@ -46,15 +46,16 @@ The ingredient marker is still being improved; current results and known weaknes
 |---|---|
 | App | Flutter 3.41, Dart 3.11, Material 3, Inter and Poppins fonts |
 | On-device inference | ONNX Runtime 1.30 over FFI for the detector and OCR, llama.cpp `llama-server` for the language model, sherpa-onnx for Whisper |
-| Retrieval | BM25 over the recipe book and kitchen notes |
+| Retrieval | BM25 over the recipe book and kitchen notes, plus name lookup over 3,404 Wikidata (CC0) and USDA (public domain) food facts |
 | Storage | SQLite (sqflite) and shared_preferences |
 | Platform | Android 9 or newer; voice through the phone's TTS engine (flutter_tts) |
 | Tooling | flutter test, dart format, ffmpeg and Pillow for the demo images |
 
-Only the ingredient detector is fine-tuned for this app (D-FINE small, 60 epochs on 3,842 photos, 90 classes). The
-other models are used as released. The LoRA experiments on Qwen3.5, the VLM eyes and the brain candidate, are
-research runs that the app does not ship: the detector proved more accurate and faster than the eyes, and the app shows
-kitchen notes verbatim, so the released instruct model is enough for the remaining answers. All runs are listed in
+Two models are fine-tuned for this app: the ingredient detector (D-FINE small, 60 epochs on 3,842 photos, 90 classes)
+and a 22 MB LoRA chat adapter for Qwen3.5-0.8B instruct that answers food questions only from the facts it is given
+and rewrites recipe-book answers in the natural style. On held-out questions the adapter raises fact-based accuracy
+from 0.72 to 0.98. The other models are used as released. The VLM eyes and the brain candidate remain research runs:
+the detector proved more accurate and faster than the eyes. All runs are listed in
 [MEIRA-Before](https://github.com/khaichi11/MEIRA-Before#fine-tuned-models).
 
 ## Requirements
