@@ -59,7 +59,7 @@ Penanda bahan masih terus diperbaiki; hasil terkini dan kekurangannya ada di
 | Platform | Android 9 atau lebih baru; suara lewat mesin TTS ponsel (flutter_tts) |
 | Perkakas | flutter test, dart format, ffmpeg dan Pillow untuk gambar demo |
 
-Dua model di-fine-tune untuk aplikasi ini: detektor bahan (D-FINE small, 60 epoch pada 3.842 foto, 90 kelas) dan
+Dua model di-fine-tune untuk aplikasi ini: detektor bahan (D-FINE small, 132 kelas dari foto Open Images, LVIS, dan Wikimedia Commons) dan
 adaptor LoRA obrolan sebesar 22 MB untuk Qwen3.5-0.8B instruct yang menjawab pertanyaan makanan hanya dari fakta yang
 diberikan dan menulis ulang jawaban buku resep pada gaya natural. Pada pertanyaan yang disisihkan, adaptor ini
 menaikkan akurasi jawaban berbasis fakta dari 0,72 menjadi 0,98. Model lain dipakai apa adanya. Mata VLM dan kandidat
