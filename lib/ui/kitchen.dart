@@ -235,20 +235,31 @@ class _KitchenScreenState extends State<KitchenScreen> {
     final eaten = s.intakeToday.fold(const Nutrients(), (a, e) => a + e.nutrients);
     final f = s.fasting;
     final st = f == null ? null : fastingState(f, DateTime.now());
-    Widget pill(IconData icon, String text, Color color) => Expanded(
+    Widget pill(IconData icon, String value, String label, Color color) => Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+        padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
         decoration: BoxDecoration(color: C.surface, borderRadius: BorderRadius.circular(14)),
         child: Row(
           children: [
-            Icon(icon, size: 16, color: color),
+            Icon(icon, size: 17, color: color),
             const SizedBox(width: 6),
             Expanded(
-              child: Text(
-                text,
-                style: inter(12.5, weight: FontWeight.w600),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    value,
+                    style: poppins(15, weight: FontWeight.w700, color: C.label),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    label,
+                    style: inter(11, color: C.secondary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             ),
           ],
@@ -278,17 +289,20 @@ class _KitchenScreenState extends State<KitchenScreen> {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    pill(Icons.local_fire_department_outlined, '${eaten.energy.round()}/${t.energy.round()} kkal', C.accent),
+                    pill(Icons.local_fire_department_outlined, '${eaten.energy.round()}', 'kkal', C.accent),
                     const SizedBox(width: 8),
                     s.needs == null
-                        ? pill(Icons.monitor_weight_outlined, 'Isi data tubuh', C.violet)
-                        : pill(Icons.monitor_weight_outlined, 'IMT ${fmt(s.needs!.bmi)}', C.violet),
+                        ? pill(Icons.monitor_weight_outlined, 'IMT', 'isi data', C.violet)
+                        : pill(Icons.monitor_weight_outlined, fmt(s.needs!.bmi), 'IMT', C.violet),
                     const SizedBox(width: 8),
-                    pill(
-                      Icons.schedule_rounded,
-                      st == null ? 'Puasa: mati' : (st.eating ? 'Waktu makan' : 'Puasa ${untilText(st.next, DateTime.now())}'),
-                      C.blue,
-                    ),
+                    st == null
+                        ? pill(Icons.schedule_rounded, 'Mati', 'puasa', C.blue)
+                        : pill(
+                            Icons.schedule_rounded,
+                            clock(st.eating ? s.fasting!.endMinute : s.fasting!.startMinute),
+                            st.eating ? 'mulai puasa' : 'mulai makan',
+                            C.blue,
+                          ),
                   ],
                 ),
                 const SizedBox(height: 10),

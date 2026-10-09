@@ -169,7 +169,8 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
           Positioned.fill(child: ColoredBox(color: paper)),
           // pemanasan: wajan dan teks digambar samar di balik hijau sebelum animasi mulai, supaya bingkai pertamanya
           // tidak tersendat saat shader dan huruf disiapkan
-          if (e < .05)
+          // selama sapaan, pemanasan baru digambar saat lingkaran hijau sudah menutup tengah layar
+          if (e < .05 && _h > .9)
             Positioned.fromRect(
               rect: Rect.fromCenter(center: center, width: 240, height: 440),
               child: Opacity(opacity: .01, child: Column(children: [const CookingLoader(size: 190), _status(s)])),

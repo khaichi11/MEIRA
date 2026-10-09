@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:archive/archive_io.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
@@ -58,6 +59,10 @@ class Models {
   final Directory dir;
 
   static Future<Models> open() async => Models._(await Device.modelsDir());
+
+  /// Folder model tertentu, untuk uji di laptop.
+  @visibleForTesting
+  factory Models.at(Directory dir) => Models._(dir);
 
   String path(String name) => '${dir.path}/$name';
 
