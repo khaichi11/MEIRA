@@ -15,8 +15,11 @@ import 'package:meira/app_state.dart';
 import 'package:meira/core/body.dart';
 import 'package:meira/core/history.dart';
 import 'package:meira/core/fasting.dart';
+import 'package:meira/core/grounding.dart';
 import 'package:meira/core/intake.dart';
+import 'package:meira/core/pipeline.dart';
 import 'package:meira/core/recipes.dart';
+import 'package:meira/core/vocab.dart';
 import 'package:meira/llm/knowledge.dart';
 import 'package:meira/runtime/models.dart';
 import 'package:meira/theme.dart';
@@ -63,7 +66,10 @@ void main() {
     final history = await tester.runAsync(() => History.open(at: tmp, factory: databaseFactoryFfi));
     final models = Models.at(tmp);
     await tester.runAsync(_fonts);
-    final kb = KnowledgeBase.parse(File('assets/pengetahuan.md').readAsStringSync(), facts: File('assets/pengetahuan_luas.jsonl').readAsStringSync());
+    final kb = KnowledgeBase.parse(
+      File('assets/pengetahuan.md').readAsStringSync(),
+      facts: File('assets/pengetahuan_luas.jsonl').readAsStringSync(),
+    );
     final s = AppState()
       ..recipes = parseRecipes(File('assets/resep.md').readAsStringSync())
       ..knowledge = kb
@@ -78,7 +84,33 @@ void main() {
       ..history = history!
       ..models = models;
     final now = DateTime.now();
-    for (final (i, d) in [0, 1, 2, 3, 5, 6, 8, 9, 10, 13, 15, 16, 17, 20, 22, 23, 27, 29, 30, 34, 36, 41, 43, 44, 50].indexed) {
+    for (final (i, d) in [
+      0,
+      1,
+      2,
+      3,
+      5,
+      6,
+      8,
+      9,
+      10,
+      13,
+      15,
+      16,
+      17,
+      20,
+      22,
+      23,
+      27,
+      29,
+      30,
+      34,
+      36,
+      41,
+      43,
+      44,
+      50,
+    ].indexed) {
       for (var k = 0; k <= i % 3; k++) {
         s.cooks.add((now.subtract(Duration(days: d)), s.recipes[(i * 7 + k) % s.recipes.length].id));
       }
@@ -97,7 +129,15 @@ void main() {
       ('Makan siang', 'ayam goreng', 100.0),
     ]) {
       final f = foods[name]!;
-      s.intake.add(IntakeEntry(DateTime(now.year, now.month, now.day, slot == 'Sarapan' ? 7 : 12), slot, f.name, grams, f.per100.scale(grams / 100)));
+      s.intake.add(
+        IntakeEntry(
+          DateTime(now.year, now.month, now.day, slot == 'Sarapan' ? 7 : 12),
+          slot,
+          f.name,
+          grams,
+          f.per100.scale(grams / 100),
+        ),
+      );
     }
 
     tester.view.physicalSize = const Size(1080, 2340);
@@ -155,21 +195,69 @@ void main() {
     }
     await run('beranda', const Duration(milliseconds: 1500));
 
-    // 3. obrolan fokus Gizi dengan data pengguna sendiri
+    // 3. foto bahan: buah naga ditandai detektor (kotak dari model sungguhan, test/fixtures/naga_deteksi.json) dan resepnya
+    final photo = File(Platform.environment['MEIRA_DEMO_PHOTO'] ?? '/tmp/naga/naga1.jpg');
+    if (photo.existsSync()) {
+      final bytes = photo.readAsBytesSync();
+      final dets = [
+        for (final d in jsonDecode(File('test/fixtures/naga_deteksi.json').readAsStringSync()) as List)
+          Detection(
+            key: d['key'] as String,
+            label: displayName(d['key'] as String),
+            rawLabel: d['key'] as String,
+            box: [for (final v in d['box'] as List) (v as num).toDouble().clamp(0.0, 1.0)],
+          ),
+      ];
+      final session = Session('demo')..detections = number(dets);
+      final picks = s.recipes.where((r) => r.mainKeys.contains('dragon_fruit')).toList();
+      session
+        ..candidates = rank(picks, {'dragon_fruit'}, Prefs(), k: 3)
+        ..current = session.candidates.first.recipe.id;
+      s
+        ..photo = bytes
+        ..photoSize = const Size(960, 1442)
+        ..detections = session.detections
+        ..sceneMode = 'bahan'
+        ..session = session
+        ..chatMode = 'resep'
+        ..messages.addAll([
+          Message(Role.user, '', photo: bytes),
+          Message(
+            Role.meira,
+            'Saya menyarankan Jus Buah Naga, dengan waktu memasak sekitar 5 menit. Dari foto, sudah tersedia buah naga '
+            '(#1, #2, #3, #4). Sebagai alternatif, Anda dapat memilih Salad Buah Naga Yoghurt. Apakah Anda ingin saya '
+            'jelaskan langkah-langkahnya?',
+          ),
+        ]);
+      await show(const ChatScreen());
+      await run('foto', const Duration(milliseconds: 3600));
+      s
+        ..photo = null
+        ..detections = []
+        ..sceneMode = null
+        ..session = null
+        ..messages.clear();
+    }
+
+    // 4. obrolan fokus Gizi dengan data pengguna sendiri
     s
       ..chatMode = 'gizi'
       ..messages.addAll([
         Message(Role.user, 'Tadi siang saya makan nasi dan ayam goreng'),
-        Message(Role.meira, 'Dicatat untuk makan siang. Energi hari ini sekitar 760 dari 1.790 kkal. Gula, lemak, dan garam masih dalam batas aman.')
-          ..actions = const ['gizi'],
+        Message(
+          Role.meira,
+          'Dicatat untuk makan siang. Energi hari ini sekitar 760 dari 1.790 kkal. Gula, lemak, dan garam masih dalam batas aman.',
+        )..actions = const ['gizi'],
         Message(Role.user, 'Boleh makan sekarang?'),
-        Message(Role.meira, 'Menurut jadwal 16:8, sebaiknya tunggu sampai pukul 12.00. Air putih, teh, atau kopi tanpa gula tetap boleh.')
-          ..actions = const ['puasa'],
+        Message(
+          Role.meira,
+          'Menurut jadwal 16:8, sebaiknya tunggu sampai pukul 12.00. Air putih, teh, atau kopi tanpa gula tetap boleh.',
+        )..actions = const ['puasa'],
       ]);
     await show(const ChatScreen());
     await run('obrolan', const Duration(milliseconds: 3000));
 
-    // 4. Gizi Seimbang
+    // 5. Gizi Seimbang
     await show(const HealthScreen());
     await run('gizi', const Duration(milliseconds: 1800));
     for (var i = 0; i < 16; i++) {
@@ -178,7 +266,7 @@ void main() {
     }
     await run('gizi', const Duration(milliseconds: 1500));
 
-    // 5. buku resep dan tur singkat
+    // 6. buku resep dan tur singkat
     await show(const RecipeBookScreen(filter: 1));
     await run('resep', const Duration(milliseconds: 1800));
     await show(const TourScreen());
