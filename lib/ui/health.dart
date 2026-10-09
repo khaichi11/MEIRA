@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../app_state.dart';
 import '../core/body.dart';
@@ -481,6 +482,7 @@ class _AddFoodState extends State<_AddFood> {
                 onPressed: () async {
                   final grams = f.portion.$1 * _count;
                   await s.logIntake(IntakeEntry(DateTime.now(), widget.slot, f.name, grams, f.per100.scale(grams / 100)));
+                  HapticFeedback.lightImpact();
                   if (context.mounted) Navigator.pop(context);
                 },
                 child: const Text('Simpan'),
@@ -656,6 +658,7 @@ class WeightCard extends StatelessWidget {
     );
     c.dispose();
     if (kg == null || kg < 25 || kg > 300) return;
+    HapticFeedback.lightImpact();
     await s.logWeight(kg);
     final b = s.body;
     if (b != null) await s.setBody(BodyProfile(heightCm: b.heightCm, weightKg: kg, age: b.age, male: b.male, activity: b.activity));

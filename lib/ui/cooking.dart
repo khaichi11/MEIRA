@@ -226,8 +226,12 @@ class _CookingScreenState extends State<CookingScreen> {
                               // resep yang selesai dimasak masuk ke jejak masak di beranda
                               await s.logCooked(r);
                               if (!context.mounted) return;
-                              toast(context, s.streak > 1 ? 'Tercatat. ${s.streak} hari memasak berturut-turut.' : 'Tercatat di jejak masak.');
-                              Navigator.pop(context);
+                              HapticFeedback.mediumImpact();
+                              await showDialog<void>(
+                                context: context,
+                                builder: (_) => CookedDialog(recipe: r.name, streak: s.streak),
+                              );
+                              if (context.mounted) Navigator.pop(context);
                             },
                       child: Text(_step < r.steps.length - 1 ? 'Langkah berikutnya' : 'Selesai'),
                     ),
@@ -240,4 +244,63 @@ class _CookingScreenState extends State<CookingScreen> {
       ),
     );
   }
+}
+
+/// Perayaan kecil setelah resep selesai dimasak: tanda centang memantul dan rentetan hari memasak.
+class CookedDialog extends StatelessWidget {
+  const CookedDialog({super.key, required this.recipe, required this.streak});
+  final String recipe;
+  final int streak;
+
+  @override
+  Widget build(BuildContext context) => Dialog(
+    backgroundColor: C.bg,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(24, 28, 24, 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.elasticOut,
+            builder: (_, v, child) => Transform.scale(scale: v, child: child),
+            child: Container(
+              width: 84,
+              height: 84,
+              decoration: const BoxDecoration(color: C.herbTint, shape: BoxShape.circle),
+              child: const Icon(Icons.check_rounded, size: 52, color: C.herb),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text('Selamat menikmati', style: T.title),
+          const SizedBox(height: 6),
+          Text(recipe, style: T.callout, textAlign: TextAlign.center),
+          const SizedBox(height: 14),
+          if (streak > 0)
+            FadeIn(
+              delay: const Duration(milliseconds: 350),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(color: C.accentTint, borderRadius: BorderRadius.circular(20)),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Pulse(child: Icon(Icons.local_fire_department_rounded, color: C.accentDeep, size: 20)),
+                    const SizedBox(width: 6),
+                    Text(
+                      '$streak hari memasak berturut-turut',
+                      style: inter(14, weight: FontWeight.w600, color: C.accentDeep),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          const SizedBox(height: 10),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup')),
+        ],
+      ),
+    ),
+  );
 }

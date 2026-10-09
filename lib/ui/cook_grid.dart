@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../app_state.dart';
 
 import '../theme.dart';
 import 'widgets.dart';
@@ -22,6 +25,29 @@ class _CookGridState extends State<CookGrid> with SingleTickerProviderStateMixin
   void dispose() {
     _in.dispose();
     super.dispose();
+  }
+
+  static const _months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+  void _showDay(BuildContext context, AppState s, DateTime day, int n) {
+    HapticFeedback.selectionClick();
+    final names = {for (final r in s.recipes) r.id: r.name};
+    final cooked = [
+      for (final (t, id) in s.cooks)
+        if (t.year == day.year && t.month == day.month && t.day == day.day) names[id] ?? id,
+    ];
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 3),
+          content: Text(
+            '${day.day} ${_months[day.month - 1]}: ${n == 0 ? 'belum ada masakan' : cooked.join(', ')}',
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      );
   }
 
   @override
@@ -53,13 +79,17 @@ class _CookGridState extends State<CookGrid> with SingleTickerProviderStateMixin
                           padding: const EdgeInsets.only(bottom: 3),
                           child: Transform.scale(
                             scale: t,
-                            child: Container(
-                              width: cell,
-                              height: cell,
-                              decoration: BoxDecoration(
-                                color: future ? Colors.transparent : _shades[n.clamp(0, 4)],
-                                borderRadius: BorderRadius.circular(3),
-                                border: day == end ? Border.all(color: C.accentDeep, width: 1.2) : null,
+                            child: GestureDetector(
+                              // ketuk kotak untuk melihat masakan hari itu
+                              onTap: future ? null : () => _showDay(context, s, day, n),
+                              child: Container(
+                                width: cell,
+                                height: cell,
+                                decoration: BoxDecoration(
+                                  color: future ? Colors.transparent : _shades[n.clamp(0, 4)],
+                                  borderRadius: BorderRadius.circular(3),
+                                  border: day == end ? Border.all(color: C.accentDeep, width: 1.2) : null,
+                                ),
                               ),
                             ),
                           ),
