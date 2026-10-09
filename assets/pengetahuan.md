@@ -426,3 +426,23 @@ Obesitas adalah kelebihan lemak tubuh yang dapat mengganggu kesehatan. Di Indone
 ## Cara memasak yang lebih ringan
 kunci: masak sehat rendah lemak kukus rebus panggang tumis sedikit minyak ganti goreng
 Mengukus, merebus, memanggang, atau menumis dengan sedikit minyak membuat masakan lebih ringan daripada menggoreng dalam minyak banyak. Pakai santan encer atau kurangi jumlahnya, kurangi gula dan kecap manis, dan perkuat rasa dengan bumbu dapur, rempah, serta perasan jeruk nipis.
+
+## Fitur jejak masak
+kunci: jejak masak kotak streak rentetan hari memasak tercatat fitur
+Jejak masak di beranda berisi kotak per hari yang terisi setiap kali Anda menyelesaikan mode memasak atau menandai "Sudah saya masak" di halaman resep. Makin pekat warnanya, makin sering Anda memasak hari itu, dan rentetan hari memasak tampil di pojok kartu.
+
+## Fitur Gizi Seimbang
+kunci: gizi seimbang fitur program kalkulator tubuh imt berat badan ideal kebutuhan harian catat makan
+Gizi Seimbang berisi kalkulator tubuh untuk IMT, berat badan ideal, dan kebutuhan harian; catatan makan per waktu makan dengan batas gula, garam, dan lemak; progres berat; puasa berselang; serta rencana makan dari resep yang lebih ringan. Buka dari kartu Gizi Seimbang di beranda, atau minta di obrolan, misalnya "buka kalkulator".
+
+## Mencatat makanan dan berat badan
+kunci: catat makan makanan hari ini berat badan progres cara mencatat obrolan
+Makanan bisa dicatat lewat tombol tambah di Gizi Seimbang, atau lewat obrolan, misalnya "tadi pagi saya makan nasi goreng 1 piring". Berat badan dicatat dengan mengetik misalnya "berat saya 70 kg". Semua catatan hanya disimpan di ponsel.
+
+## Puasa berselang
+kunci: puasa berselang intermittent fasting jendela makan 16:8 notifikasi pengingat
+Puasa berselang mengatur jendela makan harian, misalnya pola 16:8 berarti makan selama 8 jam dan berpuasa 16 jam. MEIRA memberi pengingat saat waktu makan dimulai dan selesai, dan jadwalnya bisa digeser kapan saja. Pola ini tidak disarankan untuk ibu hamil atau menyusui, penderita diabetes, orang dengan gangguan makan, dan anak.
+
+## Membaca label gizi kemasan
+kunci: label gizi kemasan informasi nilai gizi foto takaran saji sajian per kemasan nugget mi instan
+Foto bagian "Informasi Nilai Gizi" di kemasan, dan MEIRA membaca takaran saji, jumlah sajian per kemasan, energi, lemak, gula, dan garam. Jawabannya menghitung satu sajian dan satu kemasan penuh dibandingkan kebutuhan harian Anda, beserta saran porsi. Bila ada angka yang terbaca keliru, ketik angka yang benar.

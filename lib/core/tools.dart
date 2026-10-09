@@ -247,6 +247,33 @@ ToolReply? appTool(String text, AppData d) {
     return ToolReply('Hari ini Anda mencatat ${_join(bySlot)}. ${daySummary(total, Targets.of(d.needs))}', actions: const ['gizi']);
   }
 
+  // "makan malam apa yang cocok?": resep sehat untuk waktu makan itu dan sisa batas hari ini
+  final slotAsk = RegExp(
+    r'\b(sarapan|makan pagi|makan siang|makan malam|camilan|ngemil|nyemil)\b.*\b(apa|yang)\b.*\b(cocok|enak|sehat|sebaiknya|bagus)\b|'
+    r'\bsebaiknya (saya |aku )?makan apa\b',
+  );
+  if (slotAsk.hasMatch(t) && !RegExp(r'\b(bahan|foto|resep untuk)\b').hasMatch(t)) {
+    final slot = slotFor(t, DateTime.now());
+    final plan = dailyPlan(d.recipes, DateTime.now());
+    final pick = plan.where((p) => p.$1 == slot).firstOrNull ?? plan.firstOrNull;
+    if (pick != null) {
+      final total = d.intakeToday.fold(const Nutrients(), (a, e) => a + e.nutrients);
+      final tg = Targets.of(d.needs);
+      final left = (tg.energy - total.energy).round();
+      final watch = [
+        if (levelOf(total.salt, tg.salt) != Level.safe) 'garam',
+        if (levelOf(total.sugar, tg.sugar) != Level.safe) 'gula',
+        if (levelOf(total.fat, tg.fat) != Level.safe) 'lemak',
+      ];
+      return ToolReply(
+        'Untuk ${slot.toLowerCase()}, coba ${pick.$2.name} (${pick.$2.minutes} menit), resep yang tergolong ringan. '
+        '${left > 0 ? 'Sisa energi hari ini sekitar $left kkal.' : 'Energi hari ini sudah mencapai kebutuhan, jadi porsinya kecil saja.'}'
+        '${watch.isEmpty ? '' : ' Karena ${_join(watch)} hari ini sudah tinggi, pilih masakan yang tidak asin, manis, atau berminyak.'}',
+        actions: const ['gizi'],
+      );
+    }
+  }
+
   final n = d.needs;
   final mine = _mine.hasMatch(t) || RegExp(r'\bberapa\b').hasMatch(t);
   ToolReply needBody() => const ToolReply(
