@@ -290,23 +290,32 @@ class TodayCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final s = Scope.of(context);
     final t = Targets.of(s.needs);
-    final total = s.intakeToday.fold(const Nutrients(), (a, e) => a + e.nutrients);
-    final over = [levelOf(total.sugar, t.sugar), levelOf(total.fat, t.fat), levelOf(total.salt, t.salt)].contains(Level.over);
+    final today = s.intakeToday;
+    final total = today.fold(const Nutrients(), (a, e) => a + e.nutrients);
+    final over =
+        [levelOf(total.sugar, t.sugar), levelOf(total.fat, t.fat), levelOf(total.salt, t.salt)].contains(Level.over) || total.energy > t.energy;
+    // hari tanpa catatan tidak disebut "aman": angkanya nol karena belum dicatat, bukan karena pilihannya baik
+    final (badge, tone) = today.isEmpty ? ('Belum dicatat', C.secondary) : (over ? ('Ada yang lewat batas', C.clay) : ('Masih aman', C.herb));
     return _Card(
       title: 'Hari ini',
       icon: Icons.today_rounded,
       color: over ? C.clay : C.accent,
       action: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        decoration: BoxDecoration(color: (over ? C.clay : C.herb).withValues(alpha: .12), borderRadius: BorderRadius.circular(20)),
+        decoration: BoxDecoration(color: tone.withValues(alpha: .12), borderRadius: BorderRadius.circular(20)),
         child: Text(
-          over ? 'Ada yang lewat batas' : 'Masih aman',
-          style: inter(12.5, weight: FontWeight.w600, color: over ? C.clay : C.herb),
+          badge,
+          style: inter(12.5, weight: FontWeight.w600, color: tone),
         ),
       ),
       child: Column(
         children: [
-          _Meter(label: 'Energi', value: total.energy, target: t.energy, unit: 'kkal', limit: false),
+          if (today.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Text('Tambahkan makanan di bawah, atau ketik "tadi pagi saya makan roti" di obrolan.', style: T.footnote),
+            ),
+          _Meter(label: 'Energi', value: total.energy, target: t.energy, unit: 'kkal', limit: total.energy > t.energy),
           _Meter(label: 'Protein', value: total.protein, target: t.protein, unit: 'g', limit: false),
           _Meter(label: 'Gula', value: total.sugar, target: t.sugar, unit: 'g'),
           _Meter(label: 'Lemak', value: total.fat, target: t.fat, unit: 'g'),
@@ -354,7 +363,17 @@ class MealsCard extends StatelessWidget {
               Dismissible(
                 key: ObjectKey(e),
                 direction: DismissDirection.endToStart,
-                onDismissed: (_) => s.removeIntake(e),
+                onDismissed: (_) {
+                  s.removeIntake(e);
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: Text('${e.food} dihapus'),
+                        action: SnackBarAction(label: 'Urungkan', onPressed: () => s.logIntake(e)),
+                      ),
+                    );
+                },
                 background: Container(
                   alignment: Alignment.centerRight,
                   padding: const EdgeInsets.only(right: 12),

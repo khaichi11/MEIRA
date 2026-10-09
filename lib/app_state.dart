@@ -183,7 +183,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
 
   @override
   Future<void> logWeight(double kg) async {
-    weights.add((DateTime.now(), kg));
+    // satu catatan per hari: timbang ulang di hari yang sama mengganti angka hari itu
+    final now = DateTime.now();
+    if (weights.isNotEmpty && _day(weights.last.$1) == _day(now)) weights.removeLast();
+    weights.add((now, kg));
     final p = await SharedPreferences.getInstance();
     await p.setStringList('weight_log', [for (final (t, w) in weights) '${t.toIso8601String()}|$w']);
     notifyListeners();
