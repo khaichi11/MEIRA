@@ -9,7 +9,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageFilter, ImageStat
 
 BODY = (44, 54, 74)  # biru batu tua, bukan hitam
 RIM = (92, 104, 128)  # garis tepi tipis agar badan terlihat bervolume
@@ -88,16 +88,33 @@ def overlay(w: int, h: int) -> Image.Image:
 def add_bars(im: Image.Image) -> Image.Image:
     """Tambahkan ruang bilah status di atas dan ruang tipis di bawah untuk tangkapan layar tanpa bilah status.
 
-    Warna ruang tambahan diambil dari baris teratas dan terbawah tangkapan layar, sehingga isi aplikasi tidak
-    terpotong lengkung sudut bingkai dan lubang kamera tidak menutupi judul halaman.
+    Bila tepi atas berwarna rata, ruang bilah status diisi warna itu; bila tepinya berupa foto atau beberapa warna,
+    tiap kolom diisi rata-rata warnanya lalu dihaluskan, sehingga warna tepi seolah berlanjut di balik bilah status. Ruang bawah diisi warna
+    yang paling banyak di baris terbawah. Baris tepi tidak pernah direntangkan, karena baris yang memotong teks akan
+    tampak seperti garis-garis.
     """
     w, h = im.size
     top, bottom = round(h * 0.035), round(h * 0.02)
     out = Image.new("RGB", (w, h + top + bottom))
-    out.paste(im.crop((0, 0, w, 1)).resize((w, top)), (0, 0))
+    out.paste(_bar(im.crop((0, 0, w, top)), edge=0), (0, 0))
     out.paste(im, (0, top))
-    out.paste(im.crop((0, h - 1, w, h)).resize((w, bottom)), (0, top + h))
+    # bagian bawah selalu warna rata: di sana tepi tangkapan layar biasanya memotong teks, bukan foto
+    out.paste(edge_color(im.crop((0, h - 1, w, h))), (0, top + h, w, top + h + bottom))
     return out
+
+
+def _bar(strip: Image.Image, edge: int) -> Image.Image:
+    """Isi ruang tambahan dari pita tepi: warna rata, atau warna rata-rata tiap kolom bila pita itu berupa foto."""
+    if max(ImageStat.Stat(strip).stddev) < 12:
+        return Image.new("RGB", strip.size, edge_color(strip.crop((0, edge, strip.width, edge + 1))))
+    # rata-rata tiap kolom lalu dihaluskan ke samping: warna foto berlanjut tanpa garis-garis tegak yang tajam
+    line = strip.resize((strip.width, 1), Image.BOX).filter(ImageFilter.GaussianBlur(4))
+    return line.resize(strip.size, Image.BILINEAR)
+
+
+def edge_color(row: Image.Image) -> tuple[int, int, int]:
+    """Warna yang paling sering muncul pada satu baris piksel."""
+    return max(row.getcolors(row.width * row.height))[1]
 
 
 def phone(screen: Image.Image, status_bar: bool | None = True) -> Image.Image:
