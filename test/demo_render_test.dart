@@ -66,10 +66,7 @@ void main() {
     final history = await tester.runAsync(() => History.open(at: tmp, factory: databaseFactoryFfi));
     final models = Models.at(tmp);
     await tester.runAsync(_fonts);
-    final kb = KnowledgeBase.parse(
-      File('assets/pengetahuan.md').readAsStringSync(),
-      facts: File('assets/pengetahuan_luas.jsonl').readAsStringSync(),
-    );
+    final kb = KnowledgeBase.parse(File('assets/pengetahuan.md').readAsStringSync(), facts: File('assets/pengetahuan_luas.jsonl').readAsStringSync());
     final s = AppState()
       ..recipes = parseRecipes(File('assets/resep.md').readAsStringSync())
       ..knowledge = kb
@@ -84,33 +81,7 @@ void main() {
       ..history = history!
       ..models = models;
     final now = DateTime.now();
-    for (final (i, d) in [
-      0,
-      1,
-      2,
-      3,
-      5,
-      6,
-      8,
-      9,
-      10,
-      13,
-      15,
-      16,
-      17,
-      20,
-      22,
-      23,
-      27,
-      29,
-      30,
-      34,
-      36,
-      41,
-      43,
-      44,
-      50,
-    ].indexed) {
+    for (final (i, d) in [0, 1, 2, 3, 5, 6, 8, 9, 10, 13, 15, 16, 17, 20, 22, 23, 27, 29, 30, 34, 36, 41, 43, 44, 50].indexed) {
       for (var k = 0; k <= i % 3; k++) {
         s.cooks.add((now.subtract(Duration(days: d)), s.recipes[(i * 7 + k) % s.recipes.length].id));
       }
@@ -129,15 +100,7 @@ void main() {
       ('Makan siang', 'ayam goreng', 100.0),
     ]) {
       final f = foods[name]!;
-      s.intake.add(
-        IntakeEntry(
-          DateTime(now.year, now.month, now.day, slot == 'Sarapan' ? 7 : 12),
-          slot,
-          f.name,
-          grams,
-          f.per100.scale(grams / 100),
-        ),
-      );
+      s.intake.add(IntakeEntry(DateTime(now.year, now.month, now.day, slot == 'Sarapan' ? 7 : 12), slot, f.name, grams, f.per100.scale(grams / 100)));
     }
 
     tester.view.physicalSize = const Size(1080, 2340);
@@ -244,15 +207,11 @@ void main() {
       ..chatMode = 'gizi'
       ..messages.addAll([
         Message(Role.user, 'Tadi siang saya makan nasi dan ayam goreng'),
-        Message(
-          Role.meira,
-          'Dicatat untuk makan siang. Energi hari ini sekitar 760 dari 1.790 kkal. Gula, lemak, dan garam masih dalam batas aman.',
-        )..actions = const ['gizi'],
+        Message(Role.meira, 'Dicatat untuk makan siang. Energi hari ini sekitar 620 dari 1.800 kkal. Gula, lemak, dan garam masih dalam batas aman.')
+          ..actions = const ['gizi'],
         Message(Role.user, 'Boleh makan sekarang?'),
-        Message(
-          Role.meira,
-          'Menurut jadwal 16:8, sebaiknya tunggu sampai pukul 12.00. Air putih, teh, atau kopi tanpa gula tetap boleh.',
-        )..actions = const ['puasa'],
+        Message(Role.meira, 'Menurut jadwal 16:8, sebaiknya tunggu sampai pukul 12.00. Air putih, teh, atau kopi tanpa gula tetap boleh.')
+          ..actions = const ['puasa'],
       ]);
     await show(const ChatScreen());
     await run('obrolan', const Duration(milliseconds: 3000));
