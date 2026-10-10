@@ -211,7 +211,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('MEIRA', style: poppins(18, weight: FontWeight.w600, spacing: 1)),
-                  Text('Multimodal Edge Intelligence for Recipe Assistance', style: T.footnote),
+                  Text('Multimodal Eating Intelligence & Recipe Assistant', style: T.footnote),
                   Text('Versi 0.3.0', style: T.caption),
                 ],
               ),

@@ -334,7 +334,7 @@ class _IntroScreenState extends State<IntroScreen> with SingleTickerProviderStat
     children: [
       Text('MEIRA', style: poppins(30, weight: FontWeight.w600, spacing: 2)),
       const SizedBox(height: 4),
-      Text('Multimodal Edge Intelligence for Recipe Assistance', textAlign: TextAlign.center, style: T.subhead),
+      Text('Multimodal Eating Intelligence & Recipe Assistant', textAlign: TextAlign.center, style: T.subhead),
       const SizedBox(height: 28),
       SizedBox(
         width: 160,

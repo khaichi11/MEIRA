@@ -96,9 +96,28 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
   bool readPackages = true;
   bool healthyMode = false; // "enak dan sehat"
   bool tourDone = true; // tur singkat fitur sudah dilihat atau dilewati
-  String chatMode = 'resep'; // resep atau gizi: obrolan yang sama dengan fokus berbeda
+  String chatMode = 'resep'; // resep atau gizi: masing-masing punya obrolannya sendiri
+
+  /// Obrolan tab yang sedang tidak dibuka. Berpindah tab menyimpan obrolan yang sedang tampil (pesan, foto, dan sesi
+  /// resep) lalu memulihkan obrolan tab tujuan, sehingga percakapan resep dan gizi tidak bercampur.
+  final Map<String, _Thread> _threads = {};
 
   void setChatMode(String v) {
+    if (v == chatMode) return;
+    if (busy) return; // jawaban yang sedang ditulis tetap masuk ke obrolan asalnya
+    _threads[chatMode] = _Thread(session, photo, photoSize, List.of(detections), sceneMode, dish, List.of(messages));
+    final t = _threads.remove(v);
+    session = t?.session;
+    photo = t?.photo;
+    photoSize = t?.photoSize;
+    detections = t?.detections ?? [];
+    partial = [];
+    sceneMode = t?.sceneMode;
+    dish = t?.dish;
+    highlighted = {};
+    messages
+      ..clear()
+      ..addAll(t?.messages ?? const []);
     chatMode = v;
     meira?.chatMode = v;
     notifyListeners();
@@ -1078,4 +1097,16 @@ class CustomDataset {
     final img = File('${d.path}/images/$id.jpg');
     if (img.existsSync()) await img.delete();
   }
+}
+
+/// Satu obrolan tab Resep atau Gizi yang disimpan saat tab lain dibuka.
+class _Thread {
+  _Thread(this.session, this.photo, this.photoSize, this.detections, this.sceneMode, this.dish, this.messages);
+  final Session? session;
+  final Uint8List? photo;
+  final Size? photoSize;
+  final List<Detection> detections;
+  final String? sceneMode;
+  final String? dish;
+  final List<Message> messages;
 }

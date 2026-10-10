@@ -2,7 +2,7 @@
 
 # MEIRA
 
-Multimodal Edge Intelligence for Recipe Assistance: asisten dapur dan gizi luring untuk Android. Potret bahan di
+Multimodal Eating Intelligence & Recipe Assistant: asisten dapur dan gizi luring untuk Android. Potret bahan di
 dapur Anda, lalu MEIRA memberi nomor pada setiap bahan, membaca tulisan kemasan, dan menyarankan resep dari buku resep
 di ponsel. MEIRA juga menyimpan catatan makan, berat badan, dan jadwal puasa Anda, dan menjawab lewat ketikan atau
 suara.

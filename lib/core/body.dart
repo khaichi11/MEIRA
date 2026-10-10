@@ -58,6 +58,21 @@ class DailyNeeds {
       'gula paling banyak $sugar g, dan garam paling banyak $salt g.';
 }
 
+/// Kebutuhan umum orang dewasa (AKG 2019 rata-rata dan batas Permenkes 30/2013), dipakai bila data tubuh belum diisi.
+const generalNeeds = DailyNeeds(
+  bmi: 0,
+  category: '',
+  idealMin: 0,
+  idealMax: 0,
+  broca: 0,
+  energy: 2150,
+  protein: 60,
+  fat: 67,
+  carbs: 320,
+  sugar: 50,
+  salt: 5,
+);
+
 String bmiCategory(double bmi) => bmi < 17
     ? 'Berat badan kurang tingkat berat'
     : bmi < 18.5
@@ -98,7 +113,7 @@ String _n(int v) => v >= 1000 ? '${v ~/ 1000}.${(v % 1000).toString().padLeft(3,
 
 /// Perbandingan fakta gizi USDA (per 100 g) dengan kebutuhan harian pengguna, sebagai satu baris fakta yang sudah
 /// dihitung: model kecil tidak andal berhitung, jadi persentasenya disiapkan di sini dan model cukup menyampaikannya.
-String? compareWithNeeds(String title, String nutritionText, DailyNeeds n) {
+String? compareWithNeeds(String title, String nutritionText, DailyNeeds n, {String who = 'pengguna'}) {
   double? grab(String name) {
     final m = RegExp('$name ([\\d.,]+) (?:kkal|g|mg)').firstMatch(nutritionText);
     return m == null ? null : double.tryParse(m[1]!.replaceAll('.', '').replaceAll(',', '.'));
@@ -122,8 +137,8 @@ String? compareWithNeeds(String title, String nutritionText, DailyNeeds n) {
     if (sugar != null && pct(sugar, n.sugar) >= 30) 'gula',
     if (salt != null && pct(salt, n.salt) >= 30) 'garam',
   ];
-  return 'Dibandingkan kebutuhan harian pengguna, 100 gram $food memenuhi sekitar ${_join(parts)}.'
-      '${high.isEmpty ? ' Kandungannya masih wajar untuk porsi sedang.' : ' Kandungan ${_join(high)}-nya tinggi untuk 100 gram, jadi porsinya sebaiknya dibatasi.'}';
+  return 'Dibandingkan kebutuhan harian $who, 100 gram $food memenuhi sekitar ${_join(parts)}.'
+      '${high.isEmpty ? ' Kandungannya masih wajar untuk porsi sedang.' : ' Kandungan ${_join(high)}nya tinggi untuk 100 gram, jadi porsinya sebaiknya dibatasi.'}';
 }
 
 String _join(List<String> xs) => xs.length <= 1 ? xs.join() : '${xs.sublist(0, xs.length - 1).join(', ')} dan ${xs.last}';

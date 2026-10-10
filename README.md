@@ -2,7 +2,7 @@
 
 # MEIRA
 
-Multimodal Edge Intelligence for Recipe Assistance: an offline kitchen and nutrition assistant for Android. Take a
+Multimodal Eating Intelligence & Recipe Assistant: an offline kitchen and nutrition assistant for Android. Take a
 photo of your ingredients, and MEIRA puts a number on each one, reads package labels, and suggests recipes from a
 recipe book stored on the phone. It also keeps your meal log, weight, and fasting schedule, and answers questions by
 text or voice.

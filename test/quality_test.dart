@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:meira/core/slang.dart';
 import 'package:meira/core/body.dart';
 import 'package:meira/core/pipeline.dart';
 import 'package:meira/core/recipes.dart';
@@ -250,6 +251,12 @@ void main() {
     final line = compareWithNeeds('Kandungan gizi mi instan', mi, n)!;
     expect(line, contains('100 gram mi instan memenuhi sekitar 24% energi'));
     expect(line, contains('93% batas garam'));
-    expect(line, contains('garam-nya tinggi'));
+    expect(line, contains('garamnya tinggi'));
+  });
+
+  test('bahasa santai diubah ke bentuk baku', () {
+    expect(formalize('gimana bikin nasgor yg enak?'), 'bagaimana membuat nasi goreng yang enak?');
+    expect(formalize('mie instan aman ga sih'), 'mie instan aman tidak sih');
+    expect(formalize('enakkk bgt'), 'enak sekali');
   });
 }

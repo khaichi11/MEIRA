@@ -45,21 +45,26 @@ void main() {
       final tmp = await Directory.systemTemp.createTemp('meira_chat');
       sqfliteFfiInit();
       final history = await History.open(at: tmp, factory: databaseFactoryFfi);
-      final meira = Meira(
-        recipes: parseRecipes(File('assets/resep.md').readAsStringSync()),
-        history: history,
-        eyes: null,
-        brain: server.client,
-        useLlmIntent: false,
-        knowledge: KnowledgeBase.parse(
-          File('assets/pengetahuan.md').readAsStringSync(),
-          facts: File('assets/pengetahuan_luas.jsonl').readAsStringSync(),
-        ),
-      )..userName = 'Khai';
+      final meira =
+          Meira(
+              recipes: parseRecipes(File('assets/resep.md').readAsStringSync()),
+              history: history,
+              eyes: null,
+              brain: server.client,
+              useLlmIntent: false,
+              knowledge: KnowledgeBase.parse(
+                File('assets/pengetahuan.md').readAsStringSync(),
+                facts: File('assets/pengetahuan_luas.jsonl').readAsStringSync(),
+              ),
+            )
+            ..userName = 'Khai'
+            ..chatMode = Platform.environment['MEIRA_TEST_MODE'] ?? 'resep';
       try {
         final asked = (Platform.environment['MEIRA_TEST_ASK'] ?? '').split('|').where((q) => q.isNotEmpty).toList();
+        // satu sesi untuk semua pertanyaan, supaya pertanyaan lanjutan ("apa lanjutannya?") ikut teruji
+        final shared = Platform.environment['MEIRA_TEST_SHARED'] == '1' ? Session('obrolan') : null;
         for (final q in asked.isEmpty ? questions : asked) {
-          final s = Session('obrolan');
+          final s = shared ?? Session('obrolan');
           final sw = Stopwatch()..start();
           await for (final ev in meira.turn(s, text: q)) {
             if (ev is DoneEvent) print('[$q] (${ev.source}, ${sw.elapsedMilliseconds} ms)\n  ${ev.text}\n');

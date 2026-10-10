@@ -24,6 +24,7 @@ import 'intake.dart';
 import 'label.dart';
 import 'history.dart';
 import 'recipes.dart';
+import 'slang.dart';
 import 'tools.dart';
 import 'vocab.dart';
 
@@ -86,6 +87,8 @@ class Session {
   List<String> dishGuess = [];
   String? guess; // bahan utama menurut model penglihatan bila detektor tidak mengenalnya, misalnya buah naga
   NutritionLabel? label; // label gizi kemasan yang terbaca dari foto
+  String? lastTopic; // makanan atau catatan yang terakhir dibahas, untuk pertanyaan lanjutan seperti "apa lanjutannya?"
+  bool lastNutrition = false; // jawaban terakhir berupa fakta gizi
   List<Detection> detections = [];
   VisionInput? visionInput; // foto siap pakai untuk detektor dan OCR (tidak disimpan ke riwayat)
   VisionResult? visionResult;
@@ -460,6 +463,8 @@ class Meira {
     if (text.isNotEmpty || imageDataUrl != null) {
       await history.addMessage(s.id, 'user', text.isEmpty ? '(foto)' : text, {'photo': imageDataUrl != null});
     }
+    // bahasa santai diubah ke bentuk baku untuk aturan, pencarian, dan model; riwayat tetap menyimpan kalimat asli
+    text = formalize(text);
     if (imageDataUrl != null) {
       s
         ..imageDataUrl = imageDataUrl
@@ -544,6 +549,30 @@ class Meira {
       return;
     }
 
+    // "ini gizi atau resep?": dijelaskan dari tab yang sedang dibuka
+    if (imageDataUrl == null && _tabQuestion.hasMatch(text.toLowerCase())) {
+      final here = chatMode == 'gizi' ? 'Gizi' : 'Resep';
+      final answer =
+          'Anda sedang di tab $here. Tab Resep untuk mencari resep dari foto bahan atau nama hidangan beserta langkahnya, '
+          'sedangkan tab Gizi untuk kandungan gizi, kecocokan makanan dengan kebutuhan harian, label gizi kemasan, catatan '
+          'makan, dan jendela makan. Setiap tab menyimpan percakapannya sendiri.';
+      yield TokenEvent(answer);
+      await _remember(s, text, answer, 'fitur');
+      yield DoneEvent(answer, 'fitur');
+      return;
+    }
+    // pertanyaan lanjutan tanpa topik ("apa lanjutannya?") melanjutkan topik terakhir, bukan ditolak sebagai di luar topik
+    if (imageDataUrl == null && s.lastTopic != null && _followUp.hasMatch(text.toLowerCase())) {
+      final gizi = s.lastNutrition ? knowledge?.link(s.lastTopic!, nutrition: true).where((f) => f.nutrition).firstOrNull : null;
+      if (gizi != null) {
+        final answer = _nutritionAnswer(text, gizi, more: true);
+        yield TokenEvent(answer);
+        await _remember(s, text, answer, 'fakta');
+        yield DoneEvent(answer, 'fakta');
+        return;
+      }
+      text = 'Jelaskan lebih lengkap tentang ${s.lastTopic}';
+    }
     // perintah fitur: catat berat atau makanan, isi data tubuh, tanya IMT, progres, jejak masak, atau buka fitur
     final tool = imageDataUrl == null && text.isNotEmpty ? (appData != null ? appTool(text, appData!) : greetingTool(text, null)) : null;
     if (tool != null) {
@@ -565,11 +594,15 @@ class Meira {
     }
     if (text.isNotEmpty && imageDataUrl == null) {
       // dalam sesi yang sudah punya foto atau resep, permintaan lanjutan seperti "aku mau yang cepat" tetap soal dapur
-      final inContext = s.imageDataUrl != null || s.current != null;
+      // percakapan yang sedang membahas sebuah makanan juga dihitung, supaya pertanyaan susulan yang pendek tidak ditolak
+      final inContext = s.imageDataUrl != null || s.current != null || (s.lastTopic != null && text.split(' ').length <= 8);
       // istilah yang ada di catatan dapur atau basis pengetahuan ("adonan", "ungkep", "klepon") juga soal dapur
       final known = knowledge != null && (knowledge!.covers(text) || knowledge!.link(text).isNotEmpty);
       final guard = Guardrails.checkInput(text, knownIngredient: inContext || known || Guardrails.kitchenRequest(text), ragScore: ragScore(text));
-      if (!guard.allowed) {
+      // pertanyaan makanan untuk kondisi kesehatan ("bolehkah penderita diabetes makan durian?") dijawab dengan fakta gizi
+      // makanannya beserta anjuran ke dokter, bukan ditolak; diagnosis dan pengobatan tetap ditolak
+      final foodFacts = guard.verdict == GuardVerdict.medical && (knowledge?.link(text, nutrition: true).any((f) => f.nutrition) ?? false);
+      if (!guard.allowed && !foodFacts) {
         yield TokenEvent(guard.reply);
         if (guard.verdict == GuardVerdict.offTopic) yield ActionsEvent(const ['resep', 'gizi', 'tur']);
         await _remember(s, text, guard.reply, 'pengaman');
@@ -585,7 +618,13 @@ class Meira {
     }
     // pertanyaan gizi ("mi instan masih cocok untuk saya?", "berapa kalori nasi goreng?") dijawab dari fakta gizi,
     // bukan dengan rekomendasi resep
-    if (it.action == 'rekomendasi' && _nutritionQuestion.hasMatch(text.toLowerCase())) it.action = 'obrolan';
+    if (it.action == 'rekomendasi' &&
+        (_nutritionQuestion.hasMatch(text.toLowerCase()) ||
+            (KnowledgeBase.asksNutrition(text) &&
+                !_cookingWords.hasMatch(text.toLowerCase()) &&
+                (knowledge?.link(text, nutrition: true).any((f) => f.nutrition) ?? false)))) {
+      it.action = 'obrolan';
+    }
     // "buah naga bisa dibuat apa?": makanan yang tidak ada di kosakata maupun nama resep dijawab dari fakta, bukan
     // dengan resep acak yang kebetulan berbagi kata
     if (it.action == 'rekomendasi' &&
@@ -598,9 +637,20 @@ class Meira {
     // "resep rendang" atau "cara bikin soto ayam" tanpa foto: resep yang disebut namanya dipakai langsung; bila tidak
     // ada di buku resep, MEIRA berterus terang lalu menjelaskan hidangannya dari basis pengetahuan
     var noRecipe = '';
-    if (imageDataUrl == null && s.currentMatch == null && s.have().isEmpty && (it.action == 'rekomendasi' || it.action == 'detail')) {
+    if (imageDataUrl == null && s.have().isEmpty && (it.action == 'rekomendasi' || it.action == 'detail')) {
       final named = findRecipe(recipes, text);
-      if (named != null) {
+      // hidangan lain yang disebut di tengah percakapan ("ayam goreng biar renyah gimana?") tidak dijawab dengan resep
+      // yang sedang dibahas; pertanyaan kiat ("biar", "supaya") dijawab dari catatan dapur bila ada
+      final current = s.currentMatch?.recipe;
+      final elsewhere = current == null || (named != null && named.id != current.id && !_namesRecipe(current, text));
+      final tip =
+          RegExp(r'\b(biar|supaya|agar|tips?|kiat)\b').hasMatch(text) &&
+          (knowledge?.search(text, k: 1).any((n) => knowledge!.titleShares(n.$1, text)) ?? false);
+      if (!elsewhere) {
+        // tetap membahas resep yang sama
+      } else if (tip) {
+        it.action = 'obrolan';
+      } else if (named != null) {
         s.candidates = rank([named], const {}, Prefs(), k: 1);
         if (s.candidates.isEmpty) s.candidates = [Match(named, 0, [], [])];
         s.current = named.id;
@@ -616,6 +666,10 @@ class Meira {
     // pengetahuan, bukan permintaan menebak hidangan di foto
     if (it.action == 'hidangan' && imageDataUrl == null && (s.imageDataUrl == null || (knowledge?.link(text).isNotEmpty ?? false))) {
       it.action = 'obrolan';
+    }
+    // dalam sesi foto, menyebut bahan lain tanpa bertanya ("buah naga dan pisang") berarti bahan itu ikut dipakai
+    if (s.imageDataUrl != null && imageDataUrl == null && it.action == 'rekomendasi' && !text.contains('?')) {
+      it.include.addAll(mentions(text).where((k) => !s.have().contains(k) && !it.exclude.contains(k)));
     }
     // bahan yang baru disebut lewat ketikan ("ada telur juga") diakui di awal jawaban
     final added = it.include.difference(s.have());
@@ -754,6 +808,23 @@ class Meira {
     if (grounded) {
       var core = greet(s, template(s, task, extra));
       if (extra['added'] != null) core = 'Baik, ${extra['added']} saya catat. $core';
+      // bahan yang diminta tetapi tidak dipakai resep terpilih disebut terus terang, beserta resep yang memakainya
+      final unused = [
+        for (final k in s.prefs.include)
+          if (!cur.recipe.items.any((i) => i.key == k)) k,
+      ];
+      if ((task == 'rekomendasi' || task == 'hidangan') && unused.isNotEmpty) {
+        final names = unused.map(displayName).join(' dan ');
+        final using = recipes
+            .where((r) => r.id != cur.recipe.id && unused.every((k) => r.items.any((i) => i.key == k)))
+            .take(2)
+            .map((r) => r.name)
+            .toList();
+        final note =
+            'Buku resep belum punya resep yang memakai bahan di foto bersama $names, jadi $names belum dipakai di ${cur.recipe.name}.'
+            '${using.isEmpty ? '' : ' Resep yang memakai $names antara lain ${using.join(' dan ')}.'}';
+        core = core.replaceFirst(RegExp(r' Apakah Anda ingin'), ' $note Apakah Anda ingin');
+      }
       if (extra['guess'] != null) core = '${extra['guess']} $core';
       if (extra['fixed'] != null) core = '${extra['fixed']} $core';
       // mode enak dan sehat: satu saran agar resep lebih ringan, dari pedoman umum (lihat core/health.dart)
@@ -806,6 +877,24 @@ class Meira {
         ? <(Note, double, int)>[]
         : notes.where((n) => (n.$3 >= 2 || n.$2 >= Guardrails.ragThreshold || terms == 1) && cover(n) >= .6 && titled(n)).toList();
     final related = aboutPhoto ? <(Note, double, int)>[] : notes.where((n) => titled(n) && cover(n) >= .3).toList();
+    // pertanyaan gizi, keamanan, atau kecocokan makanan dijawab dari fakta gizi USDA yang sudah dihitung, bukan dari
+    // catatan cara memasak dan bukan dari karangan model ("kandungan nasi goreng", "apakah aman makan mie instan")
+    final asksGizi = KnowledgeBase.asksNutrition(text) || (chatMode == 'gizi' && !_cookingWords.hasMatch(text.toLowerCase()));
+    if (task == 'obrolan' && asksGizi) {
+      final gizi = (knowledge?.link(text, nutrition: true) ?? const <Fact>[]).where((f) => f.nutrition).toList();
+      if (gizi.isNotEmpty) {
+        final answer = _nutritionAnswer(text, gizi.first);
+        s.lastTopic = gizi.first.title.replaceFirst('Kandungan gizi ', '');
+        s.lastNutrition = true;
+        yield TokenEvent(answer);
+        await _remember(s, text, answer, 'fakta');
+        yield DoneEvent(answer, 'fakta');
+        return;
+      }
+    }
+    if (linked.isNotEmpty) s.lastTopic = linked.first.title.replaceFirst('Kandungan gizi ', '');
+    if (strong.isNotEmpty) s.lastTopic = strong.first.$1.title;
+    s.lastNutrition = false;
     // pengganti bahan yang tidak ada di resep terpilih juga dijawab dari catatan ("kalau tidak ada mentega, pakai apa?")
     final offRecipe = task == 'substitusi' && !(cur?.recipe.items.any((i) => i.key == resolve(extra['ingredient'] ?? '')) ?? false);
     if ((task == 'obrolan' || offRecipe) && strong.isNotEmpty) {
@@ -1084,6 +1173,64 @@ class Meira {
     await _remember(s, text.isEmpty ? '(foto baru)' : text, answer, about.isEmpty ? 'templat' : 'llm');
     yield DoneEvent(answer, about.isEmpty ? 'templat' : 'llm');
   }
+
+  /// Jawaban gizi dari fakta USDA: kandungan per 100 gram, perbandingan dengan kebutuhan harian (milik pengguna bila
+  /// data tubuh sudah diisi, atau kebutuhan umum orang dewasa), porsi umum, dan saran singkat. Semua angka dihitung di
+  /// sini, jadi tidak ada yang dikarang.
+  String _nutritionAnswer(String question, Fact f, {bool more = false}) {
+    final q = question.toLowerCase();
+    final name = f.title.replaceFirst('Kandungan gizi ', '');
+    final n = Nutrients.parse(f.text);
+    if (n == null) return f.text.replaceAll(RegExp(r' \((?:[^()]|\([^()]*\))*\)'), '');
+    String g(double v) => fmt(v);
+    final compare = compareWithNeeds(f.title, f.text, needs ?? generalNeeds, who: needs != null ? 'Anda' : 'orang dewasa pada umumnya') ?? '';
+    final portion = portions[name];
+    // pertanyaan lanjutan: saran cara makan yang lebih seimbang, bukan mengulang angka yang sama
+    if (more) {
+      final tips = [
+        if (n.sodium * 2.5 / 1000 >= 5 * .3) 'pakai setengah bumbu atau jangan habiskan kuahnya supaya garamnya berkurang',
+        if (n.fat >= 67 * .3) 'pilih yang dikukus, direbus, atau dipanggang, dan tiriskan minyaknya',
+        if (n.sugar >= 50 * .3) 'kurangi gula tambahan atau pilih yang tanpa gula',
+        if (n.protein < 5) 'tambahkan lauk berprotein seperti telur, tahu, tempe, atau ayam',
+        'padukan dengan sayur atau buah supaya seratnya cukup',
+      ];
+      final serving = portion == null ? '' : ' Satu ${portion.$2} sekitar ${portion.$1.round()} gram sudah cukup untuk sekali makan.';
+      return 'Agar $name lebih seimbang, ${tips.take(3).join(', ')}.$serving';
+    }
+    // zat yang tidak tercatat di USDA (misalnya gula durian) tidak ditulis 0
+    bool has(String w) => RegExp('$w [\\d,]+ ').hasMatch(f.text);
+    final items = [
+      'protein ${g(n.protein)} g',
+      if (has('lemak')) 'lemak ${g(n.fat)} g',
+      if (has('karbohidrat')) 'karbohidrat ${g(n.carbs)} g',
+      if (has('gula')) 'gula ${g(n.sugar)} g',
+      if (has('natrium')) 'natrium ${n.sodium.round()} mg',
+    ];
+    final facts = 'Per 100 gram, $name mengandung sekitar ${n.energy.round()} kkal, ${_list(items)} (perkiraan USDA).';
+    final serving = portion == null
+        ? ''
+        : ' Satu ${portion.$2} (sekitar ${portion.$1.round()} g) berisi kira-kira ${(n.energy * portion.$1 / 100).round()} kkal.';
+    final high = compare.contains('tinggi');
+    final asks = RegExp(r'\b(aman|boleh|bolehkah|cocok|sehat|bahaya|berbahaya)\b').hasMatch(q);
+    final advice = !asks
+        ? ''
+        : high
+        ? ' Jadi boleh dimakan sesekali dengan porsi kecil, diimbangi sayur dan makanan yang tidak asin, manis, atau berminyak di waktu makan lain.'
+        : ' Jadi aman dimakan dalam porsi wajar sebagai bagian dari menu yang seimbang.';
+    final condition = RegExp(r'\b(diabetes|darah tinggi|hipertensi|kolesterol|asam urat|hamil|ginjal)\b').hasMatch(q)
+        ? ' Untuk kondisi kesehatan tertentu, ikuti saran dokter atau ahli gizi.'
+        : '';
+    return '$facts $compare$serving$advice$condition'.replaceAll(RegExp(r'\s+'), ' ').trim();
+  }
+
+  /// Apakah teks menyebut resep [r] (kata khas namanya, bukan kata umum seperti "goreng").
+  static bool _namesRecipe(Recipe r, String text) {
+    final words = RegExp(r'[a-z]+').allMatches(r.name.toLowerCase()).map((m) => m[0]!).where((w) => w.length >= 4);
+    final t = text.toLowerCase();
+    return words.any((w) => !const {'goreng', 'rebus', 'kukus', 'bakar', 'tumis', 'sayur', 'kuah', 'saus', 'segar'}.contains(w) && t.contains(w));
+  }
+
+  static String _list(List<String> xs) => xs.length <= 1 ? xs.join() : '${xs.sublist(0, xs.length - 1).join(', ')}, dan ${xs.last}';
 
   /// Fakta hidangan dari buku resep: deskripsi, bahan utama, dan bumbu, untuk pertanyaan "apa itu klepon?".
   String _bookFact(Recipe r) {
@@ -1401,6 +1548,12 @@ String? correction(String text) {
   return name;
 }
 
+final _tabQuestion = RegExp(r'\b(ini|sekarang|tab|fokus|mode)\b.*\b(gizi\b.*\batau\b.*\bresep|resep\b.*\batau\b.*\bgizi)\b');
+final _followUp = RegExp(
+  r'^\W*(apa |terus |lalu |trus )?(lanjut|lanjutannya|lanjutkan|terusnya|selanjutnya|apa lagi|lagi dong|yang lain|lebih lanjut|'
+  r'lebih lengkap|lebih detail|jelaskan lagi|maksudnya|maksudnya apa|kenapa|kenapa begitu)\W*$',
+);
+final _cookingWords = RegExp(r'\b(cara|resep|masak|memasak|bikin|membuat|langkah|berapa lama|merebus|menggoreng|menyimpan|simpan)\b');
 final _nutritionQuestion = RegExp(
   r'\b(gizi|kalori|kkal|protein|lemak|karbohidrat|natrium|kandungan|cocok untuk (saya|aku)|masih ideal|ideal (nggak|gak|tidak|enggak)|'
   r'sehat (nggak|gak|tidak|enggak)|aman untuk diet|boleh (dimakan|makan) (saat|waktu) diet)\b',

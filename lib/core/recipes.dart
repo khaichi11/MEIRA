@@ -336,7 +336,10 @@ Intent ruleIntent(String text) {
   }
   if (pedasNegated) it.exclude.add('chili');
   if (action != 'cek') {
-    for (final mm in RegExp(r'(?:punya|ada|pakai|pake|stok)\s+([a-z ,]{3,50}?)(?=[.!?]| dong| ya| juga| di rumah| di kulkas| $)').allMatches(t)) {
+    // "punya telur", "mau campur pisang", "saya ingin menambahkan pisang", "ditambah susu"
+    for (final mm in RegExp(
+      r'(?:punya|ada|pakai|pake|stok|campur|dicampur|campurkan|tambah|tambahkan|menambahkan|ditambah|plus)\s+([a-z ,]{3,50}?)(?=[.!?]| dong| ya| juga| di rumah| di kulkas| $)',
+    ).allMatches(t)) {
       final before = t.substring(mm.start < 12 ? 0 : mm.start - 12, mm.start);
       if (mm.group(0)!.contains('di foto') || RegExp(r'\b(nggak|gak|tidak|ga|belum|jangan)( \w+)? $').hasMatch(before)) continue;
       it.include.addAll(mentions(mm.group(1)!));

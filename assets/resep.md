@@ -5438,3 +5438,22 @@ langkah:
 5. Goreng dengan api sedang sampai kuning keemasan.
 tip: Simpan kroket di kulkas 30 menit sebelum digoreng agar tidak pecah.
 alat: kukusan, wajan, mangkuk, spatula, garpu
+
+## smoothie-buah-naga-pisang | Smoothie Buah Naga Pisang | 5 | 2 | mudah
+tag: minuman, sarapan, manis, segar, sehat, tanpa-kompor, vegetarian
+desc: Minuman kental berwarna merah muda dari buah naga dan pisang yang diblender bersama susu atau yoghurt.
+bahan:
+- dragon_fruit* | 1 buah
+- banana* | 1 buah matang
+- milk | 200 ml
+- yogurt? | 3 sdm
+- honey? | 1 sdm
+- ice? | 4 kotak
+langkah:
+1. Belah buah naga, keruk daging buahnya, lalu potong-potong bersama pisang.
+2. Masukkan buah naga, pisang, susu, dan yoghurt ke blender.
+3. Blender sampai halus, lalu cicipi dan tambahkan madu bila ingin lebih manis.
+4. Tambahkan es batu, blender sebentar, dan sajikan segera.
+tip: Pisang yang matang dan dibekukan membuat smoothie lebih kental tanpa banyak es.
+alat: blender, pisau, talenan, gelas
+ganti: milk = susu kedelai atau air kelapa; yogurt = susu tambahan

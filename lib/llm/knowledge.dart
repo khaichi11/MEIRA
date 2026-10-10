@@ -31,7 +31,7 @@ class KnowledgeBase {
   KnowledgeBase(this.notes, {this.facts = const [], this.k1 = 1.4, this.b = .75}) {
     for (final f in facts) {
       for (final name in f.names) {
-        final key = norm(name);
+        final key = _spell(norm(name));
         if (key.length >= 3) _byName.putIfAbsent(key, () => []).add(f);
       }
       if (!f.nutrition) {
@@ -86,19 +86,27 @@ class KnowledgeBase {
 
   /// Fakta (bukan gizi) untuk satu nama makanan dalam bahasa Indonesia atau Inggris.
   Fact? named(String name) {
-    final key = norm(name);
+    final key = _spell(norm(name));
     return _byName[key]?.where((f) => !f.nutrition).firstOrNull ?? _byEnglish[key];
   }
 
   static final _nutritionWords = RegExp(
-    r'\b(gizi|nutrisi|kalori|kkal|protein|lemak|karbohidrat|vitamin|serat|kandungan|mineral|gula|garam|natrium|diet|ideal|cocok|sehat)\b',
+    r'\b(gizi|nutrisi|kalori|kkal|protein|lemak|karbohidrat|vitamin|serat|kandungan|mineral|gula|garam|natrium|diet|ideal|cocok|sehat|'
+    r'aman|boleh|bolehkah|bahaya|berbahaya|porsi|kolesterol|diabetes|darah tinggi|hipertensi|obesitas|asam urat)\b',
   );
+
+  /// Ejaan yang sering dipakai bergantian disamakan untuk nama makanan dan pertanyaan ("mie instan" dan "mi instan").
+  static const _spellings = {'mie': 'mi', 'telor': 'telur', 'satai': 'sate', 'sop': 'sup', 'kwetiaw': 'kwetiau', 'cabe': 'cabai'};
+  static String _spell(String t) => t.split(' ').map((w) => _spellings[w] ?? w).join(' ');
+
+  /// Apakah pertanyaan menyinggung gizi, keamanan, atau kecocokan makanan (bukan cara memasak).
+  static bool asksNutrition(String query) => _nutritionWords.hasMatch(' ${norm(query)} ');
 
   /// Fakta untuk makanan yang disebut namanya dalam pertanyaan, nama terpanjang lebih dulu ("pisang kepok" sebelum
   /// "pisang"). Fakta gizi hanya ikut bila pertanyaannya memang tentang gizi.
-  List<Fact> link(String query, {int max = 4}) {
-    var t = ' ${norm(query)} ';
-    final wantsNutrition = _nutritionWords.hasMatch(t);
+  List<Fact> link(String query, {int max = 4, bool nutrition = false}) {
+    var t = ' ${_spell(norm(query))} ';
+    final wantsNutrition = nutrition || _nutritionWords.hasMatch(t);
     final out = <Fact>[];
     for (final name in _names) {
       if (out.length >= max) break;

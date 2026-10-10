@@ -174,7 +174,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 foregroundColor: WidgetStateProperty.resolveWith((st) => st.contains(WidgetState.selected) ? C.accentDeep : C.secondary),
                 side: const WidgetStatePropertyAll(BorderSide(color: C.separator)),
               ),
-              onSelectionChanged: (v) => s.setChatMode(v.first),
+              onSelectionChanged: s.busy ? null : (v) => s.setChatMode(v.first),
             ),
           ),
         ),
