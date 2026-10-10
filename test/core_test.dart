@@ -78,6 +78,18 @@ void main() {
     });
   });
 
+  test('resep dicari menurut nama dengan ejaan yang bervariasi', () {
+    final recipes = parseRecipes(File('assets/resep.md').readAsStringSync());
+    String? id(String q) => findRecipe(recipes, q)?.id;
+    expect(id('resep soto ayam'), 'soto-ayam');
+    expect(id('cara bikin sup buntut'), 'sop-buntut');
+    expect(id('mi ayam'), 'mie-ayam');
+    expect(id('ketoprak tanpa lontong'), 'ketoprak');
+    expect(id('resep pempek'), 'pempek-ikan');
+    expect(id('klepon'), 'klepon');
+    expect(id('resep nasi goreng telur'), 'nasi-goreng-telur');
+  });
+
   test('rujukan nomor yang salah dibuang', () {
     final d = [
       Detection(key: 'banana', label: 'pisang', rawLabel: 'pisang', box: [0, 0, .1, .1], number: 1),

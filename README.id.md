@@ -28,7 +28,7 @@ suara.
 - Jejak masak di beranda terisi setiap hari Anda menyelesaikan resep.
 - Mode memasak menampilkan langkah satu per satu; pengatur waktu dimulai dengan ketukan atau perintah suara dan
   memberi pemberitahuan saat selesai.
-- Buku resep berisi lebih dari 230 resep dengan pencarian dan saringan, dan pilihan "Enak & sehat" mendahulukan resep
+- Buku resep berisi 285 resep, termasuk hidangan populer seperti soto ayam, rawon, pempek, dan klepon, dengan pencarian dan saringan, dan pilihan "Enak & sehat" mendahulukan resep
   yang lebih ringan.
 - Setelah model diunduh, aplikasi tidak memerlukan internet dan tidak ada data yang keluar dari ponsel.
 

@@ -158,17 +158,41 @@ List<Match> rank(List<Recipe> recipes, Set<String> have, Prefs prefs, {Set<Strin
   return out.take(k).toList();
 }
 
+/// Ejaan yang sering dipakai bergantian disamakan dulu ("sup ayam" dan "Sop Ayam", "mi ayam" dan "Mie Ayam").
+String _dishText(String s) => s
+    .toLowerCase()
+    .replaceAll(RegExp(r'\bsup\b'), 'sop')
+    .replaceAll(RegExp(r'\bmi\b'), 'mie')
+    .replaceAll(RegExp(r'\btelor\b'), 'telur')
+    .replaceAll(RegExp(r'\bsatai\b'), 'sate')
+    .replaceAll(RegExp(r'\bkwetiaw\b'), 'kwetiau');
+
 Recipe? findRecipe(List<Recipe> recipes, String query) {
-  final q = query.toLowerCase();
+  final q = _dishText(query);
+  // nama yang tertulis utuh di pertanyaan: bila satu nama memuat nama lain, yang lebih spesifik menang ("nasi goreng
+  // telur" daripada "nasi"); bila tidak, yang disebut lebih dulu ("ketoprak tanpa lontong" memilih Ketoprak)
+  Recipe? whole;
+  var wholeAt = -1;
   for (final r in recipes) {
-    final n = r.name.toLowerCase();
-    if (r.id == q || q.contains(n) || n.contains(q)) return r;
+    final n = _dishText(r.name);
+    if (r.id == q) return r;
+    final at = q.indexOf(n);
+    if (at < 0) continue;
+    final w = whole == null ? null : _dishText(whole.name);
+    final better = w == null || (n.contains(w) && n.length > w.length) || (!w.contains(n) && at < wholeAt);
+    if (better) {
+      whole = r;
+      wholeAt = at;
+    }
   }
+  if (whole != null) return whole;
+  final partial = recipes.where((r) => _dishText(r.name).contains(q)).toList()..sort((a, b) => a.name.length.compareTo(b.name.length));
+  if (partial.isNotEmpty) return partial.first;
   final words = RegExp(r'[a-z]+').allMatches(q).map((m) => m.group(0)!).toSet();
   Recipe? best;
   var bestHit = 0;
   for (final r in recipes) {
-    final hit = RegExp(r'[a-z]+').allMatches(r.name.toLowerCase()).map((m) => m.group(0)!).toSet().intersection(words).length;
+    final hit = RegExp(r'[a-z]+').allMatches(_dishText(r.name)).map((m) => m.group(0)!).toSet().intersection(words).length;
     if (hit > bestHit) {
       bestHit = hit;
       best = r;
@@ -178,7 +202,7 @@ Recipe? findRecipe(List<Recipe> recipes, String query) {
   // satu kata yang khas cukup ("resep rendang" untuk Rendang Daging), asal tidak umum seperti "goreng" atau "sayur" dan
   // hanya dipakai oleh sedikit resep; yang namanya terpendek dipilih
   for (final w in words.where((w) => w.length >= 4 && !_commonDishWords.contains(w))) {
-    final hits = recipes.where((r) => RegExp('\\b$w\\b').hasMatch(r.name.toLowerCase())).toList();
+    final hits = recipes.where((r) => RegExp('\\b$w\\b').hasMatch(_dishText(r.name))).toList();
     if (hits.isNotEmpty && hits.length <= 3) {
       hits.sort((a, b) => a.name.length.compareTo(b.name.length));
       return hits.first;

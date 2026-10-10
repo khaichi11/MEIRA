@@ -27,7 +27,7 @@ text or voice.
   makan sekarang?" are logged or answered from your own data, with a button that opens the feature.
 - A cooking grid on the home screen fills in every day you finish a recipe.
 - Cooking mode shows one step at a time; timers start on tap or by voice command and notify you when done.
-- The recipe book has over 230 recipes with search and filters, and an "Enak & sehat" choice ranks lighter recipes
+- The recipe book has 285 recipes, including popular dishes such as soto ayam, rawon, pempek, and klepon, with search and filters, and an "Enak & sehat" choice ranks lighter recipes
   first.
 - Once the models are downloaded, nothing needs the internet and no data leaves the phone.
 

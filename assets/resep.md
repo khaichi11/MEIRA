@@ -4271,3 +4271,1170 @@ langkah:
 2. Tumis bawang putih dan cabai.
 3. Masukkan kale dan 2 sdm air, aduk sampai layu, bumbui garam.
 alat: wajan, spatula, pisau
+
+## soto-ayam | Soto Ayam | 60 | 4 | sedang
+tag: berkuah
+desc: Kuah kuning berbumbu kunyit dengan suwiran ayam, soun, dan tauge.
+bahan:
+- chicken* | 500 g
+- vermicelli | 50 g soun
+- bean_sprout | 100 g
+- egg? | 2 butir rebus
+- cabbage? | 100 g
+- shallot | 6 siung
+- garlic | 4 siung
+- turmeric | 2 ruas
+- ginger | 1 ruas
+- candlenut | 3 butir
+- lemongrass | 2 batang
+- kaffir_lime_leaf | 3 lembar
+- celery | 2 batang
+- lime | 1 buah
+- salt | 2 sdt
+- cooking_oil | 2 sdm
+- water | 1,5 liter
+langkah:
+1. Rebus ayam dalam air sampai matang, sekitar 30 menit, lalu angkat dan suwir dagingnya. Simpan kaldunya.
+2. Haluskan bawang merah, bawang putih, kunyit, jahe, dan kemiri, lalu tumis bersama serai dan daun jeruk sampai harum.
+3. Masukkan tumisan bumbu ke kaldu, beri garam, dan didihkan 10 menit.
+4. Seduh soun dengan air panas sampai lunak, lalu seduh tauge sebentar.
+5. Tata soun, tauge, kol iris, suwiran ayam, dan telur di mangkuk, lalu siram kuah panas.
+6. Taburi seledri dan sajikan dengan perasan jeruk nipis.
+tip: Ayam bertulang membuat kaldu lebih gurih.
+alat: panci, wajan, spatula, ulekan, pisau, talenan, mangkuk
+ganti: vermicelli = bihun atau mi
+
+## martabak-manis-teflon | Martabak Manis Teflon | 90 | 4 | sedang
+tag: camilan, manis, anak
+desc: Martabak bersarang dengan isian cokelat, keju, dan kacang, dimatangkan di wajan teflon.
+bahan:
+- flour* | 250 g
+- egg | 1 butir
+- sugar | 3 sdm
+- milk | 300 ml
+- yeast | 1/2 sdt
+- baking_powder | 1 sdt
+- salt | 1/4 sdt
+- butter | 3 sdm
+- chocolate? | 50 g meses
+- cheese? | 50 g parut
+- peanut? | 50 g sangrai cincang
+langkah:
+1. Kocok telur dan gula, lalu masukkan terigu, susu, dan garam sedikit demi sedikit sampai adonan licin.
+2. Tutup adonan dengan kain dan diamkan 1 jam.
+3. Larutkan ragi dan baking powder dengan sedikit air, lalu aduk rata ke adonan.
+4. Panaskan teflon dengan api kecil, tuang adonan setebal sekitar 1 cm, dan ratakan ke pinggir.
+5. Biarkan sampai permukaan berlubang-lubang, taburi sedikit gula, lalu tutup sampai matang, sekitar 8 menit.
+6. Angkat, olesi mentega, taburi meses, keju, dan kacang, lalu lipat dan potong.
+tip: Api kecil dan teflon tebal membuat sarang terbentuk tanpa bagian bawah gosong.
+alat: wajan teflon, mangkuk, pengocok, spatula, pisau
+
+## martabak-telur | Martabak Telur | 40 | 4 | sedang
+tag: camilan
+desc: Kulit tipis berisi telur, daun bawang, dan daging cincang yang digoreng renyah.
+bahan:
+- spring_roll_wrapper* | 10 lembar
+- egg* | 4 butir
+- beef | 150 g cincang
+- spring_onion | 3 batang
+- onion | 1/2 buah
+- garlic | 2 siung
+- pepper | 1/2 sdt
+- salt | 1/2 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Tumis bawang putih dan bawang bombay, masukkan daging cincang, beri garam dan merica, lalu masak sampai matang.
+2. Kocok telur, lalu campur dengan daging tumis dan irisan daun bawang.
+3. Letakkan 2 sdm isian di tengah selembar kulit, lalu lipat menjadi amplop persegi.
+4. Goreng dalam minyak panas dengan api sedang sampai kedua sisi kecokelatan.
+5. Tiriskan, potong-potong, dan sajikan dengan acar atau cabai rawit.
+tip: Jangan terlalu banyak isian agar kulit tidak sobek.
+alat: wajan, spatula, mangkuk, pengocok, pisau, talenan
+ganti: beef = daging ayam cincang
+
+## klepon | Klepon | 45 | 4 | mudah
+tag: camilan, manis, vegetarian
+desc: Bola ketan hijau berisi gula merah cair yang dibalur kelapa parut.
+bahan:
+- glutinous_rice_flour* | 200 g
+- palm_sugar* | 100 g
+- coconut | 150 g parut kasar
+- pandan | 5 lembar
+- water | 150 ml
+- salt | 1/4 sdt
+langkah:
+1. Blender daun pandan dengan air, lalu saring untuk mendapatkan air pandan.
+2. Uleni tepung ketan dengan air pandan sedikit demi sedikit sampai bisa dibentuk dan tidak lengket.
+3. Kukus kelapa parut yang diberi garam selama 10 menit.
+4. Pipihkan sedikit adonan, isi dengan serutan gula merah, lalu bulatkan rapat.
+5. Rebus dalam air mendidih dan angkat sekitar 3 menit setelah mengapung.
+6. Gulingkan klepon di atas kelapa kukus dan sajikan.
+tip: Tutup adonan rapat agar gula merah tidak bocor saat direbus.
+alat: panci, kukusan, blender, saringan, mangkuk, sendok berlubang
+
+## sate-ayam | Sate Ayam Bumbu Kacang | 60 | 4 | sedang
+tag: anak
+desc: Tusukan ayam bakar berbumbu kecap dengan saus kacang.
+bahan:
+- chicken* | 500 g fillet
+- peanut | 150 g goreng
+- sweet_soy_sauce | 5 sdm
+- shallot | 5 siung
+- garlic | 3 siung
+- chili? | 3 buah
+- candlenut | 2 butir
+- palm_sugar | 1 sdm
+- lime | 1 buah
+- salt | 1 sdt
+- cooking_oil | 2 sdm
+- water | 200 ml
+langkah:
+1. Potong ayam dadu kecil, lumuri 2 sdm kecap manis dan sedikit garam, lalu diamkan 15 menit.
+2. Tusuk 4 sampai 5 potong ayam pada setiap tusuk sate.
+3. Haluskan kacang goreng, bawang merah, bawang putih, cabai, dan kemiri.
+4. Tumis bumbu kacang, tambahkan air, gula merah, dan garam, lalu masak sampai mengental, sekitar 10 menit.
+5. Bakar sate di teflon atau panggangan sambil dioles campuran kecap dan sedikit bumbu kacang sampai matang.
+6. Sajikan dengan saus kacang, kecap, dan perasan jeruk nipis.
+tip: Rendam tusuk sate dalam air 30 menit agar tidak mudah terbakar.
+alat: wajan, teflon atau panggangan, tusuk sate, ulekan atau blender, pisau, talenan
+
+## rawon | Rawon | 120 | 5 | sulit
+tag: berkuah
+desc: Sup daging berkuah hitam dari kluwek dengan aroma rempah khas Jawa Timur.
+bahan:
+- beef* | 500 g sandung lamur
+- kluwek* | 5 buah
+- shallot | 8 siung
+- garlic | 5 siung
+- candlenut | 3 butir
+- turmeric | 1 ruas
+- ginger | 1 ruas
+- galangal | 2 ruas
+- lemongrass | 2 batang
+- kaffir_lime_leaf | 4 lembar
+- coriander | 1 sdt
+- salt | 2 sdt
+- sugar | 1 sdt
+- bean_sprout? | 100 g
+- spring_onion | 2 batang
+- cooking_oil | 3 sdm
+- water | 2 liter
+langkah:
+1. Rebus daging sampai empuk, sekitar 60 menit, lalu potong dadu dan kembalikan ke kaldu.
+2. Ambil isi kluwek dan rendam dengan sedikit air panas.
+3. Haluskan bawang merah, bawang putih, kemiri, kunyit, jahe, ketumbar, dan isi kluwek.
+4. Tumis bumbu halus bersama lengkuas geprek, serai, dan daun jeruk sampai harum dan matang.
+5. Masukkan tumisan ke kaldu, beri garam dan gula, lalu masak dengan api kecil 30 menit.
+6. Tambahkan daun bawang, lalu sajikan dengan tauge pendek dan sambal.
+tip: Pilih kluwek yang isinya hitam legam dan tidak pahit; buang yang berjamur.
+alat: panci, wajan, spatula, ulekan, pisau, talenan
+
+## ayam-geprek | Ayam Geprek | 40 | 2 | sedang
+tag: pedas
+desc: Ayam goreng tepung renyah yang dipenyet dengan sambal bawang.
+bahan:
+- chicken* | 2 potong dada
+- flour | 100 g
+- egg | 1 butir
+- chili* | 10 buah rawit
+- garlic | 4 siung
+- salt | 1 sdt
+- pepper | 1/2 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Lumuri ayam dengan garam, merica, dan 1 siung bawang putih halus, lalu diamkan 15 menit.
+2. Celup ayam ke telur kocok, lalu gulingkan di terigu yang diberi garam sambil ditekan.
+3. Goreng dalam minyak banyak dengan api sedang sampai kuning keemasan dan matang, sekitar 12 menit.
+4. Ulek kasar cabai rawit, sisa bawang putih, dan garam, lalu siram dengan 2 sdm minyak panas.
+5. Letakkan ayam di atas sambal, geprek dengan ulekan sampai sedikit pipih, lalu aduk dengan sambal.
+tip: Sesuaikan jumlah cabai dengan selera pedas.
+alat: wajan, ulekan, mangkuk, penjepit, pisau
+
+## pempek-ikan | Pempek Ikan | 75 | 4 | sedang
+desc: Olahan ikan dan tepung tapioka yang kenyal, disajikan dengan kuah cuko asam pedas manis.
+bahan:
+- fish* | 300 g daging ikan giling
+- tapioca* | 250 g
+- water | 150 ml dingin
+- garlic | 6 siung
+- palm_sugar | 150 g
+- chili | 5 buah rawit
+- tamarind | 1 sdm
+- vinegar | 1 sdm
+- egg? | 2 butir untuk kapal selam
+- salt | 1,5 sdt
+- sugar | 1 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Campur ikan giling, air dingin, garam, gula, dan 1 siung bawang putih halus sampai rata.
+2. Masukkan tapioka sedikit demi sedikit dan aduk ringan sampai bisa dibentuk.
+3. Bentuk lonjong, atau pipihkan dan isi telur untuk kapal selam.
+4. Rebus dalam air mendidih sampai mengapung, sekitar 10 menit, lalu tiriskan.
+5. Untuk cuko, rebus gula merah, asam jawa, serta sisa bawang putih dan cabai yang dihaluskan dengan 400 ml air, lalu tambahkan cuka.
+6. Goreng pempek sebentar sampai kulitnya kering, potong, dan sajikan dengan cuko.
+tip: Adonan yang diaduk terlalu lama menjadi keras; cukup sampai rata.
+alat: panci, wajan, mangkuk, ulekan, saringan, pisau
+
+## cilok | Cilok Bumbu Kacang | 45 | 4 | mudah
+tag: camilan, anak, hemat
+desc: Bola tapioka kenyal yang direbus dan disajikan dengan saus kacang.
+bahan:
+- tapioca* | 200 g
+- flour | 50 g
+- garlic | 3 siung
+- spring_onion | 2 batang
+- water | 200 ml panas
+- peanut | 100 g goreng
+- chili? | 3 buah
+- palm_sugar | 1 sdm
+- sweet_soy_sauce? | 1 sdm
+- salt | 1 sdt
+langkah:
+1. Campur tapioka, terigu, bawang putih halus, irisan daun bawang, dan garam.
+2. Tuang air panas sedikit demi sedikit sambil diaduk, lalu uleni sampai bisa dibulatkan.
+3. Bentuk bola kecil dan rebus dalam air mendidih sampai mengapung, sekitar 10 menit.
+4. Haluskan kacang, cabai, gula merah, dan garam, lalu tambahkan air hangat sampai kental.
+5. Tusuk cilok, siram saus kacang dan kecap, lalu sajikan.
+tip: Air harus benar-benar panas agar adonan tapioka mudah dibentuk.
+alat: panci, mangkuk, ulekan atau blender, sendok berlubang
+
+## seblak | Seblak | 25 | 2 | mudah
+tag: pedas, berkuah
+desc: Kerupuk basah berkuah pedas dengan aroma kencur, telur, dan bakso.
+bahan:
+- cracker* | 100 g kerupuk mentah
+- egg | 2 butir
+- meatball? | 6 butir
+- sausage? | 2 batang
+- mustard_greens? | 1 ikat kecil
+- kencur | 2 cm
+- garlic | 3 siung
+- shallot | 3 siung
+- chili | 8 buah
+- salt | 1 sdt
+- sugar | 1/2 sdt
+- cooking_oil | 2 sdm
+- water | 400 ml
+langkah:
+1. Rendam kerupuk dalam air panas sampai lunak, sekitar 15 menit, lalu tiriskan.
+2. Haluskan kencur, bawang putih, bawang merah, dan cabai.
+3. Tumis bumbu sampai harum, masukkan telur, dan orak-arik sebentar.
+4. Tambahkan air, bakso, dan sosis iris, lalu didihkan.
+5. Masukkan kerupuk dan sawi, beri garam dan gula, lalu masak 3 menit sampai kuah sedikit mengental.
+tip: Kencur adalah kunci aroma seblak dan tidak bisa diganti jahe.
+alat: wajan, spatula, ulekan, mangkuk, pisau
+
+## donat-kentang | Donat Kentang | 120 | 6 | sedang
+tag: camilan, manis, anak
+desc: Donat empuk dari adonan terigu dan kentang, ditaburi gula halus.
+bahan:
+- flour* | 500 g
+- potato* | 200 g kukus dan haluskan
+- yeast | 11 g
+- sugar | 75 g
+- egg | 2 kuning telur
+- milk | 150 ml hangat
+- butter | 50 g
+- salt | 1/2 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Campur terigu, ragi, dan gula, lalu masukkan kentang halus, kuning telur, dan susu hangat sedikit demi sedikit.
+2. Uleni sampai setengah kalis, tambahkan mentega dan garam, lalu uleni lagi sampai kalis, sekitar 15 menit.
+3. Tutup dan diamkan 60 menit sampai mengembang dua kali lipat.
+4. Kempiskan, bagi menjadi bulatan 40 g, beri lubang di tengah, lalu diamkan lagi 20 menit.
+5. Goreng dengan api kecil sampai kedua sisi kecokelatan, cukup sekali dibalik.
+6. Tiriskan, lalu taburi gula halus atau oles cokelat leleh setelah dingin.
+tip: Minyak yang terlalu panas membuat luar donat gosong sebelum bagian dalamnya matang.
+alat: mangkuk besar, wajan, kukusan, sumpit atau spatula, kain penutup
+
+## brownies-kukus | Brownies Kukus | 60 | 8 | sedang
+tag: camilan, manis
+desc: Kue cokelat lembap yang dimatangkan dengan dikukus, tanpa oven.
+bahan:
+- chocolate* | 150 g cokelat masak
+- egg* | 4 butir
+- butter | 100 g
+- sugar | 150 g
+- flour | 100 g
+- baking_powder | 1/2 sdt
+- salt | 1/4 sdt
+langkah:
+1. Lelehkan cokelat dan mentega di atas panci berisi air panas, lalu biarkan agak dingin.
+2. Kocok telur dan gula sampai mengembang dan pucat, sekitar 8 menit.
+3. Masukkan terigu, baking powder, dan garam yang sudah diayak sambil diaduk balik perlahan.
+4. Tuang cokelat leleh dan aduk balik sampai rata.
+5. Tuang ke loyang yang dioles mentega, lalu kukus 30 menit dengan api sedang; bungkus tutup kukusan dengan kain.
+6. Dinginkan sebelum dipotong.
+tip: Aduk balik dengan spatula agar udara dari kocokan telur tidak hilang.
+alat: kukusan, loyang, mixer atau pengocok, mangkuk, spatula, kain
+
+## bolu-pandan-kukus | Bolu Pandan Kukus | 50 | 8 | sedang
+tag: camilan, manis
+desc: Bolu hijau beraroma pandan yang ringan dan lembut.
+bahan:
+- flour* | 150 g
+- egg* | 4 butir
+- sugar | 150 g
+- coconut_milk | 100 ml
+- pandan | 10 lembar
+- butter | 50 g leleh
+- baking_powder | 1/2 sdt
+- salt | 1/4 sdt
+langkah:
+1. Blender daun pandan dengan santan, lalu saring.
+2. Kocok telur dan gula sampai kental berjejak, sekitar 10 menit.
+3. Masukkan terigu, baking powder, dan garam yang diayak sambil diaduk balik.
+4. Tambahkan santan pandan dan mentega leleh, lalu aduk balik sampai rata.
+5. Tuang ke loyang dan kukus 25 menit dengan api sedang; bungkus tutup kukusan dengan kain.
+tip: Lidi yang ditusukkan keluar bersih menandakan bolu sudah matang.
+alat: kukusan, loyang, mixer atau pengocok, blender, saringan, spatula, kain
+
+## kue-lapis | Kue Lapis | 90 | 8 | sedang
+tag: camilan, manis, vegetarian
+desc: Kue berlapis dari tepung beras dan tapioka bersantan yang dikukus selapis demi selapis.
+bahan:
+- rice_flour* | 150 g
+- tapioca* | 100 g
+- coconut_milk* | 700 ml
+- sugar | 200 g
+- pandan | 8 lembar
+- salt | 1/2 sdt
+langkah:
+1. Rebus santan dengan gula, garam, dan 4 lembar daun pandan sampai gula larut, lalu dinginkan.
+2. Campur tepung beras dan tapioka, lalu tuang santan sedikit demi sedikit sambil diaduk sampai licin.
+3. Bagi adonan menjadi dua; satu bagian diberi air dari sisa daun pandan yang diblender agar hijau.
+4. Kukus loyang kosong 5 menit, tuang satu sendok sayur adonan, lalu kukus 5 menit.
+5. Tuang lapisan berikutnya dengan warna bergantian dan kukus 5 menit setiap lapis sampai adonan habis.
+6. Kukus lapisan terakhir 15 menit, lalu dinginkan sepenuhnya sebelum dipotong.
+tip: Potong dengan pisau yang diolesi minyak setelah kue benar-benar dingin.
+alat: kukusan, loyang, mangkuk, sendok sayur, panci, blender, pisau
+
+## onde-onde | Onde-onde | 60 | 6 | sedang
+tag: camilan, manis, vegetarian
+desc: Bola ketan bertabur wijen berisi kacang hijau manis, digoreng renyah.
+bahan:
+- glutinous_rice_flour* | 250 g
+- mung_bean* | 150 g kupas
+- sesame* | 75 g
+- potato | 50 g kukus dan haluskan
+- sugar | 100 g
+- water | 150 ml
+- pandan | 2 lembar
+- salt | 1/2 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Rendam kacang hijau 2 jam, kukus bersama pandan sampai lunak, lalu haluskan dengan 50 g gula dan sejumput garam, kemudian bulatkan kecil-kecil.
+2. Campur tepung ketan, kentang halus, sisa gula, dan garam, lalu tuang air sedikit demi sedikit sampai bisa dibentuk.
+3. Pipihkan adonan, isi bulatan kacang hijau, lalu bulatkan rapat.
+4. Celupkan sebentar ke air, lalu gulingkan di wijen sambil ditekan.
+5. Goreng dengan api kecil sampai mengembang dan kuning kecokelatan sambil sesekali ditekan dengan sutil.
+tip: Masukkan ke minyak yang belum terlalu panas agar onde-onde tidak meletus.
+alat: wajan, kukusan, mangkuk, sutil, ulekan
+
+## lontong | Lontong | 240 | 6 | mudah
+tag: hemat
+desc: Nasi padat yang dibungkus daun pisang dan direbus lama, teman sayur bersantan atau sate.
+bahan:
+- rice* | 500 g beras
+- salt | 1 sdt
+- water | secukupnya
+langkah:
+1. Cuci beras, rendam 60 menit, lalu tiriskan dan campur dengan garam.
+2. Gulung daun pisang menjadi tabung dan sematkan salah satu ujungnya dengan lidi.
+3. Isi beras sekitar setengah sampai dua pertiga tabung, lalu tutup dan sematkan.
+4. Rebus lontong dalam air yang menutupi seluruhnya selama 3 jam; tambahkan air panas bila menyusut.
+5. Angkat dan tiriskan sampai dingin dan padat, baru dipotong.
+tip: Beras yang terlalu penuh membuat lontong pecah, sedangkan yang terlalu sedikit membuatnya lembek.
+alat: panci besar, daun pisang, lidi
+
+## ketoprak | Ketoprak | 30 | 2 | mudah
+tag: vegetarian
+desc: Tahu goreng, bihun, tauge, dan lontong disiram saus kacang bawang putih.
+bahan:
+- tofu* | 4 potong
+- peanut* | 150 g goreng
+- vermicelli | 50 g bihun
+- bean_sprout | 100 g
+- rice? | 1 porsi lontong atau ketupat
+- cucumber? | 1 buah
+- garlic | 3 siung
+- chili | 3 buah
+- palm_sugar | 1 sdm
+- sweet_soy_sauce | 3 sdm
+- salt | 1/2 sdt
+- water | 150 ml
+- cooking_oil | secukupnya
+langkah:
+1. Goreng tahu sampai kecokelatan, lalu potong-potong.
+2. Seduh bihun dan tauge dengan air panas sampai lunak, lalu tiriskan.
+3. Ulek bawang putih, cabai, garam, dan gula merah, lalu masukkan kacang dan ulek kasar.
+4. Tambahkan air sedikit demi sedikit sampai saus kental.
+5. Tata lontong, tahu, bihun, tauge, dan timun, lalu siram saus kacang dan kecap.
+tip: Bawang putih mentah memberi rasa khas ketoprak; sesuaikan jumlahnya.
+alat: wajan, ulekan, mangkuk, pisau, talenan
+
+## es-campur | Es Campur | 20 | 4 | mudah
+tag: minuman, manis, segar, tanpa-kompor
+desc: Minuman es dengan potongan buah, kelapa muda, dan susu kental manis.
+bahan:
+- coconut* | 1 buah kelapa muda
+- avocado | 1 buah
+- jackfruit | 100 g
+- papaya? | 100 g
+- milk | 100 ml susu kental manis
+- sugar | 3 sdm
+- ice* | 2 gelas es serut
+langkah:
+1. Potong dadu alpukat, nangka, dan pepaya.
+2. Kerok daging kelapa muda dan simpan airnya.
+3. Larutkan gula dalam air kelapa.
+4. Tata buah dan kelapa di gelas saji, lalu tambahkan es serut.
+5. Siram dengan air kelapa manis dan susu kental manis, lalu sajikan segera.
+tip: Buah lain seperti melon atau nanas juga cocok.
+alat: pisau, talenan, gelas saji, sendok
+
+## nasi-liwet | Nasi Liwet | 45 | 4 | mudah
+desc: Nasi gurih bersantan dengan serai, salam, dan teri yang dimasak dalam satu panci.
+bahan:
+- rice* | 400 g beras
+- coconut_milk | 200 ml
+- water | 400 ml
+- anchovy | 50 g
+- shallot | 5 siung
+- garlic | 3 siung
+- lemongrass | 2 batang
+- bay_leaf | 3 lembar
+- chili? | 5 buah rawit utuh
+- salt | 1 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Cuci beras sampai airnya jernih.
+2. Tumis irisan bawang merah dan bawang putih sampai harum, lalu masukkan teri dan goreng sampai renyah.
+3. Masukkan beras, santan, air, serai geprek, daun salam, cabai, dan garam ke panci.
+4. Masak sampai air terserap, aduk sekali, lalu masukkan tumisan teri.
+5. Lanjutkan memasak dengan api sangat kecil selama 15 menit sampai tanak.
+tip: Rice cooker juga bisa dipakai: masukkan semua bahan dan masak seperti biasa.
+alat: panci tebal atau rice cooker, wajan, spatula
+
+## soto-betawi | Soto Betawi | 120 | 5 | sedang
+tag: berkuah
+desc: Soto daging berkuah santan dan susu yang gurih, khas Jakarta.
+bahan:
+- beef* | 500 g
+- coconut_milk | 400 ml
+- milk | 200 ml
+- potato | 2 buah
+- tomato | 2 buah
+- shallot | 6 siung
+- garlic | 4 siung
+- candlenut | 3 butir
+- ginger | 1 ruas
+- galangal | 1 ruas
+- lemongrass | 2 batang
+- bay_leaf | 2 lembar
+- nutmeg | 1/4 sdt
+- coriander | 1 sdt
+- salt | 2 sdt
+- spring_onion | 2 batang
+- lime | 1 buah
+- cooking_oil | 3 sdm
+- water | 1,5 liter
+langkah:
+1. Rebus daging sampai empuk, sekitar 60 menit, lalu potong dadu dan simpan kaldunya.
+2. Haluskan bawang merah, bawang putih, kemiri, jahe, dan ketumbar, lalu tumis bersama lengkuas, serai, dan salam sampai harum.
+3. Masukkan tumisan ke kaldu bersama daging dan pala, lalu didihkan.
+4. Tuang santan dan susu, beri garam, lalu masak dengan api kecil 15 menit sambil diaduk agar santan tidak pecah.
+5. Goreng kentang yang dipotong dadu.
+6. Sajikan dengan kentang goreng, tomat, daun bawang, dan perasan jeruk nipis.
+tip: Aduk terus saat santan dan susu dimasukkan agar kuah tetap halus.
+alat: panci, wajan, spatula, ulekan, pisau, talenan
+
+## mie-ayam | Mie Ayam | 50 | 4 | sedang
+desc: Mi kenyal dengan topping ayam kecap jamur, sawi, dan kuah kaldu.
+bahan:
+- noodle* | 400 g mi telur basah
+- chicken* | 300 g fillet paha
+- mushroom | 100 g
+- mustard_greens | 1 ikat
+- garlic | 4 siung
+- shallot | 4 siung
+- ginger | 1 ruas
+- sweet_soy_sauce | 4 sdm
+- soy_sauce | 2 sdt
+- oyster_sauce | 1 sdm
+- pepper | 1/2 sdt
+- salt | 1 sdt
+- spring_onion | 2 batang
+- cooking_oil | 4 sdm
+- water | 1 liter
+langkah:
+1. Potong dadu ayam dan jamur.
+2. Tumis bawang merah, bawang putih, dan jahe sampai harum, masukkan ayam dan jamur, lalu beri kecap manis, 1 sdt kecap asin, saus tiram, dan sedikit air, kemudian masak sampai meresap.
+3. Rebus air dengan garam dan merica untuk kuah; tambahkan tulang ayam bila ada.
+4. Rebus mi dan sawi sebentar, lalu tiriskan.
+5. Aduk mi di mangkuk dengan 1 sdm minyak bekas menumis dan sisa kecap asin.
+6. Beri topping ayam, sawi, dan daun bawang, lalu sajikan dengan kuah terpisah.
+tip: Minyak bekas menumis bawang membuat mi lebih harum.
+alat: wajan, panci, spatula, saringan, mangkuk, pisau
+
+## cireng | Cireng | 30 | 4 | mudah
+tag: camilan, hemat, vegetarian
+desc: Gorengan tapioka yang renyah di luar dan kenyal di dalam.
+bahan:
+- tapioca* | 250 g
+- flour | 2 sdm
+- garlic | 3 siung
+- spring_onion | 2 batang
+- salt | 1 sdt
+- pepper | 1/4 sdt
+- water | 200 ml
+- chili_sauce? | secukupnya
+- cooking_oil | secukupnya
+langkah:
+1. Rebus air dengan bawang putih halus, garam, dan merica sampai mendidih.
+2. Masukkan 3 sdm tapioka ke air mendidih dan aduk sampai menjadi biang yang kental dan bening.
+3. Tuang biang ke sisa tapioka, terigu, dan daun bawang, lalu aduk dan uleni asal rata.
+4. Bentuk pipih tipis dan taburi sedikit tapioka agar tidak lengket.
+5. Goreng dengan api sedang sampai renyah, lalu sajikan dengan sambal.
+tip: Jangan terlalu lama menguleni agar cireng tetap kenyal.
+alat: panci, wajan, mangkuk, sendok, sutil
+
+## batagor | Batagor | 60 | 4 | sedang
+tag: camilan
+desc: Bakso tahu goreng dari ikan dan tapioka, disiram saus kacang.
+bahan:
+- fish* | 250 g ikan giling
+- tofu* | 8 potong
+- tapioca | 100 g
+- egg | 1 butir
+- spring_onion | 2 batang
+- garlic | 3 siung
+- peanut | 150 g goreng
+- chili? | 3 buah
+- palm_sugar | 1 sdm
+- sweet_soy_sauce | 2 sdm
+- lime | 1 buah
+- salt | 1 sdt
+- pepper | 1/2 sdt
+- water | 200 ml
+- cooking_oil | secukupnya
+langkah:
+1. Campur ikan giling, telur, bawang putih halus, daun bawang, garam, dan merica, lalu masukkan tapioka sedikit demi sedikit.
+2. Belah tahu, keruk sedikit isinya, lalu isi dengan adonan ikan.
+3. Bentuk sisa adonan menjadi bulatan pipih.
+4. Goreng tahu isi dan adonan dengan api sedang sampai kering dan kecokelatan.
+5. Haluskan kacang, cabai, gula merah, dan garam, tambahkan air, lalu masak sebentar sampai kental.
+6. Potong batagor, siram saus kacang dan kecap, lalu beri perasan jeruk nipis.
+tip: Api sedang membuat batagor matang sampai ke dalam dan tetap renyah.
+alat: wajan, mangkuk, ulekan atau blender, sendok, pisau
+
+## siomay | Siomay | 60 | 4 | sedang
+desc: Siomay ikan kukus dengan kentang, kol, telur, dan tahu, disiram saus kacang.
+bahan:
+- fish* | 250 g ikan giling
+- tapioca | 100 g
+- cabbage | 4 lembar
+- potato | 2 buah
+- egg | 3 butir
+- tofu | 4 potong
+- spring_onion | 2 batang
+- garlic | 3 siung
+- peanut | 150 g goreng
+- palm_sugar | 1 sdm
+- sweet_soy_sauce | 2 sdm
+- lime | 1 buah
+- salt | 1 sdt
+- pepper | 1/2 sdt
+- water | 200 ml
+langkah:
+1. Campur ikan giling, bawang putih halus, daun bawang, garam, merica, dan 1 butir telur, lalu masukkan tapioka sampai bisa dibentuk.
+2. Isi lembaran kol yang sudah direbus dan tahu yang dibelah dengan adonan, lalu bulatkan sisanya.
+3. Kukus siomay, kentang, dan 2 butir telur selama 30 menit.
+4. Buat saus kacang dari kacang halus, gula merah, garam, dan air, lalu masak sampai kental.
+5. Potong semua isian, siram saus kacang dan kecap, lalu beri perasan jeruk nipis.
+tip: Alasi kukusan dengan daun kol agar siomay tidak lengket.
+alat: kukusan, mangkuk, ulekan atau blender, panci, pisau
+
+## risoles-ragout | Risoles Ragout | 75 | 6 | sedang
+tag: camilan
+desc: Dadar tipis berisi ragout ayam sayur, dibalut tepung panir dan digoreng.
+bahan:
+- flour* | 170 g
+- breadcrumbs* | 100 g
+- egg | 2 butir
+- milk | 400 ml
+- chicken | 150 g cincang
+- carrot | 1 buah
+- potato | 1 buah
+- onion | 1/2 buah
+- garlic | 2 siung
+- butter | 2 sdm
+- nutmeg? | sejumput
+- salt | 1 sdt
+- pepper | 1/2 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Kocok 150 g terigu, 1 butir telur, 250 ml susu, dan sedikit garam sampai licin, lalu buat dadar tipis di teflon.
+2. Tumis bawang bombay dan bawang putih dengan mentega, lalu masukkan ayam cincang serta wortel dan kentang yang dipotong dadu kecil.
+3. Taburi sisa terigu, tuang sisa susu, beri garam, merica, dan pala, lalu masak sampai kental dan dinginkan.
+4. Isi setiap kulit dengan ragout dan lipat seperti amplop.
+5. Celup ke telur kocok, gulingkan di tepung panir, lalu goreng dengan api sedang sampai kuning keemasan.
+tip: Ragout harus dingin dan kental agar mudah dibungkus dan tidak bocor.
+alat: wajan teflon, wajan, panci kecil, mangkuk, pengocok, spatula
+
+## lemper-ayam | Lemper Ayam | 90 | 6 | sedang
+tag: camilan
+desc: Ketan gurih berisi ayam suwir berbumbu yang dibungkus daun pisang.
+bahan:
+- glutinous_rice* | 400 g
+- chicken* | 250 g
+- coconut_milk | 300 ml
+- shallot | 5 siung
+- garlic | 3 siung
+- coriander | 1 sdt
+- candlenut | 2 butir
+- palm_sugar | 1 sdm
+- bay_leaf | 2 lembar
+- lemongrass | 1 batang
+- salt | 2 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Rendam beras ketan 2 jam, kukus 20 menit, lalu aduk dengan santan panas bergaram sampai terserap dan kukus lagi 20 menit.
+2. Rebus ayam, lalu suwir halus.
+3. Tumis bawang merah, bawang putih, ketumbar, dan kemiri yang dihaluskan bersama salam dan serai, lalu masukkan ayam, gula merah, garam, dan sedikit santan, dan masak sampai kering.
+4. Pipihkan ketan di atas daun pisang, beri isi ayam, lalu gulung padat.
+5. Bungkus dengan daun pisang dan kukus lagi 10 menit agar harum.
+tip: Basahi tangan dengan air saat membentuk ketan agar tidak lengket.
+alat: kukusan, wajan, panci, daun pisang, ulekan
+
+## serabi-kuah-kinca | Serabi Kuah Kinca | 60 | 4 | mudah
+tag: sarapan, manis, vegetarian
+desc: Kue tepung beras bersantan yang dimatangkan di wajan kecil, disiram kuah gula merah.
+bahan:
+- rice_flour* | 200 g
+- palm_sugar* | 150 g
+- coconut_milk | 450 ml
+- flour | 2 sdm
+- sugar | 1 sdm
+- yeast | 1/2 sdt
+- salt | 1/2 sdt
+- pandan | 2 lembar
+- water | 150 ml
+langkah:
+1. Campur tepung beras, terigu, gula, ragi, dan garam, lalu tuang 300 ml santan hangat sambil diaduk sampai licin. Diamkan 60 menit.
+2. Untuk kinca, rebus gula merah, sisa santan, air, dan pandan sampai larut dan sedikit mengental.
+3. Panaskan wajan kecil antilengket dengan api kecil, lalu tuang satu sendok sayur adonan.
+4. Tutup dan masak sampai permukaan berlubang dan matang, sekitar 4 menit.
+5. Sajikan serabi dengan kuah kinca.
+tip: Api kecil membuat bagian bawah serabi kecokelatan tanpa gosong.
+alat: wajan kecil antilengket, mangkuk, panci, sendok sayur
+
+## dadar-gulung | Dadar Gulung | 45 | 6 | mudah
+tag: camilan, manis, vegetarian
+desc: Dadar pandan tipis berisi unti kelapa gula merah.
+bahan:
+- flour* | 150 g
+- coconut* | 200 g parut
+- egg | 1 butir
+- coconut_milk | 350 ml
+- pandan | 8 lembar
+- palm_sugar | 125 g
+- salt | 1/2 sdt
+- water | 50 ml
+- cooking_oil | 1 sdm
+langkah:
+1. Blender pandan dengan santan, lalu saring.
+2. Kocok terigu, telur, santan pandan, dan sejumput garam sampai licin.
+3. Untuk unti, masak kelapa parut, gula merah, sedikit garam, dan air sampai kering.
+4. Dadar adonan tipis di teflon yang dioles minyak dengan api kecil.
+5. Beri unti pada setiap dadar, lipat sisi kiri dan kanan, lalu gulung.
+tip: Saring adonan agar dadar mulus tanpa gumpalan.
+alat: wajan teflon, blender, saringan, mangkuk, pengocok, spatula
+
+## kue-cubit | Kue Cubit | 30 | 4 | mudah
+tag: camilan, manis, anak
+desc: Kue kecil yang lembut dan setengah matang, dipanggang di cetakan.
+bahan:
+- flour* | 125 g
+- egg | 2 butir
+- sugar | 75 g
+- milk | 150 ml
+- butter | 30 g leleh
+- baking_powder | 1 sdt
+- chocolate? | 30 g meses
+langkah:
+1. Kocok telur dan gula sampai gula larut.
+2. Masukkan terigu dan baking powder bergantian dengan susu sambil diaduk sampai licin.
+3. Tambahkan mentega leleh dan aduk rata.
+4. Panaskan cetakan kue cubit, olesi mentega, lalu isi adonan tiga perempat cetakan.
+5. Taburi meses, tutup sebentar, lalu angkat saat permukaan masih sedikit basah, sekitar 3 menit.
+tip: Angkat lebih cepat bila suka bagian tengah yang lumer.
+alat: cetakan kue cubit, mangkuk, pengocok, sendok
+
+## sop-buntut | Sop Buntut | 150 | 4 | sedang
+tag: berkuah
+desc: Sup bening buntut sapi dengan wortel, kentang, dan aroma pala serta cengkih.
+bahan:
+- beef* | 1 kg buntut sapi
+- carrot | 2 buah
+- potato | 2 buah
+- tomato | 2 buah
+- celery | 2 batang
+- spring_onion | 2 batang
+- garlic | 5 siung
+- shallot? | 4 siung untuk bawang goreng
+- nutmeg | 1/2 sdt
+- clove | 3 butir
+- cinnamon | 1 batang kecil
+- pepper | 1 sdt
+- lime | 1 buah
+- salt | 2 sdt
+- water | 2,5 liter
+langkah:
+1. Rebus buntut 10 menit, buang airnya, lalu bilas.
+2. Rebus lagi dengan air baru bersama cengkih dan kayu manis dengan api kecil sampai empuk, sekitar 2 jam.
+3. Tumis bawang putih halus sampai harum, lalu masukkan ke rebusan bersama pala, merica, dan garam.
+4. Masukkan wortel dan kentang, lalu masak sampai empuk, sekitar 15 menit.
+5. Tambahkan tomat, daun bawang, dan seledri sesaat sebelum diangkat.
+6. Sajikan dengan bawang goreng dan perasan jeruk nipis.
+tip: Membuang air rebusan pertama membuat kuah lebih bening.
+alat: panci besar, wajan, pisau, talenan, sendok sayur
+
+## kering-tempe | Kering Tempe | 40 | 4 | mudah
+tag: manis, pedas, vegetarian, hemat
+desc: Tempe goreng tipis berbalut bumbu gula merah pedas manis yang tahan lama.
+bahan:
+- tempeh* | 300 g
+- peanut? | 50 g
+- palm_sugar | 100 g
+- shallot | 6 siung
+- garlic | 3 siung
+- chili | 5 buah
+- galangal | 1 ruas
+- bay_leaf | 2 lembar
+- tamarind | 1 sdt
+- salt | 1 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Iris tempe tipis seperti korek api, lalu goreng sampai kering dan renyah. Goreng juga kacang tanah.
+2. Iris tipis bawang merah, bawang putih, dan cabai, lalu tumis bersama lengkuas dan daun salam.
+3. Masukkan gula merah, air asam, dan garam, lalu masak sampai mengental dan berbuih.
+4. Matikan api, masukkan tempe dan kacang, lalu aduk cepat sampai rata terbalut.
+5. Dinginkan dan simpan dalam wadah tertutup.
+tip: Matikan api sebelum tempe dimasukkan agar karamel tidak gosong dan tempe tetap renyah.
+alat: wajan, spatula, pisau, talenan, wadah kedap udara
+
+## cumi-goreng-tepung | Cumi Goreng Tepung | 25 | 2 | mudah
+tag: camilan
+desc: Cincin cumi bertepung renyah dengan saus sambal.
+bahan:
+- squid* | 300 g
+- flour | 100 g
+- tapioca | 2 sdm
+- egg | 1 butir
+- garlic | 2 siung
+- lime | 1/2 buah
+- salt | 1 sdt
+- pepper | 1/2 sdt
+- chili_sauce? | secukupnya
+- cooking_oil | secukupnya
+langkah:
+1. Bersihkan cumi, potong cincin, lalu lumuri jeruk nipis, garam, merica, dan bawang putih halus, dan diamkan 10 menit.
+2. Campur terigu, tapioka, dan sedikit garam.
+3. Celup cumi ke telur kocok, lalu gulingkan di campuran tepung.
+4. Goreng dalam minyak panas 2 sampai 3 menit sampai kuning keemasan.
+5. Tiriskan dan sajikan dengan saus sambal.
+tip: Cumi yang digoreng terlalu lama menjadi alot.
+alat: wajan, mangkuk, penjepit, pisau, talenan
+
+## pepes-ikan | Pepes Ikan | 60 | 4 | sedang
+tag: sehat
+desc: Ikan berbumbu kuning yang dibungkus daun pisang lalu dikukus, hampir tanpa minyak.
+bahan:
+- fish* | 500 g ikan kembung atau fillet
+- shallot | 6 siung
+- garlic | 3 siung
+- turmeric | 2 ruas
+- candlenut | 3 butir
+- chili | 4 buah
+- tomato | 1 buah
+- basil | 1 ikat
+- lemongrass | 2 batang
+- bay_leaf | 4 lembar
+- lime | 1 buah
+- salt | 1,5 sdt
+langkah:
+1. Lumuri ikan dengan jeruk nipis dan garam, lalu diamkan 10 menit.
+2. Haluskan bawang merah, bawang putih, kunyit, kemiri, dan cabai, lalu balurkan ke ikan.
+3. Letakkan ikan di atas daun pisang bersama daun salam, serai, irisan tomat, dan kemangi.
+4. Bungkus rapat dan sematkan dengan lidi.
+5. Kukus 30 menit, lalu bakar sebentar di teflon bila ingin lebih harum.
+tip: Karena dikukus, pepes cocok untuk menu rendah lemak.
+alat: kukusan, daun pisang, lidi, ulekan, pisau, teflon
+
+## botok-tempe-teri | Botok Tempe Teri | 60 | 4 | sedang
+tag: sehat
+desc: Kelapa parut berbumbu dengan tempe, teri, dan kemangi yang dibungkus daun pisang lalu dikukus.
+bahan:
+- coconut* | 200 g parut kasar
+- tempeh | 150 g
+- anchovy | 50 g
+- shallot | 5 siung
+- garlic | 2 siung
+- chili | 3 buah
+- galangal | 1 ruas
+- basil | 1 ikat
+- bay_leaf | 4 lembar
+- palm_sugar | 1 sdt
+- salt | 1 sdt
+langkah:
+1. Potong tempe dadu kecil, rendam teri sebentar, lalu tiriskan.
+2. Haluskan bawang merah, bawang putih, cabai, lengkuas, gula merah, dan garam.
+3. Campur kelapa parut dengan bumbu halus, tempe, teri, dan kemangi sampai rata.
+4. Bungkus beberapa sendok adonan dengan daun pisang dan selembar daun salam, lalu sematkan dengan lidi.
+5. Kukus 40 menit sampai matang.
+tip: Kelapa setengah tua memberi rasa gurih tanpa terlalu berminyak.
+alat: kukusan, daun pisang, lidi, ulekan, mangkuk
+
+## nasi-bakar-ayam-kemangi | Nasi Bakar Ayam Kemangi | 60 | 4 | sedang
+desc: Nasi gurih berisi ayam suwir kemangi yang dibungkus daun pisang lalu dibakar.
+bahan:
+- rice* | 600 g nasi hangat
+- chicken* | 250 g
+- basil | 1 ikat
+- shallot | 5 siung
+- garlic | 3 siung
+- chili | 5 buah
+- lemongrass | 1 batang
+- bay_leaf | 2 lembar
+- salt | 1,5 sdt
+- cooking_oil | 2 sdm
+langkah:
+1. Aduk nasi hangat dengan sedikit garam, serai geprek, dan daun salam, lalu kukus 10 menit agar harum.
+2. Rebus ayam, lalu suwir.
+3. Tumis bawang merah, bawang putih, dan cabai yang dihaluskan, masukkan ayam dan garam, masak sampai kering, lalu masukkan kemangi.
+4. Ratakan nasi di atas daun pisang, beri isi ayam, lalu bungkus dan sematkan dengan lidi.
+5. Bakar di teflon atau panggangan sampai daun kecokelatan dan harum, sekitar 10 menit.
+tip: Teflon tanpa minyak cukup untuk membakar bungkusan di rumah.
+alat: kukusan, wajan, teflon, daun pisang, lidi, ulekan
+
+## coto-makassar | Coto Makassar | 150 | 5 | sulit
+tag: berkuah
+desc: Sup daging berkuah kental dari kacang tanah sangrai dan air cucian beras, khas Makassar.
+bahan:
+- beef* | 500 g
+- peanut* | 100 g sangrai dan haluskan
+- rice | 2 genggam beras untuk air cucian
+- shallot | 6 siung
+- garlic | 5 siung
+- galangal | 2 ruas
+- lemongrass | 2 batang
+- coriander | 1 sdm
+- pepper | 1 sdt
+- salt | 2 sdt
+- spring_onion | 2 batang
+- celery | 2 batang
+- lime | 1 buah
+- cooking_oil | 3 sdm
+- water | 2,5 liter
+langkah:
+1. Cuci beras dan simpan air cucian kedua dan ketiga.
+2. Rebus daging dalam air cucian beras bersama lengkuas dan serai sampai empuk, sekitar 90 menit, lalu potong kecil.
+3. Sangrai ketumbar, lalu haluskan bersama bawang merah, bawang putih, dan merica.
+4. Tumis bumbu sampai harum, lalu masukkan ke kaldu bersama kacang tanah halus dan garam.
+5. Masak dengan api kecil 20 menit sampai kuah sedikit kental.
+6. Sajikan dengan daun bawang, seledri, bawang goreng, jeruk nipis, dan ketupat.
+tip: Air cucian beras membuat kuah coto lebih kental dan gurih.
+alat: panci besar, wajan, ulekan, pisau, talenan
+
+## papeda-ikan-kuah-kuning | Papeda dan Ikan Kuah Kuning | 60 | 4 | sedang
+tag: berkuah
+desc: Bubur sagu bening yang lengket, disajikan dengan ikan berkuah kunyit asam khas Maluku dan Papua.
+bahan:
+- sago* | 250 g
+- fish* | 500 g tongkol atau kakap
+- turmeric | 2 ruas
+- shallot | 6 siung
+- garlic | 3 siung
+- chili | 4 buah
+- lemongrass | 2 batang
+- kaffir_lime_leaf | 3 lembar
+- basil | 1 ikat
+- tomato | 1 buah
+- lime | 1 buah
+- salt | 2 sdt
+- cooking_oil | 2 sdm
+- water | 1,5 liter
+langkah:
+1. Lumuri ikan dengan jeruk nipis dan garam.
+2. Tumis bawang merah, bawang putih, kunyit, dan cabai yang dihaluskan bersama serai dan daun jeruk sampai harum.
+3. Tuang 800 ml air dan didihkan, lalu masukkan ikan, garam, tomat, dan kemangi, dan masak 10 menit.
+4. Untuk papeda, larutkan sagu dengan 200 ml air dingin, lalu siram dengan sisa air yang mendidih sambil diaduk cepat sampai bening dan lengket.
+5. Sajikan papeda dengan ikan kuah kuning.
+tip: Air harus benar-benar mendidih saat disiramkan agar sagu matang dan bening.
+alat: panci, wajan, mangkuk tahan panas, sendok kayu, ulekan
+
+## gudeg | Gudeg | 240 | 6 | sulit
+tag: manis
+desc: Nangka muda yang dimasak lama dengan santan dan gula merah sampai cokelat dan meresap.
+bahan:
+- jackfruit* | 1 kg nangka muda
+- coconut_milk | 1 liter
+- palm_sugar | 200 g
+- egg? | 6 butir rebus
+- shallot | 8 siung
+- garlic | 5 siung
+- candlenut | 4 butir
+- coriander | 1 sdm
+- galangal | 2 ruas
+- bay_leaf | 5 lembar
+- salt | 2 sdt
+langkah:
+1. Potong nangka muda, rebus 15 menit, lalu buang airnya.
+2. Haluskan bawang merah, bawang putih, kemiri, dan ketumbar.
+3. Alasi dasar panci dengan daun salam, lalu masukkan nangka, telur, bumbu halus, lengkuas, gula merah, dan garam.
+4. Tuang santan sampai nangka terendam.
+5. Masak dengan api kecil 3 jam sampai santan menyusut dan nangka berwarna cokelat; tambahkan santan bila terlalu cepat kering.
+tip: Gudeg makin enak setelah dihangatkan ulang keesokan harinya.
+alat: panci tebal, ulekan, pisau, talenan, sendok kayu
+
+## ayam-betutu | Ayam Betutu | 120 | 4 | sulit
+tag: pedas
+desc: Ayam berbumbu rempah Bali yang dikukus lalu dipanggang, pedas dan harum.
+bahan:
+- chicken* | 1 ekor kecil
+- shallot | 10 siung
+- garlic | 6 siung
+- chili | 10 buah
+- turmeric | 3 ruas
+- ginger | 2 ruas
+- galangal | 2 ruas
+- kencur | 2 ruas
+- candlenut | 4 butir
+- coriander | 1 sdt
+- lemongrass | 2 batang
+- kaffir_lime_leaf | 5 lembar
+- lime | 1 buah
+- salt | 2 sdt
+- cooking_oil | 3 sdm
+langkah:
+1. Lumuri ayam dengan jeruk nipis dan garam, lalu diamkan 15 menit.
+2. Haluskan bawang merah, bawang putih, cabai, kunyit, jahe, lengkuas, kencur, kemiri, dan ketumbar, lalu tumis bersama serai dan daun jeruk sampai matang.
+3. Balurkan bumbu ke seluruh ayam, termasuk rongga perutnya.
+4. Bungkus ayam dengan daun pisang dan kukus 60 menit.
+5. Buka bungkusan, lalu panggang di teflon atau oven sampai kulit kecokelatan, sekitar 20 menit.
+tip: Ayam yang dibumbui semalam rasanya lebih meresap.
+alat: kukusan, wajan, teflon atau oven, daun pisang, ulekan
+
+## tongseng-kambing | Tongseng Kambing | 90 | 4 | sedang
+tag: pedas, berkuah
+desc: Daging kambing berkuah santan encer dan kecap dengan kol dan tomat.
+bahan:
+- goat_meat* | 500 g
+- cabbage | 200 g
+- tomato | 2 buah
+- coconut_milk | 300 ml
+- sweet_soy_sauce | 5 sdm
+- shallot | 6 siung
+- garlic | 4 siung
+- candlenut | 3 butir
+- coriander | 1 sdt
+- turmeric | 1 ruas
+- ginger | 1 ruas
+- galangal | 1 ruas
+- lemongrass | 1 batang
+- chili | 6 buah rawit
+- salt | 1 sdt
+- cooking_oil | 3 sdm
+- water | 1 liter
+langkah:
+1. Rebus daging kambing dengan jahe dan serai sampai empuk, sekitar 45 menit, lalu potong kecil; simpan 500 ml kaldunya.
+2. Haluskan bawang merah, bawang putih, kemiri, ketumbar, dan kunyit, lalu tumis bersama lengkuas sampai harum.
+3. Masukkan daging, kaldu, santan, kecap manis, dan garam, lalu masak 15 menit.
+4. Tambahkan kol, tomat, dan cabai rawit utuh, lalu masak sebentar sampai kol layu.
+5. Sajikan hangat dengan nasi.
+tip: Merebus dengan jahe dan serai mengurangi bau prengus daging kambing.
+alat: panci, wajan, spatula, ulekan, pisau, talenan
+
+## sate-kambing | Sate Kambing | 60 | 4 | sedang
+desc: Sate daging kambing bumbu kecap dengan irisan bawang merah, tomat, dan cabai rawit.
+bahan:
+- goat_meat* | 500 g
+- sweet_soy_sauce | 8 sdm
+- shallot | 6 siung
+- garlic | 3 siung
+- tomato | 1 buah
+- chili | 6 buah rawit
+- lime | 1 buah
+- pepper | 1/2 sdt
+- salt | 1 sdt
+- butter? | 2 sdm leleh
+langkah:
+1. Potong daging kambing dadu, lumuri bawang putih halus, merica, garam, dan 3 sdm kecap, lalu diamkan 30 menit.
+2. Tusuk daging dengan tusuk sate.
+3. Bakar sambil dioles campuran kecap dan mentega leleh sampai matang dan kecokelatan, sekitar 10 menit.
+4. Iris bawang merah, tomat, dan cabai rawit, lalu campur dengan sisa kecap dan perasan jeruk nipis.
+5. Sajikan sate dengan sambal kecap.
+tip: Sate kambing yang dibakar terlalu lama menjadi alot.
+alat: panggangan atau teflon, tusuk sate, pisau, talenan, mangkuk
+
+## mie-aceh | Mie Aceh | 45 | 2 | sedang
+tag: pedas
+desc: Mi kuning tebal berbumbu kari pedas dengan udang, kol, dan tauge.
+bahan:
+- noodle* | 300 g mi kuning tebal
+- shrimp* | 150 g
+- cabbage | 100 g
+- bean_sprout | 50 g
+- tomato | 1 buah
+- shallot | 5 siung
+- garlic | 3 siung
+- chili | 5 buah
+- candlenut | 2 butir
+- turmeric | 1 ruas
+- ginger | 1 ruas
+- coriander | 1/2 sdt
+- star_anise | 1 butir
+- sweet_soy_sauce | 2 sdm
+- salt | 1 sdt
+- lime | 1 buah
+- cooking_oil | 3 sdm
+- water | 200 ml
+langkah:
+1. Haluskan bawang merah, bawang putih, cabai, kemiri, kunyit, jahe, dan ketumbar.
+2. Tumis bumbu bersama bunga lawang sampai harum dan matang.
+3. Masukkan udang, tomat, dan kol, lalu aduk sampai udang berubah warna.
+4. Tuang air, kecap, dan garam, lalu masukkan mi dan tauge.
+5. Masak sampai kuah menyusut, kering atau sedikit berkuah sesuai selera.
+6. Sajikan dengan irisan bawang merah, timun, dan jeruk nipis.
+tip: Bumbu yang ditumis sampai benar-benar matang membuat mi tidak langu.
+alat: wajan, spatula, ulekan, pisau, talenan
+
+## kwetiau-goreng | Kwetiau Goreng | 25 | 2 | mudah
+desc: Kwetiau basah yang digoreng dengan kecap, telur, ayam, dan sawi.
+bahan:
+- noodle* | 300 g kwetiau basah
+- egg | 2 butir
+- chicken | 100 g
+- mustard_greens | 1 ikat kecil
+- bean_sprout | 50 g
+- garlic | 3 siung
+- sweet_soy_sauce | 2 sdm
+- soy_sauce | 1 sdm
+- oyster_sauce | 1 sdm
+- pepper | 1/2 sdt
+- spring_onion | 1 batang
+- cooking_oil | 3 sdm
+langkah:
+1. Tumis bawang putih sampai harum, masukkan ayam iris tipis, lalu masak sampai berubah warna.
+2. Pinggirkan ayam, masukkan telur, lalu orak-arik.
+3. Masukkan kwetiau, kecap manis, kecap asin, saus tiram, dan merica, lalu aduk dengan api besar.
+4. Tambahkan sawi dan tauge, lalu aduk sebentar sampai layu.
+5. Taburi daun bawang dan sajikan.
+tip: Pisahkan helai kwetiau sebelum dimasak agar tidak menggumpal dan patah.
+alat: wajan, spatula, pisau, talenan
+
+## bihun-goreng | Bihun Goreng | 25 | 2 | mudah
+tag: hemat
+desc: Bihun goreng kecap dengan telur, kol, dan wortel.
+bahan:
+- vermicelli* | 200 g
+- egg | 2 butir
+- cabbage | 100 g
+- carrot | 1 buah
+- shallot | 3 siung
+- garlic | 3 siung
+- sweet_soy_sauce | 2 sdm
+- soy_sauce | 1 sdm
+- pepper | 1/2 sdt
+- salt | 1/2 sdt
+- spring_onion | 1 batang
+- cooking_oil | 3 sdm
+langkah:
+1. Rendam bihun dengan air panas 5 menit sampai lunak, lalu tiriskan.
+2. Tumis bawang merah dan bawang putih, masukkan telur, lalu orak-arik.
+3. Masukkan wortel dan kol iris, lalu masak sampai layu.
+4. Masukkan bihun, kecap manis, kecap asin, garam, dan merica, lalu aduk rata dengan api besar.
+5. Taburi daun bawang dan sajikan.
+tip: Bihun yang direndam terlalu lama menjadi lembek saat digoreng.
+alat: wajan, spatula, mangkuk, pisau, talenan
+
+## lumpia-semarang | Lumpia Semarang | 60 | 6 | sedang
+tag: camilan
+desc: Kulit lumpia berisi rebung, telur, dan udang yang digoreng renyah.
+bahan:
+- spring_roll_wrapper* | 15 lembar
+- bamboo_shoot* | 300 g
+- shrimp | 150 g
+- egg | 2 butir
+- garlic | 4 siung
+- shallot | 3 siung
+- sweet_soy_sauce | 1 sdm
+- oyster_sauce | 1 sdm
+- flour | 2 sdm
+- pepper | 1/2 sdt
+- salt | 1 sdt
+- sugar | 1/2 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Rebus rebung yang diiris korek api, buang airnya, lalu ulangi sekali agar baunya hilang.
+2. Tumis bawang merah dan bawang putih, masukkan udang cincang dan telur, lalu orak-arik.
+3. Masukkan rebung, kecap, saus tiram, garam, gula, dan merica, masak sampai kering, lalu dinginkan.
+4. Isi kulit lumpia dengan 2 sdm isian, lipat sisi kiri dan kanan, gulung rapat, lalu rekatkan dengan terigu yang dilarutkan sedikit air.
+5. Goreng dengan api sedang sampai kuning keemasan.
+tip: Isian harus kering dan dingin agar kulit tidak basah dan sobek.
+alat: wajan, panci, spatula, pisau, talenan
+
+## pastel-sayur | Pastel Isi Sayur | 90 | 6 | sedang
+tag: camilan
+desc: Kue pastri goreng berisi kentang, wortel, bihun, dan telur rebus.
+bahan:
+- flour* | 300 g
+- butter | 50 g
+- egg | 3 butir
+- water | 100 ml
+- potato | 2 buah
+- carrot | 1 buah
+- vermicelli | 30 g
+- garlic | 3 siung
+- shallot | 3 siung
+- spring_onion | 1 batang
+- pepper | 1/2 sdt
+- salt | 1,5 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Rebus 2 butir telur, lalu potong-potong.
+2. Campur terigu, mentega, 1 butir telur, dan garam, tambahkan air sedikit demi sedikit, lalu uleni sampai kalis dan diamkan 20 menit.
+3. Tumis bawang merah dan bawang putih, masukkan kentang dan wortel dadu kecil, bihun yang sudah direndam, garam, dan merica, lalu masak sampai matang dan kering.
+4. Gilas adonan tipis dan potong bundar sekitar 10 cm.
+5. Isi dengan sayuran dan sepotong telur, lipat menjadi setengah lingkaran, lalu pilin pinggirnya.
+6. Goreng dengan api sedang sampai kuning kecokelatan.
+tip: Adonan yang diistirahatkan lebih mudah digilas dan tidak menyusut.
+alat: wajan, gilingan adonan, mangkuk, spatula, pisau
+
+## kroket-kentang | Kroket Kentang | 60 | 6 | sedang
+tag: camilan, anak
+desc: Kentang tumbuk berisi ragout daging yang dibalut tepung panir dan digoreng.
+bahan:
+- potato* | 500 g
+- breadcrumbs* | 100 g
+- beef | 150 g cincang
+- carrot | 1 buah
+- onion | 1/2 buah
+- garlic | 2 siung
+- milk | 100 ml
+- flour | 2 sdm
+- egg | 2 butir
+- butter | 1 sdm
+- nutmeg | sejumput
+- salt | 1,5 sdt
+- pepper | 1/2 sdt
+- cooking_oil | secukupnya
+langkah:
+1. Kukus kentang sampai empuk, lalu haluskan dengan mentega, 1 kuning telur, garam, merica, dan pala.
+2. Tumis bawang bombay dan bawang putih, masukkan daging dan wortel dadu kecil, taburi terigu, tuang susu, masak sampai kental, lalu dinginkan.
+3. Pipihkan adonan kentang, isi dengan ragout, lalu bentuk lonjong.
+4. Celup ke sisa telur yang dikocok, lalu gulingkan di tepung panir.
+5. Goreng dengan api sedang sampai kuning keemasan.
+tip: Simpan kroket di kulkas 30 menit sebelum digoreng agar tidak pecah.
+alat: kukusan, wajan, mangkuk, spatula, garpu

@@ -166,6 +166,22 @@ const ingredientRows = <IngredientRow>[
   IngredientRow("soybean", "kedelai", "soybean", "protein", ["soybean"], false),
   IngredientRow("watercress", "selada air", "watercress", "sayur", ["watercress"], false),
   IngredientRow("kale", "kale", "kale", "sayur", ["kale", "kailan"], false),
+  IngredientRow("tapioca", "tepung tapioka", "tapioca starch", "karbo", ["tepung kanji", "kanji", "aci", "tapioka"], false),
+  IngredientRow("rice_flour", "tepung beras", "rice flour", "karbo", ["rice flour"], false),
+  IngredientRow("glutinous_rice_flour", "tepung ketan", "glutinous rice flour", "karbo", ["tepung ketan putih", "tepung beras ketan"], false),
+  IngredientRow("glutinous_rice", "beras ketan", "glutinous rice", "karbo", ["ketan", "ketan putih"], false),
+  IngredientRow("vermicelli", "bihun", "rice vermicelli", "karbo", ["soun", "mihun"], false),
+  IngredientRow("sago", "sagu", "sago starch", "karbo", ["tepung sagu"], false),
+  IngredientRow("breadcrumbs", "tepung panir", "breadcrumbs", "karbo", ["tepung roti"], false),
+  IngredientRow("spring_roll_wrapper", "kulit lumpia", "spring roll wrapper", "karbo", ["kulit spring roll"], false),
+  IngredientRow("cracker", "kerupuk", "cracker", "karbo", ["kerupuk mentah", "kerupuk udang"], false),
+  IngredientRow("yeast", "ragi instan", "instant yeast", "bumbu", ["ragi", "fermipan"], false),
+  IngredientRow("baking_powder", "baking powder", "baking powder", "bumbu", ["soda kue", "pengembang kue"], false),
+  IngredientRow("soy_sauce", "kecap asin", "soy sauce", "bumbu", [], false),
+  IngredientRow("coriander", "ketumbar", "coriander seed", "bumbu", ["ketumbar bubuk", "biji ketumbar"], false),
+  IngredientRow("kencur", "kencur", "aromatic ginger", "bumbu", [], false),
+  IngredientRow("kluwek", "kluwek", "keluak", "bumbu", ["keluak", "kluwak"], false),
+  IngredientRow("sesame", "wijen", "sesame seed", "bumbu", ["biji wijen", "wijen putih"], false),
 ];
 
 const unitTable = <String, (String, String)>{"grape": ("tandan", "beberapa tandan"), "banana": ("buah", "sisir"), "egg": ("butir", "setumpuk"), "garlic": ("siung", "bonggol"), "shallot": ("siung", "setumpuk"), "spring_onion": ("batang", "ikat"), "celery": ("batang", "ikat"), "lemongrass": ("batang", "ikat"), "water_spinach": ("ikat", "beberapa ikat"), "spinach": ("ikat", "beberapa ikat"), "mustard_greens": ("ikat", "beberapa ikat"), "long_bean": ("ikat", "beberapa ikat"), "green_bean": ("ikat", "beberapa ikat"), "lettuce": ("ikat", "beberapa ikat"), "asparagus": ("batang", "ikat"), "broccoli": ("bonggol", "setumpuk"), "cabbage": ("buah", "setumpuk"), "corn": ("tongkol", "setumpuk"), "shrimp": ("ekor", "setumpuk"), "crab": ("ekor", "setumpuk"), "fish": ("ekor", "setumpuk"), "tofu": ("potong", "setumpuk"), "tempeh": ("papan", "setumpuk"), "chili": ("buah", "segenggam"), "strawberry": ("buah", "segenggam"), "mushroom": ("buah", "segenggam")};
