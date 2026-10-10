@@ -2,7 +2,8 @@
 
     python3 tool/make_screens.py docs/img/tampilan.jpg pembuka.png nama.png dapur.png ...
 
-Untuk bingkai dari test/demo_render_test.dart (isi aplikasi saja, tanpa bilah status), tambahkan --tanpa-bilah-status.
+Untuk bingkai dari test/demo_render_test.dart (layar dengan ruang bilah status dan garis gestur yang masih kosong),
+tambahkan --demo: jam, sinyal, baterai, dan garis gestur digambar di ruang itu.
 """
 
 import sys
@@ -11,18 +12,21 @@ from pathlib import Path
 from PIL import Image, ImageFilter
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from phone_frame import phone  # noqa: E402
+from phone_frame import phone, system_bars  # noqa: E402
 
 BG = (238, 243, 248)  # sama dengan warna latar berkelompok di aplikasi
 WIDTH = 330  # lebar layar tiap ponsel
 GAP, PAD = 28, 40
 
 
-def main(out: str, *screens: str, status_bar: bool = True) -> None:
+def main(out: str, *screens: str, demo: bool = False) -> None:
     phones = []
     for f in screens:
         im = Image.open(f).convert("RGB")
-        phones.append(phone(im.resize((WIDTH, round(im.height * WIDTH / im.width)), Image.LANCZOS), status_bar=status_bar))
+        if demo:
+            im = system_bars(im, round(24 * im.width / 360), round(16 * im.width / 360))
+        im = im.resize((WIDTH, round(im.height * WIDTH / im.width)), Image.LANCZOS)
+        phones.append(phone(im, status_bar=None if demo else True))
     pw, ph = phones[0].size
     sheet = Image.new("RGBA", (PAD * 2 + len(phones) * pw + (len(phones) - 1) * GAP, PAD * 2 + ph), BG + (255,))
     for i, p in enumerate(phones):
@@ -37,5 +41,5 @@ def main(out: str, *screens: str, status_bar: bool = True) -> None:
 
 
 if __name__ == "__main__":
-    args = [a for a in sys.argv[1:] if a != "--tanpa-bilah-status"]
-    main(*args, status_bar="--tanpa-bilah-status" not in sys.argv)
+    args = [a for a in sys.argv[1:] if a != "--demo"]
+    main(*args, demo="--demo" in sys.argv)

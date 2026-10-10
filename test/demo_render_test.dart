@@ -105,6 +105,11 @@ void main() {
 
     tester.view.physicalSize = const Size(1080, 2340);
     tester.view.devicePixelRatio = 3;
+    // ruang bilah status (24 dp) dan garis gestur (16 dp) seperti ponsel sungguhan; bayangan digambar sungguhan
+    tester.view.padding = const FakeViewPadding(top: 72, bottom: 48);
+    tester.view.viewPadding = const FakeViewPadding(top: 72, bottom: 48);
+    debugDisableShadows = false;
+    addTearDown(tester.view.reset);
     final key = GlobalKey();
     var frame = 0;
     final manifest = <Map<String, dynamic>>[];
@@ -231,6 +236,7 @@ void main() {
     await show(const TourScreen());
     await run('tur', const Duration(milliseconds: 1500));
 
+    debugDisableShadows = true;
     if (out != null) File('$out/manifest.json').writeAsStringSync(jsonEncode(manifest));
   }, skip: out == null);
 }
