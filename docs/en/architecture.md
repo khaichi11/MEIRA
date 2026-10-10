@@ -47,7 +47,7 @@ assets/pengetahuan_luas.jsonl  food facts for chat (Wikidata CC0 and USDA, publi
 | Nickname | the pan fades out and a green header slides down with the greeting; asked once and stored only on the phone. After the name is entered, the white sheet slides up into the home screen |
 | Kitchen (home) | greeting, ask field, camera and gallery buttons, a daily grid of cooked recipes, a Gizi Seimbang card with an "Enak" or "Enak & sehat" choice, and a shortcut to the recipe book; a small bouncing arrow shows that the screen scrolls |
 | Recipe book | every recipe, with search by name or ingredient and filters (healthy, quick, breakfast, no stove, drinks, soups) |
-| Gizi Seimbang | today's summary (energy, protein, sugar, fat, and salt against targets), a meal log per meal, a body calculator (BMI, ideal weight, daily needs), a weight chart, intermittent fasting with reminders, today's meal plan, and goals; sources and formulas are on an info screen |
+| Gizi Seimbang | today's summary (energy, protein, sugar, fat, and salt against targets), a meal log per meal, a body calculator (BMI, ideal weight, daily needs), a weight chart, an eating window (time-restricted eating) with reminders, today's meal plan, and goals; sources and formulas are on an info screen |
 | Chat | a Resep or Gizi focus switch, the marked photo, recipe card, answers with buttons that open features, suggested questions, the input field, and a stop-voice button |
 | Recipe | ingredients with availability, steps, cooking mode with timers, a read-aloud button that also stops the voice, and an "I cooked this" mark |
 | History, Dataset, Settings | tabs in the bottom bar |

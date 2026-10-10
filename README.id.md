@@ -22,7 +22,7 @@ suara.
 - Pertanyaan tentang makanan, misalnya beda rendang dan kalio, dijawab dari catatan dapur, Wikidata, dan USDA, dan
   MEIRA berterus terang bila belum punya informasi pasti.
 - Gizi Seimbang: kalkulator tubuh (IMT, berat badan ideal, kebutuhan dan batas harian), catatan makan, progres berat,
-  puasa berselang dengan pengingat, dan rencana makan dari resep yang lebih ringan.
+  jendela makan untuk pembatasan waktu makan dengan pengingat, dan rencana makan dari resep yang lebih ringan.
 - Asisten memakai fitur itu langsung: "berat saya 70 kg", "tadi pagi saya makan nasi goreng", atau "boleh makan
   sekarang?" dicatat atau dijawab dari data Anda sendiri, disertai tombol untuk membuka fiturnya.
 - Jejak masak di beranda terisi setiap hari Anda menyelesaikan resep.
@@ -54,7 +54,7 @@ Penanda bahan masih terus diperbaiki; hasil terkini dan kekurangannya ada di
 |---|---|
 | Aplikasi | Flutter 3.41, Dart 3.11, Material 3, font Inter dan Poppins |
 | Inferensi di ponsel | ONNX Runtime 1.30 lewat FFI untuk detektor dan OCR, `llama-server` dari llama.cpp untuk model bahasa, sherpa-onnx untuk Whisper |
-| Pencarian | BM25 atas buku resep dan catatan dapur, ditambah pencarian nama atas 4.085 fakta makanan Wikidata (CC0) dan USDA (domain publik) |
+| Pencarian | BM25 atas buku resep dan catatan dapur, ditambah pencarian nama atas 4.119 fakta makanan Wikidata (CC0) dan USDA (domain publik) |
 | Penyimpanan | SQLite (sqflite) dan shared_preferences |
 | Platform | Android 9 atau lebih baru; suara lewat mesin TTS ponsel (flutter_tts) |
 | Perkakas | flutter test, dart format, ffmpeg dan Pillow untuk gambar demo |

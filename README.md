@@ -22,7 +22,7 @@ text or voice.
 - Food questions, such as how rendang and kalio differ, are answered from kitchen notes, Wikidata, and USDA facts,
   and MEIRA says so when it has no reliable information.
 - Gizi Seimbang: a body calculator (BMI, ideal weight, daily energy and limits), a meal log, weight progress,
-  intermittent fasting with reminders, and a daily plan of lighter recipes.
+  an eating window for time-restricted eating with reminders, and a daily plan of lighter recipes.
 - The assistant uses these features directly: "berat saya 70 kg", "tadi pagi saya makan nasi goreng", or "boleh
   makan sekarang?" are logged or answered from your own data, with a button that opens the feature.
 - A cooking grid on the home screen fills in every day you finish a recipe.
@@ -53,7 +53,7 @@ The ingredient marker is still being improved; current results and known weaknes
 |---|---|
 | App | Flutter 3.41, Dart 3.11, Material 3, Inter and Poppins fonts |
 | On-device inference | ONNX Runtime 1.30 over FFI for the detector and OCR, llama.cpp `llama-server` for the language model, sherpa-onnx for Whisper |
-| Retrieval | BM25 over the recipe book and kitchen notes, plus name lookup over 4,085 Wikidata (CC0) and USDA (public domain) food facts |
+| Retrieval | BM25 over the recipe book and kitchen notes, plus name lookup over 4,119 Wikidata (CC0) and USDA (public domain) food facts |
 | Storage | SQLite (sqflite) and shared_preferences |
 | Platform | Android 9 or newer; voice through the phone's TTS engine (flutter_tts) |
 | Tooling | flutter test, dart format, ffmpeg and Pillow for the demo images |

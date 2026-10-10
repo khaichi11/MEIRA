@@ -47,7 +47,7 @@ assets/pengetahuan_luas.jsonl  fakta makanan untuk obrolan (Wikidata CC0 dan USD
 | Nama panggilan | wajan memudar dan kotak hijau turun dari atas membawa sapaan; ditanyakan sekali dan hanya disimpan di ponsel. Setelah nama diisi, lembar putih naik dan beranda langsung tampil |
 | Dapur (beranda) | sapaan, kolom tanya, tombol kamera dan galeri, jejak masak berbentuk kotak-kotak harian, kartu Gizi Seimbang dengan pilihan "Enak" atau "Enak & sehat", dan pintasan buku resep; panah kecil yang naik turun menandakan beranda bisa digulir |
 | Buku resep | semua resep dengan pencarian nama atau bahan dan saringan (sehat, cepat, sarapan, tanpa kompor, minuman, berkuah) |
-| Gizi Seimbang | ringkasan hari ini (energi, protein, gula, lemak, garam terhadap kebutuhan), catatan makan per waktu makan, kalkulator tubuh (IMT, berat badan ideal, kebutuhan harian), grafik progres berat, puasa berselang dengan pengingat, rencana makan hari ini, dan tujuan; sumber data dan rumus ada di layar info |
+| Gizi Seimbang | ringkasan hari ini (energi, protein, gula, lemak, garam terhadap kebutuhan), catatan makan per waktu makan, kalkulator tubuh (IMT, berat badan ideal, kebutuhan harian), grafik progres berat, jendela makan (pembatasan waktu makan) dengan pengingat, rencana makan hari ini, dan tujuan; sumber data dan rumus ada di layar info |
 | Percakapan | pilihan fokus Resep atau Gizi, foto berpenanda, kartu resep, jawaban dengan tombol aksi ke fitur, saran pertanyaan, kolom tanya, dan tombol hentikan suara |
 | Resep | bahan dengan tanda tersedia, langkah, mode memasak dengan pengatur waktu, tombol bacakan yang sekaligus menjadi tombol hentikan suara, dan tanda "Sudah saya masak" |
 | Riwayat, Dataset, Pengaturan | tab di bilah navigasi bawah |
