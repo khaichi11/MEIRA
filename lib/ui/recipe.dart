@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../app_state.dart';
 import '../core/generated.dart';
+import '../core/health.dart';
 import '../core/recipes.dart';
 import '../core/vocab.dart';
 import '../theme.dart';
@@ -92,6 +93,13 @@ class _RecipeCardState extends State<RecipeCard> {
                                       const Icon(Icons.signal_cellular_alt_rounded, size: 15, color: C.secondary),
                                       const SizedBox(width: 4),
                                       Text(r.difficulty, style: T.footnote),
+                                      // tanda yang sama dengan buku resep untuk resep yang tergolong ringan
+                                      if (isHealthy(r)) ...[
+                                        const SizedBox(width: 10),
+                                        const Icon(Icons.eco_rounded, size: 15, color: C.herb),
+                                        const SizedBox(width: 3),
+                                        Text('Ringan', style: T.footnote.copyWith(color: C.herb)),
+                                      ],
                                     ],
                                   ),
                                 ],

@@ -827,10 +827,17 @@ class Meira {
       }
       if (extra['guess'] != null) core = '${extra['guess']} $core';
       if (extra['fixed'] != null) core = '${extra['fixed']} $core';
-      // mode enak dan sehat: satu saran agar resep lebih ringan, dari pedoman umum (lihat core/health.dart)
+      // mode enak dan sehat: sebutkan resep yang tergeser bila ada, lalu alasan resep ini ringan atau satu saran agar
+      // lebih ringan (lihat core/health.dart)
       if ((healthMode || s.prefs.tags.contains('sehat')) && (task == 'rekomendasi' || task == 'ganti')) {
-        final tip = healthTip(cur.recipe);
-        if (tip.isNotEmpty) core = core.replaceFirst(RegExp(r' Apakah Anda ingin'), ' $tip Apakah Anda ingin');
+        Recipe? tastier;
+        final have = {...s.have(), if (s.mode == 'hidangan') ...s.dishGuess};
+        if (task == 'rekomendasi' && have.isNotEmpty) {
+          final plain = rank(recipes, have, Prefs.fromJson(s.prefs.toJson()), k: 1);
+          if (plain.isNotEmpty) tastier = plain.first.recipe;
+        }
+        final note = healthNote(cur.recipe, tastier: tastier);
+        if (note.isNotEmpty) core = core.replaceFirst(RegExp(r' Apakah Anda ingin'), ' $note Apakah Anda ingin');
       }
       var source = 'templat';
       if (answerStyle == 'natural' && brain != null && task != 'detail') {

@@ -132,7 +132,7 @@ List<Match> rank(List<Recipe> recipes, Set<String> have, Prefs prefs, {Set<Strin
             if (i.optional) i.key,
         }.intersection(have).length;
     final penalty = .15 * {for (final i in r.items) i.key}.intersection(prefs.exclude).length;
-    final health = prefs.healthy ? .2 * healthScore(r) : 0.0;
+    final health = prefs.healthy ? .35 * healthScore(r) : 0.0;
     final score = .55 * covMain + .3 * covAll + .15 * tagHit + bonus + health - penalty;
     out.add(
       Match(
@@ -155,6 +155,15 @@ List<Match> rank(List<Recipe> recipes, Set<String> have, Prefs prefs, {Set<Strin
     final m = a.missing.length.compareTo(b.missing.length);
     return m != 0 ? m : a.recipe.minutes.compareTo(b.recipe.minutes);
   });
+  if (prefs.healthy) {
+    // mode enak dan sehat: resep yang tergolong sehat lebih dulu, lalu yang sedang; resep berat (digoreng, bersantan
+    // kental, banyak gula) baru muncul bila tidak ada pilihan lain
+    int tier(Match m) => isHealthy(m.recipe) ? 0 : (healthScore(m.recipe) >= heavyBelow ? 1 : 2);
+    final byTier = [
+      for (final t in [0, 1, 2]) ...out.where((m) => tier(m) == t),
+    ];
+    return byTier.take(k).toList();
+  }
   return out.take(k).toList();
 }
 

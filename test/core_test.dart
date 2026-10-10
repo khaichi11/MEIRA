@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meira/core/grounding.dart';
+import 'package:meira/core/health.dart';
 import 'package:meira/core/pipeline.dart';
 import 'package:meira/core/recipes.dart';
 import 'package:meira/core/vocab.dart';
@@ -65,6 +66,25 @@ void main() {
     test('peringkat mengikuti bahan di foto', () {
       final top = rank(recipes, {'banana', 'milk'}, Prefs()).first;
       expect(top.recipe.id, 'smoothie-pisang-susu');
+    });
+
+    test('mode enak dan sehat mendahulukan resep yang lebih ringan dan menyebut perbedaannya', () {
+      final sehat = Prefs()..healthy = true;
+      for (final have in [
+        {'chicken'},
+        {'corn'},
+        {'potato', 'carrot'},
+        {'tofu', 'tempeh'},
+      ]) {
+        final enak = rank(recipes, have, Prefs()).first.recipe;
+        final ringan = rank(recipes, have, sehat).first.recipe;
+        expect(isHealthy(ringan), isTrue, reason: have.join(' dan '));
+        expect(healthScore(ringan), greaterThan(healthScore(enak)), reason: have.join(' dan '));
+        expect(healthNote(ringan, tastier: enak), contains('Mode Enak & sehat aktif'));
+      }
+      // bila semua pilihan berat, resep berat tidak disebut sebagai pilihan sehat
+      final tempe = rank(recipes, {'tempeh'}, sehat).first.recipe;
+      if (healthScore(tempe) < heavyBelow) expect(healthNote(tempe), startsWith('Buku resep belum punya pilihan yang lebih ringan'));
     });
 
     test('pemahaman permintaan', () {

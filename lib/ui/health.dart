@@ -52,7 +52,21 @@ class TasteToggle extends StatelessWidget {
         foregroundColor: WidgetStateProperty.resolveWith((st) => st.contains(WidgetState.selected) ? C.accentDeep : C.secondary),
         side: const WidgetStatePropertyAll(BorderSide(color: C.separator)),
       ),
-      onSelectionChanged: (v) => s.setPref('healthy_mode', v.first),
+      onSelectionChanged: (v) {
+        s.setPref('healthy_mode', v.first);
+        // pengaruhnya baru terlihat pada rekomendasi berikutnya, jadi langsung dijelaskan
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              content: Text(
+                v.first
+                    ? 'Rekomendasi berikutnya mendahulukan resep yang tidak digoreng, tidak bersantan kental, dan tidak banyak gula.'
+                    : 'Rekomendasi berikutnya hanya mengikuti bahan yang Anda punya.',
+              ),
+            ),
+          );
+      },
     );
   }
 }
