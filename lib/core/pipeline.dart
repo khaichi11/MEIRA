@@ -820,10 +820,15 @@ class Meira {
       return;
     }
     if (task == 'obrolan' && brain != null) {
-      // RAG: catatan dapur yang cukup dekat ditambah fakta Wikidata dan USDA untuk makanan yang disebut namanya
+      // RAG: catatan dapur yang cukup dekat ditambah fakta Wikidata dan USDA untuk makanan yang disebut namanya. Bila
+      // hidangannya ada di buku resep, bahan dari buku resep yang dipakai; daftar bahan Wikidata untuk hidangan itu
+      // dibuang karena kadang keliru (klepon tertulis dari tepung beras, padahal tepung ketan)
+      final book = namedRecipe(recipes, text);
       final facts = [
+        if (book != null) _bookFact(book),
         for (final n in related.take(2)) 'Catatan dapur "${n.$1.title}": ${n.$1.body}',
-        for (final f in linked) f.text,
+        for (final f in linked)
+          book != null && f.title.toLowerCase() == book.name.toLowerCase() ? f.text.replaceFirst(RegExp(r' Bahan: [^.]*\.'), '') : f.text,
         // perbandingan dengan kebutuhan harian pengguna sudah dihitung di sini; model cukup menyampaikannya
         if (needs != null)
           for (final f in linked.where((f) => f.nutrition)) ?compareWithNeeds(f.title, f.text, needs!),
@@ -831,7 +836,10 @@ class Meira {
         // catatan makan hari ini ikut sebagai fakta saat pertanyaannya tentang diri pengguna
         if (appData != null && _personal.hasMatch(text.toLowerCase())) ?intakeFact(appData!),
       ];
-      yield* _chat(s, text, facts, photo: aboutPhoto || linked.isEmpty, prefix: extra['norecipe'] ?? '');
+      final more = book == null || book.desc.isEmpty
+          ? null
+          : 'Hidangan ini berupa ${book.desc[0].toLowerCase()}${book.desc.substring(1)} Resepnya ada di buku resep MEIRA.';
+      yield* _chat(s, text, facts, photo: aboutPhoto || linked.isEmpty, prefix: extra['norecipe'] ?? '', more: more);
       return;
     }
     var prompt = context(s, task, extra);
@@ -871,7 +879,7 @@ class Meira {
   /// Obrolan bebas: sapaan, ucapan terima kasih, dan pertanyaan pengetahuan dapur. Model 0,8B diberi perintah pendek dan
   /// konteks seperlunya, karena perintah resep yang panjang membuatnya melantur, menjelaskan rencananya sendiri, dan
   /// mengarang resep. Catatan dapur yang relevan disertakan sebagai rujukan (RAG), bukan disalin mentah.
-  Stream<MeiraEvent> _chat(Session s, String text, List<String> facts, {bool photo = true, String prefix = ''}) async* {
+  Stream<MeiraEvent> _chat(Session s, String text, List<String> facts, {bool photo = true, String prefix = '', String? more}) async* {
     // pertanyaan fakta tanpa sumber tidak diserahkan ke model kecil, karena ia akan mengarang dengan yakin
     if (facts.isEmpty && !Guardrails.smallTalk(text) && ingredientQuestion(text)) {
       const answer =
@@ -914,6 +922,11 @@ class Meira {
       // aliran terputus atau terlalu lama diam: pakai kalimat utuh yang sudah diterima
     }
     full = completeSentences(Guardrails.checkOutput(full));
+    // jawaban satu kalimat pendek ("Gudeg itu hidangan khas Yogyakarta.") dilengkapi kalimat dari buku resep
+    if (more != null && full.isNotEmpty && full.length < 80 && !full.trim().contains(RegExp(r'[.!?]\s+\S'))) {
+      yield TokenEvent(' $more');
+      full = '$full $more';
+    }
     if (prefix.isNotEmpty) full = '$prefix $full'.trim();
     var source = 'llm';
     if (full.isEmpty) {
@@ -1072,6 +1085,14 @@ class Meira {
     yield DoneEvent(answer, about.isEmpty ? 'templat' : 'llm');
   }
 
+  /// Fakta hidangan dari buku resep: deskripsi, bahan utama, dan bumbu, untuk pertanyaan "apa itu klepon?".
+  String _bookFact(Recipe r) {
+    final main = [for (final i in r.items.where((i) => i.main)) i.name];
+    final rest = [for (final i in r.items.where((i) => !i.main && !i.optional && i.key != 'water')) i.name];
+    return 'Buku resep MEIRA, ${r.name}: ${r.desc} Bahan utama: ${main.join(', ')}. Bahan lain: ${rest.join(', ')}. '
+        'Waktu memasak sekitar ${r.minutes} menit.';
+  }
+
   String _reference(Recipe r) {
     final main = r.items.where((i) => i.main).map((i) => i.name).join(', ');
     final steps = [for (var i = 0; i < r.steps.length && i < 4; i++) '${i + 1}. ${r.steps[i]}'].join(' ');
@@ -1216,7 +1237,12 @@ class Meira {
     if (task == 'detail') {
       // satu langkah per baris supaya mudah diikuti sambil memasak
       final steps = [for (var i = 0; i < r.steps.length; i++) '${i + 1}. ${r.steps[i]}'].join('\n');
-      final prep = [...missing, ...confirm];
+      final prep = s.imageDataUrl == null
+          ? [
+              for (final i in r.items)
+                if (cur.missing.contains(i.key)) i.name,
+            ]
+          : [...missing, ...confirm];
       return 'Berikut cara membuat ${r.name}.${prep.isNotEmpty ? ' Siapkan terlebih dahulu ${prep.join(', ')}.' : ''}\n$steps';
     }
     if (task == 'substitusi') {
@@ -1226,8 +1252,17 @@ class Meira {
     }
     var txt = 'Saya menyarankan ${r.name}, dengan waktu memasak sekitar ${r.minutes} menit.';
     if (seen.isNotEmpty) txt += ' Dari foto, sudah tersedia ${seen.join(', ')}.';
-    if (missing.isNotEmpty) txt += ' Bahan yang perlu disiapkan adalah ${missing.join(', ')}.';
-    if (confirm.isNotEmpty) txt += ' Mohon pastikan juga tersedia ${confirm.join(', ')}.';
+    if (s.imageDataUrl == null) {
+      // tanpa foto tidak ada bahan yang "terlihat" atau "tidak terlihat": semua bahan disebut berurutan seperti di resep
+      final all = [
+        for (final i in r.items)
+          if (cur.missing.contains(i.key)) i.name,
+      ];
+      if (all.isNotEmpty) txt += ' Bahan yang perlu disiapkan adalah ${all.join(', ')}.';
+    } else {
+      if (missing.isNotEmpty) txt += ' Bahan yang perlu disiapkan adalah ${missing.join(', ')}.';
+      if (confirm.isNotEmpty) txt += ' Mohon pastikan juga tersedia ${confirm.join(', ')}.';
+    }
     final others = [
       for (final m in s.candidates)
         if (m != cur) m.recipe.name,

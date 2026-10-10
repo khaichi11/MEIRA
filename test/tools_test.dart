@@ -140,6 +140,7 @@ void main() {
   test('pertanyaan puasa dibedakan dari pertanyaan makanan dan puasa Ramadan', () async {
     final d = FakeData()..fasting = const FastingPlan(16, 12 * 60);
     expect((await run('boleh makan sekarang?', d))!.actions, ['puasa']);
+    expect((await run('boleh makan sekarang?', FakeData()))!.text, contains('belum diatur'));
     expect((await run('boleh makan mi instan?', d))?.actions ?? const [], isNot(contains('puasa')));
     expect((await run('lagi puasa nih, masak apa ya buat nanti', FakeData()))?.actions ?? const [], isNot(contains('puasa')));
     await run('atur puasa 16:8 mulai makan jam 1 siang', d);

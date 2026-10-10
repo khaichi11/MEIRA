@@ -279,11 +279,19 @@ ToolReply? appTool(String text, AppData d) {
 
   // "boleh makan sekarang?" saat jadwal puasa aktif dijawab dari jadwalnya
   // hanya pertanyaan soal waktu; "boleh makan durian?" adalah pertanyaan tentang makanannya
-  if (d.fasting != null &&
+  final timing =
       RegExp(
         r'\b((boleh|bisa) makan (sekarang|belum)|(sudah|udah) (boleh|bisa) makan|kapan (saya |aku )?(boleh|bisa) makan|waktunya makan)\b|\bboleh makan\s*(\?|$)',
       ).hasMatch(t) &&
-      findFood(t, d.foods) == null) {
+      findFood(t, d.foods) == null;
+  if (d.fasting == null && timing) {
+    return const ToolReply(
+      'Pembatasan waktu makan belum diatur, jadi tidak ada jadwal yang membatasi. Makanlah saat lapar dengan porsi '
+      'seimbang; bila ingin memakai pola seperti 16:8, atur jendela makan di Gizi Seimbang.',
+      actions: ['puasa'],
+    );
+  }
+  if (d.fasting != null && timing) {
     final f = d.fasting!, st = fastingState(f, DateTime.now());
     return ToolReply(
       st.eating

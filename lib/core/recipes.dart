@@ -167,10 +167,11 @@ String _dishText(String s) => s
     .replaceAll(RegExp(r'\bsatai\b'), 'sate')
     .replaceAll(RegExp(r'\bkwetiaw\b'), 'kwetiau');
 
-Recipe? findRecipe(List<Recipe> recipes, String query) {
+/// Resep yang namanya tertulis utuh di pertanyaan, tanpa pencocokan kata yang longgar. Bila satu nama memuat nama
+/// lain, yang lebih spesifik menang ("nasi goreng telur" daripada "nasi"); bila tidak, yang disebut lebih dulu
+/// ("ketoprak tanpa lontong" memilih Ketoprak).
+Recipe? namedRecipe(List<Recipe> recipes, String query) {
   final q = _dishText(query);
-  // nama yang tertulis utuh di pertanyaan: bila satu nama memuat nama lain, yang lebih spesifik menang ("nasi goreng
-  // telur" daripada "nasi"); bila tidak, yang disebut lebih dulu ("ketoprak tanpa lontong" memilih Ketoprak)
   Recipe? whole;
   var wholeAt = -1;
   for (final r in recipes) {
@@ -185,6 +186,12 @@ Recipe? findRecipe(List<Recipe> recipes, String query) {
       wholeAt = at;
     }
   }
+  return whole;
+}
+
+Recipe? findRecipe(List<Recipe> recipes, String query) {
+  final q = _dishText(query);
+  final whole = namedRecipe(recipes, query);
   if (whole != null) return whole;
   final partial = recipes.where((r) => _dishText(r.name).contains(q)).toList()..sort((a, b) => a.name.length.compareTo(b.name.length));
   if (partial.isNotEmpty) return partial.first;
