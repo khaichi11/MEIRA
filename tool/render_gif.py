@@ -22,7 +22,7 @@ BG = (238, 243, 248)
 def main(folder: str, out: str, width: int = 300) -> None:
     root = Path(folder)
     manifest = json.loads((root / "manifest.json").read_text())
-    frames, durations = [], []
+    frames, durations, scenes = [], [], []
     for item in manifest:
         im = Image.open(root / item["file"]).convert("RGB")
         im = im.resize((width, round(im.height * width / im.width)), Image.LANCZOS)
@@ -35,15 +35,22 @@ def main(folder: str, out: str, width: int = 300) -> None:
             continue
         frames.append(canvas)
         durations.append(item["ms"])
-    # satu palet untuk semua adegan: dibuat dari contoh bingkai yang tersebar sepanjang GIF
-    picks = frames[:: max(1, len(frames) // 16)]
-    w, h = picks[0].size
-    sample = Image.new("RGB", (w * len(picks), h))
-    for i, f in enumerate(picks):
-        sample.paste(f, (i * w, 0))
-    palette = sample.quantize(colors=255, method=Image.Quantize.MEDIANCUT)
-    gif = [f.quantize(palette=palette, dither=Image.Dither.NONE) for f in frames]
-    gif[0].save(out, save_all=True, append_images=gif[1:], duration=durations, loop=0, optimize=True, disposal=1)
+        scenes.append(item["scene"])
+    # satu palet per adegan: palet bersama untuk seluruh GIF memudarkan warna foto (buah naga menjadi abu-abu), sedangkan
+    # palet per bingkai membuat warna berkedip; dalam satu adegan warnanya tetap sama
+    gif = []
+    for scene in dict.fromkeys(scenes):
+        members = [f for f, sc in zip(frames, scenes) if sc == scene]
+        picks = members[:: max(1, len(members) // 8)]
+        w, h = picks[0].size
+        sample = Image.new("RGB", (w * len(picks), h))
+        for i, f in enumerate(picks):
+            sample.paste(f, (i * w, 0))
+        palette = sample.quantize(colors=255, method=Image.Quantize.MEDIANCUT)
+        # foto bahan diberi dither supaya gradasi warnanya halus; layar antarmuka yang rata tidak perlu
+        dither = Image.Dither.FLOYDSTEINBERG if scene == "foto" else Image.Dither.NONE
+        gif += [f.quantize(palette=palette, dither=dither) for f in members]
+    gif[0].save(out, save_all=True, append_images=gif[1:], duration=durations, loop=0, optimize=False, disposal=1)
     print(f"{out}: {len(gif)} bingkai, {sum(durations) / 1000:.1f} detik")
 
 
