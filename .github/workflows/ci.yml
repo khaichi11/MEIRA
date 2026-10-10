@@ -21,7 +21,7 @@ jobs:
       # the quality gates write their scores here instead of next to the repository
       MEIRA_HOME: ${{ github.workspace }}/.meira-home
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: subosito/flutter-action@v2
         with:
@@ -37,7 +37,7 @@ jobs:
       - name: Static analysis
         run: flutter analyze
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
 
