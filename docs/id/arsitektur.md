@@ -14,6 +14,7 @@ lib/
   app_state.dart       keadaan aplikasi: pengaturan, model, sesi, riwayat, persiapan foto untuk model
   core/
     pipeline.dart      satu giliran: foto, penanda, pemahaman permintaan, pemilihan jawaban
+    context.dart       keadaan yang disebut pengguna (puasa, diet, kondisi kesehatan), diingat selama sesi
     grounding.dart     penanda: penggabungan kotak kembar, penomoran, satuan hitung
     recipes.dart       buku resep, peringkat, aturan pemahaman permintaan
     vocab.dart         kosakata bahan dan merek kemasan
@@ -27,7 +28,7 @@ lib/
   llm/
     memory.dart        memori percakapan dengan ringkasan
     retriever.dart     pencarian resep BM25
-    knowledge.dart     catatan dapur (BM25) dan fakta makanan Wikidata dan USDA
+    knowledge.dart     catatan dapur (BM25) dan fakta makanan Wikidata, Wikipedia, dan USDA
     chain.dart         rantai jawaban dengan lanjutan otomatis
     guardrails.dart    pemeriksaan masukan dan keluaran
   runtime/
@@ -36,7 +37,7 @@ lib/
     models.dart        daftar model, unduhan, dan pemasangan dari berkas
   ui/                  pembuka, beranda, layar percakapan, resep, mode memasak, riwayat, dataset, pengaturan
 assets/models/         detektor, OCR, dan adaptor LoRA obrolan yang dibawa di dalam APK
-assets/pengetahuan_luas.jsonl  fakta makanan untuk obrolan (Wikidata CC0 dan USDA, domain publik)
+assets/pengetahuan_luas.jsonl  fakta makanan untuk obrolan (Wikidata CC0, USDA domain publik, ringkasan Wikipedia CC BY-SA)
 ```
 
 ## Layar
@@ -67,9 +68,15 @@ assets/pengetahuan_luas.jsonl  fakta makanan untuk obrolan (Wikidata CC0 dan USD
 6. **Jawaban.** Resep diambil dari buku resep. Pada gaya natural, Qwen3.5-0.8B menulis ulang jawaban resep menjadi
    kalimat lisan, dan tulisan ulang itu dipakai hanya bila `naturalMatches` lolos: semua nama resep, nomor penanda,
    dan angka tetap ada, tidak ada bahan atau angka baru, bahan yang perlu disiapkan tidak berubah menjadi bahan yang
-   sudah ada, dan resep alternatif tetap disebut sebagai alternatif. Pertanyaan tentang makanan, misalnya beda
-   rendang dan kalio, dijawab model dari fakta: catatan dapur yang judulnya cocok, ditambah fakta Wikidata dan USDA
-   untuk setiap makanan yang disebut namanya. Tanpa fakta, MEIRA mengaku belum punya informasi pasti. Bahan yang
+   sudah ada, dan resep alternatif tetap disebut sebagai alternatif. Jawaban dari catatan dapur dan fakta (gizi,
+   asal, bahan, dan "apa itu klepon?" dari ringkasan Wikipedia) disusun aplikasi lebih dulu; pada gaya natural model
+   ikut menulis ulang, dan `voiceMatches` juga menolak tulisan ulang yang mengulang pertanyaan, bertanya balik,
+   menghilangkan nama daerah, atau menghilangkan larangan, batasan, dan anjuran ke dokter. Jawaban keamanan pangan
+   selalu memakai kalimat catatannya sendiri. Pertanyaan makanan lain, misalnya beda rendang dan kalio, dijawab model
+   dari fakta: catatan dapur yang judulnya cocok, ditambah fakta Wikidata dan USDA untuk setiap makanan yang disebut
+   namanya. Tanpa fakta, MEIRA berterus terang belum punya informasi alih-alih menebak. Keadaan yang disebut pengguna
+   (puasa Ramadan atau jendela makan, diet, vegetarian, diabetes dan kondisi lain) diingat selama sesi
+   (`core/context.dart`), dan jawaban "iya" atau "nggak" mengikuti tawaran MEIRA yang terakhir. Bahan yang
    disebut lewat ketikan diakui di awal jawaban, dan jawaban pertama dibuka dengan nama panggilan pengguna.
 7. **Bahan di luar kelas detektor.** Bila detektor tidak mengenali bahan, misalnya buah naga, tebakan model
    penglihatan diterjemahkan lewat nama Inggris di basis pengetahuan lalu disebut sebagai dugaan beserta

@@ -85,7 +85,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
   bool releaseInBackground = true;
   int imageSide = 512; // foto untuk model bahasa (makanan jadi); detektor selalu memakai 640 x 640
   String photoMode = 'otomatis';
-  String answerStyle = 'ringkas';
+  String answerStyle = 'natural';
   bool thorough = false;
   String? voiceName;
   @override
@@ -286,8 +286,29 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
 
   Future<void> logCooked(Recipe r) async {
     cooks.add((DateTime.now(), r.id));
-    final p = await SharedPreferences.getInstance();
     if (cooks.length > 2000) cooks.removeRange(0, cooks.length - 2000);
+    await _saveCooks();
+  }
+
+  @override
+  String? get lastCookToday {
+    if (cooks.isEmpty || _day(cooks.last.$1) != _day(DateTime.now())) return null;
+    final id = cooks.last.$2;
+    return recipes.where((r) => r.id == id).firstOrNull?.name ?? id;
+  }
+
+  /// Catatan masak hari ini yang terakhir dibatalkan ("ga jadi masak"); mengembalikan nama resepnya, atau null bila
+  /// hari ini belum ada catatan masak.
+  @override
+  Future<String?> undoLastCook() async {
+    if (cooks.isEmpty || _day(cooks.last.$1) != _day(DateTime.now())) return null;
+    final (_, id) = cooks.removeLast();
+    await _saveCooks();
+    return recipes.where((r) => r.id == id).firstOrNull?.name ?? id;
+  }
+
+  Future<void> _saveCooks() async {
+    final p = await SharedPreferences.getInstance();
     await p.setStringList('cook_log', [for (final (t, id) in cooks) '${t.toIso8601String()}|$id']);
     notifyListeners();
   }
@@ -332,7 +353,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
       releaseInBackground = p.getBool('release_bg') ?? true;
       imageSide = p.getInt('image_side') ?? 512;
       photoMode = p.getString('photo_mode') ?? 'otomatis';
-      answerStyle = p.getString('answer_style') ?? 'ringkas';
+      answerStyle = p.getString('answer_style') ?? 'natural';
       thorough = p.getBool('thorough') ?? false;
       voiceName = p.getString('voice_name');
       userName = p.getString('user_name');
@@ -615,7 +636,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
   // riwayat untuk LLM lebih ringkas di HP supaya prompt cepat diproses CPU
   int get _memoryBudget => 700;
 
-  Session _newSession() => Session(_newId(), memoryBudget: _memoryBudget);
+  Session _newSession() => Session(_newId(), memoryBudget: _memoryBudget)..tab = chatMode;
 
   // =============================================================== percakapan
   /// Foto tambahan dalam percakapan yang sama: bahannya ikut dihitung, foto utama dan penandanya tetap.
@@ -634,7 +655,10 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
     await stopSpeaking();
     messages.add(Message(Role.user, text.trim(), photo: photoBytes));
     Message? answer;
-    Message? status;
+    // penanda menunggu langsung tampil untuk setiap pesan, jadi jawaban yang langsung siap dan jawaban yang disusun model
+    // sama-sama diawali tanda sedang menjawab
+    Message? status = Message(Role.status, '')..let(messages.add);
+    final started = DateTime.now();
     notifyListeners();
     try {
       final vin = imageDataUrl != null ? _visionInput : null;
@@ -658,6 +682,7 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
           case RecipesEvent():
             break;
           case TokenEvent(:final text):
+            if (answer == null) await _settle(started);
             if (status != null) {
               messages.remove(status);
               status = null;
@@ -665,6 +690,11 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
             answer ??= (Message(Role.meira, '', streaming: true, animate: true)..let(messages.add));
             answer.text += text;
           case DoneEvent(:final text, :final source):
+            if (answer == null) await _settle(started);
+            if (status != null) {
+              messages.remove(status);
+              status = null;
+            }
             answer ??= (Message(Role.meira, '', animate: true)..let(messages.add));
             answer
               ..text = text
@@ -688,6 +718,14 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
       notifyListeners();
       if (handsFree && voice == VoiceState.idle) unawaited(_listenHandsFree());
     }
+  }
+
+  // jawaban yang langsung siap tetap didahului penanda menunggu sebentar, supaya tidak ada jawaban yang muncul tiba-tiba
+  static const _thinking = Duration(milliseconds: 450);
+
+  Future<void> _settle(DateTime started) async {
+    final left = _thinking - DateTime.now().difference(started);
+    if (left > Duration.zero) await Future<void>.delayed(left);
   }
 
   /// Koreksi pengguna: ganti bahan pada penanda [number], atau hapus bila [key] null.
@@ -754,6 +792,8 @@ class AppState extends ChangeNotifier with WidgetsBindingObserver implements App
     if (row == null) return;
     final (state, msgs) = row;
     final s = Session.restore(id, state, recipes, memoryBudget: _memoryBudget);
+    // percakapan dibuka kembali di tab asalnya, supaya obrolan gizi tidak muncul di tab resep atau sebaliknya
+    if (s.tab != chatMode) setChatMode(s.tab);
     final f = history.photoFile(id);
     if (f.existsSync()) {
       final bytes = await f.readAsBytes();

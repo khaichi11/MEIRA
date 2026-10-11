@@ -73,6 +73,16 @@ class Guardrails {
   static bool kitchenRequest(String text) =>
       mentions(text).isNotEmpty || const {'detail', 'ganti', 'pilih', 'substitusi', 'cek', 'hidangan'}.contains(ruleIntent(text).action);
 
+  static final _offSubject = RegExp(
+    r'\b(presiden|wakil presiden|menteri|gubernur|bupati|wali kota|politik|partai|pemilu|capres|saham|kripto|bitcoin|forex|'
+    r'cuaca|gempa|sepak ?bola|piala dunia|film|lagu|musik|artis|selebriti|game|matematika|fisika|pemrograman|coding|ibu ?kota)\b',
+  );
+
+  /// Pokok pertanyaan yang jelas di luar dapur ("siapa presiden indonesia"), walaupun percakapannya sedang membahas
+  /// makanan.
+  static bool offTopicSubject(String text) =>
+      _offSubject.hasMatch(text.toLowerCase()) && !_food.hasMatch(text.toLowerCase()) && mentions(text).isEmpty;
+
   static GuardResult checkInput(String text, {bool knownIngredient = false, double ragScore = 0}) {
     final t = text.toLowerCase();
     if (_injection.hasMatch(t)) {

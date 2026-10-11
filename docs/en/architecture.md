@@ -14,6 +14,7 @@ lib/
   app_state.dart       app state: settings, models, sessions, history, photo preparation for the models
   core/
     pipeline.dart      one turn: photo, markers, request parsing, answer selection
+    context.dart       what the user says about themselves (fasting, diet, conditions), kept for the session
     grounding.dart     markers: duplicate removal, numbering, counting units
     recipes.dart       recipe book, ranking, request rules
     vocab.dart         ingredient and package brand vocabulary
@@ -27,7 +28,7 @@ lib/
   llm/
     memory.dart        conversation memory with summaries
     retriever.dart     BM25 recipe search
-    knowledge.dart     kitchen notes (BM25) and Wikidata and USDA food facts
+    knowledge.dart     kitchen notes (BM25) and Wikidata, Wikipedia, and USDA food facts
     chain.dart         answer chain with automatic continuation
     guardrails.dart    input and output checks
   runtime/
@@ -36,7 +37,7 @@ lib/
     models.dart        model list, downloads, and installation from files
   ui/                  opening, home, chat screen, recipes, cooking mode, history, dataset, settings
 assets/models/         detector, OCR, and the chat LoRA adapter shipped inside the APK
-assets/pengetahuan_luas.jsonl  food facts for chat (Wikidata CC0 and USDA, public domain)
+assets/pengetahuan_luas.jsonl  food facts for chat (Wikidata CC0, USDA public domain, Wikipedia summaries CC BY-SA)
 ```
 
 ## Screens
@@ -67,10 +68,16 @@ assets/pengetahuan_luas.jsonl  food facts for chat (Wikidata CC0 and USDA, publi
 6. **Answer.** Recipes come from the recipe book. In the natural style, Qwen3.5-0.8B rewrites the recipe answer as
    spoken sentences, and the rewrite is used only when `naturalMatches` passes: every recipe name, marker number,
    and figure is kept, no ingredient or figure is added, an ingredient that still has to be prepared is not turned
-   into one that is already there, and alternative recipes are still offered as alternatives. Questions about food,
-   such as how rendang and kalio differ, are answered by the model from facts: kitchen notes whose title matches,
-   plus Wikidata and USDA facts for every food named in the question. Without facts, MEIRA says it has no reliable
-   information. Ingredients typed in a message are acknowledged at the start of the answer, and the first answer
+   into one that is already there, and alternative recipes are still offered as alternatives. Answers from kitchen
+   notes and facts (nutrition, origin, ingredients, "what is klepon?" from the Wikipedia summary) are written by the
+   app first; in the natural style the model rewrites them too, and `voiceMatches` additionally rejects a rewrite that
+   echoes the question, asks something back, drops a place name, or drops a warning, limit, or doctor referral. Food
+   safety answers always keep the note's own wording. Other food questions, such as how rendang and kalio differ, are
+   answered by the model from facts: kitchen notes whose title matches, plus Wikidata and USDA facts for every food
+   named in the question. Without facts, MEIRA says it has no reliable information instead of guessing. What the user
+   says about themselves (fasting for Ramadan or on an eating window, dieting, vegetarian, diabetes and other
+   conditions) is remembered for the whole session (`core/context.dart`), and a "yes" or "no" answers MEIRA's own
+   last offer. Ingredients typed in a message are acknowledged at the start of the answer, and the first answer
    starts with the user's nickname.
 7. **Ingredients outside the detector's classes.** When the detector does not recognise an ingredient, such as
    dragon fruit, the vision model's guess is translated through the English names in the knowledge base and given

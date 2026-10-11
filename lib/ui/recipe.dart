@@ -325,7 +325,15 @@ class _RecipeSheet extends StatelessWidget {
           TextButton.icon(
             onPressed: () async {
               await s.logCooked(r);
-              if (context.mounted) toast(context, 'Tercatat di jejak masak.');
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    content: const Text('Tercatat di jejak masak.'),
+                    action: SnackBarAction(label: 'Batalkan', onPressed: s.undoLastCook),
+                  ),
+                );
             },
             icon: const Icon(Icons.check_circle_outline_rounded, size: 20),
             label: const Text('Sudah saya masak'),

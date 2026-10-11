@@ -109,8 +109,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           header: 'Gaya jawaban',
           children: [
             for (final (v, label, sub) in const [
-              ('ringkas', 'Ringkas', 'Langsung dari buku resep'),
-              ('natural', 'Natural', 'Dirangkai dengan bahasa sehari-hari'),
+              ('natural', 'Natural', 'Dirangkai model dengan bahasa sehari-hari, sedikit lebih lama'),
+              ('ringkas', 'Ringkas', 'Langsung dari buku resep dan catatan, tanpa menunggu model'),
             ])
               Row2(
                 title: label,

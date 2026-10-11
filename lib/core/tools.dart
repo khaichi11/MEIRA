@@ -31,6 +31,12 @@ abstract class AppData {
   Future<void> setBody(BodyProfile b);
   Future<void> logIntake(IntakeEntry e);
   Future<void> removeLastIntake();
+
+  /// Nama resep yang terakhir dicatat sudah dimasak hari ini, atau null.
+  String? get lastCookToday;
+
+  /// Membatalkan catatan masak hari ini yang terakhir; nama resepnya, atau null bila tidak ada.
+  Future<String?> undoLastCook();
 }
 
 /// Makanan dengan nama terpanjang yang disebut dalam teks ("mi instan" sebelum "mi").
@@ -425,6 +431,12 @@ ToolReply? appTool(String text, AppData d) {
         actions: const ['gizi'],
       );
     }
+  }
+  // "ga jadi masak": catatan masak hari ini dibatalkan, supaya kotak jejak masak tidak terisi untuk masakan yang batal
+  if (RegExp(r'\b(tidak|nggak|gak|ga|enggak|belum|batal) jadi (masak|memasak)\b|\bbatal (masak|memasak)\b|\bbatalkan (catatan )?masak').hasMatch(t)) {
+    final last = d.lastCookToday;
+    if (last == null) return const ToolReply('Baik, tidak apa-apa. Hari ini belum ada catatan masak yang perlu dibatalkan.');
+    return ToolReply('Baik, catatan masak $last hari ini sudah saya batalkan dari jejak masak.', effect: d.undoLastCook);
   }
   if (RegExp(r'\b(hapus|batalkan)\b.*\b(catatan makan|makanan) terakhir\b').hasMatch(t)) {
     if (d.intakeToday.isEmpty) return const ToolReply('Belum ada catatan makan hari ini.');

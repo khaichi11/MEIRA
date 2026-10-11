@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 // Percakapan teks dengan model bahasa sungguhan, tanpa foto. Jalankan:
 //   MEIRA_LIVE=1 MEIRA_HOME=/path/MEIRA flutter test test/chat_live_test.dart
+// MEIRA_TEST_ASK berisi pertanyaan dipisah "|", MEIRA_TEST_STYLE=natural menguji gaya natural.
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -58,7 +59,8 @@ void main() {
               ),
             )
             ..userName = 'Khai'
-            ..chatMode = Platform.environment['MEIRA_TEST_MODE'] ?? 'resep';
+            ..chatMode = Platform.environment['MEIRA_TEST_MODE'] ?? 'resep'
+            ..answerStyle = Platform.environment['MEIRA_TEST_STYLE'] ?? 'ringkas';
       try {
         final asked = (Platform.environment['MEIRA_TEST_ASK'] ?? '').split('|').where((q) => q.isNotEmpty).toList();
         // satu sesi untuk semua pertanyaan, supaya pertanyaan lanjutan ("apa lanjutannya?") ikut teruji

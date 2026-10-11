@@ -47,6 +47,11 @@ class FakeData implements AppData {
   Future<void> logIntake(IntakeEntry e) async => eaten.add(e);
   @override
   Future<void> removeLastIntake() async => eaten.removeLast();
+  final List<String> cooked = [];
+  @override
+  String? get lastCookToday => cooked.lastOrNull;
+  @override
+  Future<String?> undoLastCook() async => cooked.isEmpty ? null : cooked.removeLast();
   @override
   Future<bool> setFasting(FastingPlan? p) async {
     fasting = p;

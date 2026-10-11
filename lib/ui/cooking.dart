@@ -226,13 +226,30 @@ class _CookingScreenState extends State<CookingScreen> {
                       onPressed: _step < r.steps.length - 1
                           ? () => _go(_step + 1)
                           : () async {
-                              // resep yang selesai dimasak masuk ke jejak masak di beranda
+                              // jejak masak hanya diisi bila pengguna memastikan masakannya benar-benar jadi; membaca
+                              // langkah sampai habis tanpa memasak tidak dihitung
+                              final done = await showDialog<bool>(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: Text('Sudah selesai memasak?', style: T.headline),
+                                  content: Text('${r.name} akan dicatat di jejak masak hari ini.', style: T.body),
+                                  actions: [
+                                    TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Belum, keluar saja')),
+                                    FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Ya, catat')),
+                                  ],
+                                ),
+                              );
+                              if (!context.mounted) return;
+                              if (done != true) {
+                                Navigator.pop(context);
+                                return;
+                              }
                               await s.logCooked(r);
                               if (!context.mounted) return;
                               HapticFeedback.mediumImpact();
                               await showDialog<void>(
                                 context: context,
-                                builder: (_) => CookedDialog(recipe: r.name, streak: s.streak),
+                                builder: (_) => CookedDialog(recipe: r.name, streak: s.streak, onUndo: s.undoLastCook),
                               );
                               if (context.mounted) Navigator.pop(context);
                             },
@@ -251,9 +268,12 @@ class _CookingScreenState extends State<CookingScreen> {
 
 /// Perayaan kecil setelah resep selesai dimasak: tanda centang memantul dan rentetan hari memasak.
 class CookedDialog extends StatelessWidget {
-  const CookedDialog({super.key, required this.recipe, required this.streak});
+  const CookedDialog({super.key, required this.recipe, required this.streak, this.onUndo});
   final String recipe;
   final int streak;
+
+  /// Membatalkan catatan masak yang baru dibuat, misalnya karena tombol Selesai tertekan tidak sengaja.
+  final Future<void> Function()? onUndo;
 
   @override
   Widget build(BuildContext context) => Dialog(
@@ -301,7 +321,20 @@ class CookedDialog extends StatelessWidget {
               ),
             ),
           const SizedBox(height: 10),
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup')),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (onUndo != null)
+                TextButton(
+                  onPressed: () async {
+                    await onUndo!();
+                    if (context.mounted) Navigator.pop(context);
+                  },
+                  child: const Text('Batalkan catatan'),
+                ),
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Tutup')),
+            ],
+          ),
         ],
       ),
     ),
