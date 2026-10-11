@@ -575,6 +575,15 @@ class Meira {
     }
     // perintah fitur: catat berat atau makanan, isi data tubuh, tanya IMT, progres, jejak masak, atau buka fitur
     final tool = imageDataUrl == null && text.isNotEmpty ? (appData != null ? appTool(text, appData!) : greetingTool(text, null)) : null;
+    // ucapan terima kasih dan sapaan singkat dijawab langsung, supaya tidak dicocokkan ke catatan dapur yang kebetulan
+    // memuat kata "MEIRA" atau dijawab model dengan topik lain
+    final chat = tool == null && imageDataUrl == null ? smallTalkReply(text) : null;
+    if (chat != null) {
+      yield TokenEvent(chat);
+      await _remember(s, text, chat, 'templat');
+      yield DoneEvent(chat, 'templat');
+      return;
+    }
     if (tool != null) {
       await tool.effect?.call();
       yield TokenEvent(tool.text);
@@ -890,7 +899,14 @@ class Meira {
     if (task == 'obrolan' && asksGizi) {
       final gizi = (knowledge?.link(text, nutrition: true) ?? const <Fact>[]).where((f) => f.nutrition).toList();
       if (gizi.isNotEmpty) {
-        final answer = _nutritionAnswer(text, gizi.first);
+        // "beda gula merah dan gula pasir": kedua makanan dibandingkan, bukan hanya yang pertama disebut
+        final compare = gizi.length >= 2 && _compareWords.hasMatch(text.toLowerCase()) ? compareNutrition(gizi[0], gizi[1], question: text) : null;
+        // hidangan yang belum ada datanya ("kopi susu") disebut terus terang sebelum angka bahannya
+        final dish = unknownDishes(text).firstOrNull;
+        final note = dish == null
+            ? ''
+            : 'Data gizi untuk $dish belum ada, jadi berikut angka untuk ${gizi.first.title.replaceFirst('Kandungan gizi ', '')}. ';
+        final answer = compare ?? '$note${_nutritionAnswer(text, gizi.first)}';
         s.lastTopic = gizi.first.title.replaceFirst('Kandungan gizi ', '');
         s.lastNutrition = true;
         yield TokenEvent(answer);
@@ -1431,12 +1447,74 @@ final _ref = RegExp(r'\s*\(?\s*(?:#|nomor\s+|no\.\s*)(\d+)(?:\s*(?:,|dan|-|–)\
 /// Pertahankan rujukan nomor (#n) hanya bila nama bahan nomor itu memang disebut tepat sebelumnya,
 /// lalu bersihkan label konteks yang bocor dan tanda pisah panjang.
 /// Buang kalimat terakhir yang terpotong batas token agar jawaban tidak berhenti di tengah kata.
+final _compareWords = RegExp(
+  r'\b(beda|bedanya|perbedaan|dibanding|dibandingkan|bandingkan|banding|vs|versus|lebih (sehat|baik|bagus) mana|mana yang lebih)\b',
+);
+
+/// Balasan untuk ucapan terima kasih, sapaan, atau persetujuan singkat; null bila pesan berisi hal lain.
+String? smallTalkReply(String text) {
+  final t = text.toLowerCase().replaceAll(RegExp(r'[^a-z\s]'), ' ').replaceAll(RegExp(r'\s+'), ' ').trim();
+  const tail = r'(?: (?:ya|yah|ya meira|meira|kak|min|banyak|banget|sekali|semua|deh|nih))*';
+  if (RegExp('^(?:terima kasih|terimakasih|makasih|makasi|thanks|thank you|thx|trims|tengkyu)$tail\$').hasMatch(t)) {
+    return 'Sama-sama. Kalau ingin mencari resep, menanyakan gizi makanan, atau mencatat makan hari ini, silakan tulis saja.';
+  }
+  if (RegExp('^(?:halo|hai|hi|hello|hey|pagi|siang|sore|malam|selamat (?:pagi|siang|sore|malam)|assalamualaikum)$tail\$').hasMatch(t)) {
+    return 'Halo! Saya bisa mencarikan resep dari foto atau bahan yang ada, menjawab pertanyaan gizi, dan mencatat makan Anda. '
+        'Mau mulai dari mana?';
+  }
+  if (RegExp('^(?:oke|ok|okay|baik|siap|sip|mantap)$tail\$').hasMatch(t)) return 'Baik. Kabari saja bila ada yang ingin ditanyakan.';
+  return null;
+}
+
+/// Perbandingan dua makanan per 100 gram dari fakta gizi USDA, beserta zat yang jelas berbeda. Selisih kecil (misalnya
+/// natrium 1 dan 28 mg) tidak disebut sebagai perbedaan.
+String? compareNutrition(Fact a, Fact b, {String question = ''}) {
+  final na = Nutrients.parse(a.text), nb = Nutrients.parse(b.text);
+  if (na == null || nb == null) return null;
+  double fiber(Fact f) => double.tryParse(RegExp(r'serat ([\d,]+) g').firstMatch(f.text)?[1]?.replaceAll(',', '.') ?? '') ?? 0;
+  // nama seperti yang ditulis pengguna bila itu salah satu sebutan makanannya ("gula pasir", bukan "gula")
+  final q = ' ${question.toLowerCase()} ';
+  String said(Fact f) => ([...f.names]..sort((m, n) => n.length.compareTo(m.length)))
+      .map((n) => n.toLowerCase())
+      .firstWhere((n) => q.contains(' $n '), orElse: () => f.title.replaceFirst('Kandungan gizi ', ''));
+  final x = said(a), y = said(b);
+  String line(String name, Nutrients n, double serat) =>
+      '$name sekitar ${n.energy.round()} kkal, protein ${fmt(n.protein)} g, lemak ${fmt(n.fat)} g, serat ${fmt(serat)} g, '
+      'gula ${fmt(n.sugar)} g, dan natrium ${n.sodium.round()} mg';
+  // (nama, nilai a, nilai b, selisih minimum yang dianggap berarti)
+  final rows = [
+    ('energi', na.energy, nb.energy, 20.0),
+    ('protein', na.protein, nb.protein, 2.0),
+    ('lemak', na.fat, nb.fat, 2.0),
+    ('serat', fiber(a), fiber(b), 1.0),
+    ('gula', na.sugar, nb.sugar, 2.0),
+    ('garam', na.sodium, nb.sodium, 100.0),
+  ];
+  final diffs = [
+    for (final (label, va, vb, min) in rows)
+      if ((va - vb).abs() >= min && (va - vb).abs() > .15 * math.max(va, vb)) '$label ${va > vb ? x : y} lebih tinggi',
+  ];
+  final verdict = diffs.isEmpty ? ' Kandungan keduanya hampir sama.' : ' ${_capital(diffs.join(', '))}.';
+  return 'Per 100 gram, ${line(x, na, fiber(a))}, sedangkan ${line(y, nb, fiber(b))} (perkiraan USDA).$verdict';
+}
+
+String _capital(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+
 String completeSentences(String text) {
   final t = text.trim();
   if (t.isEmpty || RegExp(r'[.!?]["”)]?$').hasMatch(t)) return t;
   final end = t.lastIndexOf(RegExp(r'[.!?](\s|$)'));
-  return end > 0 ? t.substring(0, end + 1) : t;
+  if (end > 0) return t.substring(0, end + 1);
+  // satu kalimat tanpa titik yang berhenti di kata sambung ("... informasi pasti tentang") jelas terpotong; dibuang
+  // supaya pemanggil memakai jawaban cadangan
+  return _dangling.hasMatch(t) ? '' : '$t.';
 }
+
+final _dangling = RegExp(
+  r'\b(tentang|dan|atau|yang|dengan|untuk|di|ke|dari|pada|dalam|karena|seperti|serta|adalah|ialah|yaitu|bahwa|agar|supaya|'
+  r'sehingga|tetapi|namun|juga|lebih|sangat|para|sebuah|seorang|bisa|dapat|akan|harus)$',
+  caseSensitive: false,
+);
 
 String fixRefs(String text, List<Detection> detections) {
   final byNum = {for (final d in detections) d.number: d};
