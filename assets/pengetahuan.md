@@ -16,7 +16,7 @@ kunci: orak arik telur dadar beda perbedaan
 Orak-arik diaduk terus selama dimasak sehingga menjadi gumpalan lembut. Telur dadar dibiarkan menyebar rata di wajan lalu dibalik utuh sehingga berbentuk lembaran.
 
 ## Nasi goreng memakai nasi dingin
-kunci: nasi goreng nasi dingin sisa semalam lembek kenapa
+kunci: nasi goreng nasi dingin sisa semalam menggumpal
 Nasi dingin atau sisa semalam lebih kering sehingga butirnya terpisah dan tidak lembek saat digoreng. Nasi yang baru matang masih lembap dan mudah menggumpal.
 
 ## Memanggang roti di teflon
@@ -392,8 +392,8 @@ kunci: alpukat matang memilih lunak
 Alpukat matang terasa sedikit lunak saat ditekan lembut di dekat tangkainya. Alpukat yang masih keras bisa diperam di suhu ruang dalam kantong kertas selama beberapa hari.
 
 ## Ayam harus matang
-kunci: ayam matang aman suhu merah muda
-Daging ayam harus dimasak sampai matang di seluruh bagian, tanpa bagian merah muda dan dengan cairan yang bening. Gunakan talenan terpisah untuk ayam mentah dan cuci tangan setelah memegangnya.
+kunci: ayam matang aman suhu merah muda setengah matang mentah kurang matang
+Ayam setengah matang tidak aman dimakan karena bisa mengandung bakteri Salmonella dan Campylobacter penyebab keracunan. Masak sampai matang di seluruh bagian, tanpa bagian merah muda dan dengan cairan yang bening. Gunakan talenan terpisah untuk ayam mentah dan cuci tangan setelah memegangnya.
 
 ## Beda bakwan dan perkedel
 kunci: bakwan perkedel bedanya gorengan sayur kentang
@@ -416,7 +416,7 @@ kunci: batas gula garam lemak sehari GGL anjuran kemenkes kalori diet sehat
 Kementerian Kesehatan menganjurkan batas sehari paling banyak 50 gram gula (sekitar 4 sendok makan), 5 gram garam (sekitar 1 sendok teh), dan 67 gram lemak (sekitar 5 sendok makan minyak). Batas ini berlaku untuk orang dewasa sehat dan mencakup gula, garam, dan minyak di dalam masakan maupun minuman.
 
 ## Menurunkan berat badan dengan aman
-kunci: menurunkan berat badan diet obesitas berat badan berlebih turun berat aman resep sehat
+kunci: menurunkan berat badan diet obesitas berat badan berlebih turun berat aman resep sehat kurus kurusin menguruskan langsing mengecilkan badan cara
 Penurunan berat badan yang aman biasanya bertahap, sekitar setengah sampai satu kilogram per minggu, dengan mengurangi porsi, gorengan, minuman manis, dan camilan tinggi gula, serta memperbanyak sayur, buah, dan lauk rendah lemak. Aktivitas fisik rutin membantu. Untuk obesitas atau penyakit penyerta seperti diabetes dan hipertensi, rencana makan sebaiknya disusun bersama dokter atau ahli gizi.
 
 ## Obesitas
@@ -502,3 +502,191 @@ Pepes adalah bahan seperti ikan, tahu, atau jamur yang dibumbui, dibungkus daun 
 ## Api kecil, sedang, dan besar
 kunci: api kecil api sedang api besar kompor gosong matang merata
 Api kecil dipakai untuk merebus lama, mengungkep, dan memasak santan agar tidak pecah. Api sedang untuk menggoreng dan menumis sehari-hari. Api besar untuk menumis cepat seperti cah sayur dan mendidihkan air. Bila bagian luar cepat gosong tetapi dalamnya belum matang, kecilkan api.
+
+## Ciri nasi basi
+kunci: nasi basi ciri tanda bau asam berlendir berair
+Nasi basi berbau asam, terasa berlendir atau berair, dan kadang berubah warna atau berjamur. Nasi seperti ini harus dibuang, karena memanaskannya kembali tidak menghilangkan racun dari bakteri Bacillus cereus.
+
+## Telur rebus mudah dikupas
+kunci: telur rebus susah dikupas mengupas kulit lengket
+Telur yang sangat segar lebih sulit dikupas daripada telur yang sudah disimpan beberapa hari. Masukkan telur ke air yang sudah mendidih, lalu setelah matang langsung rendam di air es beberapa menit dan kupas mulai dari bagian bawah yang berongga udara.
+
+## Minyak jelantah
+kunci: minyak jelantah bekas goreng berulang dipakai lagi boleh
+Minyak goreng sebaiknya tidak dipakai berulang kali. Minyak yang sudah gelap, kental, berbusa, atau berbau tengik perlu dibuang karena pemanasan berulang membentuk senyawa hasil oksidasi yang tidak baik untuk kesehatan. Bila ingin dipakai sekali lagi, saring dulu dan pakai untuk bahan yang sejenis.
+
+## MSG atau micin
+kunci: msg micin vetsin penyedap monosodium glutamat bahaya aman
+MSG (monosodium glutamat) adalah penyedap yang dinyatakan aman oleh BPOM serta badan pangan dunia seperti JECFA dan FDA bila dipakai secukupnya. MSG mengandung natrium, kira-kira sepertiga natrium garam dapur, jadi tetap dihitung sebagai bagian dari batas garam harian.
+
+## Masakan keasinan
+kunci: keasinan terlalu asin kebanyakan garam masakan mengatasi
+Tambahkan air atau kaldu tawar, atau tambah bahan tanpa garam seperti sayur, tahu, atau kentang supaya porsinya bertambah. Sedikit air jeruk nipis, tomat, atau gula bisa menyamarkan rasa asin, tetapi tidak mengurangi garamnya.
+
+## Indeks massa tubuh
+kunci: imt bmi indeks massa tubuh apa itu rumus menghitung kategori
+IMT adalah berat badan dalam kilogram dibagi kuadrat tinggi badan dalam meter. Menurut Kemenkes, IMT di bawah 18,5 tergolong berat badan kurang, 18,5 sampai 25 normal, di atas 25 sampai 27 berat badan berlebih, dan di atas 27 obesitas. IMT Anda bisa dihitung di kalkulator Gizi Seimbang.
+
+## Kebutuhan air minum
+kunci: air putih minum sehari berapa gelas liter kebutuhan cairan
+Orang dewasa umumnya dianjurkan minum sekitar 8 gelas atau 2 liter air sehari, dan lebih banyak saat cuaca panas, banyak berkeringat, atau berolahraga. Air putih adalah pilihan terbaik karena tidak menambah energi maupun gula.
+
+## Makanan yang membuat kenyang lebih lama
+kunci: kenyang lama mengenyangkan cepat lapar makanan
+Makanan tinggi protein dan serat membuat kenyang lebih lama, misalnya telur, tempe, tahu, kacang-kacangan, oat, nasi merah, sayur, dan buah utuh. Makanan dan minuman tinggi gula seperti kue manis atau minuman bersoda cepat dicerna sehingga rasa lapar cepat datang lagi.
+
+## Sumber protein nabati
+kunci: protein nabati sumber vegetarian kacang tanpa daging
+Sumber protein nabati yang mudah didapat antara lain tempe, tahu, kedelai, edamame, kacang hijau, kacang merah, dan kacang tanah. Per 100 gram, tempe berisi sekitar 20 g protein dan tahu sekitar 17 g, menurut data USDA.
+
+## Buah untuk penderita diabetes
+kunci: buah diabetes kencing manis gula darah boleh makan buah
+Penderita diabetes tetap boleh makan buah dalam porsi yang diatur dokter atau ahli gizi. Pilih buah utuh yang berserat seperti apel, pir, jeruk, atau jambu biji daripada jus atau buah kalengan bergula, dan bagi porsinya sepanjang hari.
+
+## Tidur dan berat badan
+kunci: begadang kurang tidur tidur malam berat badan naik lapar
+Kurang tidur berkaitan dengan naiknya rasa lapar dan keinginan makan camilan, sehingga dalam jangka panjang dapat membuat berat badan bertambah. Orang dewasa dianjurkan tidur sekitar 7 sampai 9 jam semalam.
+
+## Telur dalam sehari
+kunci: telur sehari berapa butir boleh kolesterol setiap hari
+Bagi kebanyakan orang sehat, satu butir telur sehari dapat menjadi bagian dari pola makan seimbang. Penderita kolesterol tinggi, diabetes, atau penyakit jantung sebaiknya menanyakan jumlah yang pas ke dokter atau ahli gizi.
+
+## Menu berbuka puasa
+kunci: buka puasa berbuka takjil menu enaknya apa makanan
+Saat berbuka, mulai dengan air putih dan makanan manis secukupnya seperti kurma atau buah, lalu lanjutkan makan lengkap dengan nasi, lauk berprotein, dan sayur. Batasi gorengan, minuman sangat manis, dan makanan bersantan kental.
+
+## Menu sahur
+kunci: sahur makan sahur menu enaknya apa makanan kenyang lama tidak cepat haus
+Untuk sahur, pilih karbohidrat kompleks seperti nasi merah atau oat, lauk berprotein seperti telur, tempe, atau ikan, serta sayur dan buah supaya kenyang lebih lama. Minum air putih yang cukup dan kurangi makanan asin agar tidak cepat haus.
+
+## Kopi saat puasa Ramadan
+kunci: kopi puasa ramadan sahur berbuka
+Saat puasa Ramadan, kopi baru boleh diminum ketika berbuka atau sahur. Minum secukupnya dan imbangi dengan air putih, karena kafein membuat lebih sering buang air kecil sehingga lebih cepat haus.
+
+## Minum saat pembatasan waktu makan
+kunci: jendela makan pembatasan waktu makan intermittent fasting puasa berselang di luar jendela
+Di luar jendela makan, minuman yang hampir tanpa energi seperti air putih, teh tawar, atau kopi tanpa gula dan tanpa susu boleh diminum. Minuman bergula atau bersusu seperti teh manis, kopi susu, dan jus sebaiknya diminum di dalam jendela makan.
+
+## Nasi lembek atau keras saat menanak
+kunci: nasi lembek keras pulen menanak masak nasi takaran air rice cooker kenapa
+Nasi yang terlalu lembek berarti airnya kebanyakan, dan nasi yang keras berarti airnya kurang. Untuk beras putih biasa, pakai air sekitar satu setengah kali takaran beras, atau setinggi satu ruas jari di atas permukaan beras, lalu biarkan nasi beristirahat 10 menit setelah matang sebelum diaduk.
+
+## Gorengan tidak terlalu berminyak
+kunci: gorengan berminyak menyerap minyak mengurangi minyak tiris
+Goreng dalam minyak yang sudah benar-benar panas supaya permukaan cepat matang dan tidak banyak menyerap minyak, jangan memasukkan terlalu banyak bahan sekaligus, lalu tiriskan di rak atau kertas penyerap minyak.
+
+## Mengurangi pahit pare
+kunci: pare pahit mengurangi rasa pahit
+Buang biji dan bagian putih di dalam pare, iris tipis, lalu remas dengan garam dan diamkan sekitar 15 menit sebelum dibilas. Merebus sebentar atau memasaknya bersama telur dan bumbu juga menyamarkan rasa pahit.
+
+## Masakan kemanisan
+kunci: kemanisan terlalu manis kebanyakan gula masakan mengatasi
+Tambahkan sedikit garam, air jeruk nipis, cuka, atau cabai untuk menyeimbangkan rasa, atau tambah bahan tanpa gula supaya porsinya bertambah.
+
+## Mengentalkan kuah
+kunci: kuah encer mengentalkan saus maizena tepung kental
+Larutkan satu sendok teh maizena atau tepung tapioka dengan sedikit air dingin, tuang ke kuah yang mendidih sambil diaduk, lalu masak sebentar sampai mengental dan tidak berbau tepung.
+
+## Tahu tidak hancur saat digoreng
+kunci: tahu hancur digoreng pecah lengket
+Tiriskan atau tekan tahu supaya airnya berkurang, goreng di minyak yang sudah panas, dan jangan dibalik sebelum sisi bawahnya kecokelatan dan mengeras.
+
+## Ikan tidak lengket saat digoreng
+kunci: ikan lengket wajan goreng hancur kulit
+Keringkan ikan dengan tisu, lumuri sedikit garam atau tepung, panaskan minyak sampai benar-benar panas, lalu biarkan ikan tanpa digeser sampai sisi bawahnya kecokelatan sebelum dibalik.
+
+## Bumbu dasar putih, merah, dan kuning
+kunci: bumbu dasar putih merah kuning bumbu halus
+Bumbu dasar putih terdiri dari bawang merah, bawang putih, dan kemiri; bumbu dasar merah ditambah cabai merah; bumbu dasar kuning ditambah kunyit dan biasanya jahe atau lengkuas. Bumbu ini ditumis sampai harum sebagai dasar banyak masakan rumahan.
+
+## Menyimpan bumbu halus
+kunci: simpan bumbu halus kulkas freezer awet
+Tumis bumbu halus sampai matang, dinginkan, lalu simpan dalam wadah tertutup di kulkas sekitar satu minggu, atau bekukan dalam wadah kecil untuk dipakai sampai sekitar satu bulan.
+
+## Mencuci ayam mentah
+kunci: mencuci ayam mentah dicuci perlu bakteri
+Mencuci ayam mentah di bawah air mengalir dapat memercikkan bakteri ke wastafel dan peralatan di sekitarnya. Cukup buang lemak atau kotoran yang terlihat, lalu masak ayam sampai matang; bila tetap ingin mencuci, bersihkan wastafel dan cuci tangan sesudahnya.
+
+## Memanaskan ulang makanan
+kunci: memanaskan ulang makanan sisa berulang kali panaskan
+Panaskan hanya bagian yang akan dimakan sampai benar-benar panas dan mendidih untuk masakan berkuah. Hindari memanaskan dan mendinginkan makanan yang sama berulang kali, karena setiap kali makanan berada di suhu ruang, bakteri berkesempatan tumbuh.
+
+## Suhu kulkas dan freezer
+kunci: suhu kulkas freezer berapa derajat ideal
+Kulkas sebaiknya bersuhu 5 derajat Celsius atau lebih rendah, dan freezer sekitar minus 18 derajat Celsius. Jangan memasukkan terlalu banyak barang sekaligus supaya udara dingin tetap mengalir.
+
+## Roti dan makanan berjamur
+kunci: roti berjamur jamur makanan buang sebagian
+Roti, kue, atau makanan lunak yang sudah berjamur sebaiknya dibuang seluruhnya, karena akar jamur bisa menyebar ke bagian yang tidak terlihat. Membuang bagian yang berjamur saja hanya disarankan untuk keju keras atau sayur padat seperti wortel.
+
+## Kaleng makanan menggembung
+kunci: kaleng menggembung penyok bocor makanan kaleng aman
+Jangan memakan isi kaleng yang menggembung, bocor, atau menyemprot saat dibuka, karena itu tanda pertumbuhan bakteri yang berbahaya. Kaleng yang hanya sedikit penyok tetapi rapat masih boleh dipakai.
+
+## Susu basi
+kunci: susu basi ciri asam menggumpal
+Susu yang basi berbau asam, terasa asam, atau menggumpal saat dituang maupun dipanaskan. Simpan susu yang sudah dibuka di kulkas dan habiskan dalam beberapa hari sesuai petunjuk pada kemasan.
+
+## Serat dalam makanan
+kunci: serat kebutuhan sumber serat sehari sembelit
+Orang dewasa dianjurkan makan sekitar 25 gram serat atau lebih setiap hari. Sumbernya sayur, buah utuh, kacang-kacangan, oat, dan nasi merah; serat membantu pencernaan dan membuat kenyang lebih lama.
+
+## Kebutuhan protein
+kunci: protein kebutuhan sehari berapa gram per kilogram
+Orang dewasa sehat umumnya membutuhkan sekitar 0,8 gram protein per kilogram berat badan per hari, misalnya sekitar 48 gram untuk berat 60 kg. Sumbernya telur, ikan, ayam, daging, tahu, tempe, dan kacang-kacangan.
+
+## Karbohidrat kompleks dan sederhana
+kunci: karbohidrat kompleks sederhana beda gula nasi
+Karbohidrat kompleks seperti nasi merah, oat, ubi, dan roti gandum dicerna lebih lambat sehingga energinya lebih stabil. Karbohidrat sederhana seperti gula, sirup, dan minuman manis cepat diserap dan cepat membuat lapar lagi.
+
+## Camilan sehat
+kunci: camilan sehat cemilan snack ngemil pilihan
+Pilihan camilan yang lebih sehat antara lain buah utuh, yoghurt tanpa gula, kacang rebus atau panggang tanpa garam berlebih, edamame, dan ubi rebus. Batasi keripik, gorengan, dan kue manis.
+
+## Gula dalam minuman
+kunci: gula minuman manis teh manis kopi susu boba sirup soda
+Minuman manis seperti teh manis, kopi susu kekinian, sirup, dan minuman bersoda sering mengandung banyak gula; satu gelas bisa memakai separuh atau lebih batas gula harian 50 gram. Pilih air putih atau minta gula dikurangi.
+
+## Lemak jenuh dan lemak trans
+kunci: lemak jenuh trans margarin gorengan kolesterol
+Lemak jenuh banyak terdapat pada santan kental, mentega, daging berlemak, dan kulit ayam, sedangkan lemak trans dapat terbentuk pada minyak yang dipakai berulang dan sebagian margarin. Keduanya sebaiknya dibatasi; pilih memasak dengan sedikit minyak nabati.
+
+## Sumber vitamin C
+kunci: vitamin c sumber buah sayur daya tahan
+Jambu biji, pepaya, jeruk, stroberi, brokoli, dan paprika kaya vitamin C. Vitamin C mudah rusak oleh panas, jadi sebagian buah dan sayur sebaiknya dimakan segar atau dimasak sebentar.
+
+## Sumber zat besi
+kunci: zat besi anemia sumber hati daging bayam
+Zat besi mudah diserap dari hati, daging merah, ayam, dan ikan. Bayam, kacang-kacangan, dan tempe juga mengandung zat besi; makan bersama sumber vitamin C seperti jeruk membantu penyerapannya.
+
+## Sumber kalsium
+kunci: kalsium tulang sumber susu teri tahu
+Sumber kalsium antara lain susu, yoghurt, keju, ikan teri yang dimakan dengan tulangnya, tahu, tempe, dan sayuran hijau.
+
+## Kopi dalam sehari
+kunci: kopi sehari berapa cangkir kafein batas minum kopi boleh
+Bagi orang dewasa sehat, kafein sampai sekitar 400 mg sehari, kira-kira tiga sampai empat cangkir kopi seduh, umumnya tidak menimbulkan masalah. Ibu hamil, orang dengan gangguan jantung, atau yang sulit tidur sebaiknya membatasinya lebih ketat.
+
+## Pola makan untuk darah tinggi
+kunci: darah tinggi hipertensi makanan garam boleh pantangan
+Orang dengan darah tinggi dianjurkan membatasi garam, termasuk dari mi instan, makanan kemasan, kecap, dan ikan asin, serta memperbanyak sayur dan buah. Rencana makan dan obatnya tetap mengikuti dokter.
+
+## Pola makan untuk asam urat
+kunci: asam urat makanan pantangan jeroan purin
+Orang dengan asam urat biasanya dianjurkan membatasi jeroan, daging merah, sebagian makanan laut, dan minuman manis, serta cukup minum air putih. Ikuti anjuran dokter atau ahli gizi untuk jumlah yang tepat.
+
+## Pola makan untuk kolesterol tinggi
+kunci: kolesterol tinggi makanan pantangan lemak jenuh
+Untuk kolesterol tinggi, batasi gorengan, santan kental, jeroan, kulit ayam, dan daging berlemak, lalu perbanyak sayur, buah, oat, dan kacang-kacangan. Pemeriksaan dan pengobatan tetap mengikuti dokter.
+
+## Makanan saat hamil
+kunci: hamil ibu hamil makanan aman pantangan mentah
+Ibu hamil sebaiknya menghindari daging, telur, dan ikan yang mentah atau setengah matang serta susu yang tidak dipasteurisasi, dan membatasi kafein. Kebutuhan gizi selama hamil sebaiknya dipantau bersama bidan atau dokter.
+
+## Sarapan
+kunci: sarapan penting pagi tidak sarapan menu sarapan
+Sarapan dengan karbohidrat, protein, dan sayur atau buah membantu tetap berenergi sampai siang dan mencegah makan berlebihan nanti. Contohnya nasi atau roti gandum dengan telur, tempe, atau tahu, ditambah buah.
+
+## Air kelapa
+kunci: air kelapa manfaat minum segar
+Air kelapa berisi kalium dan sedikit gula alami, sehingga menyegarkan dan membantu mengganti cairan. Satu gelas air kelapa murni berisi sekitar 50 kkal; air kelapa kemasan kadang diberi gula tambahan.

@@ -17,6 +17,7 @@ class InfoScreen extends StatelessWidget {
       [
         ('Buku resep dan catatan dapur', 'Ditulis untuk MEIRA, domain publik (CC0).'),
         ('Fakta makanan', 'Wikidata (CC0): nama, deskripsi, bahan, dan asal.'),
+        ('Penjelasan hidangan', 'Ringkasan Wikipedia bahasa Indonesia (CC BY-SA 4.0).'),
         ('Kandungan gizi', 'USDA FoodData Central SR Legacy (domain publik), per 100 gram.'),
       ],
     ),

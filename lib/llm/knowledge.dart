@@ -16,7 +16,7 @@ class Note {
 
 /// Fakta ringkas tentang satu makanan atau bahan, dari Wikidata (CC0) atau USDA FoodData Central (domain publik).
 class Fact {
-  Fact(this.title, this.names, this.text, this.source, {this.nutrition = false, this.english = const []});
+  Fact(this.title, this.names, this.text, this.source, {this.nutrition = false, this.english = const [], this.summary = ''});
   final String title;
   final List<String> names;
   final String text;
@@ -25,6 +25,9 @@ class Fact {
 
   /// Nama Inggris, hanya untuk menerjemahkan tebakan model penglihatan ("dragon fruit" menjadi buah naga).
   final List<String> english;
+
+  /// Satu atau dua kalimat pembuka artikel Wikipedia bahasa Indonesia (CC BY-SA 4.0), atau kosong.
+  final String summary;
 }
 
 class KnowledgeBase {
@@ -51,7 +54,7 @@ class KnowledgeBase {
     _avg = _docs.isEmpty ? 1 : _docs.fold<int>(0, (a, d) => a + d.length) / _docs.length;
   }
 
-  /// Catatan dapur (markdown) ditambah fakta luas (JSONL, satu objek per baris: t, n, x, s, gizi).
+  /// Catatan dapur (markdown) ditambah fakta luas (JSONL, satu objek per baris: t, n, x, s, w, e, gizi).
   static KnowledgeBase parse(String markdown, {String facts = ''}) {
     final notes = <Note>[];
     for (final block in markdown.split('\n## ').skip(1)) {
@@ -73,6 +76,7 @@ class KnowledgeBase {
               m['s'] as String,
               nutrition: m['gizi'] == true,
               english: [for (final e in (m['e'] as List?) ?? const []) e as String],
+              summary: m['w'] as String? ?? '',
             );
           }(),
     ];
@@ -112,6 +116,8 @@ class KnowledgeBase {
       if (out.length >= max) break;
       if (!t.contains(' $name ')) continue;
       final hits = _byName[name]!.where((f) => f.nutrition == wantsNutrition || (!wantsNutrition && !f.nutrition)).toList();
+      // nama tanpa fakta yang dicari ("tempe mendoan" belum punya data gizi) dilewati, supaya "tempe" tetap bisa ditautkan
+      if (hits.isEmpty) continue;
       for (final f in hits) {
         if (!out.contains(f) && out.length < max) out.add(f);
       }
@@ -119,6 +125,15 @@ class KnowledgeBase {
       t = t.replaceAll(' $name ', ' # ');
     }
     return out;
+  }
+
+  /// Nama makanan (bukan data gizi) yang disebut dalam teks, terpanjang lebih dulu.
+  List<String> namesIn(String query) {
+    final t = ' ${_spell(norm(query))} ';
+    return [
+      for (final name in _names)
+        if (t.contains(' $name ') && _byName[name]!.any((f) => !f.nutrition)) name,
+    ];
   }
 
   final List<Note> notes;
@@ -165,6 +180,9 @@ class KnowledgeBase {
     for (final w in norm(text).split(' '))
       if (w.length > 2 && !_stop.contains(w)) w,
   ];
+
+  /// Jumlah kata bermakna yang sama di [a] dan [b]; dipakai untuk memilih kalimat catatan yang paling menjawab.
+  static int shared(String a, String b) => _tokens(a).toSet().intersection(_tokens(b).toSet()).length;
 
   /// Hasil: (catatan, skor BM25, jumlah kata berbeda yang cocok).
   /// Jumlah kata bermakna dalam pertanyaan; dipakai untuk menghitung seberapa banyak pertanyaan diliput sebuah catatan.

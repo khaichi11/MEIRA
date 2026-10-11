@@ -7,6 +7,12 @@
 The MEIRA app code is licensed under Apache-2.0 (see `LICENSE`). The recipe book, kitchen notes, and logo are
 CC0 1.0. Illustrations and animations are drawn in code and are part of the app code.
 
+### Knowledge file
+
+`assets/pengetahuan_luas.jsonl` combines Wikidata food items (CC0 1.0), USDA FoodData Central nutrient values (public
+domain), and lead summaries from Indonesian Wikipedia (CC BY-SA 4.0, article title kept in each fact's source). Because
+of the Wikipedia text, this file is distributed under CC BY-SA 4.0.
+
 ### Models inside the APK
 
 | Model | Role | License |
@@ -48,6 +54,12 @@ work.
 
 Kode aplikasi MEIRA berlisensi Apache-2.0 (lihat `LICENSE`). Buku resep, catatan dapur, dan logo berlisensi CC0 1.0.
 Ilustrasi dan animasi digambar dengan kode dan termasuk kode aplikasi.
+
+### Berkas pengetahuan
+
+`assets/pengetahuan_luas.jsonl` menggabungkan butir makanan Wikidata (CC0 1.0), angka gizi USDA FoodData Central
+(domain publik), dan ringkasan pembuka Wikipedia bahasa Indonesia (CC BY-SA 4.0, judul artikelnya tercatat di sumber
+setiap fakta). Karena memuat teks Wikipedia, berkas ini dibagikan dengan lisensi CC BY-SA 4.0.
 
 ### Model di dalam APK
 
