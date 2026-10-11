@@ -59,6 +59,36 @@ final _notLog = RegExp(
   r'\b(tidak|tak|nggak|ngga|gak|ga|enggak|belum|jangan)\s+(makan|minum|sarapan|ngemil|nyemil)\b',
 );
 
+/// Nama makanan yang disebut setelah kata makan atau minum, tanpa jumlah dan keterangan waktu ("saya minum 2 jus
+/// sirsak tadi pagi" menjadi "jus sirsak"), atau null bila tidak ada.
+String? _eatenName(String t) {
+  final m = RegExp(r'\b(?:makan|minum|ngemil|nyemil|mengonsumsi|menghabiskan)\s+(.+)$').firstMatch(t);
+  if (m == null) return null;
+  final words = [
+    for (final w in m[1]!.replaceAll(RegExp(r'[^a-z0-9\s-]'), ' ').split(RegExp(r'\s+')))
+      if (w.isNotEmpty) w,
+  ];
+  final stop = RegExp(
+    r'^(tadi|barusan|pagi|siang|sore|malam|ini|itu|hari|jam|pukul|juga|aja|saja|sih|dong|ya|kok|lagi|dan|sama|terus|lalu|'
+    r'sebelum|sesudah|setelah|waktu|saat|di|ke|dari|untuk|buat|sekitar|kira|kira-kira|banyak|sedikit|catat|catatkan|tolong)$',
+  );
+  final number = RegExp(
+    r'^(\d+([.,]\d+)?|satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|setengah|separuh|gram|gr|g|ml|'
+    r'(se)?(bungkus|piring|porsi|mangkuk|mangkok|potong|butir|buah|gelas|cangkir|botol|kotak|sachet|lembar|kaleng|batang|keping|cup|biji|tusuk|sendok))$',
+  );
+  final name = <String>[];
+  for (final w in words) {
+    if (stop.hasMatch(w)) {
+      if (name.isNotEmpty) break;
+      continue;
+    }
+    if (number.hasMatch(w)) continue;
+    name.add(w);
+    if (name.length == 3) break;
+  }
+  return name.isEmpty ? null : name.join(' ');
+}
+
 /// Rute fitur yang bisa dibuka dari tombol aksi di obrolan.
 const routeLabels = {
   'gizi': 'Buka Gizi Seimbang',
@@ -348,7 +378,9 @@ ToolReply? appTool(String text, AppData d) {
   // catat makanan: "tadi pagi saya makan mi instan 1 bungkus"
   if (_ate(t) && !_notLog.hasMatch(t) && !t.contains('?')) {
     final meal = parseMeal(t, d.foods);
-    if (meal.isNotEmpty) {
+    // nama hidangan yang belum ada di daftar gizi disebut terus terang, bukan dihitung sebagai bahan lain
+    final missing = meal.unknown.isEmpty ? '' : ' ${_cap(_join(meal.unknown))} belum ada di data gizi, jadi belum saya catat.';
+    if (meal.items.isNotEmpty) {
       // catatan makan hanya untuk hari ini, supaya ringkasan harian tidak tercampur hari lain
       if (RegExp(r'\b(kemarin|kemaren|lusa|minggu lalu)\b').hasMatch(t)) {
         return const ToolReply(
@@ -358,23 +390,39 @@ ToolReply? appTool(String text, AppData d) {
         );
       }
       final now = DateTime.now();
-      final slot = slotFor(t, now);
-      final entries = [for (final (food, grams, _) in meal) IntakeEntry(now, slot, food.name, grams, food.per100.scale(grams / 100))];
+      final (slot, said) = slotOf(t, now);
+      final entries = [for (final m in meal.items) IntakeEntry(now, slot, m.said, m.grams, m.food.per100.scale(m.grams / 100))];
       final total = [...d.intakeToday, ...entries].fold(const Nutrients(), (a, e) => a + e.nutrients);
-      final items = [for (final (i, (food, _, portion)) in meal.indexed) '${food.name} $portion (${entries[i].nutrients.energy.round()} kkal)'];
+      final items = [
+        for (final (i, m) in meal.items.indexed)
+          '${m.said} ${m.portion} (${entries[i].nutrients.energy.round()} kkal${m.said == m.food.name ? '' : ', dihitung sebagai ${m.food.name}'})',
+      ];
       // jadwal puasa hanya saran: makanan tetap dicatat, tetapi pengguna diberi tahu bila di luar jendela makan
       final f = d.fasting;
-      final outside = f != null && !fastingState(f, now).eating
+      // hanya untuk makan yang terjadi sekarang; "tadi siang" bisa saja masih di dalam jendela makan
+      final outside = f != null && !said && !fastingState(f, now).eating
           ? ' Waktu ini di luar jendela makan ${clock(f.startMinute)} sampai ${clock(f.endMinute)}; tidak apa-apa, jadwal bisa digeser bila perlu.'
           : '';
+      // waktu yang tidak disebut pengguna diambil dari jam sekarang dan ikut disebut, supaya jelas kapan dicatat
+      final when = said ? 'untuk ${slot.toLowerCase()}' : 'pukul ${clock(now.hour * 60 + now.minute)} untuk ${slot.toLowerCase()}';
       return ToolReply(
-        'Dicatat untuk ${slot.toLowerCase()}: ${_join(items)}. ${daySummary(total, Targets.of(d.needs))}$outside',
+        'Dicatat $when: ${_join(items)}.$missing ${daySummary(total, Targets.of(d.needs))}$outside',
         actions: const ['gizi'],
         effect: () async {
           for (final e in entries) {
             await d.logIntake(e);
           }
         },
+      );
+    }
+    // pengguna jelas bercerita makan atau minum, tetapi makanannya belum ada di daftar gizi: katakan terus terang dan
+    // jangan diteruskan ke model bahasa atau rekomendasi resep
+    final name = meal.unknown.isNotEmpty ? _join(meal.unknown) : _eatenName(t);
+    if (name != null) {
+      return ToolReply(
+        'Saya belum punya data gizi untuk $name, jadi belum saya catat. Coba sebut nama yang lebih umum, misalnya teh manis, '
+        'nasi goreng, atau ayam goreng, atau pilih makanan yang paling mirip di Gizi Seimbang.',
+        actions: const ['gizi'],
       );
     }
   }
@@ -394,11 +442,20 @@ ToolReply? appTool(String text, AppData d) {
       return const ToolReply('Belum ada catatan makan hari ini. Ketik misalnya "tadi pagi saya makan nasi goreng 1 piring".', actions: ['gizi']);
     }
     final total = today.fold(const Nutrients(), (a, e) => a + e.nutrients);
+    // makanan yang dicatat beberapa kali di waktu makan yang sama disebut sekali dengan jumlahnya ("teh manis 3 kali")
+    String foodsIn(String slot) {
+      final counts = <String, int>{};
+      for (final e in today.where((e) => e.slot == slot)) {
+        counts[e.food] = (counts[e.food] ?? 0) + 1;
+      }
+      return _join([for (final MapEntry(:key, :value) in counts.entries) value > 1 ? '$key $value kali' : key]);
+    }
+
     final bySlot = [
       for (final slot in mealSlots)
-        if (today.any((e) => e.slot == slot)) '${slot.toLowerCase()} ${_join([for (final e in today.where((e) => e.slot == slot)) e.food])}',
+        if (today.any((e) => e.slot == slot)) '${slot.toLowerCase()} ${foodsIn(slot)}',
     ];
-    return ToolReply('Hari ini Anda mencatat ${_join(bySlot)}. ${daySummary(total, Targets.of(d.needs))}', actions: const ['gizi']);
+    return ToolReply('Hari ini Anda mencatat ${bySlot.join('; ')}. ${daySummary(total, Targets.of(d.needs))}', actions: const ['gizi']);
   }
 
   // "makan malam apa yang cocok?": resep sehat untuk waktu makan itu dan sisa batas hari ini
@@ -495,6 +552,7 @@ String _change((DateTime, double) first, double now) {
 }
 
 String _join(List<String> xs) => xs.length <= 1 ? xs.join() : '${xs.sublist(0, xs.length - 1).join(', ')} dan ${xs.last}';
+String _cap(String s) => s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
 /// Satu baris fakta catatan makan hari ini untuk model bahasa, atau null bila belum ada catatan.
 String? intakeFact(AppData d) {

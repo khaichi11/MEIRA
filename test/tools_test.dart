@@ -103,11 +103,14 @@ void main() {
     expect(r.text, contains('mi instan 1 bungkus'));
     // jumlah sebelum nama, bentuk "se-", dan jumlah yang diapit dua makanan
     expect(
-      [for (final (f, g, _) in parseMeal('2 piring nasi dan sebungkus mi instan', d.foods)) (f.name, g)],
+      [for (final m in parseMeal('2 piring nasi dan sebungkus mi instan', d.foods).items) (m.food.name, m.grams)],
       [('nasi', 300.0), ('mi instan', 85.0)],
     );
-    expect([for (final (f, g, _) in parseMeal('nasi 1 piring mi instan 2 bungkus', d.foods)) (f.name, g)], [('nasi', 150.0), ('mi instan', 170.0)]);
-    expect([for (final (_, g, _) in parseMeal('mi instan 1,5 bungkus', d.foods)) g], [127.5]);
+    expect(
+      [for (final m in parseMeal('nasi 1 piring mi instan 2 bungkus', d.foods).items) (m.food.name, m.grams)],
+      [('nasi', 150.0), ('mi instan', 170.0)],
+    );
+    expect([for (final m in parseMeal('mi instan 1,5 bungkus', d.foods).items) m.grams], [127.5]);
   });
 
   test('pesan yang bukan catatan makan tidak dicatat', () async {
@@ -242,5 +245,58 @@ void main() {
     expect(it.exclude, contains('watermelon'));
     expect(it.include, isNot(contains('watermelon')));
     expect(ruleIntent('gk suka tomat dong').exclude, contains('tomato'));
+  });
+
+  group('catatan makan dari kalimat sehari-hari', () {
+    const per100 = Nutrients(energy: 100, sugar: 5, sodium: 10);
+    final foods = [
+      Food('teh manis', const ['teh manis', 'es teh', 'esteh'], per100),
+      Food('teh', const ['teh'], per100),
+      Food('ayam goreng', const ['ayam goreng'], per100),
+      Food('ayam', const ['ayam'], per100),
+      Food('nasi', const ['nasi'], per100),
+      Food('tempe', const ['tempe'], per100),
+      Food('udang', const ['udang'], per100),
+      Food('susu', const ['susu'], per100),
+      Food('kopi', const ['kopi'], per100),
+    ];
+    List<(String, String)> items(String text) => [for (final m in parseMeal(text, foods).items) (m.said, m.portion)];
+
+    test('angka tanpa satuan dan salah ketik satu huruf', () {
+      expect(items('saya minum 2 esteh'), [('teh manis', '2 gelas')]);
+      expect(items('pagi ini saya makan ayam goren 1 dan nasi satu juga'), [('ayam goreng', '1 potong'), ('nasi', '1 piring')]);
+      // "udang 5" berarti lima ekor, bukan lima porsi 100 g
+      expect(items('saya makan udang 5'), [('udang', '5 ekor')]);
+      // jam bukan jumlah makanan
+      expect(items('tadi jam 3 minum es teh'), [('teh manis', '1 gelas')]);
+    });
+
+    test('hidangan lain yang memuat nama bahan tidak dihitung sebagai bahan itu', () {
+      final meal = parseMeal('tadi makan nasi dan sate ayam 10 tusuk', foods);
+      expect([for (final m in meal.items) (m.said, m.portion)], [('nasi', '1 piring')]);
+      expect(meal.unknown, ['sate ayam']);
+      expect(parseMeal('saya minum kopi susu', foods).unknown, ['kopi susu']);
+      expect(parseMeal('saya minum kopi susu', foods).items, isEmpty);
+    });
+
+    test('cara masak setelah nama bahan tetap dihitung, dengan nama yang ditulis pengguna', () {
+      expect(items('udah makan tempe goreng 3'), [('tempe goreng', '3 potong')]);
+    });
+
+    test('waktu makan dari kata waktu atau jam', () {
+      final noon = DateTime(2026, 10, 12, 12, 30);
+      expect(slotOf('tadi jam 3 sore minum es teh', noon), ('Camilan', true));
+      expect(slotOf('jam 7 malam makan nasi', noon), ('Makan malam', true));
+      expect(slotOf('saya minum es teh', noon), ('Makan siang', false));
+    });
+
+    test('balasan menyebut jam bila waktunya tidak disebut, dan makanan yang belum ada datanya tidak dicatat', () async {
+      final d = FakeData();
+      final r = await run('saya makan nasi 1 piring', d);
+      expect(r!.text, startsWith('Dicatat pukul '));
+      final unknown = await run('saya minum jus sirsak tadi pagi', d);
+      expect(unknown!.text, contains('belum punya data gizi untuk jus sirsak'));
+      expect(d.eaten.length, 1);
+    });
   });
 }
