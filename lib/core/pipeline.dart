@@ -1027,9 +1027,11 @@ class Meira {
     final query = withSituation(text, s.situation);
     final notes = [
       for (final n in knowledge?.search(query, k: 4) ?? const <(Note, double, int)>[])
-        if ((asked.isEmpty || mentions('${n.$1.title} ${n.$1.body}').any(asked.contains)) &&
+        if ((asked.isEmpty || mentions('${n.$1.title} ${n.$1.keywords} ${n.$1.body}').any(asked.contains)) &&
             // catatan puasa hanya untuk pengguna yang sedang berpuasa atau pertanyaan tentang puasa
-            (_fastingTalk.hasMatch(query.toLowerCase()) || !_fastingTalk.hasMatch(n.$1.title.toLowerCase())))
+            (_fastingTalk.hasMatch(query.toLowerCase()) || !_fastingTalk.hasMatch(n.$1.title.toLowerCase())) &&
+            // catatan perbandingan ("Beda ayam goreng dan ayam bakar") hanya untuk pertanyaan perbandingan
+            (!n.$1.title.startsWith('Beda ') || _compareWords.hasMatch(query.toLowerCase())))
           n,
     ].take(2).toList();
     // Catatan disalin apa adanya hanya bila meliput sebagian besar kata pertanyaan ("berapa lama merebus telur").
@@ -1509,10 +1511,17 @@ class Meira {
     final condition = RegExp(r'\b(diabetes|darah tinggi|hipertensi|kolesterol|asam urat|hamil|ginjal)\b').hasMatch(q)
         ? ' Untuk kondisi kesehatan tertentu, ikuti saran dokter atau ahli gizi.'
         : '';
-    final asks = RegExp(r'\b(aman|boleh|bolehkah|cocok|sehat|bahaya|berbahaya|ideal|diet)\b').hasMatch(q);
+    final asks = RegExp(r'\b(aman|boleh|bolehkah|cocok|sehat|bahaya|berbahaya|ideal|diet|gemuk|gendut|menggemukkan)\b').hasMatch(q);
     if (asks) {
       // pertanyaan kecocokan dijawab dulu dengan kesimpulan, baru angka satu porsi dan saran praktis
-      final verdict = high ? 'Boleh, tetapi sebaiknya sesekali saja dan porsinya kecil.' : 'Boleh, $name aman dimakan dalam porsi wajar.';
+      final fattening = RegExp(r'\b(gemuk|gendut|menggemukkan)\b').hasMatch(q);
+      final verdict = fattening
+          ? (high
+                ? 'Bisa, kalau sering dimakan dalam porsi besar, karena kandungannya cukup tinggi.'
+                : 'Tidak, selama porsinya wajar; berat badan ditentukan oleh jumlah energi sepanjang hari.')
+          : high
+          ? 'Boleh, tetapi sebaiknya sesekali saja dan porsinya kecil.'
+          : 'Boleh, $name aman dimakan dalam porsi wajar.';
       final advice = tip.isEmpty
           ? (high ? ' Imbangi dengan sayur dan makanan yang tidak asin, manis, atau berminyak di waktu makan lain.' : '')
           : ' Agar lebih ringan, ${_list(tip)}, lalu imbangi dengan sayur.';
@@ -1884,6 +1893,14 @@ final _offersSteps = RegExp(r'jelaskan (langkah|cara membuat)');
 /// pertanyaannya tentang hal lain.
 String? recipeFact(Recipe r, String t) {
   if (t.split(' ').length > 9) return null;
+  // "langkah ketiga maksudnya gimana?": satu langkah itu saja, bukan seluruh langkah diulang
+  final step = RegExp(r'\blangkah (?:ke-?|nomor )?(\d+|[a-z]+)\b').firstMatch(t);
+  final n = step == null
+      ? null
+      : (int.tryParse(step[1]!) ?? _ordinals[step[1]!.replaceFirst(RegExp(r'^ke'), '')] ?? (step[1] == 'terakhir' ? r.steps.length : null));
+  if (n != null) {
+    return n >= 1 && n <= r.steps.length ? 'Langkah $n untuk ${r.name}: ${r.steps[n - 1]}' : 'Resep ${r.name} hanya punya ${r.steps.length} langkah.';
+  }
   if (RegExp(r'\b(berapa lama|berapa menit|lama masak|lama memasak|waktu masak|waktu memasak|butuh waktu)\b').hasMatch(t)) {
     return '${r.name} butuh waktu sekitar ${r.minutes} menit.';
   }
@@ -1900,6 +1917,20 @@ String? recipeFact(Recipe r, String t) {
   }
   return null;
 }
+
+const _ordinals = {
+  'satu': 1,
+  'pertama': 1,
+  'dua': 2,
+  'tiga': 3,
+  'empat': 4,
+  'lima': 5,
+  'enam': 6,
+  'tujuh': 7,
+  'delapan': 8,
+  'sembilan': 9,
+  'sepuluh': 10,
+};
 
 final _ingredientsQuestion = RegExp(r'\b(bahannya|bahan apa|bahan-bahannya|terbuat dari|dibuat dari|isinya apa|isinya)\b|^bahan\b.*\bapa\b');
 
@@ -2043,7 +2074,8 @@ final _safety = RegExp(
 
 // pertanyaan tentang kandungan atau kecocokan sebuah makanan, yang dijawab dengan angka gizi
 final _suitability = RegExp(
-  r'\b(cocok|sehat|ideal|diet|kalori|kkal|gizi|nutrisi|kandungan|protein|lemak|karbohidrat|gula|garam|natrium|serat|vitamin|mineral)\b',
+  r'\b(cocok|sehat|ideal|diet|kalori|kkal|gizi|nutrisi|kandungan|protein|lemak|karbohidrat|gula|garam|natrium|serat|vitamin|mineral|'
+  r'gemuk|gendut|menggemukkan)\b',
 );
 
 // pertanyaan tentang sifat, keamanan, asal, atau kiat
@@ -2087,7 +2119,8 @@ String _swapAnswer(Recipe r, String replacement) {
 }
 
 final _compareWords = RegExp(
-  r'\b(beda|bedanya|perbedaan|dibanding|dibandingkan|bandingkan|banding|vs|versus|lebih (sehat|baik|bagus) mana|mana yang lebih)\b',
+  r'\b(beda|bedanya|perbedaan|dibanding|dibandingkan|bandingkan|banding|vs|versus|lebih (sehat|baik|bagus) mana|mana yang lebih|'
+  r'(bagusan|baikan|sehatan|mending|pilih) mana|mana yang (bagus|baik|sehat))\b',
 );
 
 /// Balasan untuk ucapan terima kasih, sapaan, atau persetujuan singkat; null bila pesan berisi hal lain.

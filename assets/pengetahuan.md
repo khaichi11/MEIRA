@@ -72,11 +72,11 @@ kunci: sayur daun bayam sawi selada daun bawang seledri simpan layu
 Bungkus sayur daun dengan tisu atau kain yang sedikit lembap, masukkan ke wadah tertutup di kulkas. Umumnya bertahan 3 sampai 5 hari.
 
 ## Sayur tetap hijau
-kunci: sayur hijau warna pucat brokoli buncis blansir
+kunci: sayur hijau warna pucat kusam pudar layu brokoli buncis kangkung bayam blansir
 Masak sayur hijau sebentar dengan api besar. Bila direbus, angkat lalu rendam di air es agar warnanya tetap hijau cerah dan teksturnya renyah.
 
 ## Menggoreng supaya renyah
-kunci: goreng renyah kriuk garing crispy minyak panas lembek berminyak tepung
+kunci: goreng renyah kriuk garing crispy minyak panas lembek berminyak tepung ayam goreng biar
 Panaskan minyak sampai sekitar 170 sampai 180 derajat Celsius; sedikit adonan yang dicelup langsung mengapung dan berbuih. Jangan menggoreng terlalu banyak sekaligus karena suhu minyak turun dan hasilnya berminyak.
 
 ## Kentang goreng renyah
@@ -416,7 +416,7 @@ kunci: batas gula garam lemak sehari GGL anjuran kemenkes kalori diet sehat
 Kementerian Kesehatan menganjurkan batas sehari paling banyak 50 gram gula (sekitar 4 sendok makan), 5 gram garam (sekitar 1 sendok teh), dan 67 gram lemak (sekitar 5 sendok makan minyak). Batas ini berlaku untuk orang dewasa sehat dan mencakup gula, garam, dan minyak di dalam masakan maupun minuman.
 
 ## Menurunkan berat badan dengan aman
-kunci: menurunkan berat badan diet obesitas berat badan berlebih turun berat aman resep sehat kurus kurusin menguruskan langsing mengecilkan badan cara
+kunci: menurunkan berat badan diet obesitas berat badan berlebih turun berat aman resep sehat kurus kurusin menguruskan langsing mengecilkan badan cara turunin nurunin
 Penurunan berat badan yang aman biasanya bertahap, sekitar setengah sampai satu kilogram per minggu, dengan mengurangi porsi, gorengan, minuman manis, dan camilan tinggi gula, serta memperbanyak sayur, buah, dan lauk rendah lemak. Aktivitas fisik rutin membantu. Untuk obesitas atau penyakit penyerta seperti diabetes dan hipertensi, rencana makan sebaiknya disusun bersama dokter atau ahli gizi.
 
 ## Obesitas
@@ -664,8 +664,8 @@ kunci: kalsium tulang sumber susu teri tahu
 Sumber kalsium antara lain susu, yoghurt, keju, ikan teri yang dimakan dengan tulangnya, tahu, tempe, dan sayuran hijau.
 
 ## Kopi dalam sehari
-kunci: kopi sehari berapa cangkir kafein batas minum kopi boleh
-Bagi orang dewasa sehat, kafein sampai sekitar 400 mg sehari, kira-kira tiga sampai empat cangkir kopi seduh, umumnya tidak menimbulkan masalah. Ibu hamil, orang dengan gangguan jantung, atau yang sulit tidur sebaiknya membatasinya lebih ketat.
+kunci: kopi sehari berapa cangkir kafein batas minum kopi boleh sebelum tidur malam
+Bagi orang dewasa sehat, kafein sampai sekitar 400 mg sehari, kira-kira tiga sampai empat cangkir kopi seduh, umumnya tidak menimbulkan masalah. Ibu hamil, orang dengan gangguan jantung, atau yang sulit tidur sebaiknya membatasinya lebih ketat. Hindari kopi sekitar enam jam sebelum tidur, karena kafeinnya bisa membuat sulit tidur.
 
 ## Pola makan untuk darah tinggi
 kunci: darah tinggi hipertensi makanan garam boleh pantangan
@@ -690,3 +690,7 @@ Sarapan dengan karbohidrat, protein, dan sayur atau buah membantu tetap berenerg
 ## Air kelapa
 kunci: air kelapa manfaat minum segar
 Air kelapa berisi kalium dan sedikit gula alami, sehingga menyegarkan dan membantu mengganti cairan. Satu gelas air kelapa murni berisi sekitar 50 kkal; air kelapa kemasan kadang diberi gula tambahan.
+
+## Makan malam larut
+kunci: makan malam larut malam jam 9 jam 10 makan malam gemuk tengah malam sebelum tidur
+Berat badan ditentukan oleh jumlah energi sepanjang hari, bukan oleh jam makannya, jadi makan malam pukul sembilan tidak otomatis membuat gemuk. Yang perlu dijaga adalah porsinya; beri jeda sekitar dua sampai tiga jam sebelum tidur supaya pencernaan dan tidur tidak terganggu.

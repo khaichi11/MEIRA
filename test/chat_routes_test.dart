@@ -182,6 +182,16 @@ void main() {
       expect(noteAnswer('takaran air beras', note), startsWith('Untuk beras'));
     });
 
+    test('pertanyaan sehari-hari di luar templat dijawab dari catatan atau fakta yang tepat', () async {
+      expect((await ask('gizi', 'alpukat bikin gemuk ga', data())).$1, startsWith('Tidak, selama porsinya wajar'));
+      expect((await ask('gizi', 'nasi merah sama nasi putih bagusan mana', data())).$1, contains('nasi putih'));
+      expect((await ask('gizi', 'makan malam jam 9 bikin gemuk ga', data())).$1, contains('bukan oleh jam makannya'));
+      expect((await ask('resep', 'gimana biar ayam goreng renyah', data())).$1, startsWith('Panaskan minyak'));
+      expect((await ask('resep', 'kenapa sayur saya warnanya jadi kusam', data())).$1, contains('hijau cerah'));
+      final steps = await talk('resep', ['saya punya telur dan tomat', 'iya', 'langkah ketiga maksudnya gimana']);
+      expect(steps[2].$1, startsWith('Langkah 3 untuk'));
+    });
+
     test('pertanyaan definisi dikenali hanya bila menanyakan hidangan itu', () {
       expect(whatIs('apa itu klepon?', 'klepon'), isTrue);
       expect(whatIs('gudeg itu makanan apa sih', 'gudeg'), isTrue);

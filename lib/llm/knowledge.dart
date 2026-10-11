@@ -96,7 +96,7 @@ class KnowledgeBase {
 
   static final _nutritionWords = RegExp(
     r'\b(gizi|nutrisi|kalori|kkal|protein|lemak|karbohidrat|vitamin|serat|kandungan|mineral|gula|garam|natrium|diet|ideal|cocok|sehat|'
-    r'aman|boleh|bolehkah|bahaya|berbahaya|porsi|kolesterol|diabetes|darah tinggi|hipertensi|obesitas|asam urat)\b',
+    r'aman|boleh|bolehkah|bahaya|berbahaya|porsi|kolesterol|diabetes|darah tinggi|hipertensi|obesitas|asam urat|gemuk|gendut|menggemukkan)\b',
   );
 
   /// Ejaan yang sering dipakai bergantian disamakan untuk nama makanan dan pertanyaan ("mie instan" dan "mi instan").
