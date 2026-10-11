@@ -95,7 +95,7 @@ class IsolateVision implements Vision {
             as List;
     final raw = [for (final r in res[0] as List) RawBox(r[0] as String, r[1] as double, (r[2] as List).cast<double>())];
     final ground = res[1] as double, verify = res[2] as double;
-    return VisionResult(raw, IngredientDetector.toDetections(raw, ground), ground, verify);
+    return VisionResult(raw, IngredientDetector.toDetections(raw, ground, rgba: input.square, size: input.squareSize), ground, verify);
   }
 
   @override

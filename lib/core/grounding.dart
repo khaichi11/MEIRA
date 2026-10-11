@@ -184,7 +184,9 @@ List<Detection> dedupe(List<Detection> dets, {double thr = .7}) {
   for (final d in dets) {
     if (d.area > .92 && dets.length > 1) continue;
     final same = d.key ?? d.label;
-    if (kept.any((k) => iou(d.box, k.box) > (same == (k.key ?? k.label) ? thr : .9))) continue;
+    // satu benda hanya boleh punya satu label: kotak berlabel lain yang hampir menimpa kotak lebih yakin dibuang
+    // (buah naga yang juga ditandai labu kuning); pada set uji ambang .6 tidak menurunkan presisi maupun recall
+    if (kept.any((k) => iou(d.box, k.box) > (same == (k.key ?? k.label) ? thr : .6))) continue;
     kept.add(d);
   }
   return kept;
