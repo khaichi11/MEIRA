@@ -862,7 +862,7 @@ class Meira {
     if (imageDataUrl != null && s.mode == 'bahan' && known == 0 && s.prefs.include.isEmpty) {
       final n = s.detections.length;
       final msg = n == 0
-          ? 'Mohon maaf, saya belum dapat melihat bahan dengan jelas di foto ini. Silakan foto lebih dekat dengan cahaya yang cukup, atau sebutkan bahan yang Anda miliki.'
+          ? 'Bahan di foto ini belum terlihat jelas. Coba foto lebih dekat dengan cahaya yang cukup, atau sebutkan bahan yang Anda miliki.'
           : 'Saya melihat $n benda (${n == 1 ? '#1' : '#1 sampai #$n'}), tetapi belum yakin jenis bahannya. Silakan sebutkan bahannya, misalnya "itu apel dan pisang", atau foto lebih dekat.';
       yield TokenEvent(msg);
       await _remember(s, text.isEmpty ? '(foto baru)' : text, msg, 'templat');
@@ -1285,7 +1285,7 @@ class Meira {
     if (prefix.isNotEmpty) full = '$prefix $full'.trim();
     var source = 'llm';
     if (full.isEmpty) {
-      full = 'Maaf, saya belum bisa menjawab itu. Silakan tanyakan hal lain seputar bahan, resep, atau cara memasak.';
+      full = 'Yang itu belum bisa saya jawab dengan pasti. Coba tanyakan soal bahan, resep, gizi, atau cara memasak.';
       source = 'templat';
     }
     await _remember(s, text, full, source);
@@ -1804,7 +1804,7 @@ class Meira {
       return txt;
     }
     if (cur == null) {
-      return 'Mohon maaf, saya belum menemukan resep yang cocok di buku resep. Silakan coba foto lain, sebutkan bahan yang Anda miliki, atau longgarkan batas waktunya.';
+      return 'Buku resep belum punya resep yang cocok untuk itu. Coba foto lain, sebutkan bahan yang Anda miliki, atau longgarkan batas waktunya.';
     }
     final r = cur.recipe;
     final seen = [
