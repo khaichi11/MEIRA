@@ -76,7 +76,7 @@ kunci: sayur hijau warna pucat kusam pudar layu brokoli buncis kangkung bayam bl
 Masak sayur hijau sebentar dengan api besar. Bila direbus, angkat lalu rendam di air es agar warnanya tetap hijau cerah dan teksturnya renyah.
 
 ## Menggoreng supaya renyah
-kunci: goreng renyah kriuk garing crispy minyak panas lembek berminyak tepung ayam goreng biar
+kunci: goreng renyah kriuk garing crispy minyak panas lembek berminyak tepung ayam goreng
 Panaskan minyak sampai sekitar 170 sampai 180 derajat Celsius; sedikit adonan yang dicelup langsung mengapung dan berbuih. Jangan menggoreng terlalu banyak sekaligus karena suhu minyak turun dan hasilnya berminyak.
 
 ## Kentang goreng renyah

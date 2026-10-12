@@ -2042,8 +2042,8 @@ String noteAnswer(String question, Note n) {
 }
 
 /// Pemeriksaan tambahan untuk tulisan ulang jawaban pengetahuan: tidak mengulang atau membalas dengan pertanyaan,
-/// tetap menyebut nama diri (daerah, suku, negara), dan tetap memuat larangan, batasan, atau anjuran ke dokter yang
-/// ada di jawaban asli.
+/// tetap menyebut nama diri (daerah, suku, negara), dan tetap memuat larangan, batasan, anjuran ke dokter, atau
+/// keterangan data yang belum ada di jawaban asli.
 bool voiceMatches(String core, String rewrite, String question) {
   final a = rewrite.toLowerCase(), c = core.toLowerCase();
   if (a.contains('?') && !c.contains('?')) return false;
@@ -2056,7 +2056,7 @@ bool voiceMatches(String core, String rewrite, String question) {
     if (!rewrite.contains(m[0]!)) return false;
   }
   for (final kind in [
-    RegExp(r'\b(tidak|jangan|bukan|hindari|kurang)\b'),
+    RegExp(r'\b(tidak|jangan|bukan|hindari|kurang|belum)\b'),
     RegExp(r'\b(sesekali|batasi|dibatasi|secukupnya|sedikit|cukup)\b'),
     RegExp(r'\b(dokter|ahli gizi|bidan)\b'),
   ]) {
